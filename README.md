@@ -3,6 +3,7 @@
 #### 介绍
 &nbsp;&nbsp;&nbsp;随着企业微信（企微）的广泛应用，其内置的活码功能在满足企业多样化的营销需求方面发挥了重要作用。然而，在实际应用中，企微活码功能存在一些局限性，如无法为每个用户单独定制欢迎语、无法明确每个渠道活码的统计情况以及无法为添加的客户自动打标签等。为了解决这些问题，我们推出了企微活码的增强版——iYqueCode。
 #### 特别赞助
+<div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
 <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
 <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/wxjava.jpg" width="25%" height="25%"  alt="Image description">
 </a>
@@ -10,6 +11,7 @@
 注：<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
     源雀SCRM — 基于SpringCloud+Vue架构,100%授权开放源码的全链路企微私域营销系统
 </a>
+</div>
 
 #### 软件架构
 &nbsp;&nbsp;&nbsp;基于Spring Boot框架、Layui前端框架以及内置H2数据库，iCode为企业提供了一套高效、便捷的开箱即用的活码应用解决方案。
