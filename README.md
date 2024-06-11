@@ -7,8 +7,8 @@
 <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/wxjava.jpg" width="25%" height="25%"  alt="Image description">
 </a>
 <br/>
-注：源雀SCRM — 基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统-><a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
-https://iyque.cn
+注：<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
+    源雀SCRM — 基于SpringCloud+Vue架构,100%授权开放源码的全链路企微私域营销系统
 </a>
 
 #### 软件架构
