@@ -1,7 +1,7 @@
 # 企微活码-iYqueCode:企微增强版活码工具
 
 #### 介绍
-&nbsp;&nbsp;&nbsp;企微活码-iYqueCode是一款基于企业微信开放API开发的活码应用工具。它旨在解决企业微信自带活码功能相对薄弱的问题，为用户提供更强大、更丰富的功能体验。通过iYqueCode，企业可以更加高效地引流获客、提升营销效果，并优化客户服务流程。
+&nbsp;&nbsp;&nbsp;随着企业微信（企微）的广泛应用，其内置的活码功能在满足企业多样化的营销需求方面发挥了重要作用。然而，在实际应用中，企微活码功能存在一些局限性，如无法为每个用户单独定制欢迎语、无法明确每个渠道活码的统计情况以及无法为添加的客户自动打标签等。为了解决这些问题，我们推出了企微活码的增强版——iYqueCode。
 #### 特别赞助
 <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
 <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/wxjava.jpg" width="50%" height="250"  alt="Image description">
