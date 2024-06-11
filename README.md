@@ -68,6 +68,8 @@
       ![img_7.png](img/img_7.png)
 
 #### 感谢
-  <a href="https://gitee.com/binary/weixin-java-tools" target="_blank">开源组件WxJava</a>
+  <a href="https://gitee.com/binary/weixin-java-tools" target="_blank">WxJava</a>
+  <a href="https://gitee.com/dromara/hutool/" target="_blank">Hutool</a>
+
 
 
