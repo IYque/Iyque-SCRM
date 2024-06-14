@@ -56,7 +56,7 @@
 * 更多
   * 后续会围绕不断更新诸如:渠道统计，欢迎语附件，临时活码,外链活码等相关功能。
 #### 应用演示
-  地址:http://iyque.cn/iyque/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
+  地址:http://iyque.cn/tools/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
 #### 功能截图
 ![img_1.png](img/img_1.png)
 #### 安装部署
