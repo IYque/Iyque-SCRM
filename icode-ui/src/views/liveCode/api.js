@@ -14,7 +14,7 @@ const serve = '/iyQue'
 export const getList = (data) => get(`${serve}/findIYqueUserCode`, data)
 
 // 详情
-export const getDetail = (id) => get(`${serve}/getKeyWordGroupBaseInfo/${id}`)
+export const getDetail = (id) => get(`${serve}/findIYqueUserCode/${id}`)
 
 // 删除
 export const del = (ids) => delt(`${serve}/${ids}`)

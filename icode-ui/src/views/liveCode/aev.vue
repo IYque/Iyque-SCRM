@@ -1,61 +1,59 @@
 <template>
-  <div>
-    <div class="g-card">
-      <el-form ref="form" :rules="rules" :model="form" label-position="right" label-width="100px">
-        <el-form-item label="活码名称" prop="codeName">
-          <el-input v-model="form.codeName" maxlength="15" show-word-limit clearable placeholder="请输入"></el-input>
-          <!-- <div class="g-tip">活码名称创建完成后不可修改</div> -->
-        </el-form-item>
+  <div class="g-card">
+    <el-form ref="form" :rules="rules" :model="form" label-position="right" label-width="100px">
+      <el-form-item label="活码名称" prop="codeName">
+        <el-input v-model="form.codeName" maxlength="15" show-word-limit clearable placeholder="请输入"></el-input>
+        <!-- <div class="g-tip">活码名称创建完成后不可修改</div> -->
+      </el-form-item>
 
-        <el-form-item label="活码员工" prop="users" :error="userErrorTip">
-          <el-select
-            v-model="form.users"
-            value-key="id"
-            multiple
-            collapse-tags
-            collapse-tags-tooltip
-            :max-collapse-tags="3"
-            placeholder="请选择">
-            <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="免验证">
-          <el-switch v-model="form.skipVerify"></el-switch>
-          <div class="g-tip">（注:勾选后,客户添加员工好友无需员工确认）</div>
-        </el-form-item>
-        <el-form-item label="重复添加">
-          <el-switch v-model="form.isExclusive"></el-switch>
-          <div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
-        </el-form-item>
-        <el-form-item label="新客标签" :error="tagErrorTip">
-          <el-select
-            v-model="form.tags"
-            value-key="id"
-            multiple
-            collapse-tags
-            collapse-tags-tooltip
-            :max-collapse-tags="3"
-            placeholder="请选择">
-            <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="欢迎语">
-          <TextareaExtend
-            v-model="form.weclomeMsg"
-            :toolbar="['emoji', 'insertCustomerNickName']"
-            maxlength="2000"
-            show-word-limit
-            placeholder="请输入"
-            :autosize="{ minRows: 5, maxRows: 20 }"
-            clearable
-            :autofocus="false" />
-        </el-form-item>
-      </el-form>
-    </div>
-    <CommonTopRight>
-      <el-button type="primary" size="default" @click="submit()">确定</el-button>
-    </CommonTopRight>
+      <el-form-item label="活码员工" prop="users" :error="userErrorTip">
+        <el-select
+          v-model="form.users"
+          value-key="id"
+          multiple
+          collapse-tags
+          collapse-tags-tooltip
+          :max-collapse-tags="3"
+          placeholder="请选择">
+          <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="免验证">
+        <el-switch v-model="form.skipVerify"></el-switch>
+        <div class="g-tip">（注:勾选后,客户添加员工好友无需员工确认）</div>
+      </el-form-item>
+      <el-form-item label="重复添加">
+        <el-switch v-model="form.isExclusive"></el-switch>
+        <div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
+      </el-form-item>
+      <el-form-item label="新客标签" :error="tagErrorTip">
+        <el-select
+          v-model="form.tags"
+          value-key="id"
+          multiple
+          collapse-tags
+          collapse-tags-tooltip
+          :max-collapse-tags="3"
+          placeholder="请选择">
+          <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="欢迎语">
+        <TextareaExtend
+          v-model="form.weclomeMsg"
+          :toolbar="['emoji', 'insertCustomerNickName']"
+          maxlength="2000"
+          show-word-limit
+          placeholder="请输入"
+          :autosize="{ minRows: 5, maxRows: 20 }"
+          clearable
+          :autofocus="false" />
+      </el-form-item>
+    </el-form>
   </div>
+  <!-- <CommonTopRight>
+      <el-button type="primary" size="default" @click="submit()">确定</el-button>
+    </CommonTopRight> -->
 </template>
 
 <script>
@@ -63,7 +61,7 @@ import { getDetail, add, update } from './api'
 import { getUserList, getTagList } from '@/api/common'
 
 export default {
-  components: {},
+  props: { data: {} },
   data() {
     return {
       rules: {
@@ -105,13 +103,50 @@ export default {
       tagErrorTip: '',
     }
   },
+  watch: {
+    data: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        let element = JSON.parse(JSON.stringify(val))
+        element.tags = []
+        element.users = []
+
+        if (element.tagId && element.tagName) {
+          element.tagId = element.tagId.split(',')
+          element.tagName = element.tagName.split(',')
+          element.tagId.forEach((unit, index) => {
+            element.tags.push({
+              id: unit,
+              name: element.tagName[index],
+            })
+          })
+        }
+
+        if (element.userId && element.userName) {
+          element.userId = element.userId.split(',')
+          element.userName = element.userName.split(',')
+          element.userId.forEach((unit, index) => {
+            element.users.push({
+              id: unit,
+              name: element.userName[index],
+            })
+          })
+        }
+        this.form = element
+        setTimeout(() => {
+          this.$refs.form.clearValidate()
+        }, 0)
+      },
+    },
+  },
   created() {
     this.getUserList()
     this.getTagList()
-    let id = this.$route.query.id
-    if (id) {
-      this.getDetail(id)
-    }
+    // let id = this.$route.query.id
+    // if (id) {
+    //   this.getDetail(id)
+    // }
   },
   methods: {
     getUserList() {
@@ -171,7 +206,7 @@ export default {
       this.form.userId = this.form.users.map((e) => e.id) + ''
       this.form.userName = this.form.users.map((e) => e.name) + ''
       this.$store.loading = true
-      ;(this.form.id ? update : add)(this.form)
+      return (this.form.id ? update : add)(this.form)
         .then(({ data }) => {
           this.msgSuccess('操作成功')
           this.$router.back()

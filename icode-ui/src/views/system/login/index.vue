@@ -36,9 +36,9 @@
             </el-input>
           </el-form-item>
 
-          <!-- <div class="fxbw g-margin-b">
+          <div class="fxbw g-margin-b">
             <el-checkbox class="fr" v-model="loginForm.rememberMe">记住我</el-checkbox>
-          </div> -->
+          </div>
           <el-form-item>
             <el-button :loading="loading" type="primary" style="width: 100%" @click.prevent="login">
               <span v-if="!loading">登 录</span>

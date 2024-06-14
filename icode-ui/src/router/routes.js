@@ -36,12 +36,6 @@ export const navRoutes = [
         hidden: true,
         meta: { title: '活码' },
       },
-      {
-        path: 'add',
-        component: () => import('@/views/liveCode/add'),
-        hidden: true,
-        meta: { title: '活码' },
-      },
     ],
   },
   {

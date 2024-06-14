@@ -1,5 +1,7 @@
 <script>
 import { getList, del } from './api'
+
+import aev from './aev.vue'
 export default {
   data() {
     return {
@@ -8,9 +10,12 @@ export default {
       list: '',
       total: 0,
       multipleSelection: [], // 多选数据
+
+      dialogVisible: false, // 弹窗显示控制
+      form: {},
     }
   },
-  computed: {},
+  components: { aev },
   watch: {},
   created() {
     this.getList()
@@ -18,7 +23,7 @@ export default {
   mounted() {},
   methods: {
     getList(page) {
-      page && (this.query.pageNum = page)
+      page && (this.query.page = page)
       this.loading = true
       getList(this.query)
         .then(({ data, count }) => {
@@ -32,12 +37,10 @@ export default {
         })
     },
     del(id) {
-      
       let ids = id || this.multipleSelection?.join?.(',')
       if (!ids) {
         return this.msgError('请选择需要删除的数据')
       }
-
       this.$confirm()
         .then(() => {
           this.loading = true
@@ -52,8 +55,6 @@ export default {
         .finally(() => {
           this.loading = false
         })
-
-
     },
   },
 }
@@ -68,7 +69,7 @@ export default {
 
     <div class="g-card">
       <div class="fxbw">
-        <el-button type="primary" @click="$router.push('add')">新建</el-button>
+        <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
         <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
       </div>
       <el-table
@@ -98,6 +99,8 @@ export default {
 
         <el-table-column label="操作" fixed="right">
           <template #default="{ row }">
+            <!-- <el-button text @click="$router.push('aev?id=' + row.id)">编辑</el-button> -->
+            <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
             <el-button text @click="del(row.id)">删除</el-button>
             <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
           </template>
@@ -107,10 +110,18 @@ export default {
       <pagination
         v-show="total > 0"
         :total="total"
-        v-model:page="query.pageNum"
-        v-model:limit="query.pageSize"
+        v-model:page="query.page"
+        v-model:limit="query.size"
         @pagination="getList()" />
     </div>
+
+    <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="50%">
+      <aev :data="form" ref="aev"></aev>
+      <template #footer>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="$refs.aev.submit(), (dialogVisible = false)">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
