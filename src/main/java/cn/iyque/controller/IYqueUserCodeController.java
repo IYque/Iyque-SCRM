@@ -2,8 +2,9 @@ package cn.iyque.controller;
 
 
 import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,10 @@ public class IYqueUserCodeController {
 
     @Autowired
     private IYqueUserCodeService iYqueUserCodeService;
+
+
+    @Autowired
+    private IYqueMsgAnnexService iYqueMsgAnnexService;
 
 
     /**
@@ -83,11 +88,33 @@ public class IYqueUserCodeController {
      * @return 结果
      */
     @DeleteMapping(path = "/{ids}")
-    public ResponseResult batchDelete(@PathVariable("ids") Integer[] ids) {
+    public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
 
         iYqueUserCodeService.batchDelete(ids);
 
         return new ResponseResult();
+    }
+
+
+    /**
+     * 获取活码详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/findCodeDetail/{id}")
+    public ResponseResult<IYqueUserCode> findIYqueUserCodeDetail(@PathVariable Long id){
+        IYqueUserCode iYqueUserCode = iYqueUserCodeService.findIYqueUserCodeById(id);
+
+        if(null != iYqueUserCode){
+            iYqueUserCode.setAnnexLists(
+                    iYqueMsgAnnexService.findIYqueMsgAnnexByMsgId(id)
+            );
+        }
+
+
+        return  new ResponseResult(
+                iYqueUserCode
+        );
     }
 
 

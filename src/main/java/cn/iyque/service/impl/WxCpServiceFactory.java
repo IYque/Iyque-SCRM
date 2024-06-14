@@ -1,10 +1,9 @@
 package cn.iyque.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.iyque.domain.IYqueConfig;
+import cn.iyque.entity.IYqueConfig;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
-import me.chanjar.weixin.cp.config.WxCpConfigStorage;
 import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
 
 import java.util.Optional;

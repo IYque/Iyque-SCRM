@@ -3,7 +3,7 @@ package cn.iyque.controller;
 
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IYqueConfig;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueConfigService;
 import org.springframework.beans.factory.annotation.Autowired;

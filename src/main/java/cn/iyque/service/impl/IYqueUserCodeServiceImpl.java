@@ -1,33 +1,29 @@
 package cn.iyque.service.impl;
 
-import antlr.StringUtils;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
-import cn.iyque.domain.IYqueUserCode;
-import cn.iyque.entity.NewContactWay;
+import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.domain.NewContactWay;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.api.WxCpService;
-import me.chanjar.weixin.cp.bean.WxCpAgent;
-import me.chanjar.weixin.cp.bean.WxCpBaseResp;
-import me.chanjar.weixin.cp.bean.article.NewArticle;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayResult;
-import me.chanjar.weixin.cp.bean.external.WxCpGroupJoinWayInfo;
-import me.chanjar.weixin.cp.bean.message.WxCpMessage;
-import me.chanjar.weixin.cp.bean.messagebuilder.NewsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -41,7 +37,10 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     private IYqueUserCodeDao iYqueUserCodeDao;
 
     @Autowired
-    private IYqueConfigServiceImpl iYqueConfigService;
+    private IYqueConfigService iYqueConfigService;
+
+    @Autowired
+    private IYqueMsgAnnexService iYqueMsgAnnexService;
 
 
 
@@ -51,6 +50,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(IYqueUserCode iYqueUserCode) throws Exception {
         try {
             iYqueUserCode.setCreateTime(new Date());
@@ -77,6 +77,15 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                 iYqueUserCode.setConfigId(wxCpContactWayResult.getConfigId());
 
                 iYqueUserCodeDao.save(iYqueUserCode);
+
+                List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+                if(CollectionUtil.isNotEmpty(annexLists)){
+                    annexLists.stream().forEach(k->{
+                        k.setMsgId(iYqueUserCode.getId());
+                    });
+                    iYqueMsgAnnexService.saveAll(annexLists);
+                }
+
             }
 
 
@@ -87,6 +96,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(IYqueUserCode iYqueUserCode) throws Exception {
 
         try {
@@ -111,6 +121,14 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
             iYqueUserCode.setUpdateTime(new Date());
             iYqueUserCodeDao.saveAndFlush(iYqueUserCode);
+            iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
+            List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+            if(CollectionUtil.isNotEmpty(annexLists)){
+                annexLists.stream().forEach(k->{
+                    k.setMsgId(iYqueUserCode.getId());
+                });
+                iYqueMsgAnnexService.saveAll(annexLists);
+            }
         }catch (Exception e){
 
             throw e;
@@ -119,12 +137,12 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
-    public IYqueUserCode findIYqueUserCodeById(Integer id) {
+    public IYqueUserCode findIYqueUserCodeById(Long id) {
         return iYqueUserCodeDao.getById(id);
     }
 
     @Override
-    public void batchDelete(Integer[] ids){
+    public void batchDelete(Long[] ids){
         List<IYqueUserCode> iYqueUserCodes = iYqueUserCodeDao.findAllById(Arrays.asList(ids));
 
         if(CollectionUtil.isNotEmpty(iYqueUserCodes)){
@@ -145,8 +163,8 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
     }
 
-    @Override
-    public void distributeUserCode(Integer id) throws WxErrorException {
+//    @Override
+//    public void distributeUserCode(Integer id) throws WxErrorException {
 //        IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);
 //        if(iYqueUserCode != null){
 //            WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
@@ -164,6 +182,6 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
 
 
-    }
+//    }
 
 }

@@ -1,4 +1,4 @@
-package cn.iyque.domain;
+package cn.iyque.entity;
 
 
 import lombok.AllArgsConstructor;
@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
+
+/**
+ * 默认欢迎语
+ */
 @Entity(name = "iyque_default_msg")
 @Data
 @AllArgsConstructor
@@ -25,5 +27,9 @@ public class IYqueDefaultMsg {
 
     //默认欢迎语
     private String defaultContent;
+
+    //欢迎语附件
+    @Transient
+    private List<IYqueMsgAnnex> annexLists;
 
 }

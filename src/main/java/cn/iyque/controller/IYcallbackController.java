@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueConfig;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueDefaultMsgService;
 import cn.iyque.utils.IYqueCryptUtil;

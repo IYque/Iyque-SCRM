@@ -1,8 +1,7 @@
 package cn.iyque.service;
 
 import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueConfig;
-import cn.iyque.domain.IYqueDefaultMsg;
+import cn.iyque.entity.IYqueDefaultMsg;
 
 public interface IYqueDefaultMsgService {
 

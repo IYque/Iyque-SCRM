@@ -1,8 +1,8 @@
 package cn.iyque.dao;
 
-import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.IYqueUserCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IYqueUserCodeDao extends JpaRepository<IYqueUserCode,Integer> {
+public interface IYqueUserCodeDao extends JpaRepository<IYqueUserCode,Long> {
     IYqueUserCode findByCodeState(String codeState);
 }

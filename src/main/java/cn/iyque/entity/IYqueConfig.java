@@ -1,4 +1,4 @@
-package cn.iyque.domain;
+package cn.iyque.entity;
 
 
 import lombok.AllArgsConstructor;

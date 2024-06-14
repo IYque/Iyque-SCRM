@@ -1,7 +1,7 @@
 package cn.iyque.controller;
 
 
-import cn.iyque.domain.IYqueDefaultMsg;
+import cn.iyque.entity.IYqueDefaultMsg;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueDefaultMsgService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package cn.iyque.domain;
+package cn.iyque.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 外部联系人活码实体
@@ -25,7 +26,7 @@ public class IYqueUserCode {
     //主键为id且自增
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     //名称
     private String codeName;
@@ -70,6 +71,9 @@ public class IYqueUserCode {
 
     //是否删除标识
     private Integer delFlag;
+
+    @Transient
+    private List<IYqueMsgAnnex> annexLists;
 
     @PrePersist
     @PreUpdate

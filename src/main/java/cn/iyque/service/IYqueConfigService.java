@@ -1,8 +1,7 @@
 package cn.iyque.service;
 
-import cn.iyque.domain.IYqueConfig;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.exception.IYqueException;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpService;
 
 public interface IYqueConfigService {
