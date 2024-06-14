@@ -17,7 +17,7 @@ public class JwtConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/iYqueSys/login");
+                .excludePathPatterns("/iYqueSys/login","/iycallback/handle/**");
     }
 
 }

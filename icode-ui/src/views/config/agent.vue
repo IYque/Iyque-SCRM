@@ -19,9 +19,9 @@
         <div class="my-title">回调配置</div>
         <el-form-item label="回调地址:">
           <el-input
-            :value="(form.token1 = sysConfig.BASE_API + '/open/wecom/recive/{企业id}')"
+            :value="(form.token1 = sysConfig.BASE_API + '/iycallback/handle?corpId={企业id}')"
             readonly
-            placeholder="{系统统一访问前缀}/open/wecom/recive/企业id"></el-input>
+            placeholder="{系统统一访问前缀}/iycallback/handle?corpId={企业id}"></el-input>
         </el-form-item>
         <el-form-item label="Token:" prop="token">
           <el-input v-model="form.token"  placeholder="请输入Token"></el-input>

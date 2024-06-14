@@ -44,10 +44,6 @@
       <version>${lombok.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
 
 
     <dependency>
@@ -74,17 +70,6 @@
       <version>${jjwt.version}</version>
     </dependency>
 
-<!--    &lt;!&ndash; ...其他依赖... &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.webjars</groupId>-->
-<!--      <artifactId>vue</artifactId>-->
-<!--      <version>3.2.31</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.webjars</groupId>-->
-<!--      <artifactId>bootstrap</artifactId>-->
-<!--      <version>5.1.0</version>-->
-<!--    </dependency>-->
 
 
 
