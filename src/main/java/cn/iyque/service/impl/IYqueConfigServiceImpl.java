@@ -4,7 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.iyque.dao.IYqueConfigDao;
 import cn.iyque.domain.IYqueConfig;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.cp.api.WxCpChatService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
@@ -35,9 +38,12 @@ public class IYqueConfigServiceImpl implements IYqueConfigService {
     }
 
     @Override
-    public WxCpService findWxcpservice() {
+    public WxCpService findWxcpservice() throws IYqueException {
 
         WxCpService config = WxCpServiceFactory.createWxCpService(findIYqueConfig());
+        if(null == config){
+            throw new IYqueException("请配置系统相关参数");
+        }
 
         return config;
     }

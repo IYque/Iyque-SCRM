@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 企微标签
+ */
 @RestController
 @RequestMapping("/iYqueTag")
 public class IYqueTagController {
 
 
-//    @Autowired
-//    private IYqueConfigService iYqueConfigService;
+
 
     @Autowired
     private IYqueTagServiceImpl iYqueWxCptTagService;
@@ -40,7 +43,7 @@ public class IYqueTagController {
                 wxCpTags.addAll(wxCpTagList);
             }
         }catch (Exception e){
-            return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
         }
 
 

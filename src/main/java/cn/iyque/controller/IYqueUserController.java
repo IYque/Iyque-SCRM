@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * 企业微信员工相关
+ */
 @RestController
 @RequestMapping("/iYqueUser")
 public class IYqueUserController {
@@ -62,7 +66,7 @@ public class IYqueUserController {
 
         }catch (Exception e){
 
-            return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
 
         }
 

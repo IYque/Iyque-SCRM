@@ -7,6 +7,10 @@ import cn.iyque.service.IYqueDefaultMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * 系统默认欢迎语相关
+ */
 @RestController
 @RequestMapping("/iYqueDefaultMsg")
 public class IYqueDefaultMsgController {
@@ -18,7 +22,7 @@ public class IYqueDefaultMsgController {
      * 获取默认欢迎语
      * @return
      */
-    @GetMapping("/findDefaultMsg")
+    @GetMapping("/findIYqueConfig")
     public ResponseResult<IYqueDefaultMsg> findDefaultMsg(){
         return new ResponseResult<>(
                 iYqueDefaultMsgService.findDefaultMsg()

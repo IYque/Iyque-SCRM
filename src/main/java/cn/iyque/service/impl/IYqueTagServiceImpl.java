@@ -24,9 +24,11 @@ public class IYqueTagServiceImpl implements IYqueTagService {
 
 
 
+    @Override
     public List<WxCpUserExternalTagGroupInfo.Tag> listAll() throws WxErrorException {
 
         WxCpService wxCpServic = iYqueConfigService.findWxcpservice();
+
         String url = wxCpServic.getWxCpConfigStorage().getApiUrl("/cgi-bin/externalcontact/get_corp_tag_list");
         String responseContent = wxCpServic.get(url, (String)null);
         JsonObject tmpJson = GsonParser.parse(responseContent);

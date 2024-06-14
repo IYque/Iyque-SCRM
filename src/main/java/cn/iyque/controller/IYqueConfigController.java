@@ -1,18 +1,27 @@
 package cn.iyque.controller;
 
 
+import cn.iyque.config.IYqueParamConfig;
+import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.IYqueConfig;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * 系统配置相关
+ */
 @RestController
 @RequestMapping("/iYqueConfig")
 public class IYqueConfigController {
 
     @Autowired
     private IYqueConfigService iYqueConfigService;
+
+    @Autowired
+    private IYqueParamConfig iYqueParamConfig;
 
 
     /**
@@ -34,6 +43,11 @@ public class IYqueConfigController {
      */
     @PostMapping("/saveOrUpdate")
     public ResponseResult saveOrUpdate(@RequestBody IYqueConfig iYqueConfig){
+
+        if(iYqueParamConfig.getDemo()){
+
+            return new ResponseResult(HttpStatus.ERROR,"当前为演示环境参数无法修改","");
+        }
         iYqueConfigService.saveOrUpdate(iYqueConfig);
 
         return new ResponseResult();

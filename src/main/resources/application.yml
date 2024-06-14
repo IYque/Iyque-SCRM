@@ -1,25 +1,17 @@
 server:
   port: 8085
-  servlet:
-    context-path: /iyque
 iyque:
   userName: iyque
   pwd: 123456
+  demo: true
 spring:
-  mvc:
-    view:
-      prefix: /templates/
-      suffix: .html
-  web:
-    resources:
-      static-locations: classpath:/templates/,classpath:/static/
   h2:
     console:
       path: /h2  #h2嵌入式数据库控制台，可以通过浏览器访问
       enabled: true
   datasource:
     url: jdbc:h2:file:./data/mydb;
-    username: iyque
+    username: sa
     password: 123456
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect

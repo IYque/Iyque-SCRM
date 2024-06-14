@@ -16,10 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.api.WxCpService;
+import me.chanjar.weixin.cp.bean.WxCpAgent;
 import me.chanjar.weixin.cp.bean.WxCpBaseResp;
+import me.chanjar.weixin.cp.bean.article.NewArticle;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayResult;
 import me.chanjar.weixin.cp.bean.external.WxCpGroupJoinWayInfo;
+import me.chanjar.weixin.cp.bean.message.WxCpMessage;
+import me.chanjar.weixin.cp.bean.messagebuilder.NewsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +38,7 @@ import java.util.List;
 public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
     @Autowired
-    IYqueUserCodeDao iYqueUserCodeDao;
+    private IYqueUserCodeDao iYqueUserCodeDao;
 
     @Autowired
     private IYqueConfigServiceImpl iYqueConfigService;
@@ -138,6 +142,27 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
             });
 
         }
+
+    }
+
+    @Override
+    public void distributeUserCode(Integer id) throws WxErrorException {
+//        IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);
+//        if(iYqueUserCode != null){
+//            WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
+//            NewArticle newArticle=new NewArticle();
+//            newArticle.setDescription(null);
+//            newArticle.setTitle(null);
+//            newArticle.setUrl(null);
+//            newArticle.setPicUrl(null);
+//            wxcpservice.getMessageService().send(WxCpMessage.NEWS()
+//                    .toUser()
+//                    .agentId()
+//                    .addArticle(newArticle)
+//                    .build());
+//        }
+
+
 
     }
 

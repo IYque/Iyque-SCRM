@@ -12,6 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 
+/**
+ * 客户引流码相关
+ */
 @RestController
 @RequestMapping("/iyQue")
 public class IYqueUserCodeController {
@@ -64,9 +67,13 @@ public class IYqueUserCodeController {
     @GetMapping("/findIYqueUserCode")
     public ResponseResult<IYqueUserCode> findIYqueUserCode(@RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "10") int size){
-        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(page-1, size, Sort.by("updateTime").descending()));
+        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueUserCodes.getContent(),iYqueUserCodes.getTotalElements());
     }
+
+
+
+
 
 
     /**
@@ -83,6 +90,17 @@ public class IYqueUserCodeController {
         return new ResponseResult();
     }
 
+
+//    /**
+//     * 活码下发
+//     * @param id
+//     * @return
+//     */
+//    @GetMapping("/distributeUserCode/{id}")
+//    public RequestBody distributeUserCode(@PathVariable("id") Integer id){
+//
+//    }
+//
 
 
 

@@ -4,6 +4,7 @@ import cn.iyque.domain.IYqueUserCode;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface IYqueUserCodeService {
     IYqueUserCode findIYqueUserCodeById(Integer id);
 
     void batchDelete(Integer[] ids);
+
+    void distributeUserCode(Integer id) throws WxErrorException;
 
 }
