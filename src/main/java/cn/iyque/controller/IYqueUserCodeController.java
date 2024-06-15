@@ -118,16 +118,7 @@ public class IYqueUserCodeController {
     }
 
 
-//    /**
-//     * 活码下发
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/distributeUserCode/{id}")
-//    public RequestBody distributeUserCode(@PathVariable("id") Integer id){
-//
-//    }
-//
+
 
 
 

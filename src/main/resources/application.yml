@@ -4,6 +4,7 @@ iyque:
   userName: iyque
   pwd: 123456
   demo: true
+  uploadDir: /usr/local/upload
 spring:
   h2:
     console:

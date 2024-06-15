@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,9 +18,12 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Builder
 public class IYqueConfig {
-    //主键为id且自增
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
     private Long id;
 
     private String corpId;

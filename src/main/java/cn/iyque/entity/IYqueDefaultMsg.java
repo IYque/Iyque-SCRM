@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,9 +21,12 @@ import java.util.List;
 @Builder
 public class IYqueDefaultMsg {
 
-    //主键为id且自增
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
     private Long id;
 
     //默认欢迎语

@@ -13,4 +13,6 @@ public class IYqueParamConfig {
     private String pwd;
 
     private Boolean demo=false;
+
+    private String uploadDir;
 }

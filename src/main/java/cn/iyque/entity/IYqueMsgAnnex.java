@@ -2,10 +2,13 @@ package cn.iyque.entity;
 
 
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 
@@ -18,9 +21,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 public class IYqueMsgAnnex {
-    //主键为id且自增
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
     private Long id;
 
     //欢迎语id
@@ -30,6 +37,7 @@ public class IYqueMsgAnnex {
     private String msgtype;
 
     //附件字符串
+    @JsonIgnore
     private String annexContent;
 
     @Transient
