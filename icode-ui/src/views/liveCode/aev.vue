@@ -205,11 +205,11 @@ export default {
       this.form.tagName = this.form.tags.map((e) => e.name) + ''
       this.form.userId = this.form.users.map((e) => e.id) + ''
       this.form.userName = this.form.users.map((e) => e.name) + ''
-      this.$store.loading = true
+      // this.$store.loading = true
       return (this.form.id ? update : add)(this.form)
         .then(({ data }) => {
           this.msgSuccess('操作成功')
-          this.$router.back()
+          // this.$router.back()
         })
         .finally(() => {
           this.$store.loading = false
