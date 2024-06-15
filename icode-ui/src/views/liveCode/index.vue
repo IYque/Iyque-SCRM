@@ -5,12 +5,11 @@ import aev from './aev.vue'
 export default {
   data() {
     return {
-      loading: false,
       query: { page: 0, size: 10 },
       list: '',
       total: 0,
       multipleSelection: [], // 多选数据
-
+      loading: false,
       dialogVisible: false, // 弹窗显示控制
       form: {},
     }
@@ -24,17 +23,15 @@ export default {
   methods: {
     getList(page) {
       page && (this.query.page = page)
-      this.loading = true
+      this.$store.loading = true
       getList(this.query)
         .then(({ data, count }) => {
           this.list = data
           this.total = +count
-          this.loading = false
           this.multipleSelection = []
         })
-        .catch(() => {
-          this.loading = false
-        })
+        .catch((e) => console.error(e))
+        .finally(() => (this.$store.loading = false))
     },
     del(id) {
       let ids = id || this.multipleSelection?.join?.(',')
@@ -43,7 +40,7 @@ export default {
       }
       this.$confirm()
         .then(() => {
-          this.loading = true
+          this.$store.loading = true
           return del(ids).then((res) => {
             this.msgSuccess('删除成功')
             this.getList()
@@ -52,9 +49,13 @@ export default {
         .catch((e) => {
           console.error(e)
         })
-        .finally(() => {
-          this.loading = false
-        })
+    },
+    async submit() {
+      this.loading = true
+      await this.$refs.aev.submit()
+      this.loading = false
+      this.dialogVisible = false
+      this.getList()
     },
   },
 }
@@ -119,7 +120,7 @@ export default {
       <aev :data="form" ref="aev"></aev>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="$refs.aev.submit(), (dialogVisible = false)">确定</el-button>
+        <el-button type="primary" @click="submit" v-loading="loading">确定</el-button>
       </template>
     </el-dialog>
   </div>
