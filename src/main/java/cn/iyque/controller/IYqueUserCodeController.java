@@ -45,7 +45,7 @@ public class IYqueUserCodeController {
      * @param iYqueUserCode
      * @return
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseResult update(@RequestBody IYqueUserCode iYqueUserCode){
         try {
             iYqueUserCodeService.update(iYqueUserCode);
