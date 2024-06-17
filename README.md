@@ -55,7 +55,7 @@
   * 可为每个员工定义不同的欢迎语模版。
 * 更多
   * 后续会围绕不断更新诸如:渠道统计，欢迎语附件，临时活码,外链活码等相关功能。
-  * 如果你觉得有不错的需求，可提供给我们: https://docs.qq.com/sheet/DRVJoZnVUSG5nZHpr?tab=BB08J2
+  * 如果你有不错的需求，可提供给我们: https://docs.qq.com/sheet/DRVJoZnVUSG5nZHpr?tab=BB08J2
 #### 应用演示
   地址:https://iyque.cn/tools/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
 #### 功能截图
