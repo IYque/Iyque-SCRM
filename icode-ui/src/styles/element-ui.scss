@@ -36,6 +36,9 @@
 //     color: var(--font-white, #fff);
 //   }
 // }
+.el-button:focus-visible {
+  outline: none;
+}
 .el-button:not(.el-button--small, .el-button--large) {
   padding: 9px 19px;
   font-size: 13px;
@@ -312,7 +315,6 @@
 }
 
 .el-tabs__nav-wrap {
-  overflow: initial;
   margin-bottom: initial;
 }
 .el-tabs__content {
