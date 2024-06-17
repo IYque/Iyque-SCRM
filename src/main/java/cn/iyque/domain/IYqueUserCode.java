@@ -60,6 +60,10 @@ public class IYqueUserCode {
     //联系方式的配置id
     private String configId;
 
+
+    //客户备注类型cn.iyque.enums.RemarksType
+    private Integer remarkType;
+
     //创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;

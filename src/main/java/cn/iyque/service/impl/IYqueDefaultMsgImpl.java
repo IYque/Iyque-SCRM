@@ -8,10 +8,16 @@ import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.domain.IYqueDefaultMsg;
 import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.enums.RemarksType;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueDefaultMsgService;
+import cn.iyque.strategy.callback.ActionContext;
+import cn.iyque.strategy.callback.MakeTagCustomerStrategy;
+import cn.iyque.strategy.callback.RemarkCustomerStrategy;
+import cn.iyque.strategy.callback.SendWelcomeMsgStrategy;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
+import me.chanjar.weixin.cp.bean.external.WxCpUpdateRemarkRequest;
 import me.chanjar.weixin.cp.bean.external.WxCpWelcomeMsg;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 import me.chanjar.weixin.cp.bean.external.msg.Text;
@@ -33,7 +39,7 @@ public class IYqueDefaultMsgImpl implements IYqueDefaultMsgService {
 
 
     @Autowired
-    private IYqueConfigService iYqueConfigService;
+    IYqueConfigService iYqueConfigService;
 
 
 
@@ -52,80 +58,45 @@ public class IYqueDefaultMsgImpl implements IYqueDefaultMsgService {
     }
 
     @Override
-    public void sendWelcomeMsg(IYqueCallBackBaseMsg callBackBaseMsg) {
+    public void callBackAction(IYqueCallBackBaseMsg callBackBaseMsg) {
 
-        StringBuilder tagIds=new StringBuilder();
         try {
-            WxCpWelcomeMsg wxCpWelcomeMsg=new WxCpWelcomeMsg();
-            wxCpWelcomeMsg.setWelcomeCode(callBackBaseMsg.getWelcomeCode());
-            Text text = new Text();
-
-            if(StrUtil.isEmpty(callBackBaseMsg.getState())){
-                this.setDefaultMsg(text);
-            }else{
+            if(StrUtil.isNotEmpty(callBackBaseMsg.getState())){
                 IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findByCodeState(callBackBaseMsg.getState());
                 if(null != iYqueUserCode){
-                    //标签
-                    tagIds.append(iYqueUserCode.getTagId());
-                    if(StrUtil.isNotEmpty(iYqueUserCode.getWeclomeMsg())){
-                        text.setContent(iYqueUserCode.getWeclomeMsg());
-                    }else{
-                        this.setDefaultMsg(text);
-                    }
-
-                }else{
-                    this.setDefaultMsg(text);
-                }
-            }
-
-            WxCpExternalContactService externalContactService
-                    = iYqueConfigService.findWxcpservice().getExternalContactService();
-
-            if(StrUtil.isNotEmpty(text.getContent())){
-                //替换为真实用户名
-                if(text.getContent().contains(IYqueContant.USER_NICKNAME_TPL)){
-                    WxCpExternalContactInfo contactDetail = externalContactService.getContactDetail(callBackBaseMsg.getExternalUserID(), null);
-                    log.info("获取客户信息:"+contactDetail);
+                    WxCpExternalContactInfo contactDetail = iYqueConfigService.findWxcpservice().getExternalContactService()
+                            .getContactDetail(callBackBaseMsg.getExternalUserID(), null);
                     if(null != contactDetail){
-                        text.setContent(
-                                text.getContent().replace(IYqueContant.USER_NICKNAME_TPL,  contactDetail.getExternalContact().getName())
-                        );
+                        //发送欢迎语
+                        ActionContext actionContext = new ActionContext(new SendWelcomeMsgStrategy());
+                        actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
+
+                        //自动打标签
+                        if (StrUtil.isNotEmpty(iYqueUserCode.getTagId())) {
+                            actionContext.setActionStrategy(new MakeTagCustomerStrategy());
+                            actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
+                        }
+
+                        //自动备注
+                        if (null != iYqueUserCode.getRemarkType()) {
+                            actionContext.setActionStrategy(new RemarkCustomerStrategy());
+                            actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
+                        }
+
+
                     }
+                }else{
+                    log.error("当前渠道活码不存在");
                 }
-
             }
-
-            wxCpWelcomeMsg.setText(text);
-
-            externalContactService.sendWelcomeMsg(wxCpWelcomeMsg);
 
         }catch (Exception e){
-            log.error("欢迎语发送失败:"+e.getMessage());
-        }finally {
-
-            if(StrUtil.isNotEmpty(tagIds.toString())){
-
-                try {
-                    iYqueConfigService.findWxcpservice().getExternalContactService()
-                            .markTag(callBackBaseMsg.getUserID(),callBackBaseMsg.getExternalUserID(),tagIds.toString().split(","),null);
-                }catch (Exception e){
-                    log.error("未客户打标签失败:"+e.getMessage());
-                }
-
-
-            }
+            log.error("欢迎语动作执行异常:"+e.getMessage());
 
         }
 
     }
 
 
-    //设置全局欢迎语
-    public void setDefaultMsg(Text text){
-        IYqueDefaultMsg defaultMsg = findDefaultMsg();
-        if(null != defaultMsg){
-            text.setContent(defaultMsg.getDefaultContent());
-        }
-    }
 
 }

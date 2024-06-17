@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/tools/static/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>源雀SCRM -基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统</title>
+  <style>
+    #loader-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2001;
+    }
+
+    .cube {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 180px;
+      height: 180px;
+      transform: translateZ(100px);
+      transform-style: preserve-3d;
+      height: 100vh;
+    }
+
+    .cube__side {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 2px solid black;
+      background: rgba(148, 82, 254, 0.364);
+
+    }
+
+    .cube__side--front {
+      transform: rotateY(0deg) translateZ(80px);
+    }
+
+    .cube__side--right {
+      transform: rotateY(90deg) translateZ(80px);
+    }
+
+    .cube__side--back {
+      transform: rotateY(180deg) translateZ(80px);
+    }
+
+    .cube__side--left {
+      transform: rotateY(-90deg) translateZ(80px);
+    }
+
+    .cube__side--top {
+      transform: rotateX(90deg) translateZ(80px);
+    }
+
+    .cube__side--bottom {
+      transform: rotateX(-90deg) translateZ(80px);
+    }
+
+    .cube.spin {
+      animation: spinning 3s infinite ease-in-out;
+    }
+
+    .cube--base {
+      margin: 0 auto;
+    }
+
+    @keyframes spinning {
+      0% {
+        transform: translateZ(180px) rotateX(0deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: translateZ(180px) rotateX(360deg) rotateY(360deg);
+      }
+    }
+
+    .loaded#loader-wrapper {
+      opacity: 0;
+      transition: all 0.15s ease-out;
+      z-index: -1;
+    }
+
+    #common-top-right {
+      position: fixed;
+      right: 20px;
+      top: 24px;
+      z-index: 10;
+    }
+  </style>
+  <script type="module" crossorigin src="/tools/assets/index-B0mVr8eT.js"></script>
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_js-cookie@3.0.5@js-cookie-BXEMiIsG.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vue_shared@3.4.29@@vue-CbMJA9y8.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vue_reactivity@3.4.29@@vue-Ujt3kFWg.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vue_runtime-core@3.4.29@@vue-DDZ-_xUj.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vue_runtime-dom@3.4.29@@vue-DFFRdgB0.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_vue-router@4.3.3@vue-router-DcBx9OIa.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_lodash-es@4.17.21@lodash-es-Bg5u8xPa.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vueuse_shared@9.13.0@@vueuse-UyGL86A6.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vueuse_core@9.13.0@@vueuse-CEW8sd95.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@element-plus_icons-vue@2.3.1@@element-plus-CcmeDuPu.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@sxzz_popperjs-es@2.11.7@@sxzz-D3lHDW-0.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@ctrl_tinycolor@3.6.1@@ctrl-D2oWfImC.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_dayjs@1.11.11@dayjs-t441MSVg.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_async-validator@4.2.5@async-validator-Cuo4gI4y.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_memoize-one@6.0.0@memoize-one-Ds0C_khL.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_normalize-wheel-es@1.2.0@normalize-wheel-es-Vn5vHDCm.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@floating-ui_utils@0.2.2@@floating-ui-Olnmr9Km.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@floating-ui_core@1.6.2@@floating-ui-wf05fRq8.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@floating-ui_dom@1.6.5@@floating-ui-e4X2zpze.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_element-plus@2.7.5@element-plus-CdApmuLJ.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_path-browserify@1.0.1@path-browserify-Ce3DhMlR.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_vue-demi@0.14.8@vue-demi-Dq6ymT-8.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_pinia@2.1.7@pinia-Cpvd85vB.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vueuse_shared@10.11.0@@vueuse-C8Crp58W.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_@vueuse_core@10.11.0@@vueuse-Djca5FhE.js">
+  <link rel="modulepreload" crossorigin href="/tools/assets/js/_nprogress@0.2.0@nprogress-DSZB-OSK.js">
+  <link rel="stylesheet" crossorigin href="/tools/assets/css/_element-plus@2.7-BWCPRKnI.css">
+  <link rel="stylesheet" crossorigin href="/tools/assets/css/_nprogress@0.2-BUMXTAWU.css">
+  <link rel="stylesheet" crossorigin href="/tools/assets/css/index-CQva-qRd.css">
+  <link rel="stylesheet" crossorigin href="/tools/assets/css/_normalize.css@8.0.1@normalize-DxkFTwjz.css">
+</head>
+
+<body>
+  <div id="app"></div>
+  <div id="common-top-right"></div>
+
+  <div id="loader-wrapper">
+    <div class="cube cube--base spin">
+      <div class="cube__side cube__side--front">
+      </div>
+      <div class="cube__side cube__side--back">
+      </div>
+      <div class="cube__side cube__side--right">
+      </div>
+      <div class="cube__side cube__side--left">
+      </div>
+      <div class="cube__side cube__side--top">
+      </div>
+      <div class="cube__side cube__side--bottom">
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

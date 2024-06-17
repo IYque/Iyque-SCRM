@@ -3,7 +3,7 @@ server:
 iyque:
   userName: iyque
   pwd: 123456
-  demo: true
+  demo: false
 spring:
   h2:
     console:

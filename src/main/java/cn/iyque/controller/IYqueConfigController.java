@@ -52,4 +52,6 @@ public class IYqueConfigController {
 
         return new ResponseResult();
     }
+
+
 }

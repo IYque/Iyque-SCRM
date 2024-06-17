@@ -4,6 +4,7 @@ package cn.iyque.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.MapUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -56,7 +57,7 @@ public class IYqueUserController {
                             wxCpUsers.addAll(wxCpUserList);
                         }
 
-                    } catch (WxErrorException e) {
+                    }catch (WxErrorException e) {
                         throw new RuntimeException(e);
                     }
 
@@ -65,7 +66,6 @@ public class IYqueUserController {
 
 
         }catch (Exception e){
-
             return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
 
         }

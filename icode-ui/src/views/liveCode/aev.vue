@@ -1,7 +1,7 @@
 <template>
   <div class="g-card">
     <el-form ref="form" :rules="rules" :model="form" label-position="right" label-width="100px">
-      <el-form-item label="活码名称" prop="codeName">
+      <el-form-item label="渠道名称" prop="codeName">
         <el-input v-model="form.codeName" maxlength="15" show-word-limit clearable placeholder="请输入"></el-input>
         <!-- <div class="g-tip">活码名称创建完成后不可修改</div> -->
       </el-form-item>
@@ -38,6 +38,17 @@
           <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item" />
         </el-select>
       </el-form-item>
+       <el-form-item label="自动备注">
+                <el-select v-model="form.remarkType"  value-key="id" placeholder="请选择">
+                    <el-option
+                      v-for="item in remarkList"
+                      :key="item.key"
+                      :label="item.val"
+                      :value="item.key">
+                    </el-option>
+                  </el-select>
+              <div class="g-tip">（注:选择后，添加的客户会根据所选自动备注如：【客户名-渠道名】,如果选择为标签类型,则新客标签需要存在）</div>
+            </el-form-item>
       <el-form-item label="欢迎语">
         <TextareaExtend
           v-model="form.weclomeMsg"
@@ -58,7 +69,7 @@
 
 <script>
 import { getDetail, add, update } from './api'
-import { getUserList, getTagList } from '@/api/common'
+import { getUserList, getTagList, getRemarkList} from '@/api/common'
 
 export default {
   props: { data: {} },
@@ -92,6 +103,7 @@ export default {
         skipVerify: 1, // 自动通过
         tags: [], // 标签
         users: [], // 标签
+        remarkType: null,//客户备注
       },
 
       selectedUserList: [],
@@ -101,6 +113,7 @@ export default {
       userErrorTip: '',
       tagList: [],
       tagErrorTip: '',
+      remarkList:[],
     }
   },
   watch: {
@@ -143,6 +156,7 @@ export default {
   created() {
     this.getUserList()
     this.getTagList()
+    this.getRemarkList()
     // let id = this.$route.query.id
     // if (id) {
     //   this.getDetail(id)
@@ -167,6 +181,14 @@ export default {
         this.tagList = res.data || []
       })
     },
+
+    getRemarkList(){
+      getRemarkList().then((res) => {
+        this.remarkList = res.data || []
+      })
+    },
+
+
     /** 获取详情 */
     getDetail(id) {
       getDetail(id).then((res) => {

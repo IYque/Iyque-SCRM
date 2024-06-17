@@ -20,3 +20,10 @@ export function getTagList(data) {
     params: data,
   })
 }
+
+
+export function getRemarkList() {
+  return request({
+    url: '/iYqueCommon/findRemarksType'
+  })
+}

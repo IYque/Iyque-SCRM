@@ -25,7 +25,7 @@ public class IYqueTagServiceImpl implements IYqueTagService {
 
 
     @Override
-    public List<WxCpUserExternalTagGroupInfo.Tag> listAll() throws WxErrorException {
+    public List<WxCpUserExternalTagGroupInfo.Tag> listAll() throws Exception {
 
         WxCpService wxCpServic = iYqueConfigService.findWxcpservice();
 
