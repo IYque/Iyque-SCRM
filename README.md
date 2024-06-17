@@ -14,6 +14,7 @@
     </a>
   </div>
 </div>
+
 ### 软件架构
    ##### 后端:采用springboot+jpa+h2架构,项目内置h2数据库,开箱即可使用。
    ##### 前端:技术栈采用 [[vue3](https://cn.vuejs.org/) [vite](https://cn.vitejs.dev/) [pinia](https://pinia.vuejs.org/zh/) [element-plus](https://element-plus.gitee.io/zh-CN/)]
