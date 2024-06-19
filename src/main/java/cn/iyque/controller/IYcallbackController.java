@@ -5,7 +5,9 @@ import cn.hutool.core.util.XmlUtil;
 import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.domain.IYqueConfig;
+import cn.iyque.enums.CustomerStatusType;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueDefaultMsgService;
 import cn.iyque.utils.IYqueCryptUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ public class IYcallbackController {
     private IYqueConfigService iYqueConfigService;
 
     @Autowired
-    private IYqueDefaultMsgService iYqueDefaultMsgService;
+    private IYqueCustomerInfoService iYqueCustomerInfoService;
 
 
     /**
@@ -81,13 +83,32 @@ public class IYcallbackController {
 
             IYqueCallBackBaseMsg callBackBaseMsg = XmlUtil.xmlToBean(XmlUtil.parseXml(decrypt).getFirstChild(), IYqueCallBackBaseMsg.class);
             log.info("活码欢迎语回调"+callBackBaseMsg);
-            //当前为添加客户事件处理逻辑
-            if(null != callBackBaseMsg
-            &&WxCpConsts.ExternalContactChangeType.ADD_EXTERNAL_CONTACT.equals(callBackBaseMsg.getChangeType())
-            &&WxCpConsts.EventType.CHANGE_EXTERNAL_CONTACT.equals(callBackBaseMsg.getEvent())){
-                iYqueDefaultMsgService.callBackAction(callBackBaseMsg);
-            }
 
+            if(null != callBackBaseMsg){
+                if(WxCpConsts.EventType.CHANGE_EXTERNAL_CONTACT.equals(callBackBaseMsg.getEvent())){//客户变更
+                    //客户新增
+                    if(WxCpConsts.ExternalContactChangeType.ADD_EXTERNAL_CONTACT.equals(callBackBaseMsg.getChangeType())){
+                        iYqueCustomerInfoService.addCustomerCallBackAction(callBackBaseMsg);
+                    }
+
+                    //客户流失(被客户删除)
+                    if(WxCpConsts.ExternalContactChangeType.DEL_FOLLOW_USER.equals(callBackBaseMsg.getChangeType())){
+                        iYqueCustomerInfoService.updateCustomerInfoStatus(
+                                callBackBaseMsg.getExternalUserID(),callBackBaseMsg.getUserID(),
+                                CustomerStatusType.CUSTOMER_STATUS_TYPE_LS.getCode()
+                        );
+                    }
+
+                    //删除客户
+                    if(WxCpConsts.ExternalContactChangeType.DEL_EXTERNAL_CONTACT.equals(callBackBaseMsg.getChangeType())){
+                        iYqueCustomerInfoService.updateCustomerInfoStatus(
+                                callBackBaseMsg.getExternalUserID(),callBackBaseMsg.getUserID(),
+                                CustomerStatusType.CUSTOMER_STATUS_TYPE_DEL.getCode()
+                                );
+                    }
+
+                }
+            }
 
             return decrypt;
         } catch (Exception e) {

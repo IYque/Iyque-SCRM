@@ -3,7 +3,7 @@ package cn.iyque.controller;
 
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IQyqueAuthInfo;
+import cn.iyque.domain.IYQueAuthInfo;
 import cn.iyque.domain.JwtResponse;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.utils.JwtUtils;
@@ -29,7 +29,7 @@ public class IYqueLoginController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseResult<JwtResponse> login(@RequestBody IQyqueAuthInfo iQyqueAuthInfo){
+    public ResponseResult<JwtResponse> login(@RequestBody IYQueAuthInfo iQyqueAuthInfo){
 
 
         if(iYqueParamConfig.getUserName().equals(iQyqueAuthInfo.getUsername())
