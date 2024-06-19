@@ -1,9 +1,9 @@
 // 环境变量
 const envs = {
   development: {
-    DOMAIN: 'https://iyque.cn', // 站点域名，会根据此处域名判断应用环境
+    DOMAIN: 'https://show.iyque.cn', // 站点域名，会根据此处域名判断应用环境
     BASE_URL: '/tools/', // 页面路由基础路径 /*/*/，eg：/a/
-    BASE_API: 'https://iyque.cn/qapi', // 接口基础路径
+    BASE_API: 'https://show.iyque.cn/iyque', // 接口基础路径
   },
   production: {
     DOMAIN: 'https://iyque.cn',
@@ -26,5 +26,4 @@ export const common = {
     '<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">源雀SCRM -基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统</a> ', // 系统标语
   COPYRIGHT: 'Copyright © 2024 源雀 All Rights Reserved.', // 版权信息
   LOGO: env.BASE_URL + 'static/logo.png', // 深色logo
-  COOKIEEXPIRES: 0.5, // token在Cookie中存储的天数，默认0.5天
 }

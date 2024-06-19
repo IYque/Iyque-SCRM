@@ -15,17 +15,15 @@
 </template>
 <script>
 import { addOrUpdate, getDetail } from './api'
-import agent from './agent.vue'
-import welcome from './welcome.vue'
 export default {
   components: {
-    agent,
-    welcome,
+    agent: defineAsyncComponent(() => import('./agent.vue')),
+    welcome: defineAsyncComponent(() => import('./welcome.vue')),
   },
   props: {},
   data() {
     return {
-      active: 'agent',
+      active: 'welcome',
       form: {},
       loading: false,
     }

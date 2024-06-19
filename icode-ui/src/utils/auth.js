@@ -6,7 +6,7 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token, { expires: window.sysConfig.COOKIEEXPIRES })
+  return Cookies.set(TokenKey, token)
 }
 
 export function removeToken() {
