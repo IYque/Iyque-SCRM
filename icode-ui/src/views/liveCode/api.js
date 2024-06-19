@@ -19,6 +19,8 @@ export const getDetail = (id) => get(`${serve}/findIYqueUserCode/${id}`)
 // 删除
 export const del = (ids) => delt(`${serve}/${ids}`)
 
+//通知下发
+export const distributeUserCode = (id) => get(`${serve}/distributeUserCode/${id}`)
 /**
  * 新增
  * @param {*} data

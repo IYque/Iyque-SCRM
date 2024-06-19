@@ -20,6 +20,6 @@ public interface IYqueUserCodeService {
 
     void batchDelete(Integer[] ids);
 
-    void distributeUserCode(Integer id) throws WxErrorException;
+    void distributeUserCode(Integer id) throws Exception;
 
 }

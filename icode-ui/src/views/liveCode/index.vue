@@ -1,5 +1,5 @@
 <script>
-import { getList, del } from './api'
+import { getList, del,distributeUserCode} from './api'
 
 import aev from './aev.vue'
 export default {
@@ -50,6 +50,22 @@ export default {
           console.error(e)
         })
     },
+
+    distributeUserCode(id){
+      this.$confirm('是否将当前活码下发给员工, 是否继续?', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning'
+        }).then(() => {
+          distributeUserCode(id).then((res) => {
+            this.msgSuccess('已通知')
+          })
+        }).catch((e) => {  
+           console.error(e)       
+        });
+  
+    },
+
     async submit() {
       this.loading = true
       await this.$refs.aev.submit()
@@ -103,6 +119,7 @@ export default {
             <!-- <el-button text @click="$router.push('aev?id=' + row.id)">编辑</el-button> -->
             <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
             <el-button text @click="del(row.id)">删除</el-button>
+            <el-button text @click="distributeUserCode(row.id)">通知</el-button>
             <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
           </template>
         </el-table-column>
