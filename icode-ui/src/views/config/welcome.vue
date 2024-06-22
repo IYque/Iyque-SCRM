@@ -100,7 +100,7 @@ export default {
             :disabled="annexLists?.length < max">
             <template #reference>
               <el-dropdown
-                @command="(msgtype) => (active = annexLists.push({ msgtype }) - 1)"
+                @command="(msgtype) => (active = annexLists.push({ msgtype, [msgtype]: {} }) - 1)"
                 :disabled="annexLists?.length >= max">
                 <el-button type="primary" class="mb10">添加</el-button>
                 <template #dropdown>

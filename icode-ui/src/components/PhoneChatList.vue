@@ -66,17 +66,13 @@ export default {
                 <div class="image-text-title">{{ data.title }}</div>
                 <div class="image-text-content">
                   <div class="image-text-desc" v-if="data.desc">{{ data.desc }}</div>
-                  <el-image class="image-text-image fxnone" :src="data.picUrl" fit="contain"></el-image>
+                  <img :src="data.picUrl" class="image-text-image fxnone" />
                 </div>
               </div>
             </slot>
 
             <!-- 图片 -->
-            <el-image
-              class="msg-image"
-              v-else-if="item.msgtype === dictMsgType.image.type"
-              :src="data.picUrl"
-              fit="contain" />
+            <img class="msg-image" v-else-if="item.msgtype === dictMsgType.image.type" :src="data.picUrl" />
 
             <!-- 视频 -->
             <video
@@ -196,6 +192,7 @@ export default {
     height: 50px;
     border-radius: 6px;
     border: 1px solid var(--border-black-11);
+    object-fit: contain;
   }
 }
 </style>

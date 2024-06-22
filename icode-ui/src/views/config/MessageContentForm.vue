@@ -28,7 +28,7 @@
           placeholder="请输入链接描述"></el-input>
       </el-form-item>
       <el-form-item label="链接封面">
-        <Upload v-model:fileUrl="form.picurl"></Upload>
+        <Upload v-model:fileUrl="form.picUrl"></Upload>
       </el-form-item>
       <el-form-item label="链接地址" prop="url">
         <el-input v-model="form.url" type="text" placeholder="请输入链接地址，以http://或https://开头"></el-input>
@@ -46,8 +46,8 @@
       <el-form-item label="页面路径" prop="page">
         <el-input v-model="form.page" placeholder="请输入小程序路径，必须以 .html 作为后缀"></el-input>
       </el-form-item>
-      <el-form-item label="封面" prop="picurl">
-        <Upload v-model:fileUrl="form.picurl"></Upload>
+      <el-form-item label="封面" prop="picUrl">
+        <Upload v-model:fileUrl="form.picUrl"></Upload>
       </el-form-item>
     </template>
 
@@ -121,22 +121,10 @@ export default {
     }
   },
 
-  watch: {
-    data: {
-      handler(val) {
-        if (val) {
-          this.form = JSON.parse(JSON.stringify(val))
-        }
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
+  watch: {},
   computed: {
-    // form: {
-    //   get() {
-    //     return
-    //   },
+    // data() {
+    //   return this.form
     // },
   },
   methods: {

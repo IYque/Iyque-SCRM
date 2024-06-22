@@ -23,7 +23,7 @@ export default {
   props: {},
   data() {
     return {
-      active: 'welcome',
+      active: 'agent',
       form: {},
       loading: false,
     }
