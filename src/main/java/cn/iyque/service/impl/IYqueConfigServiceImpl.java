@@ -3,7 +3,6 @@ package cn.iyque.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.dao.IYqueConfigDao;
 import cn.iyque.entity.IYqueConfig;
-import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import org.springframework.beans.factory.annotation.Autowired;

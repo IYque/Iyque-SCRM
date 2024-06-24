@@ -2,17 +2,12 @@ package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueDefaultMsgDao;
-import cn.iyque.dao.IYqueMsgAnnexDao;
 import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueDefaultMsg;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
-import cn.iyque.domain.IYqueDefaultMsg;
-import cn.iyque.domain.IYqueUserCode;
-import cn.iyque.enums.RemarksType;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueDefaultMsgService;
 import cn.iyque.service.IYqueMsgAnnexService;
@@ -21,16 +16,10 @@ import cn.iyque.strategy.callback.MakeTagCustomerStrategy;
 import cn.iyque.strategy.callback.RemarkCustomerStrategy;
 import cn.iyque.strategy.callback.SendWelcomeMsgStrategy;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.cp.api.WxCpExternalContactService;
-import me.chanjar.weixin.cp.bean.external.WxCpUpdateRemarkRequest;
-import me.chanjar.weixin.cp.bean.external.WxCpWelcomeMsg;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
-import me.chanjar.weixin.cp.bean.external.msg.Attachment;
-import me.chanjar.weixin.cp.bean.external.msg.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 
@@ -52,8 +41,6 @@ public class IYqueDefaultMsgImpl implements IYqueDefaultMsgService {
     IYqueMsgAnnexService iYqueMsgAnnexService;
 
 
-
-    IYqueConfigService iYqueConfigService;
 
 
 

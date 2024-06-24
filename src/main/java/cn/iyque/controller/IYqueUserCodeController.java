@@ -125,7 +125,7 @@ public class IYqueUserCodeController {
      * @return
      */
     @GetMapping("/distributeUserCode/{id}")
-    public ResponseResult distributeUserCode(@PathVariable("id") Integer id){
+    public ResponseResult distributeUserCode(@PathVariable("id") Long id){
 
         try {
             iYqueUserCodeService.distributeUserCode(id);

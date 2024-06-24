@@ -17,6 +17,6 @@ public interface IYqueUserCodeService {
 
     void batchDelete(Long[] ids);
 
-    void distributeUserCode(Integer id) throws Exception;
+    void distributeUserCode(Long id) throws Exception;
 
 }

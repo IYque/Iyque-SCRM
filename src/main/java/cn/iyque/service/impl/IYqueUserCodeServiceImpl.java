@@ -6,22 +6,21 @@ import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.NewContactWay;
-import cn.iyque.domain.IYqueConfig;
-import cn.iyque.domain.IYqueUserCode;
-import cn.iyque.entity.NewContactWay;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.api.WxCpService;
+import me.chanjar.weixin.cp.bean.article.NewArticle;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayResult;
+import me.chanjar.weixin.cp.bean.message.WxCpMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -167,7 +166,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
-    public void distributeUserCode(Integer id) throws Exception {
+    public void distributeUserCode(Long id) throws Exception {
 
         try {
             IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);

@@ -3,16 +3,14 @@ package cn.iyque.strategy.callback;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueUserCode;
 import cn.iyque.enums.RemarksType;
 import cn.iyque.service.IYqueConfigService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.bean.external.WxCpUpdateRemarkRequest;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 import org.apache.commons.lang3.time.DateFormatUtils;
-
 import java.util.Date;
-
+import cn.iyque.entity.IYqueUserCode;
 /**
  * 自动备注
  */
