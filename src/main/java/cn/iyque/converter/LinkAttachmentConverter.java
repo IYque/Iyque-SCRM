@@ -21,7 +21,7 @@ public class LinkAttachmentConverter implements AttachmentConverter {
             Link wLink=new Link();
             wLink.setTitle(link.getTitle());
             wLink.setDesc(link.getDesc());
-            wLink.setPicUrl(link.getPicurl());
+            wLink.setPicUrl(link.getPicUrl());
             wLink.setUrl(link.getUrl());
             attachment.setLink(wLink);
             return attachment;

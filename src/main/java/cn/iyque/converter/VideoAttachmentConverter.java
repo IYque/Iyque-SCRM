@@ -1,6 +1,7 @@
 package cn.iyque.converter;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.FileUtils;
@@ -20,7 +21,7 @@ import java.io.File;
 public class VideoAttachmentConverter implements AttachmentConverter {
     @Override
     public Attachment convert(IYqueMsgAnnex annex) {
-        File file = FileUtils.downloadImage(annex.getImage().getPicUrl());
+        File file = FileUtils.downloadImage(annex.getVideo().getVideoUrl());
         if (null != file) {
 
             try {
@@ -30,6 +31,7 @@ public class VideoAttachmentConverter implements AttachmentConverter {
                     Attachment attachment = new Attachment();
                     Video video=new Video();
                     video.setMediaId(uploadResult.getMediaId());
+                    attachment.setVideo(video);
                     return attachment;
                 }
             }catch (Exception e){

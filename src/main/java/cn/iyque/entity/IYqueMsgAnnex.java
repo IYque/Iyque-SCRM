@@ -28,6 +28,7 @@ public class IYqueMsgAnnex {
             name = "snowflakeIdGenerator",
             strategy = "cn.iyque.utils.SnowFlakeUtils"
     )
+    @JsonIgnore
     private Long id;
 
     //欢迎语id
@@ -116,7 +117,7 @@ public class IYqueMsgAnnex {
         //链接标题
         private String title;
         //链接封面
-        private String picurl;
+        private String picUrl;
         //链接描述
         private String desc;
         //链接跳转地址
@@ -129,7 +130,7 @@ public class IYqueMsgAnnex {
         //小程序标题
         private String title;
         //小程序封面地址
-        private String picurl;
+        private String picUrl;
         //小程序id
         private String appid;
         //小程序页面

@@ -19,7 +19,7 @@ import java.io.File;
 public class FileAttachmentConverter implements AttachmentConverter {
     @Override
     public Attachment convert(IYqueMsgAnnex annex) {
-        File file = FileUtils.downloadImage(annex.getImage().getPicUrl());
+        File file = FileUtils.downloadImage(annex.getFile().getFileUrl());
         if (null != file) {
 
             try {
@@ -29,6 +29,7 @@ public class FileAttachmentConverter implements AttachmentConverter {
                     Attachment attachment = new Attachment();
                     me.chanjar.weixin.cp.bean.external.msg.File wfile = new me.chanjar.weixin.cp.bean.external.msg.File();
                     wfile.setMediaId(uploadResult.getMediaId());
+                    attachment.setFile(wfile);
                     return attachment;
                 }
             }catch (Exception e){

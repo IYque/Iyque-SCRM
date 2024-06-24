@@ -35,10 +35,10 @@ export default {
       type: [Number, String],
       default: undefined,
     },
-    // 图片的宽高像素限制 [width(number), height(number)],默认null不限制
+    // 图片的宽高像素限制 [width(number), height(number)],默认null不限制,() => [1024, 1024]
     maxImgPx: {
       type: Array,
-      default: () => [1024, 1024], // () => [100, 100]
+      default: null, // () => [100, 100]
     },
     // 允许上传的文件格式后缀名 eg:["jpg", "png"]，['*']为不限制，各类型有默认限制 参见: formatDefault
     format: {

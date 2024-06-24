@@ -24,9 +24,9 @@ public class MiniprogramAttachmentConverter implements AttachmentConverter {
 
         if(null != miniprogram&& StrUtil.isNotEmpty(miniprogram.getTitle())
                 &&StrUtil.isNotEmpty(miniprogram.getPage())&&StrUtil.isNotEmpty(miniprogram.getAppid())
-                &&StrUtil.isNotEmpty(miniprogram.getPicurl())){
+                &&StrUtil.isNotEmpty(miniprogram.getPicUrl())){
 
-            String picurl = miniprogram.getPicurl();
+            String picurl = miniprogram.getPicUrl();
             if(StrUtil.isNotEmpty(picurl)){
                 try {
                     File file = FileUtils.downloadImage(annex.getImage().getPicUrl());

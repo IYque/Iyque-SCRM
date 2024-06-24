@@ -1,7 +1,9 @@
 package cn.iyque.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueMsgAnnexService;
@@ -11,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -97,23 +102,18 @@ public class IYqueUserCodeController {
 
 
     /**
-     * 获取活码详情
+     * 获取活码附件
      * @param id
      * @return
      */
-    @GetMapping("/findCodeDetail/{id}")
-    public ResponseResult<IYqueUserCode> findIYqueUserCodeDetail(@PathVariable Long id){
-        IYqueUserCode iYqueUserCode = iYqueUserCodeService.findIYqueUserCodeById(id);
+    @GetMapping("/findIYqueMsgAnnexByMsgId/{id}")
+    public ResponseResult<IYqueMsgAnnex> findIYqueMsgAnnexByMsgId(@PathVariable Long id){
 
-        if(null != iYqueUserCode){
-            iYqueUserCode.setAnnexLists(
-                    iYqueMsgAnnexService.findIYqueMsgAnnexByMsgId(id)
-            );
-        }
+        List<IYqueMsgAnnex> iYqueMsgAnnexes = iYqueMsgAnnexService.findIYqueMsgAnnexByMsgId(id);
 
 
         return  new ResponseResult(
-                iYqueUserCode
+                CollectionUtil.isNotEmpty(iYqueMsgAnnexes)?iYqueMsgAnnexes:new ArrayList<>()
         );
     }
 

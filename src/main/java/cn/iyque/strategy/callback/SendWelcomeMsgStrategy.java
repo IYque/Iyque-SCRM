@@ -1,23 +1,31 @@
 package cn.iyque.strategy.callback;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueDefaultMsg;
+import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueDefaultMsgService;
+import cn.iyque.service.IYqueMsgAnnexService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.bean.external.WxCpWelcomeMsg;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
+import me.chanjar.weixin.cp.bean.external.msg.Attachment;
 import me.chanjar.weixin.cp.bean.external.msg.Text;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.entity.IYqueUserCode;
+
+import java.util.List;
+
 /**
  * 发送欢迎语
  */
 @Slf4j
 public class SendWelcomeMsgStrategy implements ActionStrategy {
+
 
     @Override
     public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
@@ -30,6 +38,12 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
 
         if(StrUtil.isNotEmpty(iYqueUserCode.getWeclomeMsg())){
             text.setContent(iYqueUserCode.getWeclomeMsg());
+            List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+            if(CollectionUtil.isNotEmpty(annexLists)){
+                List<Attachment> attachments = SpringUtil.getBean(IYqueMsgAnnexService.class)
+                        .msgAnnexToAttachment(annexLists);
+                wxCpWelcomeMsg.setAttachments(attachments);
+            }
             sendDefaultMsg=false;
         }
 
@@ -38,6 +52,12 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
             IYqueDefaultMsg defaultMsg = SpringUtil.getBean(IYqueDefaultMsgService.class).findDefaultMsg();
             if(null != defaultMsg){
                 text.setContent(defaultMsg.getDefaultContent());
+                List<IYqueMsgAnnex> annexLists = defaultMsg.getAnnexLists();
+                if(CollectionUtil.isNotEmpty(annexLists)){
+                    List<Attachment> attachments = SpringUtil.getBean(IYqueMsgAnnexService.class)
+                            .msgAnnexToAttachment(annexLists);
+                    wxCpWelcomeMsg.setAttachments(attachments);
+                }
             }
         }
 
@@ -53,6 +73,7 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
             }
 
             wxCpWelcomeMsg.setText(text);
+
             try {
                 WxCpExternalContactService externalContactService
                         = SpringUtil.getBean(IYqueConfigService.class).findWxcpservice().getExternalContactService();

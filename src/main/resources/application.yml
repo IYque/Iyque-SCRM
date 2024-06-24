@@ -4,7 +4,7 @@ iyque:
   userName: iyque
   pwd: 123456
   demo: false
-  uploadDir: /usr/local/upload
+  uploadDir: ./upload
 spring:
   h2:
     console:
@@ -28,3 +28,7 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB

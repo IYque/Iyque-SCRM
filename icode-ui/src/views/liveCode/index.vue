@@ -116,7 +116,6 @@ export default {
 
         <el-table-column label="操作" fixed="right">
           <template #default="{ row }">
-            <!-- <el-button text @click="$router.push('aev?id=' + row.id)">编辑</el-button> -->
             <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
             <el-button text @click="del(row.id)">删除</el-button>
             <el-button text @click="distributeUserCode(row.id)">通知</el-button>

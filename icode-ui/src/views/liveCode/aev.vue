@@ -60,6 +60,43 @@
           clearable
           :autofocus="false" />
       </el-form-item>
+
+      <el-form-item label="欢迎语附件" prop="">
+          <el-popover
+            trigger="hover"
+            :content="'最多添加' + max + '个'"
+            placement="top-start"
+            :disabled="annexLists?.length < max">
+            <template #reference>
+              <el-dropdown
+                @command="(msgtype) => (active = annexLists.push({ msgtype, [msgtype]: {} }) - 1)"
+                :disabled="annexLists?.length >= max">
+                <el-button type="primary" class="mb10">添加</el-button> 
+                <template #dropdown>
+                  <el-dropdown-menu trigger="click">
+                    <el-dropdown-item v-for="(item, index) in dictMsgType" :key="index" :command="item.type">
+                      <el-button text>{{ item.name }}</el-button>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-popover>
+          <el-alert
+            title="注: 1.图片:10MB,支持JPG,PNG格式; 2.视频:10MB,支持MP4格式; 3.普通文件:20MB"
+            type="error" :closable="false">
+          </el-alert>
+         <br/>
+          <el-tabs v-model="active" type="card" class="" closable @tab-remove="remove">
+            <el-tab-pane
+              v-for="(item, index) in annexLists"
+              :key="item.msgtype"
+              :label="dictMsgType[item.msgtype].name"
+              :name="index">
+              <MessageContentForm :type="item.msgtype" ref="contentForm" :form="item[item.msgtype]" />
+            </el-tab-pane>
+          </el-tabs>
+        </el-form-item>
     </el-form>
   </div>
   <!-- <CommonTopRight>
@@ -68,11 +105,12 @@
 </template>
 
 <script>
-import { getDetail, add, update } from './api'
+import { findIYqueMsgAnnexByMsgId, add, update } from './api'
 import { getUserList, getTagList, getRemarkList} from '@/api/common'
-
+import { dictMsgType } from '@/utils/index'
 export default {
   props: { data: {} },
+  components: { MessageContentForm: defineAsyncComponent(() => import('../config/MessageContentForm.vue')) },
   data() {
     return {
       rules: {
@@ -114,6 +152,11 @@ export default {
       tagList: [],
       tagErrorTip: '',
       remarkList:[],
+      annexLists: [],
+      max: 9,
+      active: 0,
+      dictMsgType,
+
     }
   },
   watch: {
@@ -161,6 +204,11 @@ export default {
     // if (id) {
     //   this.getDetail(id)
     // }
+    let id = this.form.id
+    if(id){
+      this.getDetail(id)
+    }
+  
   },
   methods: {
     getUserList() {
@@ -188,38 +236,25 @@ export default {
       })
     },
 
+    remove(index) {
+      this.$confirm().then(() => {
+        this.annexLists.splice(index, 1)
+        if (index >= this.annexLists.length) {
+          this.active = this.annexLists.length - 1
+        }
+      })
+    },
+
 
     /** 获取详情 */
     getDetail(id) {
-      getDetail(id).then((res) => {
-        res.data.forEach((element) => {
-          if (element.tagId && element.tagName) {
-            element.tagId = element.tagId.split(',')
-            element.tagName = element.tagName.split(',')
-            element.tags = []
-            element.tagId.forEach((unit, index) => {
-              element.tags.push({
-                id: unit,
-                name: element.tagName[index],
-              })
-            })
-          }
-
-          if (element.userId && element.userName) {
-            element.userId = element.userId.split(',')
-            element.userName = element.userName.split(',')
-            element.users = []
-            element.userId.forEach((unit, index) => {
-              element.users.push({
-                id: unit,
-                name: element.userName[index],
-              })
-            })
-          }
-        })
-        this.form = res.data
+      
+      findIYqueMsgAnnexByMsgId(id).then((res) => {
+        console.log(res.data)
+        this.annexLists = res.data
       })
     },
+
     async submit() {
       let valid = await this.$refs.form.validate()
       if (!valid) return
@@ -227,7 +262,20 @@ export default {
       this.form.tagName = this.form.tags.map((e) => e.name) + ''
       this.form.userId = this.form.users.map((e) => e.id) + ''
       this.form.userName = this.form.users.map((e) => e.name) + ''
-      // this.$store.loading = true
+
+      let tasks = this.annexLists.map(async (e, i) => {
+          let contentForm = await this.$refs.contentForm[i].submit()
+          if (contentForm) {
+            e[e.msgtype] = Object.assign(e[e.msgtype] || {}, contentForm)
+            return true
+          } else {
+            return false
+          }
+        })
+        let validate1 = await Promise.all(tasks)
+        this.form.annexLists = this.annexLists
+        
+    
       return (this.form.id ? update : add)(this.form)
         .then(({ data }) => {
           this.msgSuccess('操作成功')
