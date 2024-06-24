@@ -1,5 +1,5 @@
 <script>
-import { getList, del,distributeUserCode} from './api'
+import { getList, del, distributeUserCode } from './api'
 
 import aev from './aev.vue'
 export default {
@@ -51,27 +51,32 @@ export default {
         })
     },
 
-    distributeUserCode(id){
+    distributeUserCode(id) {
       this.$confirm('是否将当前活码下发给员工, 是否继续?', '提示', {
-          confirmButtonText: '是',
-          cancelButtonText: '否',
-          type: 'warning'
-        }).then(() => {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning',
+      })
+        .then(() => {
           distributeUserCode(id).then((res) => {
             this.msgSuccess('已通知')
           })
-        }).catch((e) => {  
-           console.error(e)       
-        });
-  
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     },
 
-    async submit() {
+    submit() {
       this.loading = true
-      await this.$refs.aev.submit()
-      this.loading = false
-      this.dialogVisible = false
-      this.getList()
+      this.$refs.aev
+        .submit()
+        .then(() => {
+          this.dialogVisible = false
+          this.getList()
+        })
+        .catch((e) => console.error(e))
+        .finally(() => (this.loading = false))
     },
   },
 }
@@ -132,7 +137,7 @@ export default {
         @pagination="getList()" />
     </div>
 
-    <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="50%">
+    <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%">
       <aev :data="form" ref="aev"></aev>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>

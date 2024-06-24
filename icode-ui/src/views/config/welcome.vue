@@ -1,5 +1,5 @@
 <script>
-import { getDetailWel, addOrUpdateWel,findIYqueUserCodeDetail } from './api'
+import { getDetailWel, addOrUpdateWel } from './api'
 import { dictMsgType } from '@/utils/index'
 export default {
   components: { MessageContentForm: defineAsyncComponent(() => import('./MessageContentForm.vue')) },
@@ -102,7 +102,7 @@ export default {
               <el-dropdown
                 @command="(msgtype) => (active = annexLists.push({ msgtype, [msgtype]: {} }) - 1)"
                 :disabled="annexLists?.length >= max">
-                <el-button type="primary" class="mb10">添加</el-button> 
+                <el-button type="primary" class="mb10">添加</el-button>
                 <template #dropdown>
                   <el-dropdown-menu trigger="click">
                     <el-dropdown-item v-for="(item, index) in dictMsgType" :key="index" :command="item.type">
@@ -115,9 +115,9 @@ export default {
           </el-popover>
           <el-alert
             title="注: 1.图片:10MB,支持JPG,PNG格式; 2.视频:10MB,支持MP4格式; 3.普通文件:20MB"
-            type="error" :closable="false">
-          </el-alert>
-         <br/>
+            type="error"
+            :closable="false"></el-alert>
+          <br />
           <el-tabs v-model="active" type="card" class="" closable @tab-remove="remove">
             <el-tab-pane
               v-for="(item, index) in annexLists"
