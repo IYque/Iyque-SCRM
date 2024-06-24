@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IYqueTagService {
 
-     List<WxCpUserExternalTagGroupInfo.Tag> listAll() throws WxErrorException;
+     List<WxCpUserExternalTagGroupInfo.Tag> listAll() throws Exception;
 }

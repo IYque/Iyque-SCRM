@@ -1,19 +1,19 @@
-# 企微scrm活码-iCode:企微增强版活码工具
+# 企微scrm引流码-iCode:企微增强版活码工具
 
 #### 介绍
 &nbsp;&nbsp;&nbsp;随着企业微信（企微）的广泛应用，其内置的活码功能在满足企业多样化的营销需求方面发挥了重要作用。然而，在实际应用中，企微活码功能存在一些局限性，如无法为每个用户单独定制欢迎语、无法明确每个渠道活码的统计情况以及无法为添加的客户自动打标签等。为了解决这些问题，我们推出了企微活码的增强版——iCode。
 #### 特别赞助
-<center>
-<div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
-<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
-<img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/wxjava.jpg" width="25%" height="25%"  alt="Image description">
-</a>
-<br/>
-  <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
-    源雀SCRM — 基于SpringCloud+Vue架构,100%授权开放源码的全链路企微私域营销系统
-</a>
+<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
+  <div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
+    <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
+      <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/wxjava.jpg" width="25%" height="25%" alt="Image description">
+    </a>
+    <br/>
+    <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
+      源雀SCRM — 100%开放源码的全链路企微私域营销系统
+    </a>
+  </div>
 </div>
-</center>
 
 ### 软件架构
    ##### 后端:采用springboot+jpa+h2架构,项目内置h2数据库,开箱即可使用。
@@ -53,12 +53,16 @@
   * 同一客户扫码，只可添加到指定员工，避免客户防止客户添加多个员工。
 * 欢迎语
   * 可为每个员工定义不同的欢迎语模版。
+* 自动备注
+  * 按照添加时间，标签，渠道名为客户添加自动备注。
 * 更多
   * 后续会围绕不断更新诸如:渠道统计，欢迎语附件，临时活码,外链活码等相关功能。
+  * <a href="https://docs.qq.com/sheet/DRVJoZnVUSG5nZHpr?tab=BB08J2" target="_blank">《企微scrm引流码需求收集表》</a>
 #### 应用演示
   地址:https://iyque.cn/tools/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
 #### 功能截图
 ![img_1.png](img/img_1.png)
+![img_2.png](img/img_2.png)
 #### 安装部署
 ##### 后端api部署
 * 后端配置文件修改
@@ -137,13 +141,13 @@ npm run build
 ```
 
 #### 系统参数配置
-<center>
+<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
   <div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
     <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/demo.png" width="25%" height="25%" alt="Image description">
     <br/>
-        <span style="color: red;">添加好友，免费获取企微scrm活码参数配置手册,以及相关技术问题咨询</span>
+        <span style="color: red;">添加好友，免费获取系统参数配置手册,以及相关技术问题咨询</span>
   </div>
-</center>
+</div>
 
 
 #### 感谢

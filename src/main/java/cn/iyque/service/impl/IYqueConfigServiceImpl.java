@@ -32,11 +32,11 @@ public class IYqueConfigServiceImpl implements IYqueConfigService {
     }
 
     @Override
-    public WxCpService findWxcpservice() throws IYqueException {
+    public WxCpService findWxcpservice() throws Exception {
 
         WxCpService config = WxCpServiceFactory.createWxCpService(findIYqueConfig());
         if(null == config){
-            throw new IYqueException("请配置系统相关参数");
+            throw new Exception("请配置系统应用参数");
         }
 
         return config;

@@ -13,5 +13,5 @@ public interface IYqueDefaultMsgService {
 
 
 
-    void sendWelcomeMsg( IYqueCallBackBaseMsg callBackBaseMsg);
+    void callBackAction( IYqueCallBackBaseMsg callBackBaseMsg);
 }

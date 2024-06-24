@@ -9,6 +9,9 @@ import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.NewContactWay;
+import cn.iyque.domain.IYqueConfig;
+import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.NewContactWay;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
@@ -163,25 +166,35 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
     }
 
-//    @Override
-//    public void distributeUserCode(Integer id) throws WxErrorException {
-//        IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);
-//        if(iYqueUserCode != null){
-//            WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
-//            NewArticle newArticle=new NewArticle();
-//            newArticle.setDescription(null);
-//            newArticle.setTitle(null);
-//            newArticle.setUrl(null);
-//            newArticle.setPicUrl(null);
-//            wxcpservice.getMessageService().send(WxCpMessage.NEWS()
-//                    .toUser()
-//                    .agentId()
-//                    .addArticle(newArticle)
-//                    .build());
-//        }
+    @Override
+    public void distributeUserCode(Integer id) throws Exception {
+
+        try {
+            IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);
+            if(iYqueUserCode != null){
+                IYqueConfig iYqueConfig = iYqueConfigService.findIYqueConfig();
+                if(null != iYqueConfig){
+                    WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
+                    NewArticle newArticle=new NewArticle();
+                    newArticle.setDescription("渠道活码,点击保存即可");
+                    newArticle.setTitle(iYqueUserCode.getCodeName());
+                    newArticle.setUrl(iYqueUserCode.getCodeUrl());
+                    newArticle.setPicUrl(iYqueUserCode.getCodeUrl());
+                    wxcpservice.getMessageService().send(WxCpMessage.NEWS()
+                            .toUser(iYqueUserCode.getUserId().replace(",", "|"))
+                            .agentId(new Integer(iYqueConfig.getAgentId()))
+                            .addArticle(newArticle)
+                            .build());
+                }
+
+            }
+        }catch (Exception e){
+           throw e;
+        }
 
 
 
-//    }
+
+    }
 
 }

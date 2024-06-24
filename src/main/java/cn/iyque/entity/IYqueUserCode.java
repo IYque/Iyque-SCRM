@@ -42,10 +42,10 @@ public class IYqueUserCode {
     private String userName;
 
     //是否免验证:true:免验证 false:需验证
-    private Boolean skipVerify;
+    private Boolean skipVerify=false;
 
     //是否可重复添加: true:可重复添加 false:不可重复添加
-    private Boolean isExclusive;
+    private Boolean isExclusive=false;
 
     //标签id,多个使用逗号隔开
     private String tagId;
@@ -64,6 +64,10 @@ public class IYqueUserCode {
 
     //联系方式的配置id
     private String configId;
+
+
+    //客户备注类型cn.iyque.enums.RemarksType
+    private Integer remarkType;
 
     //创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

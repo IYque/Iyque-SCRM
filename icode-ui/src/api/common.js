@@ -14,3 +14,10 @@ export const getUserList = (data) =>
   })
 
 export const getTagList = (data) => get(`/iYqueTag/findIYqueTag`, data)
+
+
+export function getRemarkList() {
+  return request({
+    url: '/iYqueCommon/findRemarksType'
+  })
+}

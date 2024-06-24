@@ -10,5 +10,5 @@ public interface IYqueConfigService {
 
     void saveOrUpdate(IYqueConfig iYqueConfig);
 
-    WxCpService findWxcpservice() throws IYqueException;
+    WxCpService findWxcpservice() throws Exception;
 }

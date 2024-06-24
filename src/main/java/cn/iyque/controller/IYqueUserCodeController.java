@@ -50,7 +50,7 @@ public class IYqueUserCodeController {
      * @param iYqueUserCode
      * @return
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseResult update(@RequestBody IYqueUserCode iYqueUserCode){
         try {
             iYqueUserCodeService.update(iYqueUserCode);
@@ -118,6 +118,24 @@ public class IYqueUserCodeController {
     }
 
 
+
+    /**
+     * 活码下发
+     * @param id
+     * @return
+     */
+    @GetMapping("/distributeUserCode/{id}")
+    public ResponseResult distributeUserCode(@PathVariable("id") Integer id){
+
+        try {
+            iYqueUserCodeService.distributeUserCode(id);
+        }catch (Exception e){
+            return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
+        }
+
+
+        return new ResponseResult();
+    }
 
 
 

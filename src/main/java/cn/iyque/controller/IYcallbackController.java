@@ -85,7 +85,7 @@ public class IYcallbackController {
             if(null != callBackBaseMsg
             &&WxCpConsts.ExternalContactChangeType.ADD_EXTERNAL_CONTACT.equals(callBackBaseMsg.getChangeType())
             &&WxCpConsts.EventType.CHANGE_EXTERNAL_CONTACT.equals(callBackBaseMsg.getEvent())){
-                iYqueDefaultMsgService.sendWelcomeMsg(callBackBaseMsg);
+                iYqueDefaultMsgService.callBackAction(callBackBaseMsg);
             }
 
 
