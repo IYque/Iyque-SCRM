@@ -44,10 +44,7 @@ public class IYqueConfigController {
     @PostMapping("/saveOrUpdate")
     public ResponseResult saveOrUpdate(@RequestBody IYqueConfig iYqueConfig){
 
-        if(iYqueParamConfig.getDemo()){
 
-            return new ResponseResult(HttpStatus.ERROR,"当前为演示环境参数无法修改","");
-        }
         iYqueConfigService.saveOrUpdate(iYqueConfig);
 
         return new ResponseResult();

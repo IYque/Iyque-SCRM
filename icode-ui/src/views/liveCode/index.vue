@@ -1,6 +1,6 @@
 <script>
 import { getList, del, distributeUserCode } from './api'
-
+import {env} from '../../../sys.config'
 import aev from './aev.vue'
 export default {
   data() {
@@ -66,6 +66,20 @@ export default {
           console.error(e)
         })
     },
+
+    downloadBlob(url, fileName) {
+
+    // 检查url是否以http或https开头
+      if (!url.startsWith('http') && !url.startsWith('https')) {
+        url = env.BASE_API+'/file/fileView/' + url;
+      }
+    
+    // 接下来是原有的downloadBlob方法逻辑
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+  },
 
     submit() {
       this.loading = true

@@ -7,7 +7,7 @@ export const getDetail = (id) => get(`${serve}/findIYqueConfig`)
 export const addOrUpdate = (data) => post(`${serve}/saveOrUpdate`, data)
 
 const serveWel = '/iYqueDefaultMsg'
-export const getDetailWel = (id) => get(`${serveWel}/findIYqueConfig`)
+export const getDetailWel = (id) => get(`${serveWel}/findDefaultMsg`)
 
 /**
  *

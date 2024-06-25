@@ -38,7 +38,8 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
 
         if(StrUtil.isNotEmpty(iYqueUserCode.getWeclomeMsg())){
             text.setContent(iYqueUserCode.getWeclomeMsg());
-            List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+            List<IYqueMsgAnnex> annexLists = SpringUtil.getBean(IYqueMsgAnnexService.class)
+                    .findIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
             if(CollectionUtil.isNotEmpty(annexLists)){
                 List<Attachment> attachments = SpringUtil.getBean(IYqueMsgAnnexService.class)
                         .msgAnnexToAttachment(annexLists);

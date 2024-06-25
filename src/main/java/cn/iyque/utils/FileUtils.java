@@ -6,6 +6,9 @@ import cn.iyque.config.IYqueParamConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -100,6 +103,75 @@ public class FileUtils {
             }
         }
 
+    }
+
+
+    public static String buildQr(String oldQrUrl,String logoUrl,String savePath){
+
+        String fileName=null;
+        try {
+
+            File file = FileUtils.downloadImage(oldQrUrl);
+            BufferedImage image = ImageIO.read(file);
+
+            int logoWidth = 110; // logo的宽度
+            int logoHeight = 110; // logo的高度
+            int x = (image.getWidth() - logoWidth) / 2; // logo的x坐标
+            int y = (image.getHeight() - logoHeight) / 2; // logo的y坐标
+
+            // 使用白色像素覆盖logo区域
+            for (int i = 0; i < logoWidth; i++) {
+                for (int j = 0; j < logoHeight; j++) {
+                    image.setRGB(x + i, y + j, 0xFFFFFFFF); // 白色
+                }
+            }
+
+
+            //读取新logo图片
+            BufferedImage newLogoImage =ImageIO.read(FileUtils.downloadImage(logoUrl));
+
+
+
+
+
+            Graphics2D graphics = image.createGraphics();
+            // 设置抗锯齿的属性
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            graphics.drawImage(newLogoImage, x, y, logoWidth, logoHeight, null);
+            graphics.dispose();
+
+             fileName=SnowFlakeUtils.nextId() +".png";
+            ImageIO.write(image, "png", new File(savePath, fileName));
+
+
+        } catch (Exception e) {
+          log.error("二维码替换logo失败:"+e.getMessage());
+        }
+
+        return fileName;
+
+
 
     }
+
+
+
+    public  static BufferedImage scaleImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        float widthRatio = (float) targetWidth / originalImage.getWidth();
+        float heightRatio = (float) targetHeight / originalImage.getHeight();
+        float scaleRatio = Math.min(widthRatio, heightRatio);
+
+        int newWidth = (int) (originalImage.getWidth() * scaleRatio);
+        int newHeight = (int) (originalImage.getHeight() * scaleRatio);
+
+        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+        Graphics2D graphics = scaledImage.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+        graphics.dispose();
+
+        return scaledImage;
+    }
+
 }

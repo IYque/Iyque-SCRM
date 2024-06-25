@@ -26,6 +26,15 @@
         <el-switch v-model="form.isExclusive"></el-switch>
         <div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
       </el-form-item>
+
+      <el-form-item label="二维码logo"  prop="logoUrl">
+        <Upload v-model:fileUrl="form.logoUrl" :on-remove="handleRemove">
+          <template #tip><div>图片大小不超过2M</div></template>
+        </Upload>
+      </el-form-item>
+
+
+
       <el-form-item label="新客标签" :error="tagErrorTip">
         <el-select
           v-model="form.tags"
@@ -145,6 +154,7 @@ export default {
         tags: [], // 标签
         users: [], // 标签
         remarkType: null, //客户备注
+        logoUrl:null,//活码logo
       },
 
       selectedUserList: [],

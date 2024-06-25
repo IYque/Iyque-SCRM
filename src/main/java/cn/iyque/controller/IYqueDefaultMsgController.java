@@ -22,7 +22,7 @@ public class IYqueDefaultMsgController {
      * 获取默认欢迎语
      * @return
      */
-    @GetMapping("/findIYqueConfig")
+    @GetMapping("/findDefaultMsg")
     public ResponseResult<IYqueDefaultMsg> findDefaultMsg(){
         return new ResponseResult<>(
                 iYqueDefaultMsgService.findDefaultMsg()

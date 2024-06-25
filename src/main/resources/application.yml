@@ -3,7 +3,8 @@ server:
 iyque:
   userName: iyque
   pwd: 123456
-  demo: false
+  demo: true
+  fileViewUrl: https://iyque.cn/qapi/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
   uploadDir: ./upload
 spring:
   h2:

@@ -65,6 +65,13 @@ public class IYqueUserCode {
     //联系方式的配置id
     private String configId;
 
+    //活码logo图片
+    private String logoUrl;
+
+
+    //备份原有企微二维码，只有当自定义logo的时候才存在
+    private String backupQrUrl;
+
 
     //客户备注类型cn.iyque.enums.RemarksType
     private Integer remarkType;

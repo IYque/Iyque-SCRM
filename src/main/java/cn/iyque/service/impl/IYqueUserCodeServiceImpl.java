@@ -1,8 +1,10 @@
 package cn.iyque.service.impl;
 
+import antlr.StringUtils;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
@@ -13,6 +15,7 @@ import cn.iyque.domain.NewContactWay;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
+import cn.iyque.utils.FileUtils;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
@@ -43,6 +46,9 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
     @Autowired
     private IYqueMsgAnnexService iYqueMsgAnnexService;
+
+    @Autowired
+    private IYqueParamConfig iYqueParamConfig;
 
 
 
@@ -76,10 +82,17 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
             && StrUtil.isNotEmpty(wxCpContactWayResult.getQrCode())
             &&StrUtil.isNotEmpty(wxCpContactWayResult.getConfigId())){
                 iYqueUserCode.setCodeUrl(wxCpContactWayResult.getQrCode());
+                iYqueUserCode.setBackupQrUrl(wxCpContactWayResult.getQrCode());
+                //替换自定义logo的二维码
+                if(StrUtil.isNotEmpty(iYqueUserCode.getLogoUrl())){
+                    String newQrUlr = FileUtils.buildQr(wxCpContactWayResult.getQrCode(),
+                            iYqueUserCode.getLogoUrl(), iYqueParamConfig.getUploadDir());
+                    if(StrUtil.isNotEmpty(newQrUlr)){
+                        iYqueUserCode.setCodeUrl(newQrUlr);
+                    }
+                }
                 iYqueUserCode.setConfigId(wxCpContactWayResult.getConfigId());
-
                 iYqueUserCodeDao.save(iYqueUserCode);
-
                 List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
                 if(CollectionUtil.isNotEmpty(annexLists)){
                     annexLists.stream().forEach(k->{
@@ -119,6 +132,23 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                 WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
                 WxCpExternalContactService externalContactService = wxcpservice.getExternalContactService();
                 externalContactService.updateContactWay(wxCpGroupJoinWayInfo);
+
+                //替换自定义logo的二维码
+                if(StrUtil.isNotEmpty(iYqueUserCode.getLogoUrl())){
+                    //判断原有logo是否改变，如果改变则更新
+                    if(!iYqueUserCode.getLogoUrl().equals(
+                            oldIYqueUserCode.getLogoUrl()
+                    )){
+                        String newQrUlr = FileUtils.buildQr(iYqueUserCode.getBackupQrUrl(),
+                                iYqueUserCode.getLogoUrl(), iYqueParamConfig.getUploadDir());
+                        if(StrUtil.isNotEmpty(newQrUlr)){
+                            iYqueUserCode.setCodeUrl(newQrUlr);
+                        }
+                    }
+
+                }else{
+                    iYqueUserCode.setCodeUrl(oldIYqueUserCode.getBackupQrUrl());
+                }
             }
 
             iYqueUserCode.setUpdateTime(new Date());
@@ -177,8 +207,20 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                     NewArticle newArticle=new NewArticle();
                     newArticle.setDescription("渠道活码,点击保存即可");
                     newArticle.setTitle(iYqueUserCode.getCodeName());
-                    newArticle.setUrl(iYqueUserCode.getCodeUrl());
-                    newArticle.setPicUrl(iYqueUserCode.getCodeUrl());
+
+
+                    if(StrUtil.isNotEmpty(iYqueUserCode.getCodeUrl())){
+                        if (iYqueUserCode.getCodeUrl().startsWith("http://") || iYqueUserCode.getCodeUrl().startsWith("https://")){
+                            newArticle.setUrl(iYqueUserCode.getCodeUrl());
+                            newArticle.setPicUrl(iYqueUserCode.getCodeUrl());
+                        }else {
+                            newArticle.setUrl(iYqueParamConfig.getFileViewUrl()+iYqueUserCode.getCodeUrl());
+                            newArticle.setPicUrl(iYqueParamConfig.getFileViewUrl()+iYqueUserCode.getCodeUrl());
+
+                        }
+                    }
+
+
                     wxcpservice.getMessageService().send(WxCpMessage.NEWS()
                             .toUser(iYqueUserCode.getUserId().replace(",", "|"))
                             .agentId(new Integer(iYqueConfig.getAgentId()))

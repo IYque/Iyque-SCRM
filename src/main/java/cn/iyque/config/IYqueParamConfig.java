@@ -15,4 +15,7 @@ public class IYqueParamConfig {
     private Boolean demo=false;
 
     private String uploadDir;
+
+    //文件预览访问前缀
+    private String fileViewUrl;
 }
