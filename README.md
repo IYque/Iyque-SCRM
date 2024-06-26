@@ -75,7 +75,7 @@
          userName: iyque #系统登录账号
          pwd: 123456 # 系统登录密码
          demo: true #设置为false后系统不可进行修改操作
-         fileViewUrl: https://iyque.cn/qapi/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
+         fileViewUrl: https://iyque.cn/qapi/file/fileView/ #即后端api路径
          uploadDir: ./upload #文件本地存储路径
      
      #系统内置了H2数据库,无需安装单独的数据库,username与password可以使用默认的也可自定义
@@ -90,6 +90,31 @@
 * 后端应用打包与启动
   * 打包: mvn clean package
   * 启动: nohup java -jar xxx.jar > iyque.log 2>&1 &
+##### nginx配置
+     ```
+     后端api代理设置:
+     location ^~/oApi/ {
+            proxy_pass http://127.0.0.1:8086/;
+        }
+     
+     前端应用部署设置:
+       location /tools {
+            root /usr/local/nginx/html/prod;
+            index index.html index.htm;
+            try_files $uri $uri/ /tools/index.html;
+            proxy_read_timeout 150;
+
+            # 处理跨域
+            add_header Access-Control-Allow-Origin '*' always;
+            # add_header Access-Control-Allow-Headers '*';
+            add_header Access-Control-Allow-Methods '*';
+            # add_header Access-Control-Allow-Credentials 'true';
+            if ($request_method = 'OPTIONS') {
+                return 204;
+            }
+        }
+     ```
+
 ##### 前端应用部署
 * 前端配置文件修改 <br/>
  &nbsp;&nbsp;&nbsp;在 [sys.config.ts](./sys.config.ts) 中配置开发、生产等各个环境的：接口域名、路由基础路径，页面基础路径等
