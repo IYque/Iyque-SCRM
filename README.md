@@ -172,14 +172,9 @@ npm run dev
 npm run build
 ```
 
-#### 系统参数配置
-<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-  <div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
-    <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/demo.png" width="25%" height="25%" alt="Image description">
-    <br/>
-        <span style="color: red;">添加好友，免费获取系统参数配置手册,以及相关技术问题咨询</span>
-  </div>
-</div>
+#### 应用配置
+   应用配置文档 :point_right: https://www.iyque.cn/index
+![输入图片说明](img/image.png)
 
 
 #### 感谢
