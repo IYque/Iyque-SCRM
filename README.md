@@ -173,7 +173,8 @@ npm run build
 ```
 
 #### 应用配置
-   应用配置文档 :point_right: https://www.iyque.cn/index
+   应用配置文档 :point_right: https://www.iyque.cn
+![输入图片说明](img/image.png)
 
 
 #### 感谢
