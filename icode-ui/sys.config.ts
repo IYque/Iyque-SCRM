@@ -1,9 +1,9 @@
 // 环境变量
 const envs = {
   development: {
-    DOMAIN: 'https://iyque.cn', // 站点域名，会根据此处域名判断应用环境
+    DOMAIN: 'http://127.0.0.1', // 站点域名，会根据此处域名判断应用环境
     BASE_URL: '/tools/', // 页面路由基础路径 /*/*/，eg：/a/
-    BASE_API: 'https://iyque.cn/qapi', // 接口基础路径
+    BASE_API: 'http://127.0.0.1:8085', // 接口基础路径
   },
   production: {
     DOMAIN: 'https://iyque.cn',

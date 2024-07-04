@@ -3,7 +3,7 @@ package cn.iyque.strategy.callback;
 import cn.iyque.dao.IYQueCustomerInfoDao;
 import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.enums.CustomerStatusType;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;

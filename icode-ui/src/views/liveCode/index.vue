@@ -5,6 +5,7 @@ import aev from './aev.vue'
 export default {
   data() {
     return {
+       activeName: 'first',
       query: { page: 0, size: 10 },
       list: '',
       total: 0,
@@ -103,53 +104,146 @@ export default {
       </a>
     </div>
 
-    <div class="g-card">
-      <div class="fxbw">
-        <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
-        <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
-      </div>
-      <el-table
-        :data="list"
-        tooltip-effect="dark"
-        highlight-current-row
-        @selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
-        <el-table-column type="selection" width="50" align="center"></el-table-column>
-        <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
-        <el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
-          <template #default="{ row }">
-            <el-image :src="row.codeUrl" style="width: 100px"></el-image>
-          </template>
-        </el-table-column>
-        <el-table-column label="使用员工">
-          <template #default="{ row }">
-            <TagEllipsis :list="row.userName"></TagEllipsis>
-          </template>
-        </el-table-column>
-        <el-table-column label="标签">
-          <template #default="{ row }">
-            <TagEllipsis :list="row.tagName"></TagEllipsis>
-          </template>
-        </el-table-column>
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="渠道码配置" name="first">
 
-        <el-table-column label="更新时间" prop="updateTime" />
+        <div class="g-card">
+            <div class="fxbw">
+              <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+              <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
+            </div>
+            <el-table
+              :data="list"
+              tooltip-effect="dark"
+              highlight-current-row
+              @selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
+              <el-table-column type="selection" width="50" align="center"></el-table-column>
+              <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
+              <el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
+                <template #default="{ row }">
+                  <el-image :src="row.codeUrl" style="width: 100px"></el-image>
+                </template>
+              </el-table-column>
+              <el-table-column label="使用员工">
+                <template #default="{ row }">
+                  <TagEllipsis :list="row.userName"></TagEllipsis>
+                </template>
+              </el-table-column>
+              <el-table-column label="标签">
+                <template #default="{ row }">
+                  <TagEllipsis :list="row.tagName"></TagEllipsis>
+                </template>
+              </el-table-column>
 
-        <el-table-column label="操作" fixed="right">
-          <template #default="{ row }">
-            <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
-            <el-button text @click="del(row.id)">删除</el-button>
-            <el-button text @click="distributeUserCode(row.id)">通知</el-button>
-            <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+              <el-table-column label="更新时间" prop="updateTime" />
 
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        v-model:page="query.page"
-        v-model:limit="query.size"
-        @pagination="getList()" />
-    </div>
+              <el-table-column label="操作" fixed="right">
+                <template #default="{ row }">
+                  <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
+                  <el-button text @click="del(row.id)">删除</el-button>
+                  <el-button text @click="distributeUserCode(row.id)">通知</el-button>
+                  <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <pagination
+            v-show="total > 0"
+            :total="total"
+            v-model:page="query.page"
+            v-model:limit="query.size"
+            @pagination="getList()" />
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="渠道码统计" name="second">
+
+        <div class="g-card">
+    <el-row :gutter="20">
+          <el-col :span="6">
+          
+            <div>
+              <el-statistic value-style="font-size:20px;" title="新增客户总数">
+                <template slot="formatter">
+                  456/2
+                </template>
+              </el-statistic>
+            </div>
+            <br/>
+            <div>
+              <el-statistic title="今日新增客户数">
+                <template slot="formatter">
+                  456/2
+                </template>
+              </el-statistic>
+            </div>
+
+          </el-col>
+      <el-col :span="6">
+        <div>
+          <el-statistic title="流失客户总数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+        <br/>
+        <div>
+          <el-statistic title="今日流失客户数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div>
+          <el-statistic title="员工删除客户总数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+        <br/>
+        <div>
+          <el-statistic title="今日员工删除客户数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div>
+          <el-statistic title="净增客户总数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+        <br/>
+        <div>
+          <el-statistic title="今日净增客户数">
+            <template slot="formatter">
+              456/2
+            </template>
+          </el-statistic>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+
+  <RequestChartTable
+        class="mt0"
+        title="客户概览"
+        type="lineChart"
+        isTimeQuery
+        :legend="['新增客户', '流失客户', '净增客户']"
+    ></RequestChartTable>
+         
+      </el-tab-pane>
+    </el-tabs>
+
+  
 
     <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%">
       <aev :data="form" ref="aev"></aev>
@@ -170,4 +264,10 @@ export default {
   margin: 20px 0;
   line-height: 40px;
 }
+
+  .like {
+    cursor: pointer;
+    font-size: 25px;
+    display: inline-block;
+  }
 </style>

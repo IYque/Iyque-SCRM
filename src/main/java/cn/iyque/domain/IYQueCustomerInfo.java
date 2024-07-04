@@ -33,6 +33,9 @@ public class IYQueCustomerInfo {
     //添加的渠道标识
     private String state;
 
+    //添加时间
+    private Date addTime;
+
 
     // 0正常;1:客户流失;2:员工删除客户
     private Integer status;

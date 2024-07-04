@@ -3,9 +3,11 @@ package cn.iyque.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.domain.IYqueUserCodeCountVo;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,10 @@ public class IYqueUserCodeController {
 
     @Autowired
     private IYqueMsgAnnexService iYqueMsgAnnexService;
+
+
+    @Autowired
+    private IYqueCustomerInfoService iYqueCustomerInfoService;
 
 
     /**
@@ -135,6 +141,18 @@ public class IYqueUserCodeController {
 
 
         return new ResponseResult();
+    }
+
+
+    /**
+     * 全量统计tab
+     * @return
+     */
+    @GetMapping("/countTotalTab")
+    public ResponseResult<IYqueUserCodeCountVo> countTotalTab(){
+        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab();
+
+        return new ResponseResult<>(iYqueUserCodeCountVo);
     }
 
 
