@@ -51,7 +51,7 @@ export default defineConfig(async ({ command, mode }) => {
       },
     },
     build: {
-      minify: 'terser',
+      // minify: 'terser',
       reportCompressedSize: false, // 启用/禁用 gzip 压缩大小报告
       // modulePreload: false, // { polyfill: false }
       // modulePreload: { polyfill: false },
@@ -72,7 +72,7 @@ export default defineConfig(async ({ command, mode }) => {
             } else if (['quill-image-resize-module', 'Quill'].some((e) => id.includes(e))) {
               return 'quill-image-resize-module'
             } else if (id.includes('node_modules')) {
-              return id.split('node_modules/')[1].split('/')[0]
+              return id.split('node_modules/.store/')[1].split('/')[0]
             }
           },
         },

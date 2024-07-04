@@ -1,11 +1,11 @@
 <script>
 import { getList, del, distributeUserCode } from './api'
-import {env} from '../../../sys.config'
+import { env } from '../../../sys.config'
 import aev from './aev.vue'
 export default {
   data() {
     return {
-       activeName: 'first',
+      activeName: 'first',
       query: { page: 0, size: 10 },
       list: '',
       total: 0,
@@ -13,12 +13,41 @@ export default {
       loading: false,
       dialogVisible: false, // 弹窗显示控制
       form: {},
+
+      query2: {
+        value3: '',
+      },
+      options: [
+        {
+          value: 'Option1',
+          label: 'Option1',
+        },
+        {
+          value: 'Option2',
+          label: 'Option2',
+        },
+        {
+          value: 'Option3',
+          label: 'Option3',
+        },
+        {
+          value: 'Option4',
+          label: 'Option4',
+        },
+        {
+          value: 'Option5',
+          label: 'Option5',
+        },
+      ],
+      xData: [],
+      series: [],
     }
   },
   components: { aev },
   watch: {},
   created() {
     this.getList()
+    this.getData()
   },
   mounted() {},
   methods: {
@@ -69,18 +98,17 @@ export default {
     },
 
     downloadBlob(url, fileName) {
-
-    // 检查url是否以http或https开头
+      // 检查url是否以http或https开头
       if (!url.startsWith('http') && !url.startsWith('https')) {
-        url = env.BASE_API+'/file/fileView/' + url;
+        url = env.BASE_API + '/file/fileView/' + url
       }
-    
-    // 接下来是原有的downloadBlob方法逻辑
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    link.click();
-  },
+
+      // 接下来是原有的downloadBlob方法逻辑
+      const link = document.createElement('a')
+      link.href = url
+      link.download = fileName
+      link.click()
+    },
 
     submit() {
       this.loading = true
@@ -92,6 +120,23 @@ export default {
         })
         .catch((e) => console.error(e))
         .finally(() => (this.loading = false))
+    },
+
+    getData() {
+      // this.$store.loading = true
+      this.xData = ['2021-12-01', '2021-12-02', '2021-12-03', '2021-12-03', '2021-12-04', '2021-12-05', '2021-12-06']
+      this.series = [
+        [120, 132, 101, 134, 90, 230, 210],
+        [220, 182, 191, 234, 290, 330, 310],
+      ]
+      // getList(this.query2)
+      //   .then(({ data, count }) => {
+      //     this.list = data
+      //     this.total = +count
+      //     this.multipleSelection = []
+      //   })
+      //   .catch((e) => console.error(e))
+      //   .finally(() => (this.$store.loading = false))
     },
   },
 }
@@ -106,47 +151,48 @@ export default {
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="渠道码配置" name="first">
-
         <div class="g-card">
-            <div class="fxbw">
-              <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
-              <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
-            </div>
-            <el-table
-              :data="list"
-              tooltip-effect="dark"
-              highlight-current-row
-              @selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
-              <el-table-column type="selection" width="50" align="center"></el-table-column>
-              <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
-              <el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
-                <template #default="{ row }">
-                  <el-image :src="row.codeUrl" style="width: 100px"></el-image>
-                </template>
-              </el-table-column>
-              <el-table-column label="使用员工">
-                <template #default="{ row }">
-                  <TagEllipsis :list="row.userName"></TagEllipsis>
-                </template>
-              </el-table-column>
-              <el-table-column label="标签">
-                <template #default="{ row }">
-                  <TagEllipsis :list="row.tagName"></TagEllipsis>
-                </template>
-              </el-table-column>
+          <div class="fxbw">
+            <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+            <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
+          </div>
+          <el-table
+            :data="list"
+            tooltip-effect="dark"
+            highlight-current-row
+            @selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
+            <el-table-column type="selection" width="50" align="center"></el-table-column>
+            <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
+            <el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
+              <template #default="{ row }">
+                <el-image :src="row.codeUrl" style="width: 100px"></el-image>
+              </template>
+            </el-table-column>
+            <el-table-column label="使用员工">
+              <template #default="{ row }">
+                <TagEllipsis :list="row.userName"></TagEllipsis>
+              </template>
+            </el-table-column>
+            <el-table-column label="标签">
+              <template #default="{ row }">
+                <TagEllipsis :list="row.tagName"></TagEllipsis>
+              </template>
+            </el-table-column>
 
-              <el-table-column label="更新时间" prop="updateTime" />
+            <el-table-column label="更新时间" prop="updateTime" />
 
-              <el-table-column label="操作" fixed="right">
-                <template #default="{ row }">
-                  <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
-                  <el-button text @click="del(row.id)">删除</el-button>
-                  <el-button text @click="distributeUserCode(row.id)">通知</el-button>
-                  <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <pagination
+            <el-table-column label="操作" fixed="right">
+              <template #default="{ row }">
+                <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">
+                  编辑
+                </el-button>
+                <el-button text @click="del(row.id)">删除</el-button>
+                <el-button text @click="distributeUserCode(row.id)">通知</el-button>
+                <el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination
             v-show="total > 0"
             :total="total"
             v-model:page="query.page"
@@ -156,94 +202,86 @@ export default {
       </el-tab-pane>
 
       <el-tab-pane label="渠道码统计" name="second">
+        <el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
+          <el-form-item label="活码名称" prop="value3">
+            <el-select
+              v-model="query2.value3"
+              multiple
+              collapse-tags
+              collapse-tags-tooltip
+              :max-collapse-tags="2"
+              placeholder="Select"
+              style="width: 260px">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getData">查询</el-button>
+            <el-button @click="$refs.searchForm.resetFields(), getData">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <div class="g-card">
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <div>
+                <el-statistic value-style="font-size:20px;" title="新增客户总数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+              <br />
+              <div>
+                <el-statistic title="今日新增客户数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div>
+                <el-statistic title="流失客户总数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+              <br />
+              <div>
+                <el-statistic title="今日流失客户数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div>
+                <el-statistic title="员工删除客户总数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+              <br />
+              <div>
+                <el-statistic title="今日员工删除客户数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div>
+                <el-statistic title="净增客户总数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+              <br />
+              <div>
+                <el-statistic title="今日净增客户数">
+                  <template slot="formatter">456/2</template>
+                </el-statistic>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
 
         <div class="g-card">
-    <el-row :gutter="20">
-          <el-col :span="6">
-          
-            <div>
-              <el-statistic value-style="font-size:20px;" title="新增客户总数">
-                <template slot="formatter">
-                  456/2
-                </template>
-              </el-statistic>
-            </div>
-            <br/>
-            <div>
-              <el-statistic title="今日新增客户数">
-                <template slot="formatter">
-                  456/2
-                </template>
-              </el-statistic>
-            </div>
-
-          </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic title="流失客户总数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
+          <ChartLine :xData="xData" :legend="['新增客户', '新增客户1']" :series="series"></ChartLine>
         </div>
-        <br/>
-        <div>
-          <el-statistic title="今日流失客户数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic title="员工删除客户总数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
-        </div>
-        <br/>
-        <div>
-          <el-statistic title="今日员工删除客户数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic title="净增客户总数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
-        </div>
-        <br/>
-        <div>
-          <el-statistic title="今日净增客户数">
-            <template slot="formatter">
-              456/2
-            </template>
-          </el-statistic>
-        </div>
-      </el-col>
-    </el-row>
-  </div>
-
-  <RequestChartTable
-        class="mt0"
-        title="客户概览"
-        type="lineChart"
-        isTimeQuery
-        :legend="['新增客户', '流失客户', '净增客户']"
-    ></RequestChartTable>
-         
       </el-tab-pane>
     </el-tabs>
-
-  
 
     <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%">
       <aev :data="form" ref="aev"></aev>
@@ -265,9 +303,9 @@ export default {
   line-height: 40px;
 }
 
-  .like {
-    cursor: pointer;
-    font-size: 25px;
-    display: inline-block;
-  }
+.like {
+  cursor: pointer;
+  font-size: 25px;
+  display: inline-block;
+}
 </style>

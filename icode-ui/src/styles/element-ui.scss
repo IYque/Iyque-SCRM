@@ -90,29 +90,20 @@
   background: var(--bg-white);
 }
 // 页面公用搜索
-.top-search {
-  position: sticky;
-  top: 0;
-  z-index: 9;
-  box-shadow: 0px 4px 20px 0px var(--bg-black-10);
+.searchForm {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
 
   @extend .--card;
-  // margin-bottom: 16px;
   .el-form-item {
     margin: 0 !important;
     transition: all 0.2s;
-    // &:hover {
-    //   background: #e5f1fc;
-    //   border-radius: 10px;
-    // }
   }
   .el-input,
   .el-select,
   .el-date-editor--daterange {
-    width: 240px;
+    width: 260px;
   }
 }
 
