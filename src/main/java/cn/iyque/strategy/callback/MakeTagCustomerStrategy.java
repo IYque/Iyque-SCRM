@@ -3,7 +3,7 @@ package cn.iyque.strategy.callback;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.service.IYqueConfigService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;

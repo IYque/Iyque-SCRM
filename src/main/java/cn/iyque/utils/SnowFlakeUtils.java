@@ -2,8 +2,13 @@ package cn.iyque.utils;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.IdentifierGenerator;
 
-public class SnowFlakeUtils {
+import java.io.Serializable;
+
+public class SnowFlakeUtils implements IdentifierGenerator {
     /**
      * 派号器workid：0~31
      * 机房datacenterid：0~31
@@ -12,5 +17,10 @@ public class SnowFlakeUtils {
 
     public static Long nextId() {
         return snowflake.nextId();
+    }
+
+    @Override
+    public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
+        return nextId();
     }
 }

@@ -6,6 +6,7 @@ import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.domain.IYqueConfig;
 import cn.iyque.enums.CustomerStatusType;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueDefaultMsgService;

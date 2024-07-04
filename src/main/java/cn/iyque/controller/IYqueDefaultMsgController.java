@@ -1,7 +1,7 @@
 package cn.iyque.controller;
 
 
-import cn.iyque.domain.IYqueDefaultMsg;
+import cn.iyque.entity.IYqueDefaultMsg;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueDefaultMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class IYqueDefaultMsgController {
      * 获取默认欢迎语
      * @return
      */
-    @GetMapping("/findIYqueConfig")
+    @GetMapping("/findDefaultMsg")
     public ResponseResult<IYqueDefaultMsg> findDefaultMsg(){
         return new ResponseResult<>(
                 iYqueDefaultMsgService.findDefaultMsg()

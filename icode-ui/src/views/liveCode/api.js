@@ -47,3 +47,7 @@ export const add = (data) => post(`${serve}/save`, data)
 export function update(data) {
   return put(`${serve}/update`, data)
 }
+
+
+
+export const findIYqueMsgAnnexByMsgId = (id) => get(`/iyQue/findIYqueMsgAnnexByMsgId/${id}`)

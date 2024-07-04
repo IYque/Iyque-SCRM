@@ -1,6 +1,6 @@
 <script>
-import { getList, del,distributeUserCode} from './api'
-
+import { getList, del, distributeUserCode } from './api'
+import {env} from '../../../sys.config'
 import aev from './aev.vue'
 export default {
   data() {
@@ -51,27 +51,46 @@ export default {
         })
     },
 
-    distributeUserCode(id){
+    distributeUserCode(id) {
       this.$confirm('是否将当前活码下发给员工, 是否继续?', '提示', {
-          confirmButtonText: '是',
-          cancelButtonText: '否',
-          type: 'warning'
-        }).then(() => {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'warning',
+      })
+        .then(() => {
           distributeUserCode(id).then((res) => {
             this.msgSuccess('已通知')
           })
-        }).catch((e) => {  
-           console.error(e)       
-        });
-  
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     },
 
-    async submit() {
+    downloadBlob(url, fileName) {
+
+    // 检查url是否以http或https开头
+      if (!url.startsWith('http') && !url.startsWith('https')) {
+        url = env.BASE_API+'/file/fileView/' + url;
+      }
+    
+    // 接下来是原有的downloadBlob方法逻辑
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+  },
+
+    submit() {
       this.loading = true
-      await this.$refs.aev.submit()
-      this.loading = false
-      this.dialogVisible = false
-      this.getList()
+      this.$refs.aev
+        .submit()
+        .then(() => {
+          this.dialogVisible = false
+          this.getList()
+        })
+        .catch((e) => console.error(e))
+        .finally(() => (this.loading = false))
     },
   },
 }
@@ -116,7 +135,6 @@ export default {
 
         <el-table-column label="操作" fixed="right">
           <template #default="{ row }">
-            <!-- <el-button text @click="$router.push('aev?id=' + row.id)">编辑</el-button> -->
             <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
             <el-button text @click="del(row.id)">删除</el-button>
             <el-button text @click="distributeUserCode(row.id)">通知</el-button>
@@ -133,7 +151,7 @@ export default {
         @pagination="getList()" />
     </div>
 
-    <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="50%">
+    <el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%">
       <aev :data="form" ref="aev"></aev>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>

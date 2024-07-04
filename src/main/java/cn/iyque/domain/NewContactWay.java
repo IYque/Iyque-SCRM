@@ -1,4 +1,4 @@
-package cn.iyque.entity;
+package cn.iyque.domain;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;

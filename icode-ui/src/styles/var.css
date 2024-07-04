@@ -18,9 +18,9 @@
   --color-danger: #eb5e12;
 
   /* ------ 距离大小 ------ */
-  --border-radius: 4px; /* 常规圆角 */
-  --border-radius-small: 2px; /* 小圆角 */
-  --border-radius-big: 8px; /* 大圆角 */
+  --border-radius: 10px; /* 常规圆角 */
+  --border-radius-small: 6px; /* 小圆角 */
+  --border-radius-big: 20px; /* 大圆角 */
   --card-margin: 16px; /* 卡片间距 */
   /* 顶部导航条高度 */
   /* --top-nav-heght: 64px;  */

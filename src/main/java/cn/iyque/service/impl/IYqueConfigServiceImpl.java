@@ -1,21 +1,14 @@
 package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.iyque.dao.IYqueConfigDao;
-import cn.iyque.domain.IYqueConfig;
-import cn.iyque.exception.IYqueException;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.cp.api.WxCpChatService;
 import me.chanjar.weixin.cp.api.WxCpService;
-import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
-import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service

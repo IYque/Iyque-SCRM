@@ -51,18 +51,20 @@
   * 客户扫码添加员工好友,无需员工确认，自动同意。
 * 重复添加
   * 同一客户扫码，只可添加到指定员工，避免客户防止客户添加多个员工。
-* 欢迎语
-  * 可为每个员工定义不同的欢迎语模版。
+* 多样化欢迎语与活码logo自定义
+  * 可为每个员工定义不同的欢迎语模版
+  * 二维码logo可自行定义
 * 自动备注
   * 按照添加时间，标签，渠道名为客户添加自动备注。
 * 更多
-  * 后续会围绕不断更新诸如:渠道统计，欢迎语附件，临时活码,外链活码等相关功能。
+  * 后续会围绕不断更新诸如:渠道统计，临时活码,外链活码等相关功能。
   * <a href="https://docs.qq.com/sheet/DRVJoZnVUSG5nZHpr?tab=BB08J2" target="_blank">《企微scrm引流码需求收集表》</a>
 #### 应用演示
   地址:https://iyque.cn/tools/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
 #### 功能截图
 ![img_1.png](img/img_1.png)
 ![img_2.png](img/img_2.png)
+![img_3.png](img/img_3.png)
 #### 安装部署
 ##### 后端api部署
 * 后端配置文件修改
@@ -72,6 +74,9 @@
       iyque:
          userName: iyque #系统登录账号
          pwd: 123456 # 系统登录密码
+         demo: true #设置为false后系统不可进行修改操作
+         fileViewUrl: https://iyque.cn/qapi/file/fileView/ #即后端api路径
+         uploadDir: ./upload #文件本地存储路径
      
      #系统内置了H2数据库,无需安装单独的数据库,username与password可以使用默认的也可自定义
      #数据库控制台默认访问地址: {系统访问前缀}/h2
@@ -79,10 +84,37 @@
         url: jdbc:h2:file:./data/mydb;
         username: iyque
         password: 123456
+  
+  
   ```
 * 后端应用打包与启动
   * 打包: mvn clean package
   * 启动: nohup java -jar xxx.jar > iyque.log 2>&1 &
+##### nginx配置
+     ```
+     后端api代理设置:
+     location ^~/oApi/ {
+            proxy_pass http://127.0.0.1:8086/;
+        }
+     
+     前端应用部署设置:
+       location /tools {
+            root /usr/local/nginx/html/prod;
+            index index.html index.htm;
+            try_files $uri $uri/ /tools/index.html;
+            proxy_read_timeout 150;
+
+            # 处理跨域
+            add_header Access-Control-Allow-Origin '*' always;
+            # add_header Access-Control-Allow-Headers '*';
+            add_header Access-Control-Allow-Methods '*';
+            # add_header Access-Control-Allow-Credentials 'true';
+            if ($request_method = 'OPTIONS') {
+                return 204;
+            }
+        }
+     ```
+
 ##### 前端应用部署
 * 前端配置文件修改 <br/>
  &nbsp;&nbsp;&nbsp;在 [sys.config.ts](./sys.config.ts) 中配置开发、生产等各个环境的：接口域名、路由基础路径，页面基础路径等
@@ -140,14 +172,9 @@ npm run dev
 npm run build
 ```
 
-#### 系统参数配置
-<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-  <div style="border: 1px solid black; padding: 1rem; margin: 1rem;">
-    <img src="https://iyque-1251309172.cos.ap-nanjing.myqcloud.com/advert/demo.png" width="25%" height="25%" alt="Image description">
-    <br/>
-        <span style="color: red;">添加好友，免费获取系统参数配置手册,以及相关技术问题咨询</span>
-  </div>
-</div>
+#### 应用配置
+   应用配置文档 :point_right: https://www.iyque.cn
+![输入图片说明](img/image.png)
 
 
 #### 感谢

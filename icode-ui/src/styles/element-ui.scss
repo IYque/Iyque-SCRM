@@ -36,6 +36,9 @@
 //     color: var(--font-white, #fff);
 //   }
 // }
+.el-button:focus-visible {
+  outline: none;
+}
 .el-button:not(.el-button--small, .el-button--large) {
   padding: 9px 19px;
   font-size: 13px;
@@ -312,7 +315,6 @@
 }
 
 .el-tabs__nav-wrap {
-  overflow: initial;
   margin-bottom: initial;
 }
 .el-tabs__content {
@@ -557,6 +559,49 @@
 
 .el-checkbox-group {
   line-height: initial;
+}
+
+// 弹窗
+.el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+  border-radius: var(--border-radius-big);
+  padding: 0;
+}
+.el-dialog__title {
+  font-weight: 500;
+}
+.el-dialog__header,
+.el-dialog__footer,
+.el-dialog__body {
+  padding: 0;
+  margin: 20px 30px;
+}
+.el-dialog__header {
+  margin-bottom: 0;
+}
+.el-dialog__footer {
+  margin-top: 0;
+}
+.el-dialog__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.el-dialog__headerbtn {
+  // top: 18px;
+  // right: 25px;
+  .el-dialog__close {
+    font-size: 22px;
+    color: var(--font-black-5);
+  }
 }
 
 // }

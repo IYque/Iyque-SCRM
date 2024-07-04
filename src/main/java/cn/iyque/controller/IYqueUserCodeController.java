@@ -1,15 +1,21 @@
 package cn.iyque.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IYqueUserCode;
+import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -21,6 +27,10 @@ public class IYqueUserCodeController {
 
     @Autowired
     private IYqueUserCodeService iYqueUserCodeService;
+
+
+    @Autowired
+    private IYqueMsgAnnexService iYqueMsgAnnexService;
 
 
     /**
@@ -83,7 +93,7 @@ public class IYqueUserCodeController {
      * @return 结果
      */
     @DeleteMapping(path = "/{ids}")
-    public ResponseResult batchDelete(@PathVariable("ids") Integer[] ids) {
+    public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
 
         iYqueUserCodeService.batchDelete(ids);
 
@@ -92,12 +102,30 @@ public class IYqueUserCodeController {
 
 
     /**
+     * 获取活码附件
+     * @param id
+     * @return
+     */
+    @GetMapping("/findIYqueMsgAnnexByMsgId/{id}")
+    public ResponseResult<IYqueMsgAnnex> findIYqueMsgAnnexByMsgId(@PathVariable Long id){
+
+        List<IYqueMsgAnnex> iYqueMsgAnnexes = iYqueMsgAnnexService.findIYqueMsgAnnexByMsgId(id);
+
+
+        return  new ResponseResult(
+                CollectionUtil.isNotEmpty(iYqueMsgAnnexes)?iYqueMsgAnnexes:new ArrayList<>()
+        );
+    }
+
+
+
+    /**
      * 活码下发
      * @param id
      * @return
      */
     @GetMapping("/distributeUserCode/{id}")
-    public ResponseResult distributeUserCode(@PathVariable("id") Integer id){
+    public ResponseResult distributeUserCode(@PathVariable("id") Long id){
 
         try {
             iYqueUserCodeService.distributeUserCode(id);

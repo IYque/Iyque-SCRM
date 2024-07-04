@@ -22,3 +22,17 @@ if (h) {
 document.addEventListener('submit', (event) => {
   event.preventDefault()
 })
+
+// 统一为img的src不是绝对地址的拼接接口地址
+document.addEventListener(
+  'error',
+  function (e) {
+    let target = e.target
+    let src = target.attributes.getNamedItem('src').value
+    if (target.tagName.toUpperCase() === 'IMG' && src && !src.includes('http')) {
+      target.src = window.sysConfig.BASE_API + '/file/fileView/' + src
+      e.stopPropagation()
+    }
+  },
+  true,
+)

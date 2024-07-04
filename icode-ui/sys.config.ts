@@ -26,5 +26,4 @@ export const common = {
     '<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">源雀SCRM -基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统</a> ', // 系统标语
   COPYRIGHT: 'Copyright © 2024 源雀 All Rights Reserved.', // 版权信息
   LOGO: env.BASE_URL + 'static/logo.png', // 深色logo
-  COOKIEEXPIRES: 0.5, // token在Cookie中存储的天数，默认0.5天
 }

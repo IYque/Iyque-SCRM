@@ -1,4 +1,4 @@
-package cn.iyque.domain;
+package cn.iyque.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 外部联系人活码实体
@@ -22,10 +24,13 @@ import java.util.Date;
 @Where(clause = "delFlag = 0")
 public class IYqueUserCode {
 
-    //主键为id且自增
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
+    private Long id;
 
     //名称
     private String codeName;
@@ -60,6 +65,13 @@ public class IYqueUserCode {
     //联系方式的配置id
     private String configId;
 
+    //活码logo图片
+    private String logoUrl;
+
+
+    //备份原有企微二维码，只有当自定义logo的时候才存在
+    private String backupQrUrl;
+
 
     //客户备注类型cn.iyque.enums.RemarksType
     private Integer remarkType;
@@ -74,6 +86,9 @@ public class IYqueUserCode {
 
     //是否删除标识
     private Integer delFlag;
+
+    @Transient
+    private List<IYqueMsgAnnex> annexLists;
 
     @PrePersist
     @PreUpdate

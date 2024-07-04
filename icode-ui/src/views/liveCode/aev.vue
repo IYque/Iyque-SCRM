@@ -1,5 +1,5 @@
 <template>
-  <div class="g-card">
+  <div class="">
     <el-form ref="form" :rules="rules" :model="form" label-position="right" label-width="100px">
       <el-form-item label="渠道名称" prop="codeName">
         <el-input v-model="form.codeName" maxlength="15" show-word-limit clearable placeholder="请输入"></el-input>
@@ -26,6 +26,15 @@
         <el-switch v-model="form.isExclusive"></el-switch>
         <div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
       </el-form-item>
+
+      <el-form-item label="二维码logo"  prop="logoUrl">
+        <Upload v-model:fileUrl="form.logoUrl" :on-remove="handleRemove">
+          <template #tip><div>图片大小不超过2M</div></template>
+        </Upload>
+      </el-form-item>
+
+
+
       <el-form-item label="新客标签" :error="tagErrorTip">
         <el-select
           v-model="form.tags"
@@ -38,18 +47,15 @@
           <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item" />
         </el-select>
       </el-form-item>
-       <el-form-item label="自动备注">
-                <el-select v-model="form.remarkType"  value-key="id" placeholder="请选择">
-                    <el-option
-                      v-for="item in remarkList"
-                      :key="item.key"
-                      :label="item.val"
-                      :value="item.key">
-                    </el-option>
-                  </el-select>
-              <div class="g-tip">（注:选择后，添加的客户会根据所选自动备注如：【客户名-渠道名】,如果选择为标签类型,则新客标签需要存在）</div>
-            </el-form-item>
-      <el-form-item label="欢迎语">
+      <el-form-item label="自动备注">
+        <el-select v-model="form.remarkType" value-key="id" placeholder="请选择">
+          <el-option v-for="item in remarkList" :key="item.key" :label="item.val" :value="item.key"></el-option>
+        </el-select>
+        <div class="g-tip">
+          （注:选择后，添加的客户会根据所选自动备注如：【客户名-渠道名】,如果选择为标签类型,则新客标签需要存在）
+        </div>
+      </el-form-item>
+      <el-form-item label="欢迎语" prop="weclomeMsg" :required="annexLists?.length > 0">
         <TextareaExtend
           v-model="form.weclomeMsg"
           :toolbar="['emoji', 'insertCustomerNickName']"
@@ -60,6 +66,42 @@
           clearable
           :autofocus="false" />
       </el-form-item>
+
+      <el-form-item label="欢迎语附件" prop="">
+        <el-popover
+          trigger="hover"
+          :content="'最多添加' + max + '个'"
+          placement="top-start"
+          :disabled="annexLists?.length < max">
+          <template #reference>
+            <el-dropdown @command="add" :disabled="annexLists?.length >= max">
+              <el-button type="primary" class="mb10">添加</el-button>
+              <template #dropdown>
+                <el-dropdown-menu trigger="click">
+                  <el-dropdown-item v-for="(item, index) in dictMsgType" :key="index" :command="item.type">
+                    <el-button text>{{ item.name }}</el-button>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+        </el-popover>
+        <el-alert
+          title="注: 1.图片:10MB,支持JPG,PNG格式; 2.视频:10MB,支持MP4格式; 3.普通文件:20MB"
+          type="error"
+          :closable="false"></el-alert>
+        <br />
+        <el-tabs ref="tabs" v-model="active" type="card" class="" closable @tab-remove="remove">
+          <el-tab-pane
+            v-for="(item, index) in annexLists"
+            :key="item.msgtype"
+            :label="dictMsgType[item.msgtype].name"
+            :name="index">
+            <MessageContentForm :type="item.msgtype" ref="contentForm" :form="item[item.msgtype]" />
+          </el-tab-pane>
+        </el-tabs>
+        <div ref="bottom"></div>
+      </el-form-item>
     </el-form>
   </div>
   <!-- <CommonTopRight>
@@ -68,11 +110,12 @@
 </template>
 
 <script>
-import { getDetail, add, update } from './api'
-import { getUserList, getTagList, getRemarkList} from '@/api/common'
-
+import { findIYqueMsgAnnexByMsgId, add, update } from './api'
+import { getUserList, getTagList, getRemarkList } from '@/api/common'
+import { dictMsgType } from '@/utils/index'
 export default {
   props: { data: {} },
+  components: { MessageContentForm: defineAsyncComponent(() => import('../config/MessageContentForm.vue')) },
   data() {
     return {
       rules: {
@@ -97,13 +140,21 @@ export default {
             },
           },
         ],
+        weclomeMsg: [
+          {
+            required: false,
+            message: '必填项',
+            trigger: 'blur',
+          },
+        ],
       },
       form: {
         codeName: '',
         skipVerify: 1, // 自动通过
         tags: [], // 标签
         users: [], // 标签
-        remarkType: null,//客户备注
+        remarkType: null, //客户备注
+        logoUrl:null,//活码logo
       },
 
       selectedUserList: [],
@@ -113,7 +164,11 @@ export default {
       userErrorTip: '',
       tagList: [],
       tagErrorTip: '',
-      remarkList:[],
+      remarkList: [],
+      annexLists: [],
+      max: 9,
+      active: 0,
+      dictMsgType,
     }
   },
   watch: {
@@ -161,6 +216,10 @@ export default {
     // if (id) {
     //   this.getDetail(id)
     // }
+    let id = this.form.id
+    if (id) {
+      this.getDetail(id)
+    }
   },
   methods: {
     getUserList() {
@@ -182,44 +241,38 @@ export default {
       })
     },
 
-    getRemarkList(){
+    getRemarkList() {
       getRemarkList().then((res) => {
         this.remarkList = res.data || []
       })
     },
 
+    add(msgtype) {
+      this.active = this.annexLists.push({ msgtype, [msgtype]: {} }) - 1
+      setTimeout(() => {
+        this.$refs.bottom.scrollIntoView()
+      }, 100)
+    },
+    remove(index) {
+      this.$confirm().then(() => {
+        this.annexLists.splice(index, 1)
+        if (index >= this.annexLists.length) {
+          this.active = this.annexLists.length - 1
+        }
+        if (this.annexLists.length == 0) {
+          this.$refs.form.clearValidate('weclomeMsg')
+        }
+      })
+    },
 
     /** 获取详情 */
     getDetail(id) {
-      getDetail(id).then((res) => {
-        res.data.forEach((element) => {
-          if (element.tagId && element.tagName) {
-            element.tagId = element.tagId.split(',')
-            element.tagName = element.tagName.split(',')
-            element.tags = []
-            element.tagId.forEach((unit, index) => {
-              element.tags.push({
-                id: unit,
-                name: element.tagName[index],
-              })
-            })
-          }
-
-          if (element.userId && element.userName) {
-            element.userId = element.userId.split(',')
-            element.userName = element.userName.split(',')
-            element.users = []
-            element.userId.forEach((unit, index) => {
-              element.users.push({
-                id: unit,
-                name: element.userName[index],
-              })
-            })
-          }
-        })
-        this.form = res.data
+      findIYqueMsgAnnexByMsgId(id).then((res) => {
+        console.log(res.data)
+        this.annexLists = res.data
       })
     },
+
     async submit() {
       let valid = await this.$refs.form.validate()
       if (!valid) return
@@ -227,7 +280,19 @@ export default {
       this.form.tagName = this.form.tags.map((e) => e.name) + ''
       this.form.userId = this.form.users.map((e) => e.id) + ''
       this.form.userName = this.form.users.map((e) => e.name) + ''
-      // this.$store.loading = true
+
+      let tasks = this.annexLists.map(async (e, i) => {
+        let contentForm = await this.$refs.contentForm[i].submit()
+        if (contentForm) {
+          e[e.msgtype] = Object.assign(e[e.msgtype] || {}, contentForm)
+          return true
+        } else {
+          return false
+        }
+      })
+      let validate1 = await Promise.all(tasks)
+      this.form.annexLists = this.annexLists
+
       return (this.form.id ? update : add)(this.form)
         .then(({ data }) => {
           this.msgSuccess('操作成功')

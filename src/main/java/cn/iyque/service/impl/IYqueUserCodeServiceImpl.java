@@ -4,31 +4,31 @@ import antlr.StringUtils;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
-import cn.iyque.domain.IYqueConfig;
-import cn.iyque.domain.IYqueUserCode;
-import cn.iyque.entity.NewContactWay;
+import cn.iyque.entity.IYqueConfig;
+import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.domain.NewContactWay;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
+import cn.iyque.utils.FileUtils;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.api.WxCpService;
-import me.chanjar.weixin.cp.bean.WxCpAgent;
-import me.chanjar.weixin.cp.bean.WxCpBaseResp;
 import me.chanjar.weixin.cp.bean.article.NewArticle;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayResult;
-import me.chanjar.weixin.cp.bean.external.WxCpGroupJoinWayInfo;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
-import me.chanjar.weixin.cp.bean.messagebuilder.NewsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -42,7 +42,13 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     private IYqueUserCodeDao iYqueUserCodeDao;
 
     @Autowired
-    private IYqueConfigServiceImpl iYqueConfigService;
+    private IYqueConfigService iYqueConfigService;
+
+    @Autowired
+    private IYqueMsgAnnexService iYqueMsgAnnexService;
+
+    @Autowired
+    private IYqueParamConfig iYqueParamConfig;
 
 
 
@@ -52,6 +58,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(IYqueUserCode iYqueUserCode) throws Exception {
         try {
             iYqueUserCode.setCreateTime(new Date());
@@ -75,9 +82,25 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
             && StrUtil.isNotEmpty(wxCpContactWayResult.getQrCode())
             &&StrUtil.isNotEmpty(wxCpContactWayResult.getConfigId())){
                 iYqueUserCode.setCodeUrl(wxCpContactWayResult.getQrCode());
+                iYqueUserCode.setBackupQrUrl(wxCpContactWayResult.getQrCode());
+                //替换自定义logo的二维码
+                if(StrUtil.isNotEmpty(iYqueUserCode.getLogoUrl())){
+                    String newQrUlr = FileUtils.buildQr(wxCpContactWayResult.getQrCode(),
+                            iYqueUserCode.getLogoUrl(), iYqueParamConfig.getUploadDir());
+                    if(StrUtil.isNotEmpty(newQrUlr)){
+                        iYqueUserCode.setCodeUrl(newQrUlr);
+                    }
+                }
                 iYqueUserCode.setConfigId(wxCpContactWayResult.getConfigId());
-
                 iYqueUserCodeDao.save(iYqueUserCode);
+                List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+                if(CollectionUtil.isNotEmpty(annexLists)){
+                    annexLists.stream().forEach(k->{
+                        k.setMsgId(iYqueUserCode.getId());
+                    });
+                    iYqueMsgAnnexService.saveAll(annexLists);
+                }
+
             }
 
 
@@ -88,6 +111,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(IYqueUserCode iYqueUserCode) throws Exception {
 
         try {
@@ -108,10 +132,35 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                 WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
                 WxCpExternalContactService externalContactService = wxcpservice.getExternalContactService();
                 externalContactService.updateContactWay(wxCpGroupJoinWayInfo);
+
+                //替换自定义logo的二维码
+                if(StrUtil.isNotEmpty(iYqueUserCode.getLogoUrl())){
+                    //判断原有logo是否改变，如果改变则更新
+                    if(!iYqueUserCode.getLogoUrl().equals(
+                            oldIYqueUserCode.getLogoUrl()
+                    )){
+                        String newQrUlr = FileUtils.buildQr(iYqueUserCode.getBackupQrUrl(),
+                                iYqueUserCode.getLogoUrl(), iYqueParamConfig.getUploadDir());
+                        if(StrUtil.isNotEmpty(newQrUlr)){
+                            iYqueUserCode.setCodeUrl(newQrUlr);
+                        }
+                    }
+
+                }else{
+                    iYqueUserCode.setCodeUrl(oldIYqueUserCode.getBackupQrUrl());
+                }
             }
 
             iYqueUserCode.setUpdateTime(new Date());
             iYqueUserCodeDao.saveAndFlush(iYqueUserCode);
+            iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
+            List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+            if(CollectionUtil.isNotEmpty(annexLists)){
+                annexLists.stream().forEach(k->{
+                    k.setMsgId(iYqueUserCode.getId());
+                });
+                iYqueMsgAnnexService.saveAll(annexLists);
+            }
         }catch (Exception e){
 
             throw e;
@@ -120,12 +169,12 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
-    public IYqueUserCode findIYqueUserCodeById(Integer id) {
+    public IYqueUserCode findIYqueUserCodeById(Long id) {
         return iYqueUserCodeDao.getById(id);
     }
 
     @Override
-    public void batchDelete(Integer[] ids){
+    public void batchDelete(Long[] ids){
         List<IYqueUserCode> iYqueUserCodes = iYqueUserCodeDao.findAllById(Arrays.asList(ids));
 
         if(CollectionUtil.isNotEmpty(iYqueUserCodes)){
@@ -147,7 +196,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     }
 
     @Override
-    public void distributeUserCode(Integer id) throws Exception {
+    public void distributeUserCode(Long id) throws Exception {
 
         try {
             IYqueUserCode iYqueUserCode = findIYqueUserCodeById(id);
@@ -158,8 +207,20 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                     NewArticle newArticle=new NewArticle();
                     newArticle.setDescription("渠道活码,点击保存即可");
                     newArticle.setTitle(iYqueUserCode.getCodeName());
-                    newArticle.setUrl(iYqueUserCode.getCodeUrl());
-                    newArticle.setPicUrl(iYqueUserCode.getCodeUrl());
+
+
+                    if(StrUtil.isNotEmpty(iYqueUserCode.getCodeUrl())){
+                        if (iYqueUserCode.getCodeUrl().startsWith("http://") || iYqueUserCode.getCodeUrl().startsWith("https://")){
+                            newArticle.setUrl(iYqueUserCode.getCodeUrl());
+                            newArticle.setPicUrl(iYqueUserCode.getCodeUrl());
+                        }else {
+                            newArticle.setUrl(iYqueParamConfig.getFileViewUrl()+iYqueUserCode.getCodeUrl());
+                            newArticle.setPicUrl(iYqueParamConfig.getFileViewUrl()+iYqueUserCode.getCodeUrl());
+
+                        }
+                    }
+
+
                     wxcpservice.getMessageService().send(WxCpMessage.NEWS()
                             .toUser(iYqueUserCode.getUserId().replace(",", "|"))
                             .agentId(new Integer(iYqueConfig.getAgentId()))
