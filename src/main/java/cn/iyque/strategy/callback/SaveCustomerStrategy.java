@@ -1,5 +1,6 @@
 package cn.iyque.strategy.callback;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.dao.IYQueCustomerInfoDao;
 import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
@@ -19,21 +20,23 @@ import java.util.Date;
 public class SaveCustomerStrategy implements ActionStrategy{
 
 
-    @Autowired
-    private IYQueCustomerInfoDao iyQueCustomerInfoDao;
 
     @Override
     public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
 
-        iyQueCustomerInfoDao.save(
-                IYQueCustomerInfo.builder()
-                        .state(callBackBaseMsg.getState())
-                        .externalUserid(callBackBaseMsg.getExternalUserID())
-                        .userId(callBackBaseMsg.getUserID())
-                        .addTime(new Date( contactDetail.getFollowedUsers().stream().findFirst().get().getCreateTime() * 1000L))
-                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
-                        .build()
-        );
+        log.info("客户信息:"+contactDetail);
+
+        SpringUtil.getBean(IYQueCustomerInfoDao.class)
+                        .save(
+                                IYQueCustomerInfo.builder()
+                                        .state(callBackBaseMsg.getState())
+                                        .externalUserid(callBackBaseMsg.getExternalUserID())
+                                        .userId(callBackBaseMsg.getUserID())
+                                        .addTime(new Date( contactDetail.getFollowedUsers().stream().findFirst().get().getCreateTime() * 1000L))
+                                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
+                                        .build()
+
+                        );
 
     }
 }
