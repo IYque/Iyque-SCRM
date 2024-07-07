@@ -1,5 +1,5 @@
 <script>
-import { getList, del, distributeUserCode } from './api'
+import { getList, del, distributeUserCode,findIYqueUserCodeKvs,countTotalTab,countTrend } from './api'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
 export default {
@@ -13,34 +13,16 @@ export default {
       loading: false,
       dialogVisible: false, // 弹窗显示控制
       form: {},
-
-      query2: {
-        value3: '',
+      queryParm: {
+        codeId: null,
+        time: null
       },
       options: [
-        {
-          value: 'Option1',
-          label: 'Option1',
-        },
-        {
-          value: 'Option2',
-          label: 'Option2',
-        },
-        {
-          value: 'Option3',
-          label: 'Option3',
-        },
-        {
-          value: 'Option4',
-          label: 'Option4',
-        },
-        {
-          value: 'Option5',
-          label: 'Option5',
-        },
       ],
       xData: [],
       series: [],
+      tabCount:{
+      }
     }
   },
   components: { aev },
@@ -48,6 +30,8 @@ export default {
   created() {
     this.getList()
     this.getData()
+    this.initSelect()
+    this.selectCount()
   },
   mounted() {},
   methods: {
@@ -62,6 +46,14 @@ export default {
         })
         .catch((e) => console.error(e))
         .finally(() => (this.$store.loading = false))
+    },
+    initSelect(){
+      findIYqueUserCodeKvs()
+          .then((data)=>{
+            this.options=data.data;
+              console.log(data);
+          })
+          .catch((e) => console.error(e))
     },
     del(id) {
       let ids = id || this.multipleSelection?.join?.(',')
@@ -117,39 +109,78 @@ export default {
         .then(() => {
           this.dialogVisible = false
           this.getList()
+          this.initSelect()
         })
         .catch((e) => console.error(e))
         .finally(() => (this.loading = false))
     },
 
     getData() {
-      // this.$store.loading = true
-      this.xData = ['2021-12-01', '2021-12-02', '2021-12-03', '2021-12-03', '2021-12-04', '2021-12-05', '2021-12-06']
-      this.series = [
-        [120, 132, 101, 134, 90, 230, 210],
-        [220, 182, 191, 234, 290, 330, 310],
-      ]
-      // getList(this.query2)
-      //   .then(({ data, count }) => {
-      //     this.list = data
-      //     this.total = +count
-      //     this.multipleSelection = []
-      //   })
-      //   .catch((e) => console.error(e))
-      //   .finally(() => (this.$store.loading = false))
+
+      var queryParm={
+
+        userCodeId:this.queryParm.codeId,
+        startTime:this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[0]),
+        endTime:this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[1])
+      }
+
+      this.selectCount(queryParm)
     },
+
+    restting(){
+      this.queryParm.codeId=null;
+      this.queryParm.time=null;
+      this.getData();
+    },
+
+    selectCount(query){
+
+      countTotalTab(query).then(({data})=>{
+
+
+        this.tabCount=data;
+      
+
+      }) .catch((e) => console.error(e))
+
+
+      countTrend(query).then(({data})=>{
+
+
+        this.xData=data.xdata
+
+        this.series=data.series
+
+        console.log(data)
+
+      }).catch((e) => console.error(e))
+
+
+    },
+
+    formatDate(date){
+
+const year = date.getFullYear();
+const month = (date.getMonth() + 1).toString().padStart(2, '0');
+ const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+
+
+}
+
   },
+  
 }
 </script>
 <template>
   <div>
     <div class="warning">
       <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
-        <strong>源雀SCRM — 基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统:https://www.iyque.cn/</strong>
+        <strong>源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台。:https://www.iyque.cn/</strong>
       </a>
     </div>
 
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName">
       <el-tab-pane label="渠道码配置" name="first">
         <div class="g-card">
           <div class="fxbw">
@@ -162,7 +193,7 @@ export default {
             highlight-current-row
             @selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
             <el-table-column type="selection" width="50" align="center"></el-table-column>
-            <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
+            <el-table-column label="渠道名称" prop="codeName" show-overflow-tooltip />
             <el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
               <template #default="{ row }">
                 <el-image :src="row.codeUrl" style="width: 100px"></el-image>
@@ -202,75 +233,89 @@ export default {
       </el-tab-pane>
 
       <el-tab-pane label="渠道码统计" name="second">
+
         <el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
-          <el-form-item label="活码名称" prop="value3">
+          <el-form-item label="渠道名称:" prop="value3">
             <el-select
-              v-model="query2.value3"
-              multiple
+              v-model="queryParm.codeId"
               collapse-tags
               collapse-tags-tooltip
               :max-collapse-tags="2"
-              placeholder="Select"
+              placeholder="全部"
               style="width: 260px">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option v-for="item in options" :key="item.val" :label="item.key" :value="item.val" />
             </el-select>
           </el-form-item>
+
+          <el-form-item label="时间:">         
+                  <el-date-picker
+                      v-model="queryParm.time"
+                      type="daterange" 
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期">
+                   </el-date-picker>
+           </el-form-item>
+
+
           <el-form-item>
             <el-button type="primary" @click="getData">查询</el-button>
-            <el-button @click="$refs.searchForm.resetFields(), getData">重置</el-button>
+            <el-button  @click="restting">重置</el-button>
           </el-form-item>
         </el-form>
+
+
         <div class="g-card">
           <el-row :gutter="20">
             <el-col :span="6">
               <div>
                 <el-statistic value-style="font-size:20px;" title="新增客户总数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.addCustomerNumber}}</template>
                 </el-statistic>
               </div>
               <br />
               <div>
                 <el-statistic title="今日新增客户数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.tdAddCustomerNumber}}</template>
                 </el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
                 <el-statistic title="流失客户总数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.lostCustomerNumber}}</template>
                 </el-statistic>
               </div>
               <br />
               <div>
                 <el-statistic title="今日流失客户数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.tdLostCustomerNumber}}</template>
                 </el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
                 <el-statistic title="员工删除客户总数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.delCustomerNumber}}</template>
                 </el-statistic>
               </div>
               <br />
               <div>
                 <el-statistic title="今日员工删除客户数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.tddelCustomerNumber}}</template>
                 </el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
                 <el-statistic title="净增客户总数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.netGrowthCustomerNumber}}</template>
                 </el-statistic>
               </div>
               <br />
               <div>
                 <el-statistic title="今日净增客户数">
-                  <template slot="formatter">456/2</template>
+                  <template slot="formatter">{{tabCount.tdNetGrowthCustomerNumber}}</template>
                 </el-statistic>
               </div>
             </el-col>
@@ -278,7 +323,7 @@ export default {
         </div>
 
         <div class="g-card">
-          <ChartLine :xData="xData" :legend="['新增客户', '新增客户1']" :series="series"></ChartLine>
+          <ChartLine :xData="xData" :legend="['新增客户数', '流失客户数', '员工删除客户数', '净增客户数']" :series="series"></ChartLine>
         </div>
       </el-tab-pane>
     </el-tabs>

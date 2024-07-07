@@ -3,10 +3,9 @@ package cn.iyque.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IYqueUserCodeCountVo;
+import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
-import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
@@ -88,6 +87,22 @@ public class IYqueUserCodeController {
     }
 
 
+    /**
+     * 获取所有活码id与名称
+     * @return
+     */
+    @GetMapping("/findIYqueUserCodeKvs")
+    public ResponseResult<List<IYqueKvalStrVo>>  findIYqueUserCodeKvs(){
+
+        List<IYqueKvalStrVo> iYqueUserCodeKvs = iYqueUserCodeService.findIYqueUserCodeKvs();
+
+
+        return new ResponseResult<>(iYqueUserCodeKvs);
+
+
+    }
+
+
 
 
 
@@ -145,14 +160,28 @@ public class IYqueUserCodeController {
 
 
     /**
-     * 全量统计tab
+     * 统计tab
      * @return
      */
     @GetMapping("/countTotalTab")
-    public ResponseResult<IYqueUserCodeCountVo> countTotalTab(){
-        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab();
+    public ResponseResult<IYqueUserCodeCountVo> countTotalTab(IYQueCountQuery queCountQuery){
+        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery);
 
         return new ResponseResult<>(iYqueUserCodeCountVo);
+    }
+
+
+    /**
+     * 统计趋势图
+     * @param queCountQuery
+     * @return
+     */
+    @GetMapping("/countTrend")
+    public ResponseResult<IYQueTrendCount> countTrend(IYQueCountQuery queCountQuery){
+
+        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery);
+
+        return new ResponseResult<>(trendCount);
     }
 
 

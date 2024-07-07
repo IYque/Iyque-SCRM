@@ -51,3 +51,12 @@ export function update(data) {
 
 
 export const findIYqueMsgAnnexByMsgId = (id) => get(`/iyQue/findIYqueMsgAnnexByMsgId/${id}`)
+
+//获取所有活码id与name
+export const findIYqueUserCodeKvs = () => get(`${serve}/findIYqueUserCodeKvs`)
+
+
+export const countTotalTab = (data) => get(`${serve}/countTotalTab`, data)
+
+
+export const countTrend = (data) => get(`${serve}/countTrend`, data)

@@ -27,6 +27,7 @@ spring:
       hibernate:
         format_sql: true
   jackson:
+    time-zone: Asia/Shanghai
     serialization:
       fail-on-empty-beans: false
   servlet:

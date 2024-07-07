@@ -6,24 +6,22 @@ import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.dao.IYQueCustomerInfoDao;
 import cn.iyque.dao.IYqueUserCodeDao;
-import cn.iyque.domain.IYQueCustomerInfo;
-import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueUserCodeCountVo;
+import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.strategy.callback.*;
+import cn.iyque.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -97,36 +95,73 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
         }
     }
 
+    private List<IYQueCustomerInfo> findAllByIdOrNoId(Long userCodeId){
+        List<IYQueCustomerInfo> iyQueCustomerInfos =new ArrayList<>();
+        if(null !=userCodeId){
+            IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findById(userCodeId).get();
+            if(iYqueUserCode != null){
+                String codeState = iYqueUserCode.getCodeState();
+                if(StrUtil.isNotEmpty(codeState)){
+                    iyQueCustomerInfos=iyQueCustomerInfoDao.findAll(Example.of(
+                            IYQueCustomerInfo.builder()
+                                    .state(codeState)
+                                    .build()
+                    ));
+                }
+
+            }
+        }else{
+            iyQueCustomerInfos=iyQueCustomerInfoDao.findAll();
+        }
+
+
+
+        return iyQueCustomerInfos;
+
+    }
     @Override
-    public IYqueUserCodeCountVo countTotalTab() {
+    public IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery) {
         IYqueUserCodeCountVo iYqueUserCodeCountVo
                 = IYqueUserCodeCountVo.builder().build();
-        List<IYQueCustomerInfo> iyQueCustomerInfos = iyQueCustomerInfoDao.findAll();
+
+
+        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId());
         if(CollectionUtil.isNotEmpty(iyQueCustomerInfos)){
+
+            List<IYQueCustomerInfo> allIYQueCustomerInfo=new ArrayList<>();
+            if (queCountQuery.getStartTime() == null && queCountQuery.getEndTime() == null) {
+                allIYQueCustomerInfo = iyQueCustomerInfos;
+            } else {
+                allIYQueCustomerInfo = iyQueCustomerInfos.stream()
+                        .filter(info -> info.getAddTime().compareTo(queCountQuery.getStartTime()) >= 0
+                                && info.getAddTime().compareTo(queCountQuery.getEndTime()) <= 0)
+                        .collect(Collectors.toList());;
+            }
+
 
             //客户总数
             iYqueUserCodeCountVo.setAddCustomerNumber(
-                    iyQueCustomerInfos.size()
+                    allIYQueCustomerInfo.size()
             );
 
 
             //客户流失数
             iYqueUserCodeCountVo.setLostCustomerNumber(
-                    iyQueCustomerInfos.stream()
+                    allIYQueCustomerInfo.stream()
                             .filter(info -> info.getStatus() == 1)
                             .count()
             );
 
             //员工删除客户数
             iYqueUserCodeCountVo.setDelCustomerNumber(
-                    iyQueCustomerInfos.stream()
+                    allIYQueCustomerInfo.stream()
                             .filter(info -> info.getStatus() == 2)
                             .count()
             );
 
             //客户净增数
             iYqueUserCodeCountVo.setNetGrowthCustomerNumber(
-                    iyQueCustomerInfos.stream()
+                    allIYQueCustomerInfo.stream()
                             .filter(info -> info.getStatus() == 0)
                             .count()
             );
@@ -181,6 +216,72 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
         return iYqueUserCodeCountVo;
     }
+
+    @Override
+    public IYQueTrendCount countTrend(IYQueCountQuery queCountQuery) {
+        IYQueTrendCount trendCount=new IYQueTrendCount();
+
+        List<List<Integer>> series=new ArrayList<>();
+
+        trendCount.setXData(
+                DateUtils.getTimePeriods(queCountQuery.getStartTime(),queCountQuery.getEndTime())
+        );
+
+
+
+        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId());
+
+        //新增客户数
+        series.add(
+                IYqueUserCodeCountVo
+                        .getDateCountList(iyQueCustomerInfos, queCountQuery.getStartTime() == null ? null :
+                                        queCountQuery.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                queCountQuery.getEndTime() == null ?
+                                        null : queCountQuery.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                                , null)
+        );
+
+
+        //流失客户数
+        series.add(
+                IYqueUserCodeCountVo
+                        .getDateCountList(iyQueCustomerInfos, queCountQuery.getStartTime() == null?null:
+                                        queCountQuery.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                queCountQuery.getEndTime()==null?
+                                        null: queCountQuery.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                                ,1)
+        );
+
+
+        //员工删除客户数
+        series.add(
+                IYqueUserCodeCountVo
+                        .getDateCountList(iyQueCustomerInfos, queCountQuery.getStartTime() == null?null:
+                                        queCountQuery.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                queCountQuery.getEndTime()==null?
+                                        null: queCountQuery.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                                ,2)
+
+        );
+
+        //净增客户数
+        series.add(
+                IYqueUserCodeCountVo
+                        .getDateCountList(iyQueCustomerInfos, queCountQuery.getStartTime() == null?null:
+                                        queCountQuery.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                queCountQuery.getEndTime()==null?
+                                        null: queCountQuery.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                                ,0)
+        );
+
+
+        trendCount.setSeries(
+                series
+        );
+
+        return trendCount;
+    }
+
 
 
 }

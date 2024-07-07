@@ -1,6 +1,5 @@
 package cn.iyque.service.impl;
 
-import antlr.StringUtils;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
@@ -8,6 +7,8 @@ import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
+import cn.iyque.domain.IYqueKvalStrVo;
+import cn.iyque.domain.IYqueKvalVo;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -108,6 +110,30 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
             throw e;
         }
 
+    }
+
+    @Override
+    public List<IYqueKvalStrVo> findIYqueUserCodeKvs() {
+        List<IYqueKvalStrVo> iYqueKvalVos=new ArrayList<>();
+
+
+        List<IYqueUserCode> iYqueUserCodes = iYqueUserCodeDao.findAll();
+        if(CollectionUtil.isNotEmpty(iYqueUserCodes)){
+            iYqueUserCodes.stream().forEach(k->{
+
+                iYqueKvalVos.add(
+                        IYqueKvalStrVo.builder()
+                                .val(k.getId().toString())
+                                .key(k.getCodeName())
+                                .build()
+                );
+
+            });
+        }
+
+
+
+        return iYqueKvalVos;
     }
 
     @Override

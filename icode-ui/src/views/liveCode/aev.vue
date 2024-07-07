@@ -18,6 +18,7 @@
           <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item" />
         </el-select>
       </el-form-item>
+
       <el-form-item label="免验证">
         <el-switch v-model="form.skipVerify"></el-switch>
         <div class="g-tip">（注:勾选后,客户添加员工好友无需员工确认）</div>
