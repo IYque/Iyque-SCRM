@@ -1,5 +1,5 @@
 <script>
-import { getList, del, distributeUserCode,findIYqueUserCodeKvs,countTotalTab,countTrend } from './api'
+import { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } from './api'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
 export default {
@@ -15,14 +15,12 @@ export default {
       form: {},
       queryParm: {
         codeId: null,
-        time: null
+        time: null,
       },
-      options: [
-      ],
+      options: [],
       xData: [],
       series: [],
-      tabCount:{
-      }
+      tabCount: {},
     }
   },
   components: { aev },
@@ -47,13 +45,13 @@ export default {
         .catch((e) => console.error(e))
         .finally(() => (this.$store.loading = false))
     },
-    initSelect(){
+    initSelect() {
       findIYqueUserCodeKvs()
-          .then((data)=>{
-            this.options=data.data;
-              console.log(data);
-          })
-          .catch((e) => console.error(e))
+        .then((data) => {
+          this.options = data.data
+          console.log(data)
+        })
+        .catch((e) => console.error(e))
     },
     del(id) {
       let ids = id || this.multipleSelection?.join?.(',')
@@ -116,67 +114,55 @@ export default {
     },
 
     getData() {
-
-      var queryParm={
-
-        userCodeId:this.queryParm.codeId,
-        startTime:this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[0]),
-        endTime:this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[1])
+      var queryParm = {
+        userCodeId: this.queryParm.codeId,
+        startTime: this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[0]),
+        endTime: this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[1]),
       }
 
       this.selectCount(queryParm)
     },
 
-    restting(){
-      this.queryParm.codeId=null;
-      this.queryParm.time=null;
-      this.getData();
+    restting() {
+      this.queryParm.codeId = null
+      this.queryParm.time = null
+      this.getData()
     },
 
-    selectCount(query){
+    selectCount(query) {
+      countTotalTab(query)
+        .then(({ data }) => {
+          this.tabCount = data
+        })
+        .catch((e) => console.error(e))
 
-      countTotalTab(query).then(({data})=>{
+      countTrend(query)
+        .then(({ data }) => {
+          this.xData = data.xdata
 
+          this.series = data.series
 
-        this.tabCount=data;
-      
-
-      }) .catch((e) => console.error(e))
-
-
-      countTrend(query).then(({data})=>{
-
-
-        this.xData=data.xdata
-
-        this.series=data.series
-
-        console.log(data)
-
-      }).catch((e) => console.error(e))
-
-
+          console.log(data)
+        })
+        .catch((e) => console.error(e))
     },
 
-    formatDate(date){
-
-const year = date.getFullYear();
-const month = (date.getMonth() + 1).toString().padStart(2, '0');
- const day = date.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
-
-
-}
-
+    formatDate(date) {
+      const year = date.getFullYear()
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const day = date.getDate().toString().padStart(2, '0')
+      return `${year}-${month}-${day}`
+    },
   },
-  
 }
 </script>
 <template>
   <div>
     <div class="warning">
       <a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
-        <strong>源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台。:https://www.iyque.cn/</strong>
+        <strong>
+          源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台。:https://www.iyque.cn/
+        </strong>
       </a>
     </div>
 
@@ -233,7 +219,6 @@ const month = (date.getMonth() + 1).toString().padStart(2, '0');
       </el-tab-pane>
 
       <el-tab-pane label="渠道码统计" name="second">
-
         <el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
           <el-form-item label="渠道名称:" prop="value3">
             <el-select
@@ -247,83 +232,70 @@ const month = (date.getMonth() + 1).toString().padStart(2, '0');
             </el-select>
           </el-form-item>
 
-          <el-form-item label="时间:">         
-                  <el-date-picker
-                      v-model="queryParm.time"
-                      type="daterange" 
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期">
-                   </el-date-picker>
-           </el-form-item>
-
+          <el-form-item label="时间:">
+            <el-date-picker
+              v-model="queryParm.time"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"></el-date-picker>
+          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" @click="getData">查询</el-button>
-            <el-button  @click="restting">重置</el-button>
+            <el-button @click="restting">重置</el-button>
           </el-form-item>
         </el-form>
-
 
         <div class="g-card">
           <el-row :gutter="20">
             <el-col :span="6">
               <div>
-                <el-statistic value-style="font-size:20px;" title="新增客户总数">
-                  <template slot="formatter">{{tabCount.addCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic
+                  value-style="font-size:20px;"
+                  title="新增客户总数"
+                  :value="tabCount.addCustomerNumber"></el-statistic>
               </div>
               <br />
               <div>
-                <el-statistic title="今日新增客户数">
-                  <template slot="formatter">{{tabCount.tdAddCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="今日新增客户数" :value="tabCount.tdAddCustomerNumber"></el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
-                <el-statistic title="流失客户总数">
-                  <template slot="formatter">{{tabCount.lostCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="流失客户总数" :value="tabCount.lostCustomerNumber"></el-statistic>
               </div>
               <br />
               <div>
-                <el-statistic title="今日流失客户数">
-                  <template slot="formatter">{{tabCount.tdLostCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="今日流失客户数" :value="tabCount.tdLostCustomerNumber"></el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
-                <el-statistic title="员工删除客户总数">
-                  <template slot="formatter">{{tabCount.delCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="员工删除客户总数" :value="tabCount.delCustomerNumber"></el-statistic>
               </div>
               <br />
               <div>
-                <el-statistic title="今日员工删除客户数">
-                  <template slot="formatter">{{tabCount.tddelCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="今日员工删除客户数" :value="tabCount.tddelCustomerNumber"></el-statistic>
               </div>
             </el-col>
             <el-col :span="6">
               <div>
-                <el-statistic title="净增客户总数">
-                  <template slot="formatter">{{tabCount.netGrowthCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="净增客户总数" :value="tabCount.netGrowthCustomerNumber"></el-statistic>
               </div>
               <br />
               <div>
-                <el-statistic title="今日净增客户数">
-                  <template slot="formatter">{{tabCount.tdNetGrowthCustomerNumber}}</template>
-                </el-statistic>
+                <el-statistic title="今日净增客户数" :value="tabCount.tdNetGrowthCustomerNumber"></el-statistic>
               </div>
             </el-col>
           </el-row>
         </div>
 
         <div class="g-card">
-          <ChartLine :xData="xData" :legend="['新增客户数', '流失客户数', '员工删除客户数', '净增客户数']" :series="series"></ChartLine>
+          <ChartLine
+            :xData="xData"
+            :legend="['新增客户数', '流失客户数', '员工删除客户数', '净增客户数']"
+            :series="series"></ChartLine>
         </div>
       </el-tab-pane>
     </el-tabs>
