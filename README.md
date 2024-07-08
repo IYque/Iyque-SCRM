@@ -56,8 +56,10 @@
   * 二维码logo可自行定义
 * 自动备注
   * 按照添加时间，标签，渠道名为客户添加自动备注。
+* 渠道统计
+  * 按照时间或渠道维度，统计客户增加流失等情况。
 * 更多
-  * 后续会围绕不断更新诸如:渠道统计，临时活码,外链活码等相关功能。
+  * 后续会围绕不断更新诸如:临时活码,外链活码等相关功能。
   * <a href="https://docs.qq.com/sheet/DRVJoZnVUSG5nZHpr?tab=BB08J2" target="_blank">《企微scrm引流码需求收集表》</a>
 #### 应用演示
   地址:https://iyque.cn/tools/  &nbsp;&nbsp;账号:iyque  &nbsp;&nbsp;密码:123456
