@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
@@ -70,6 +71,7 @@ public class IYqueUserCode {
 
 
     //是否开启时段欢迎语 true:开启时段欢迎语; false:关闭时段欢迎语;
+    @ColumnDefault("false")
     private boolean startPeriodAnnex;
 
 

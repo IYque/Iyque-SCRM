@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IYquePeriodMsgAnnexDao extends JpaRepository<IYquePeriodMsgAnnex,Long> {
 
-    List<IYquePeriodMsgAnnex> findIYquePeriodMsgAnnexByAAndAnnexPeroidId(Long annexPeroidId);
+    List<IYquePeriodMsgAnnex> findIYquePeriodMsgAnnexByAnnexPeroidId(Long annexPeroidId);
 
 
     void deleteAllByAnnexPeroidIdIn(List<Long> annexPeroidIds);

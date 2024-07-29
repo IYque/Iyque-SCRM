@@ -34,7 +34,7 @@ public class IYqueAnnexPeriodServiceImpl implements IYqueAnnexPeriodService {
 
             iYqueAnnexPeriodByMsgId.stream().forEach(k->{
                 List<IYquePeriodMsgAnnex> iYquePeriodMsgAnnexes = iYquePeriodMsgAnnexDao
-                        .findIYquePeriodMsgAnnexByAAndAnnexPeroidId(k.getId());
+                        .findIYquePeriodMsgAnnexByAnnexPeroidId(k.getId());
                 if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
                     k.setPeriodMsgAnnexList(iYquePeriodMsgAnnexes);
                 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,10 +31,11 @@ public class IYqueDefaultMsg {
     private Long id;
 
     //是否开启时段欢迎语 true:开启时段欢迎语; false:关闭时段欢迎语;
+    @ColumnDefault("false")
     private boolean startPeriodAnnex;
 
 
-    //时段欢迎语的附件 startPeriodAnnex:true
+    //时段欢迎语的附件 startPeriodAnnex为true则该字段传值
     @Transient
     private List<IYqueAnnexPeriod> periodAnnexLists;
 
