@@ -4,8 +4,10 @@ package cn.iyque.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.*;
+import cn.iyque.entity.IYqueAnnexPeriod;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.service.IYqueAnnexPeriodService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
@@ -14,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,10 @@ public class IYqueUserCodeController {
 
     @Autowired
     private IYqueCustomerInfoService iYqueCustomerInfoService;
+
+
+    @Autowired
+    private IYqueAnnexPeriodService iYqueAnnexPeriodService;
 
 
     /**
@@ -137,6 +142,23 @@ public class IYqueUserCodeController {
                 CollectionUtil.isNotEmpty(iYqueMsgAnnexes)?iYqueMsgAnnexes:new ArrayList<>()
         );
     }
+
+
+    /**
+     * 获取时段欢迎语活码附件
+     * @param id
+     * @return
+     */
+    @GetMapping("/findIYqueMsgPeriodAnnexByMsgId/{id}")
+    public ResponseResult<IYqueAnnexPeriod> findIYqueMsgPeriodAnnexByMsgId(@PathVariable Long id){
+
+        List<IYqueAnnexPeriod> iYqueAnnexPeriods = iYqueAnnexPeriodService.findIYqueAnnexPeriodByMsgId(id);
+
+        return  new ResponseResult(
+                iYqueAnnexPeriods
+        );
+    }
+
 
 
 

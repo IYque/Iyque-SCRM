@@ -47,9 +47,14 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                     WxCpExternalContactInfo contactDetail = iYqueConfigService.findWxcpservice().getExternalContactService()
                             .getContactDetail(callBackBaseMsg.getExternalUserID(), null);
                     if(null != contactDetail){
+
+
                         //发送欢迎语
-                        ActionContext actionContext = new ActionContext(new SendWelcomeMsgStrategy());
+                        ActionContext actionContext = new ActionContext(iYqueUserCode.isStartPeriodAnnex()?
+                                new SendPeriodWelcomeMsgStrategy():new SendWelcomeMsgStrategy());
                         actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
+
+
 
 
                         //自动打标签

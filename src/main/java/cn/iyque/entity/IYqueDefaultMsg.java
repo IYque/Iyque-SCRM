@@ -29,10 +29,18 @@ public class IYqueDefaultMsg {
     )
     private Long id;
 
-    //默认欢迎语
+    //是否开启时段欢迎语 true:开启时段欢迎语; false:关闭时段欢迎语;
+    private boolean startPeriodAnnex;
+
+
+    //时段欢迎语的附件 startPeriodAnnex:true
+    @Transient
+    private List<IYqueAnnexPeriod> periodAnnexLists;
+
+    //默认欢迎语 startPeriodAnnex:false
     private String defaultContent;
 
-    //欢迎语附件
+    //欢迎语附件 startPeriodAnnex:false
     @Transient
     private List<IYqueMsgAnnex> annexLists;
 

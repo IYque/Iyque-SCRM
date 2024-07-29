@@ -7,6 +7,8 @@ import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 public class ActionContext {
     private ActionStrategy actionStrategy;
 
+
+
     public ActionContext(ActionStrategy actionStrategy) {
         this.actionStrategy = actionStrategy;
     }

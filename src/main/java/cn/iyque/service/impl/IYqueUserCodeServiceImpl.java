@@ -7,15 +7,9 @@ import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueUserCodeDao;
-import cn.iyque.domain.IYqueKvalStrVo;
-import cn.iyque.domain.IYqueKvalVo;
-import cn.iyque.entity.IYqueConfig;
-import cn.iyque.entity.IYqueMsgAnnex;
-import cn.iyque.entity.IYqueUserCode;
-import cn.iyque.domain.NewContactWay;
-import cn.iyque.service.IYqueConfigService;
-import cn.iyque.service.IYqueMsgAnnexService;
-import cn.iyque.service.IYqueUserCodeService;
+import cn.iyque.domain.*;
+import cn.iyque.entity.*;
+import cn.iyque.service.*;
 import cn.iyque.utils.FileUtils;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,6 +46,12 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
     @Autowired
     private IYqueParamConfig iYqueParamConfig;
+
+    @Autowired
+    private IYquePeriodMsgAnnexService iYquePeriodMsgAnnexService;
+
+    @Autowired
+    private IYqueAnnexPeriodService iYqueAnnexPeriodService;
 
 
 
@@ -95,13 +96,47 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                 }
                 iYqueUserCode.setConfigId(wxCpContactWayResult.getConfigId());
                 iYqueUserCodeDao.save(iYqueUserCode);
-                List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
-                if(CollectionUtil.isNotEmpty(annexLists)){
-                    annexLists.stream().forEach(k->{
-                        k.setMsgId(iYqueUserCode.getId());
-                    });
-                    iYqueMsgAnnexService.saveAll(annexLists);
+
+                //时段欢迎语附件
+                if(iYqueUserCode.isStartPeriodAnnex()){
+                    List<IYqueAnnexPeriod> periodAnnexLists=iYqueUserCode.getPeriodAnnexLists();
+                    if(CollectionUtil.isNotEmpty(periodAnnexLists)){
+                        //时段附件
+                        List<IYquePeriodMsgAnnex> iYquePeriodMsgAnnexes=new ArrayList<>();
+                        periodAnnexLists.stream().forEach(k->{
+                            k.setId(SnowFlakeUtils.nextId());
+                            k.setMsgId(iYqueUserCode.getId());
+                            List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
+                            if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
+                                periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
+                                    periodMsgAnnex.setAnnexPeroidId(k.getId());
+                                });
+                                iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
+                            }
+                        });
+
+                        //存储时段
+                        iYqueAnnexPeriodService.saveAll(periodAnnexLists);
+                        //存储时段附件
+                        if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
+                            iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
+                        }
+
+                    }
+
+                    //非时段欢迎语附件
+                }else{
+                    List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+                    if(CollectionUtil.isNotEmpty(annexLists)){
+                        annexLists.stream().forEach(k->{
+                            k.setMsgId(iYqueUserCode.getId());
+                        });
+                        iYqueMsgAnnexService.saveAll(annexLists);
+                    }
                 }
+
+
+
 
             }
 
@@ -179,14 +214,55 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
             iYqueUserCode.setUpdateTime(new Date());
             iYqueUserCodeDao.saveAndFlush(iYqueUserCode);
-            iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
-            List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
-            if(CollectionUtil.isNotEmpty(annexLists)){
-                annexLists.stream().forEach(k->{
-                    k.setMsgId(iYqueUserCode.getId());
-                });
-                iYqueMsgAnnexService.saveAll(annexLists);
+
+            if(iYqueUserCode.isStartPeriodAnnex()){//开启时段欢迎语
+
+                List<IYqueAnnexPeriod> periodAnnexLists=iYqueUserCode.getPeriodAnnexLists();
+                if(CollectionUtil.isNotEmpty(periodAnnexLists)){
+
+                    //时段附件
+                    List<IYquePeriodMsgAnnex> iYquePeriodMsgAnnexes=new ArrayList<>();
+                    periodAnnexLists.stream().forEach(k->{
+                        k.setId(SnowFlakeUtils.nextId());
+                        k.setMsgId(iYqueUserCode.getId());
+                        List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
+                        if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
+                            periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
+                                periodMsgAnnex.setAnnexPeroidId(k.getId());
+                            });
+                            iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
+                        }
+                    });
+
+                    //存储时段
+                    List<IYqueAnnexPeriod> oldIYqueAnnexPeriod = iYqueAnnexPeriodService
+                            .findIYqueAnnexPeriodByMsgId(iYqueUserCode.getId());
+
+                    if(CollectionUtil.isNotEmpty(oldIYqueAnnexPeriod)){
+                        iYqueAnnexPeriodService.deleteIYqueAnnexPeriodByMsgId(iYqueUserCode.getId());
+                        iYquePeriodMsgAnnexService.deleteAllByAnnexPeroidIdIn(
+                                oldIYqueAnnexPeriod.stream().map(IYqueAnnexPeriod::getId).collect(Collectors.toList())
+                        );
+                    }
+                    iYqueAnnexPeriodService.saveAll(periodAnnexLists);
+                    if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
+                        iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
+                    }
+
+                }
+
+            }else{
+                iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
+                List<IYqueMsgAnnex> annexLists = iYqueUserCode.getAnnexLists();
+                if(CollectionUtil.isNotEmpty(annexLists)){
+                    annexLists.stream().forEach(k->{
+                        k.setMsgId(iYqueUserCode.getId());
+                    });
+                    iYqueMsgAnnexService.saveAll(annexLists);
+                }
+
             }
+
         }catch (Exception e){
 
             throw e;

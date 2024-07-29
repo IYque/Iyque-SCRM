@@ -53,7 +53,7 @@ public class IYqueUserCode {
     //标签名,多个使用逗号隔开
     private String tagName;
 
-    //欢迎语
+    //未开启时段欢迎语的附件，如果：startPeriodAnnex 为true 当前字段值为空。
     private String weclomeMsg;
 
     //渠道标识
@@ -67,6 +67,10 @@ public class IYqueUserCode {
 
     //活码logo图片
     private String logoUrl;
+
+
+    //是否开启时段欢迎语 true:开启时段欢迎语; false:关闭时段欢迎语;
+    private boolean startPeriodAnnex;
 
 
     //备份原有企微二维码，只有当自定义logo的时候才存在
@@ -87,8 +91,16 @@ public class IYqueUserCode {
     //是否删除标识
     private Integer delFlag;
 
+    //未开启时段欢迎语的附件，如果：startPeriodAnnex 为true 当前字段值为空。
     @Transient
     private List<IYqueMsgAnnex> annexLists;
+
+
+    //时段欢迎语的附件
+    @Transient
+    private List<IYqueAnnexPeriod> periodAnnexLists;
+
+
 
     @PrePersist
     @PreUpdate
