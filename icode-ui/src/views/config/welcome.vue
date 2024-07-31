@@ -35,6 +35,7 @@ export default {
 		},
 		async submit() {
 			let form = await this.$refs.WelcomeForm.submit()
+			form.defaultContent = form.weclomeMsg
 			addOrUpdateWel(form).then(() => {
 				this.msgSuccess('操作成功')
 				this.getDetail()
