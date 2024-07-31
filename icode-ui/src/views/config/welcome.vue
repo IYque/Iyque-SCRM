@@ -41,15 +41,6 @@ export default {
 				this.getDetail()
 			})
 		},
-		add() {},
-		remove(index) {
-			this.$confirm().then(() => {
-				this.annexLists.splice(index, 1)
-				if (index >= this.annexLists.length) {
-					this.active = this.annexLists.length - 1
-				}
-			})
-		},
 	},
 }
 </script>
