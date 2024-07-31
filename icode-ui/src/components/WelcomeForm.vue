@@ -17,6 +17,9 @@ export default {
 				workCycle: [],
 				weclomeMsg: '您好，很高兴为您服务，请问有什么可以帮您？',
 			},
+			rules: {
+				weclomeMsg: [{ required: true, message: '必填项', trigger: 'blur' }],
+			},
 		}
 	},
 	computed: {},
@@ -120,7 +123,13 @@ export default {
 </script>
 
 <template>
-	<el-form ref="form" :model="form" label-position="right" label-width="100px" :scroll-into-view-options="true">
+	<el-form
+		ref="form"
+		:model="form"
+		label-position="right"
+		label-width="100px"
+		:rules="rules"
+		:scroll-into-view-options="true">
 		<el-form-item label="分时段">
 			<el-switch v-model="form.startPeriodAnnex"></el-switch>
 			<div class="g-tip">开启后，根据添加时间发送当前时段欢迎语</div>
@@ -228,6 +237,7 @@ export default {
 					<el-form-item label="欢迎语">
 						<TextareaExtend
 							v-model="item.weclomeMsg"
+							:toolbar="['emoji', 'insertCustomerNickName']"
 							maxlength="200"
 							show-word-limit
 							placeholder="请输入欢迎语"

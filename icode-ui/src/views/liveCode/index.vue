@@ -11,7 +11,7 @@ export default {
 			total: 0,
 			multipleSelection: [], // 多选数据
 			loading: false,
-			dialogVisible: true, // 弹窗显示控制
+			dialogVisible: false, // 弹窗显示控制
 			form: {},
 			queryParm: {
 				codeId: null,
