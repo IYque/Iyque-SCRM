@@ -45,18 +45,15 @@ export const add = (data) => post(`${serve}/save`, data)
 
 // 修改
 export function update(data) {
-  return put(`${serve}/update`, data)
+	return put(`${serve}/update`, data)
 }
 
-
-
 export const findIYqueMsgAnnexByMsgId = (id) => get(`/iyQue/findIYqueMsgAnnexByMsgId/${id}`)
+export const findIYqueMsgPeriodAnnexByMsgId = (id) => get(`/iyQue/findIYqueMsgPeriodAnnexByMsgId/${id}`)
 
 //获取所有活码id与name
 export const findIYqueUserCodeKvs = () => get(`${serve}/findIYqueUserCodeKvs`)
 
-
 export const countTotalTab = (data) => get(`${serve}/countTotalTab`, data)
-
 
 export const countTrend = (data) => get(`${serve}/countTrend`, data)
