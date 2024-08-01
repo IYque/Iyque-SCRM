@@ -51,12 +51,12 @@ export default {
 				item.periodMsgAnnexList ??= []
 				item.active = item.periodMsgAnnexList.push({ msgtype, [msgtype]: {} }) - 1
 				setTimeout(() => {
-					this.$refs.bottom[index].scrollIntoView()
+					this.scrollIntoView(this.$refs.bottom[index])
 				}, 100)
 			} else {
 				this.active = this.form.annexLists?.push({ msgtype, [msgtype]: {} }) - 1
 				setTimeout(() => {
-					this.$refs.bottom.scrollIntoView()
+					this.scrollIntoView(this.$refs.bottom)
 				}, 100)
 			}
 		},
@@ -117,6 +117,11 @@ export default {
 				let validate1 = tasks ? await Promise.all(tasks) : true
 			}
 			return form
+		},
+		scrollIntoView(el) {
+			el.scrollIntoViewIfNeeded
+				? el.scrollIntoViewIfNeeded(false)
+				: el.scrollIntoView({ behavior: 'smooth', block: 'end' })
 		},
 	},
 }
@@ -298,4 +303,8 @@ export default {
 	</el-form>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.roster-card:not(:first-child) {
+	margin-top: 20px;
+}
+</style>

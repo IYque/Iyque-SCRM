@@ -300,7 +300,7 @@ export default {
 			</el-tab-pane>
 		</el-tabs>
 
-		<el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%">
+		<el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%" :close-on-click-modal="false">
 			<aev :data="form" ref="aev"></aev>
 			<template #footer>
 				<el-button @click="dialogVisible = false">取消</el-button>
