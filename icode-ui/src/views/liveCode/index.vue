@@ -301,7 +301,7 @@ export default {
 		</el-tabs>
 
 		<el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%" :close-on-click-modal="false">
-			<aev :data="form" ref="aev"></aev>
+			<aev v-if="dialogVisible" :data="form" ref="aev"></aev>
 			<template #footer>
 				<el-button @click="dialogVisible = false">取消</el-button>
 				<el-button type="primary" @click="submit" v-loading="loading">确定</el-button>
