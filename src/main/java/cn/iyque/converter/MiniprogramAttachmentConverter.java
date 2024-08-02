@@ -1,6 +1,7 @@
 package cn.iyque.converter;
 
 import cn.hutool.core.util.StrUtil;
+import cn.iyque.domain.fileType.Miniprogram;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.FileUtils;
@@ -20,7 +21,7 @@ public class MiniprogramAttachmentConverter implements AttachmentConverter {
 
     @Override
     public Attachment convert(IYqueMsgAnnex annex) {
-        IYqueMsgAnnex.Miniprogram miniprogram = annex.getMiniprogram();
+        Miniprogram miniprogram = annex.getMiniprogram();
 
         if(null != miniprogram&& StrUtil.isNotEmpty(miniprogram.getTitle())
                 &&StrUtil.isNotEmpty(miniprogram.getPage())&&StrUtil.isNotEmpty(miniprogram.getAppid())

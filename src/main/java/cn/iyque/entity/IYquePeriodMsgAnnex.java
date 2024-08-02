@@ -2,14 +2,13 @@ package cn.iyque.entity;
 
 
 import cn.hutool.json.JSONUtil;
-import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.domain.fileType.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 /**
@@ -42,32 +41,32 @@ public class IYquePeriodMsgAnnex {
     private String annexContent;
 
     @Transient
-    private IYqueMsgAnnex.Image image;
+    private Image image;
 
     @Transient
-    private IYqueMsgAnnex.Link link;
+    private Link link;
 
     @Transient
-    private IYqueMsgAnnex.Miniprogram miniprogram;
+    private Miniprogram miniprogram;
 
     @Transient
-    private IYqueMsgAnnex.Video video;
+    private Video video;
 
     @Transient
-    private IYqueMsgAnnex.File file;
+    private File file;
 
     @PostLoad
     public void postLoad() {
         if (IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE.equals(msgtype)) {
-            image = JSONUtil.toBean(annexContent, IYqueMsgAnnex.Image.class);
+            image = JSONUtil.toBean(annexContent,  Image.class);
         } else if (IYqueMsgAnnex.MsgType.MSG_TYPE_LINK.equals(msgtype)) {
-            link = JSONUtil.toBean(annexContent, IYqueMsgAnnex.Link.class);
+            link = JSONUtil.toBean(annexContent, Link.class);
         } else if (IYqueMsgAnnex.MsgType.MSG_TYPE_MINIPROGRAM.equals(msgtype)) {
-            miniprogram = JSONUtil.toBean(annexContent, IYqueMsgAnnex.Miniprogram.class);
+            miniprogram = JSONUtil.toBean(annexContent, Miniprogram.class);
         } else if (IYqueMsgAnnex.MsgType.MSG_TYPE_VIDES.equals(msgtype)) {
-            video = JSONUtil.toBean(annexContent, IYqueMsgAnnex.Video.class);
+            video = JSONUtil.toBean(annexContent, Video.class);
         } else if (IYqueMsgAnnex.MsgType.MSG_TYPE_FILE.equals(msgtype)) {
-            file = JSONUtil.toBean(annexContent, IYqueMsgAnnex.File.class);
+            file = JSONUtil.toBean(annexContent, File.class);
         }
     }
 
@@ -85,6 +84,7 @@ public class IYquePeriodMsgAnnex {
             annexContent = JSONUtil.toJsonStr(file);
         }
     }
+
 
 
 }

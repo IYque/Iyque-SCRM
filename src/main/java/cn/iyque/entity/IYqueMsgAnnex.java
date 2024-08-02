@@ -2,6 +2,7 @@ package cn.iyque.entity;
 
 
 import cn.hutool.json.JSONUtil;
+import cn.iyque.domain.fileType.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 /**
@@ -103,55 +105,10 @@ public class IYqueMsgAnnex {
     }
 
 
-    //图片
-    @Data
-    public class Image{
-        //图片地址
-        private String picUrl;
-    }
 
 
-    //链接
-    @Data
-    public class Link{
-        //链接标题
-        private String title;
-        //链接封面
-        private String picUrl;
-        //链接描述
-        private String desc;
-        //链接跳转地址
-        private String url;
-    }
-
-    //小程序
-    @Data
-    public class Miniprogram{
-        //小程序标题
-        private String title;
-        //小程序封面地址
-        private String picUrl;
-        //小程序id
-        private String appid;
-        //小程序页面
-        private String page;
-    }
 
 
-    //视频
-    @Data
-    public class Video{
-        //视频地址
-        private String videoUrl;
-    }
-
-
-    //文件
-    @Data
-    public class File{
-        //文件地址
-        private String fileUrl;
-    }
 
 
 

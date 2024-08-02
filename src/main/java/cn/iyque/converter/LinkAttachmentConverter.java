@@ -16,7 +16,7 @@ import me.chanjar.weixin.cp.bean.external.msg.Link;
 public class LinkAttachmentConverter implements AttachmentConverter {
     @Override
     public Attachment convert(IYqueMsgAnnex annex) {
-        IYqueMsgAnnex.Link link = annex.getLink();
+        cn.iyque.domain.fileType.Link link = annex.getLink();
         if(null != link && StrUtil.isNotEmpty(link.getTitle())
                 && StrUtil.isNotEmpty(link.getUrl())){
             Attachment attachment=new Attachment();

@@ -86,7 +86,7 @@ public class IYqueUserCodeController {
      */
     @GetMapping("/findIYqueUserCode")
     public ResponseResult<IYqueUserCode> findIYqueUserCode(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size){
+                                                           @RequestParam(defaultValue = "10") int size){
         Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueUserCodes.getContent(),iYqueUserCodes.getTotalElements());
     }

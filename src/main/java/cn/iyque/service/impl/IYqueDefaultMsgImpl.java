@@ -82,7 +82,6 @@ public class IYqueDefaultMsgImpl implements IYqueDefaultMsgService {
                 //时段附件
                 List<IYquePeriodMsgAnnex> iYquePeriodMsgAnnexes=new ArrayList<>();
                 periodAnnexLists.stream().forEach(k->{
-                    k.setId(SnowFlakeUtils.nextId());
                     k.setMsgId(iYqueDefaultMsg.getId());
                     List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
                     if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
@@ -103,8 +102,18 @@ public class IYqueDefaultMsgImpl implements IYqueDefaultMsgService {
                             oldIYqueAnnexPeriod.stream().map(IYqueAnnexPeriod::getId).collect(Collectors.toList())
                     );
                 }
+
                 iYqueAnnexPeriodService.saveAll(periodAnnexLists);
                 if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
+                    periodAnnexLists.stream().forEach(k->{
+                        List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
+                        if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
+                            periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
+                                periodMsgAnnex.setAnnexPeroidId(k.getId());
+                            });
+                            iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
+                        }
+                    });
                     iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
                 }
 
