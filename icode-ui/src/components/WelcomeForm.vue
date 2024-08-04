@@ -15,7 +15,7 @@ export default {
 				beginTime: '',
 				endTime: '',
 				workCycle: [],
-				weclomeMsg: '您好，很高兴为您服务，请问有什么可以帮您？',
+				weclomeMsg: '欢迎使用源雀scrm👉http://iyque.cn',
 			},
 			rules: {
 				weclomeMsg: [{ required: true, message: '必填项', trigger: 'blur' }],
@@ -191,7 +191,9 @@ export default {
 
 		<!-- 时段欢迎语 -->
 		<el-form-item required v-if="form.startPeriodAnnex" label="欢迎语">
-			<template v-for="(item, index) in form.periodAnnexLists" :key="index + 'welcom'">
+			<template
+				v-for="(item, index) in form.periodAnnexLists.map((e) => ((e.active ??= 0), e))"
+				:key="index + 'welcom'">
 				<el-card class="roster-card">
 					<el-button
 						class="fr"
