@@ -110,19 +110,17 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                         //存储时段
                         iYqueAnnexPeriodService.saveAll(periodAnnexLists);
                         //存储时段附件
-                        if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
-                            periodAnnexLists.stream().forEach(k->{
-                                List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
-                                if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
-                                    periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
-                                        periodMsgAnnex.setAnnexPeroidId(k.getId());
-                                    });
-                                    iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
-                                }
-                            });
+                        periodAnnexLists.stream().forEach(k->{
+                            List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
+                            if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
+                                periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
+                                    periodMsgAnnex.setAnnexPeroidId(k.getId());
+                                });
+                                iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
+                            }
+                        });
 
-                            iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
-                        }
+                        iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
 
                     }
 
@@ -239,18 +237,19 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                         );
                     }
                     iYqueAnnexPeriodService.saveAll(periodAnnexLists);
-                    if(CollectionUtil.isNotEmpty(iYquePeriodMsgAnnexes)){
-                        periodAnnexLists.stream().forEach(k->{
-                            List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
-                            if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
-                                periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
-                                    periodMsgAnnex.setAnnexPeroidId(k.getId());
-                                });
-                                iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
-                            }
-                        });
-                        iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
-                    }
+
+
+                    periodAnnexLists.stream().forEach(k->{
+                        List<IYquePeriodMsgAnnex> periodMsgAnnexList = k.getPeriodMsgAnnexList();
+                        if(CollectionUtil.isNotEmpty(periodMsgAnnexList)){
+                            periodMsgAnnexList.stream().forEach(periodMsgAnnex->{
+                                periodMsgAnnex.setAnnexPeroidId(k.getId());
+                            });
+                            iYquePeriodMsgAnnexes.addAll(periodMsgAnnexList);
+                        }
+                    });
+                    iYquePeriodMsgAnnexService.saveAll(iYquePeriodMsgAnnexes);
+
 
                 }
 
