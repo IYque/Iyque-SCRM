@@ -198,8 +198,8 @@ npm run build
 - 2025.Q2：开源源雀SCRM群发场景化能力；
 - 更多计划正在积极筹备中...
 ## 六、页面展示
-![img.png](img/j-1.png)
-![img.png](img/j-2.png)
+![img.png](img/j-1.jpg)
+![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 
 
