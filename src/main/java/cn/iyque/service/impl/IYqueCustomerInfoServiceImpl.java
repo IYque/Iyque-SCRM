@@ -5,8 +5,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.dao.IYQueCustomerInfoDao;
+import cn.iyque.dao.IYqueShortLinkDao;
 import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.domain.*;
+import cn.iyque.entity.IYqueShortLink;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
@@ -37,47 +39,85 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
     IYQueCustomerInfoDao iyQueCustomerInfoDao;
 
 
+    @Autowired
+    IYqueShortLinkDao iYqueShortLinkDao;
+
+
     @Override
     public void addCustomerCallBackAction(IYqueCallBackBaseMsg callBackBaseMsg) {
 
         try {
-            if(StrUtil.isNotEmpty(callBackBaseMsg.getState())&&callBackBaseMsg.getState().startsWith(CodeStateConstant.USER_CODE_STATE)){
-                IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findByCodeState(callBackBaseMsg.getState());
-                if(null != iYqueUserCode){
-                    WxCpExternalContactInfo contactDetail = iYqueConfigService.findWxcpservice().getExternalContactService()
-                            .getContactDetail(callBackBaseMsg.getExternalUserID(), null);
-                    if(null != contactDetail){
 
+            if(StrUtil.isNotEmpty(callBackBaseMsg.getState())){
 
-                        //发送欢迎语
-                        ActionContext actionContext = new ActionContext(iYqueUserCode.isStartPeriodAnnex()?
-                                new SendPeriodWelcomeMsgStrategy():new SendWelcomeMsgStrategy());
-                        actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
+                IYQueCallbackQuery iyQueCallbackQuery=null;
 
+                //活码
+                if(callBackBaseMsg.getState().startsWith(CodeStateConstant.USER_CODE_STATE)){
 
-
-
-                        //自动打标签
-                        if (StrUtil.isNotEmpty(iYqueUserCode.getTagId())) {
-                            actionContext.setActionStrategy(new MakeTagCustomerStrategy());
-                            actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
-                        }
-
-                        //自动备注
-                        if (null != iYqueUserCode.getRemarkType()) {
-                            actionContext.setActionStrategy(new RemarkCustomerStrategy());
-                            actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
-                        }
-
-                        //客户相关信息入库
-                        actionContext.setActionStrategy(new SaveCustomerStrategy());
-                        actionContext.executeStrategy(callBackBaseMsg,iYqueUserCode,contactDetail);
-
+                    IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findByCodeState(callBackBaseMsg.getState());
+                    if(null != iYqueUserCode){
+                        iyQueCallbackQuery=new IYQueCallbackQuery();
+                        iyQueCallbackQuery.setBusinessId(iYqueUserCode.getId());
+                        iyQueCallbackQuery.setTagId(iYqueUserCode.getTagId());
+                        iyQueCallbackQuery.setTagName(iYqueUserCode.getTagName());
+                        iyQueCallbackQuery.setStartPeriodAnnex(iYqueUserCode.isStartPeriodAnnex());
+                        iyQueCallbackQuery.setWeclomeMsg(iYqueUserCode.getWeclomeMsg());
+                        iyQueCallbackQuery.setRemarkName(iYqueUserCode.getCodeName());
+                        iyQueCallbackQuery.setRemarkType(iYqueUserCode.getRemarkType());
                     }
-                }else{
-                    log.error("当前渠道活码不存在");
+
+                //获客短链
+                }else if(callBackBaseMsg.getState().startsWith(CodeStateConstant.LINK_CODE_STATE)){
+                    IYqueShortLink shortLink = iYqueShortLinkDao.findByLinkState(callBackBaseMsg.getState());
+                    if(null != shortLink){
+                        iyQueCallbackQuery=new IYQueCallbackQuery();
+                        iyQueCallbackQuery.setBusinessId(shortLink.getId());
+                        iyQueCallbackQuery.setTagId(shortLink.getTagId());
+                        iyQueCallbackQuery.setTagName(shortLink.getTagName());
+                        iyQueCallbackQuery.setStartPeriodAnnex(shortLink.isStartPeriodAnnex());
+                        iyQueCallbackQuery.setWeclomeMsg(shortLink.getWeclomeMsg());
+                        iyQueCallbackQuery.setRemarkName(shortLink.getLinkName());
+                        iyQueCallbackQuery.setRemarkType(shortLink.getRemarkType());
+                    }
+
+
+
                 }
+
+
+                WxCpExternalContactInfo contactDetail = iYqueConfigService.findWxcpservice().getExternalContactService()
+                        .getContactDetail(callBackBaseMsg.getExternalUserID(), null);
+
+
+                if(null != contactDetail&&iyQueCallbackQuery != null){
+                    //发送欢迎语
+                    ActionContext actionContext = new ActionContext(iyQueCallbackQuery.isStartPeriodAnnex()?
+                            new SendPeriodWelcomeMsgStrategy():new SendWelcomeMsgStrategy());
+                    actionContext.executeStrategy(callBackBaseMsg,iyQueCallbackQuery,contactDetail);
+
+
+
+                    //自动打标签
+                    if (StrUtil.isNotEmpty(iyQueCallbackQuery.getTagId())) {
+                        actionContext.setActionStrategy(new MakeTagCustomerStrategy());
+                        actionContext.executeStrategy(callBackBaseMsg,iyQueCallbackQuery,contactDetail);
+                    }
+
+                    //自动备注
+                    if (null != iyQueCallbackQuery.getRemarkType()) {
+                        actionContext.setActionStrategy(new RemarkCustomerStrategy());
+                        actionContext.executeStrategy(callBackBaseMsg,iyQueCallbackQuery,contactDetail);
+                    }
+
+                    //客户相关信息入库
+                    actionContext.setActionStrategy(new SaveCustomerStrategy());
+                    actionContext.executeStrategy(callBackBaseMsg,iyQueCallbackQuery,contactDetail);
+
+                }
+
             }
+
 
         }catch (Exception e){
             log.error("欢迎语动作执行异常:"+e.getMessage());

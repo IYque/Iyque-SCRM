@@ -2,6 +2,7 @@ package cn.iyque.strategy.callback;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.iyque.domain.IYQueCallbackQuery;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.service.IYqueConfigService;
@@ -15,11 +16,11 @@ import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 @Slf4j
 public class MakeTagCustomerStrategy implements ActionStrategy {
     @Override
-    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
-        if(null != iYqueUserCode && StrUtil.isNotEmpty(iYqueUserCode.getTagId())){
+    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
+        if(null != iyQueCallbackQuery && StrUtil.isNotEmpty(iyQueCallbackQuery.getTagId())){
             try {
                 SpringUtil.getBean(IYqueConfigService.class).findWxcpservice().getExternalContactService()
-                        .markTag(callBackBaseMsg.getUserID(),callBackBaseMsg.getExternalUserID(),iYqueUserCode.getTagId().split(","),null);
+                        .markTag(callBackBaseMsg.getUserID(),callBackBaseMsg.getExternalUserID(),iyQueCallbackQuery.getTagId().split(","),null);
             }catch (Exception e){
                 log.error("未客户打标签失败:"+e.getMessage());
             }

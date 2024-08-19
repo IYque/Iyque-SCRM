@@ -3,6 +3,7 @@ package cn.iyque.strategy.callback;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.iyque.domain.IYQueCallbackQuery;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueDefaultMsg;
 import cn.iyque.entity.IYqueMsgAnnex;
@@ -28,9 +29,9 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
 
 
     @Override
-    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
+    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
 
-        if(!iYqueUserCode.isStartPeriodAnnex()){
+        if(!iyQueCallbackQuery.isStartPeriodAnnex()){
 
 
             WxCpWelcomeMsg wxCpWelcomeMsg=new WxCpWelcomeMsg();
@@ -39,10 +40,10 @@ public class SendWelcomeMsgStrategy implements ActionStrategy {
             //是否发送默认欢迎语
             boolean sendDefaultMsg=true;
 
-            if(StrUtil.isNotEmpty(iYqueUserCode.getWeclomeMsg())){
-                text.setContent(iYqueUserCode.getWeclomeMsg());
+            if(StrUtil.isNotEmpty(iyQueCallbackQuery.getWeclomeMsg())){
+                text.setContent(iyQueCallbackQuery.getWeclomeMsg());
                 List<IYqueMsgAnnex> annexLists = SpringUtil.getBean(IYqueMsgAnnexService.class)
-                        .findIYqueMsgAnnexByMsgId(iYqueUserCode.getId());
+                        .findIYqueMsgAnnexByMsgId(iyQueCallbackQuery.getBusinessId());
                 if(CollectionUtil.isNotEmpty(annexLists)){
                     List<Attachment> attachments = SpringUtil.getBean(IYqueMsgAnnexService.class)
                             .msgAnnexToAttachment(annexLists);
