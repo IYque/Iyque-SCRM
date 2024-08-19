@@ -24,7 +24,7 @@ import java.util.List;
  * 获客链接
  */
 @RestController
-@RequestMapping("/iyQue")
+@RequestMapping("/iyQue/shortLink")
 public class IYqueShortLinkController {
 
     @Autowired

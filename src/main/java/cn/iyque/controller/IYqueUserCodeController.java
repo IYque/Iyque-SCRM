@@ -24,7 +24,7 @@ import java.util.List;
  * 客户引流码相关
  */
 @RestController
-@RequestMapping("/iyQue/shortLink")
+@RequestMapping("/iyQue")
 public class IYqueUserCodeController {
 
     @Autowired
