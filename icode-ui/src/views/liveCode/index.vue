@@ -1,9 +1,18 @@
 <script>
-import { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } from './api'
+import * as api from './api'
+import * as apiLink from './apiLink'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
+
+let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = {}
+
 export default {
 	data() {
+		let isLink = location.href.includes('customerLink')
+		let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = isLink
+			? apiLink
+			: api)
+
 		return {
 			activeName: 'first',
 			query: { page: 0, size: 10 },
@@ -21,6 +30,8 @@ export default {
 			xData: [],
 			series: [],
 			tabCount: {},
+
+			isLink,
 		}
 	},
 	components: { aev },
@@ -204,8 +215,10 @@ export default {
 									编辑
 								</el-button>
 								<el-button text @click="del(row.id)">删除</el-button>
-								<el-button text @click="distributeUserCode(row.id)">通知</el-button>
-								<el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+								<template v-if="!isLink">
+									<el-button text @click="distributeUserCode(row.id)">通知</el-button>
+									<el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+								</template>
 							</template>
 						</el-table-column>
 					</el-table>

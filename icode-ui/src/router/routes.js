@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import { h } from 'vue'
 import Layout from '@/layout/index.vue'
 const routerView = {
-  render: () => h(RouterView),
+	render: () => h(RouterView),
 }
 /**
  * Note: 路由配置项
@@ -24,62 +24,76 @@ const routerView = {
  */
 
 export const navRoutes = [
-  {
-    path: '/liveCode',
-    component: Layout,
-    redirect: '/liveCode/index',
-    meta: { title: '活码', icon: 'user' },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/liveCode/index'),
-        hidden: true,
-        meta: { title: '活码' },
-      },
-    ],
-  },
-  {
-    path: '/config',
-    component: Layout,
-    redirect: '/config/index',
-    meta: { title: '配置', icon: 'system' },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/config/index'),
-        hidden: true,
-        meta: { title: '配置' },
-      },
-    ],
-  },
+	{
+		path: '/liveCode',
+		component: Layout,
+		redirect: '/liveCode/index',
+		meta: { title: '活码', icon: 'user' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/liveCode/index'),
+				hidden: true,
+				meta: { title: '活码' },
+			},
+		],
+	},
+	{
+		path: '/customerLink',
+		component: Layout,
+		redirect: '/customerLink/index',
+		meta: { title: '获客', icon: 'system' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/liveCode/index'),
+				hidden: true,
+				meta: { title: '获客' },
+			},
+		],
+	},
+	{
+		path: '/config',
+		component: Layout,
+		redirect: '/config/index',
+		meta: { title: '配置', icon: 'system' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/config/index'),
+				hidden: true,
+				meta: { title: '配置' },
+			},
+		],
+	},
 ]
 
 // 公共路由
 export const constantRoutes = navRoutes.concat([
-  {
-    path: '/',
-    component: () => import('@/layout/visitor'),
-    redirect: navRoutes[0].path,
-    hidden: true,
-    children: [
-      {
-        path: '/login',
-        component: () => import('@/views/system/login'),
-      },
-      {
-        path: '/register',
-        component: () => import('@/views/system/register'),
-      },
-    ],
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/system/error/404'),
-    hidden: true,
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/system/error/401'),
-    hidden: true,
-  },
+	{
+		path: '/',
+		component: () => import('@/layout/visitor'),
+		redirect: navRoutes[0].path,
+		hidden: true,
+		children: [
+			{
+				path: '/login',
+				component: () => import('@/views/system/login'),
+			},
+			{
+				path: '/register',
+				component: () => import('@/views/system/register'),
+			},
+		],
+	},
+	{
+		path: '/404',
+		component: () => import('@/views/system/error/404'),
+		hidden: true,
+	},
+	{
+		path: '/401',
+		component: () => import('@/views/system/error/401'),
+		hidden: true,
+	},
 ])

@@ -29,16 +29,19 @@
 				<el-switch v-model="form.skipVerify"></el-switch>
 				<div class="g-tip">（注:勾选后,客户添加员工好友无需员工确认）</div>
 			</el-form-item>
-			<el-form-item label="重复添加">
-				<el-switch v-model="form.isExclusive"></el-switch>
-				<div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
-			</el-form-item>
 
-			<el-form-item label="二维码logo" prop="logoUrl">
-				<Upload v-model:fileUrl="form.logoUrl" :on-remove="handleRemove">
-					<template #tip><div>图片大小不超过2M</div></template>
-				</Upload>
-			</el-form-item>
+			<template v-if="!isLink">
+				<el-form-item label="重复添加">
+					<el-switch v-model="form.isExclusive"></el-switch>
+					<div class="g-tip">（注:开启后，同一个企业的客户会优先添加到同一个跟进人）</div>
+				</el-form-item>
+
+				<el-form-item label="二维码logo" prop="logoUrl">
+					<Upload v-model:fileUrl="form.logoUrl" :on-remove="handleRemove">
+						<template #tip><div>图片大小不超过2M</div></template>
+					</Upload>
+				</el-form-item>
+			</template>
 
 			<el-form-item label="新客标签" :error="tagErrorTip">
 				<el-select
@@ -70,12 +73,18 @@
 </template>
 
 <script>
-import { findIYqueMsgAnnexByMsgId, findIYqueMsgPeriodAnnexByMsgId, add, update } from './api'
+import * as api from './api'
+import * as apiLink from './apiLink'
 import { getUserList, getTagList, getRemarkList } from '@/api/common'
 import { dictMsgType } from '@/utils/index'
+
+let { findIYqueMsgAnnexByMsgId, findIYqueMsgPeriodAnnexByMsgId, add, update } = {}
+
 export default {
 	props: { data: {} },
 	data() {
+		let isLink = location.href.includes('customerLink')
+		let _ = ({ findIYqueMsgAnnexByMsgId, findIYqueMsgPeriodAnnexByMsgId, add, update } = isLink ? apiLink : api)
 		return {
 			rules: {
 				codeName: [{ required: true, message: '请输入活码名称', trigger: 'blur' }],
@@ -123,6 +132,8 @@ export default {
 			max: 9,
 			active: 0,
 			dictMsgType,
+
+			isLink,
 		}
 	},
 	computed: {
