@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IYqueShortLinkDao extends JpaRepository<IYqueShortLink,Long> {
 
-    IYqueShortLink findByLinkState(String linkState);
+    IYqueShortLink findByCodeState(String codeState);
 }

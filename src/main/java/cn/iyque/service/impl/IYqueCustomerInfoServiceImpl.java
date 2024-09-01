@@ -69,7 +69,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
                 //获客短链
                 }else if(callBackBaseMsg.getState().startsWith(CodeStateConstant.LINK_CODE_STATE)){
-                    IYqueShortLink shortLink = iYqueShortLinkDao.findByLinkState(callBackBaseMsg.getState());
+                    IYqueShortLink shortLink = iYqueShortLinkDao.findByCodeState(callBackBaseMsg.getState());
                     if(null != shortLink){
                         iyQueCallbackQuery=new IYQueCallbackQuery();
                         iyQueCallbackQuery.setBusinessId(shortLink.getId());
@@ -77,7 +77,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                         iyQueCallbackQuery.setTagName(shortLink.getTagName());
                         iyQueCallbackQuery.setStartPeriodAnnex(shortLink.isStartPeriodAnnex());
                         iyQueCallbackQuery.setWeclomeMsg(shortLink.getWeclomeMsg());
-                        iyQueCallbackQuery.setRemarkName(shortLink.getLinkName());
+                        iyQueCallbackQuery.setRemarkName(shortLink.getCodeName());
                         iyQueCallbackQuery.setRemarkType(shortLink.getRemarkType());
                     }
 
@@ -140,21 +140,39 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
         }
     }
 
-    private List<IYQueCustomerInfo> findAllByIdOrNoId(Long userCodeId){
+    private List<IYQueCustomerInfo> findAllByIdOrNoId(Long userCodeId,boolean codeOrLink){
         List<IYQueCustomerInfo> iyQueCustomerInfos =new ArrayList<>();
         if(null !=userCodeId){
-            IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findById(userCodeId).get();
-            if(iYqueUserCode != null){
-                String codeState = iYqueUserCode.getCodeState();
-                if(StrUtil.isNotEmpty(codeState)){
-                    iyQueCustomerInfos=iyQueCustomerInfoDao.findAll(Example.of(
-                            IYQueCustomerInfo.builder()
-                                    .state(codeState)
-                                    .build()
-                    ));
+            if(codeOrLink){
+                IYqueUserCode iYqueUserCode = iYqueUserCodeDao.findById(userCodeId).get();
+                if(iYqueUserCode != null){
+                    String codeState = iYqueUserCode.getCodeState();
+                    if(StrUtil.isNotEmpty(codeState)){
+                        iyQueCustomerInfos=iyQueCustomerInfoDao.findAll(Example.of(
+                                IYQueCustomerInfo.builder()
+                                        .state(codeState)
+                                        .build()
+                        ));
+                    }
+
+                }
+            }else{
+
+                IYqueShortLink shortLink = iYqueShortLinkDao.findById(userCodeId).get();
+                if(shortLink != null){
+                    String codeState = shortLink.getCodeState();
+                    if(StrUtil.isNotEmpty(codeState)){
+                        iyQueCustomerInfos=iyQueCustomerInfoDao.findAll(Example.of(
+                                IYQueCustomerInfo.builder()
+                                        .state(codeState)
+                                        .build()
+                        ));
+                    }
+
                 }
 
             }
+
         }else{
             iyQueCustomerInfos=iyQueCustomerInfoDao.findAll();
         }
@@ -165,12 +183,12 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
     }
     @Override
-    public IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery) {
+    public IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery,boolean codeOrLink) {
         IYqueUserCodeCountVo iYqueUserCodeCountVo
                 = IYqueUserCodeCountVo.builder().build();
 
 
-        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId());
+        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId(),codeOrLink);
         if(CollectionUtil.isNotEmpty(iyQueCustomerInfos)){
 
             List<IYQueCustomerInfo> allIYQueCustomerInfo=new ArrayList<>();
@@ -263,7 +281,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
     }
 
     @Override
-    public IYQueTrendCount countTrend(IYQueCountQuery queCountQuery) {
+    public IYQueTrendCount countTrend(IYQueCountQuery queCountQuery,boolean codeOrLink) {
         IYQueTrendCount trendCount=new IYQueTrendCount();
 
         List<List<Integer>> series=new ArrayList<>();
@@ -274,7 +292,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
 
 
-        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId());
+        List<IYQueCustomerInfo> iyQueCustomerInfos = this.findAllByIdOrNoId(queCountQuery.getUserCodeId(),codeOrLink);
 
         //新增客户数
         series.add(

@@ -30,7 +30,7 @@ public class IYqueShortLink {
     private Long id;
 
     //名称
-    private String linkName;
+    private String codeName;
 
     //员工id,多个使用逗号隔开
     private String userId;
@@ -53,14 +53,15 @@ public class IYqueShortLink {
     //未开启时段欢迎语的附件，如果：startPeriodAnnex 为true 当前字段值为空。
     private String weclomeMsg;
 
-    //渠道标识
-    private String linkState;
 
-    //短链地址
-    private String linkUrl;
+    //渠道标识
+    private String codeState;
+
+    //活码地址
+    private String codeUrl;
 
     //联系方式的配置id
-    private String linkId;
+    private String configId;
 
 
 

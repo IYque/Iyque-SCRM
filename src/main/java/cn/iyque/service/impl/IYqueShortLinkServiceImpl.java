@@ -62,10 +62,10 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
         try {
             shortLink.setCreateTime(new Date());
             shortLink.setUpdateTime(new Date());
-            shortLink.setLinkState(CodeStateConstant.LINK_CODE_STATE+ SnowFlakeUtils.nextId());
+            shortLink.setCodeState(CodeStateConstant.LINK_CODE_STATE+ SnowFlakeUtils.nextId());
             WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
             WxCpCustomerAcquisitionRequest request=new WxCpCustomerAcquisitionRequest();
-            request.setLinkName(shortLink.getLinkName());
+            request.setLinkName(shortLink.getCodeName());
             request.setSkipVerify(shortLink.getSkipVerify());
             WxCpCustomerAcquisitionInfo.Range range=new WxCpCustomerAcquisitionInfo.Range();
             range.setUserList(ListUtil.toList(shortLink.getUserId().split(",")));
@@ -89,8 +89,8 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
 
                 if(null != link && StrUtil.isNotEmpty(link.getLinkId())
                         && StrUtil.isNotEmpty(link.getUrl())){
-                    shortLink.setLinkId(link.getLinkId());
-                    shortLink.setLinkUrl(link.getUrl()+"?customer_channel="+shortLink.getLinkState() );
+                    shortLink.setConfigId(link.getLinkId());
+                    shortLink.setCodeUrl(link.getUrl()+"?customer_channel="+shortLink.getCodeState() );
 
                     iYqueShortLinkDao.save(shortLink);
 
@@ -154,7 +154,7 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
                 iYqueKvalVos.add(
                         IYqueKvalStrVo.builder()
                                 .val(k.getId().toString())
-                                .key(k.getLinkName())
+                                .key(k.getCodeName())
                                 .build()
                 );
 
@@ -174,14 +174,12 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
             IYqueShortLink oldShortLink = this.findIYqueShortLinkById(shortLink.getId());
             if(null != oldShortLink){
 
-                oldShortLink.setLinkName(shortLink.getLinkName());
-                oldShortLink.setSkipVerify(shortLink.getSkipVerify());
-                oldShortLink.setUserId(shortLink.getUserId());
-                oldShortLink.setUserName(shortLink.getUserName());
+                shortLink.setCodeState(oldShortLink.getCodeState());
+                shortLink.setConfigId(oldShortLink.getConfigId());
                 WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
                 WxCpCustomerAcquisitionRequest request=new WxCpCustomerAcquisitionRequest();
-                request.setLinkId(oldShortLink.getLinkId());
-                request.setLinkName(shortLink.getLinkName());
+                request.setLinkId(oldShortLink.getConfigId());
+                request.setLinkName(shortLink.getCodeName());
                 request.setSkipVerify(shortLink.getSkipVerify());
                 WxCpCustomerAcquisitionInfo.Range range=new WxCpCustomerAcquisitionInfo.Range();
                 range.setUserList(ListUtil.toList(shortLink.getUserId().split(",")));
@@ -194,11 +192,10 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
                     throw new IYqueException("获客短链创建失败");
                 }
 
-                 if(IYqueContant.COMMON_STATE.equals(wxCpBaseResp.getErrcode())){
+                 if(IYqueContant.COMMON_STATE.equals(wxCpBaseResp.getErrcode().intValue())){
 
-                     oldShortLink.setUpdateTime(new Date());
-                     iYqueShortLinkDao.saveAndFlush(oldShortLink);
-
+                     shortLink.setUpdateTime(new Date());
+                     iYqueShortLinkDao.saveAndFlush(shortLink);
 
 
                      if(shortLink.isStartPeriodAnnex()){//开启时段欢迎语
@@ -209,15 +206,15 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
                              //时段附件
                              List<IYquePeriodMsgAnnex> iYquePeriodMsgAnnexes=new ArrayList<>();
                              periodAnnexLists.stream().forEach(k->{
-                                 k.setMsgId(oldShortLink.getId());
+                                 k.setMsgId(shortLink.getId());
                              });
 
                              //存储时段
                              List<IYqueAnnexPeriod> oldIYqueAnnexPeriod = iYqueAnnexPeriodService
-                                     .findIYqueAnnexPeriodByMsgId(oldShortLink.getId());
+                                     .findIYqueAnnexPeriodByMsgId(shortLink.getId());
 
                              if(CollectionUtil.isNotEmpty(oldIYqueAnnexPeriod)){
-                                 iYqueAnnexPeriodService.deleteIYqueAnnexPeriodByMsgId(oldShortLink.getId());
+                                 iYqueAnnexPeriodService.deleteIYqueAnnexPeriodByMsgId(shortLink.getId());
                                  iYquePeriodMsgAnnexService.deleteAllByAnnexPeroidIdIn(
                                          oldIYqueAnnexPeriod.stream().map(IYqueAnnexPeriod::getId).collect(Collectors.toList())
                                  );
@@ -240,11 +237,11 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
                          }
 
                      }else{
-                         iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(oldShortLink.getId());
+                         iYqueMsgAnnexService.deleteIYqueMsgAnnexByMsgId(shortLink.getId());
                          List<IYqueMsgAnnex> annexLists = shortLink.getAnnexLists();
                          if(CollectionUtil.isNotEmpty(annexLists)){
                              annexLists.stream().forEach(k->{
-                                 k.setMsgId(oldShortLink.getId());
+                                 k.setMsgId(shortLink.getId());
                              });
                              iYqueMsgAnnexService.saveAll(annexLists);
                          }
@@ -283,7 +280,7 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
                 k.setDelFlag(IYqueContant.DEL_STATE);
 
                 try {
-                    iYqueConfigService.findWxcpservice().getExternalContactService().customerAcquisitionLinkDelete(k.getLinkId());
+                    iYqueConfigService.findWxcpservice().getExternalContactService().customerAcquisitionLinkDelete(k.getConfigId());
                     iYqueShortLinkDao.saveAndFlush(k);
                 }catch (Exception e){
                     log.error("获客链接删除失败:"+e.getMessage());

@@ -187,7 +187,7 @@ public class IYqueUserCodeController {
      */
     @GetMapping("/countTotalTab")
     public ResponseResult<IYqueUserCodeCountVo> countTotalTab(IYQueCountQuery queCountQuery){
-        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery);
+        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery,true);
 
         return new ResponseResult<>(iYqueUserCodeCountVo);
     }
@@ -201,7 +201,7 @@ public class IYqueUserCodeController {
     @GetMapping("/countTrend")
     public ResponseResult<IYQueTrendCount> countTrend(IYQueCountQuery queCountQuery){
 
-        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery);
+        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery,true);
 
         return new ResponseResult<>(trendCount);
     }

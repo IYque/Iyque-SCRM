@@ -165,7 +165,7 @@ public class IYqueShortLinkController {
      */
     @GetMapping("/countTotalTab")
     public ResponseResult<IYqueUserCodeCountVo> countTotalTab(IYQueCountQuery queCountQuery){
-        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery);
+        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery,false);
 
         return new ResponseResult<>(iYqueUserCodeCountVo);
     }
@@ -179,7 +179,7 @@ public class IYqueShortLinkController {
     @GetMapping("/countTrend")
     public ResponseResult<IYQueTrendCount> countTrend(IYQueCountQuery queCountQuery){
 
-        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery);
+        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery,false);
 
         return new ResponseResult<>(trendCount);
     }
