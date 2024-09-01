@@ -191,10 +191,10 @@ export default {
 						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
 						<el-table-column type="selection" width="50" align="center"></el-table-column>
 						<el-table-column label="渠道名称" prop="codeName" show-overflow-tooltip />
-						<el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
-							<template #default="{ row }">
+						<el-table-column label="活码地址" prop="codeUrl">
+							<!-- <template #default="{ row }">
 								<el-image :src="row.codeUrl" style="width: 100px"></el-image>
-							</template>
+							</template> -->
 						</el-table-column>
 						<el-table-column label="使用员工">
 							<template #default="{ row }">
