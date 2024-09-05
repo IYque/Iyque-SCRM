@@ -196,8 +196,11 @@ npm run dev
 # 构建生产环境
 npm run build
 ```
+### 5.4 配置文档
+地址:https://www.iyque.cn/
+![输入图片说明](img/WeChat849dd143d0c7f00591a3287acd7d13f3.jpg)
 
-### 5.4 计划
+### 5.5 计划
 
 源雀SCRM开源版会根据产品实际情况，积极开放更多能力。目前初步开源计划如下：
 
