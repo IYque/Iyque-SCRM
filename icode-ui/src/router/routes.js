@@ -53,6 +53,20 @@ export const navRoutes = [
 		],
 	},
 	{
+		path: '/groupCode',
+		component: Layout,
+		redirect: '/groupCode/index',
+		meta: { title: '群码', icon: 'user' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/groupCode/index'),
+				hidden: true,
+				meta: { title: '群码' },
+			},
+		],
+	},
+	{
 		path: '/config',
 		component: Layout,
 		redirect: '/config/index',
