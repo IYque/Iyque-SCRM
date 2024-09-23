@@ -33,9 +33,9 @@ export default {
 	watch: {},
 	created() {
 		this.getList()
-		this.getData()
-		this.initSelect()
-		this.selectCount()
+		// this.getData()
+		// this.initSelect()
+		// this.selectCount()
 	},
 	mounted() {},
 	methods: {
@@ -113,7 +113,7 @@ export default {
 				.then(() => {
 					this.dialogVisible = false
 					this.getList()
-					this.initSelect()
+					// this.initSelect()
 				})
 				.catch((e) => console.error(e))
 				.finally(() => (this.loading = false))
