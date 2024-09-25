@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 群活码
+ * 智能群码
  */
 @RestController
 @RequestMapping("/iychatCode")
