@@ -6,6 +6,7 @@ import cn.iyque.entity.IYqueChatCode;
 import cn.iyque.entity.IYqueUserCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface IYqueChatCodeService {
      * @return
      */
     Page<IYqueChatCode> findAll(Pageable pageable);
+
+
 
     /**
      * 创建群活码
@@ -38,6 +41,13 @@ public interface IYqueChatCodeService {
      * 获取企业微信所有外部群
      */
     List<IYqueChat> listAllGroupChats() throws Exception;
+
+
+    /**
+     * 删除群活码
+     * @param ids
+     */
+    void batchDelete(Long[] ids);
 
 
 }

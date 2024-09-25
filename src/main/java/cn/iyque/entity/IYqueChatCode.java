@@ -1,6 +1,8 @@
 package cn.iyque.entity;
 
 
+import cn.hutool.json.JSONUtil;
+import cn.iyque.domain.fileType.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "iyque_chat_code")
 @Data
@@ -56,8 +59,18 @@ public class IYqueChatCode {
     private Integer roomBaseId;
 
 
-    //使用该配置的客户群ID列表，最多支持5个
-    private String chatIds;
+    //使用该配置的客户群ID列表，多个使用逗号隔开，最多支持5个
+//    private String chatIds;
+//
+//    //使用该配置的客户群名称列表，多个使用逗号隔开，最多支持5个
+//    private String chatNames;
+
+
+    private String yqueChatListJson; // 用于存储序列化后的字符串
+
+
+    @Transient
+    private List<IYqueChat> yqueChatList;
 
 
 
@@ -72,10 +85,15 @@ public class IYqueChatCode {
     //是否删除标识
     private Integer delFlag;
 
+    @PostLoad
+    public void postLoad() {
+        yqueChatList= JSONUtil.toList(yqueChatListJson,  IYqueChat.class);
+    }
 
     @PrePersist
     @PreUpdate
     private void setDefaultDelFlag() {
+        yqueChatListJson= JSONUtil.toJsonStr(yqueChatList);
         if (this.delFlag == null) {
             this.delFlag = 0;
         }

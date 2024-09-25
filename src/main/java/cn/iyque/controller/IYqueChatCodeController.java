@@ -80,6 +80,22 @@ public class IYqueChatCodeController {
         return new ResponseResult(iYqueChatCodes.getContent(),iYqueChatCodes.getTotalElements());
     }
 
+
+    /**
+     * 通过id批量删除
+     *
+     * @param ids id列表
+     * @return 结果
+     */
+    @DeleteMapping(path = "/{ids}")
+    public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
+
+        iYqueChatCodeService.batchDelete(ids);
+
+        return new ResponseResult();
+    }
+
+
     /**
      * 获取企业微信群
      * @return

@@ -17,7 +17,7 @@ export const getList = (data) => get(`${serve}/findIYqueChatCode`, data)
 // export const getDetail = (id) => get(`${serve}/findIYqueUserCode/${id}`)
 
 // // 删除
-// export const del = (ids) => delt(`${serve}/${ids}`)
+export const del = (ids) => delt(`${serve}/${ids}`)
 
 /**
  * 新增

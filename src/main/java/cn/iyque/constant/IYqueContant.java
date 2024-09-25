@@ -15,4 +15,7 @@ public class IYqueContant {
 
     //企微api成功返回状态码
     public static final Integer WECHAT_API_SUCCESS=0;
+
+
+
 }

@@ -10,24 +10,25 @@ import cn.iyque.entity.IYqueChatCode;
 import cn.iyque.service.IYqueChatCodeService;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.SnowFlakeUtils;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpBaseResp;
 import me.chanjar.weixin.cp.bean.external.WxCpGroupJoinWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpGroupJoinWayResult;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalGroupChatInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalGroupChatList;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
 
     @Autowired
@@ -42,51 +43,61 @@ public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
         return iYqueChatCodeDao.findAll(pageable);
     }
 
+
     @Override
     public void createChatCode(IYqueChatCode iYqueChatCode) throws Exception {
 
         try {
-            iYqueChatCode.setCreateTime(new Date());
-            iYqueChatCode.setUpdateTime(new Date());
-            iYqueChatCode.setChatCodeState(CodeStateConstant.CHAT_CODE_STATE+ SnowFlakeUtils.nextId());
 
-            WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
+            List<IYqueChat> iYqueChatList = iYqueChatCode.getYqueChatList();
 
-            WxCpGroupJoinWayInfo joinWayInfo=new WxCpGroupJoinWayInfo();
-            WxCpGroupJoinWayInfo.JoinWay joinWay=new WxCpGroupJoinWayInfo.JoinWay();
-            joinWay.setScene(2);
-            joinWay.setRemark(iYqueChatCode.getRemark());
-            joinWay.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
-            joinWay.setRoomBaseName(iYqueChatCode.getRoomBaseName());
-            joinWay.setRoomBaseId(iYqueChatCode.getRoomBaseId());
-            joinWay.setChatIdList( Arrays.asList(iYqueChatCode.getChatIds().split(",")));
-            joinWay.setState(iYqueChatCode.getChatCodeState());
-            joinWayInfo.setJoinWay(joinWay);
-            WxCpGroupJoinWayResult wxCpGroupJoinWayResult = wxcpservice.getExternalContactService().addJoinWay(joinWayInfo);
+            if(CollectionUtil.isNotEmpty(iYqueChatList)){
 
 
-            if(null != wxCpGroupJoinWayResult
-                    && StrUtil.isNotEmpty(wxCpGroupJoinWayResult.getConfigId())
-                   ){
-                iYqueChatCode.setConfigId(wxCpGroupJoinWayResult.getConfigId());
-                //获取入群二维码地址
-                WxCpGroupJoinWayInfo wxCpGroupJoinWayInfo
-                        = wxcpservice.getExternalContactService().getJoinWay(joinWay.getConfigId());
+                iYqueChatCode.setCreateTime(new Date());
+                iYqueChatCode.setUpdateTime(new Date());
+                iYqueChatCode.setChatCodeState(CodeStateConstant.CHAT_CODE_STATE+ SnowFlakeUtils.nextId());
 
-                if(wxCpGroupJoinWayInfo != null){
-                    WxCpGroupJoinWayInfo.JoinWay joinWay1 = wxCpGroupJoinWayInfo.getJoinWay();
+                WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
 
-                    if(null != joinWay1){
-                        iYqueChatCode.setChatCodeUrl(joinWay1.getQrCode());
+                WxCpGroupJoinWayInfo joinWayInfo=new WxCpGroupJoinWayInfo();
+                WxCpGroupJoinWayInfo.JoinWay joinWay=new WxCpGroupJoinWayInfo.JoinWay();
+                joinWay.setScene(2);
+                joinWay.setRemark(iYqueChatCode.getRemark());
+                joinWay.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
+                joinWay.setRoomBaseName(iYqueChatCode.getRoomBaseName());
+                joinWay.setRoomBaseId(iYqueChatCode.getRoomBaseId());
+                joinWay.setChatIdList(iYqueChatList.stream().map(IYqueChat::getChatId).collect(Collectors.toList()));
+                joinWay.setState(iYqueChatCode.getChatCodeState());
+                joinWayInfo.setJoinWay(joinWay);
+                WxCpGroupJoinWayResult wxCpGroupJoinWayResult = wxcpservice.getExternalContactService().addJoinWay(joinWayInfo);
+
+                if(null != wxCpGroupJoinWayResult
+                        && StrUtil.isNotEmpty(wxCpGroupJoinWayResult.getConfigId())
+                ){
+                    iYqueChatCode.setConfigId(wxCpGroupJoinWayResult.getConfigId());
+                    //获取入群二维码地址
+                    WxCpGroupJoinWayInfo wxCpGroupJoinWayInfo
+                            = wxcpservice.getExternalContactService().getJoinWay(wxCpGroupJoinWayResult.getConfigId());
+
+                    if(wxCpGroupJoinWayInfo != null){
+                        WxCpGroupJoinWayInfo.JoinWay joinWay1 = wxCpGroupJoinWayInfo.getJoinWay();
+
+                        if(null != joinWay1){
+                            iYqueChatCode.setChatCodeUrl(joinWay1.getQrCode());
+                        }
+
                     }
 
+
+
+                    iYqueChatCodeDao.save(iYqueChatCode);
+
                 }
-
-
-
-                iYqueChatCodeDao.save(iYqueChatCode);
-
             }
+
+
+
         }catch (Exception e){
             throw e;
         }
@@ -98,30 +109,46 @@ public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
                 iYqueChatCodeDao.findById(iYqueChatCode.getId()).get();
         if(null != oldIYqueChatCode){
 
+            if(iYqueChatCode.getAutoCreateRoom().equals(new Integer(0))){
+                iYqueChatCode.setRoomBaseName(null);
+                iYqueChatCode.setRoomBaseId(null);
+            }
 
-            WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
-            WxCpGroupJoinWayInfo joinWayInfo=new WxCpGroupJoinWayInfo();
-            WxCpGroupJoinWayInfo.JoinWay joinWay=new WxCpGroupJoinWayInfo.JoinWay();
-            joinWay.setConfigId(oldIYqueChatCode.getConfigId());
-            joinWay.setScene(2);
-            joinWay.setRemark(iYqueChatCode.getRemark());
-            joinWay.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
-            joinWay.setRoomBaseName(iYqueChatCode.getRoomBaseName());
-            joinWay.setRoomBaseId(iYqueChatCode.getRoomBaseId());
-            joinWay.setChatIdList( Arrays.asList(iYqueChatCode.getChatIds().split(",")));
-            joinWay.setState(oldIYqueChatCode.getChatCodeState());
-            joinWayInfo.setJoinWay(joinWay);
-            WxCpBaseResp wxCpBaseResp = wxcpservice.getExternalContactService().updateJoinWay(joinWayInfo);
+            List<IYqueChat> iYqueChatList = iYqueChatCode.getYqueChatList();
 
-            if(null != wxCpBaseResp
-                    &&wxCpBaseResp.getErrcode().equals(IYqueContant.WECHAT_API_SUCCESS)){
-                oldIYqueChatCode.setChatCodeName(iYqueChatCode.getChatCodeName());
-                oldIYqueChatCode.setRemark(iYqueChatCode.getRemark());
-                oldIYqueChatCode.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
-                oldIYqueChatCode.setRoomBaseId(iYqueChatCode.getRoomBaseId());
-                oldIYqueChatCode.setRoomBaseName(iYqueChatCode.getRoomBaseName());
-                oldIYqueChatCode.setUpdateTime(new Date());
-                iYqueChatCodeDao.saveAndFlush(oldIYqueChatCode);
+            if(CollectionUtil.isNotEmpty(iYqueChatList)){
+                WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
+                WxCpGroupJoinWayInfo joinWayInfo=new WxCpGroupJoinWayInfo();
+                WxCpGroupJoinWayInfo.JoinWay joinWay=new WxCpGroupJoinWayInfo.JoinWay();
+                joinWay.setConfigId(oldIYqueChatCode.getConfigId());
+                joinWay.setScene(2);
+                joinWay.setRemark(iYqueChatCode.getRemark());
+                joinWay.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
+
+                if(StringUtils.isNotEmpty(iYqueChatCode.getRoomBaseName())){
+                    joinWay.setRoomBaseName(iYqueChatCode.getRoomBaseName());
+                }
+
+                if(iYqueChatCode.getRoomBaseId() != null){
+                    joinWay.setRoomBaseId(iYqueChatCode.getRoomBaseId());
+                }
+
+
+                joinWay.setChatIdList(iYqueChatList.stream().map(IYqueChat::getChatId).collect(Collectors.toList()));
+                joinWay.setState(oldIYqueChatCode.getChatCodeState());
+                joinWayInfo.setJoinWay(joinWay);
+                WxCpBaseResp wxCpBaseResp = wxcpservice.getExternalContactService().updateJoinWay(joinWayInfo);
+                if(null != wxCpBaseResp
+                        &&IYqueContant.WECHAT_API_SUCCESS.equals(wxCpBaseResp.getErrcode().intValue())){
+                    oldIYqueChatCode.setChatCodeName(iYqueChatCode.getChatCodeName());
+                    oldIYqueChatCode.setRemark(iYqueChatCode.getRemark());
+                    oldIYqueChatCode.setAutoCreateRoom(iYqueChatCode.getAutoCreateRoom());
+                    oldIYqueChatCode.setRoomBaseId(iYqueChatCode.getRoomBaseId());
+                    oldIYqueChatCode.setRoomBaseName(iYqueChatCode.getRoomBaseName());
+                    oldIYqueChatCode.setUpdateTime(new Date());
+                    iYqueChatCodeDao.saveAndFlush(oldIYqueChatCode);
+                }
+
             }
 
         }
@@ -155,7 +182,7 @@ public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
                        iYqueChatList.add(
                                IYqueChat.builder()
                                        .chatId(wGroupChat.getChatId())
-                                       .chatName(wGroupChat.getName())
+                                       .chatName(StringUtils.isNotEmpty(wGroupChat.getName())?wGroupChat.getName():"@微信群")
                                        .build()
                        );
                    }
@@ -175,6 +202,35 @@ public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
 
 
         return iYqueChatList;
+
+    }
+
+    @Override
+    public void batchDelete(Long[] ids) {
+        List<IYqueChatCode> iYqueChatCodes = iYqueChatCodeDao.findAllById(Arrays.asList(ids));
+        if(CollectionUtil.isNotEmpty(iYqueChatCodes)){
+
+            iYqueChatCodes.stream().forEach(k->{
+                k.setDelFlag(IYqueContant.DEL_STATE);
+
+                try {
+                    WxCpBaseResp wxCpBaseResp
+                            = iYqueConfigService.findWxcpservice().getExternalContactService().deleteContactWay(k.getConfigId());
+
+                    if(null != wxCpBaseResp
+                            &&IYqueContant.WECHAT_API_SUCCESS.equals(wxCpBaseResp.getErrcode().intValue())){
+                        iYqueChatCodeDao.saveAndFlush(k);
+
+                    }
+
+
+                }catch (Exception e){
+                    log.error("智能群码删除失败:"+e.getMessage());
+                }
+
+            });
+
+        }
 
     }
 }

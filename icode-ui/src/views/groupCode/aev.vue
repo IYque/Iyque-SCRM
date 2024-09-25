@@ -11,34 +11,27 @@
 				<el-input v-model="form.chatCodeName" maxlength="15" show-word-limit clearable placeholder="请输入"></el-input>
 				<!-- <div class="g-tip">活码名称创建完成后不可修改</div> -->
 			</el-form-item>
-			<el-form-item label="活码客群:" prop="chatIds">
+			<el-form-item label="活码客群:" prop="chatIds" :error="groupErrorTip">
 				<el-select
-					v-model="form.users"
-					value-key="id"
+					v-model="form.yqueChatList"
+					value-key="chatId"
 					multiple
 					collapse-tags
 					collapse-tags-tooltip
 					:max-collapse-tags="3"
 					placeholder="请选择">
-					<el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item" />
+					<el-option v-for="item in userList" :key="item.chatId" :label="item.chatName" :value="item" />
 				</el-select>
 			</el-form-item>
-			<!-- <el-form-item label="入群标签:" prop="tagIds">
-				<el-select
-					v-model="form.tags"
-					value-key="id"
-					multiple
-					collapse-tags
-					collapse-tags-tooltip
-					:max-collapse-tags="3"
-					placeholder="请选择">
-					<el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item" />
-				</el-select>
-				<div class="sub-des">通过此群活码进群的客户自动打上标签</div>
-			</el-form-item> -->
+
+			<el-form-item label="自动备注">
+				<el-input v-model="form.remark" maxlength="30" show-word-limit clearable placeholder="请输入"></el-input>
+			</el-form-item>
+
+		
 			<el-form-item label="群满是否自动建群:">
 				<el-switch v-model="form.autoCreateRoom" :active-value="1" :inactive-value="0"></el-switch>
-				<div class="sub-des">默认以第一个群的群主作为新建群的群主</div>
+				<!-- <div class="sub-des">默认以第一个群的群主作为新建群的群主</div> -->
 			</el-form-item>
 			<template v-if="form.autoCreateRoom" label="">
 				<el-form-item label="群名前缀:" prop="roomBaseName">
@@ -49,9 +42,8 @@
 				</el-form-item>
 			</template>
 
-			<el-form-item label="自动备注">
-				<el-input v-model="form.remark" maxlength="30" show-word-limit clearable placeholder="请输入"></el-input>
-			</el-form-item>
+			
+
 		</el-form>
 	</div>
 </template>
@@ -91,19 +83,20 @@ export default {
 			},
 			form: {
 				chatCodeName: '',
-				skipVerify: 1, // 自动通过
-				tags: [], // 标签
-				users: [], // 标签
-				remarkType: null, //客户备注
-				logoUrl: null, //活码logo
-				startPeriodAnnex: true,
+				chatIds:''
+				// skipVerify: 1, // 自动通过
+				// tags: [], // 标签
+				// users: [], // 标签
+				// remarkType: null, //客户备注
+				// logoUrl: null, //活码logo
+				// startPeriodAnnex: true,
 			},
 
 			selectedUserList: [],
 			selectedTagList: [],
 
 			userList: [],
-			userErrorTip: '',
+			groupErrorTip: '',
 			tagList: [],
 			tagErrorTip: '',
 			remarkList: [],
@@ -162,14 +155,15 @@ export default {
 		this.getGroupList()
 		let id = this.form.id
 		if (id) {
-			this.getDetail(id)
+			console.log(this.form)
+			// this.getDetail(id)
 		}
 	},
 	methods: {
 		getGroupList() {
 			getGroupList().then((res) => {
 				if (res.code == 301) {
-					this.userErrorTip = res.msg
+					this.groupErrorTip = res.msg
 					return
 				}
 				this.userList = res.data || []
@@ -178,28 +172,28 @@ export default {
 
 		/** 获取详情 */
 		getDetail(id) {
-			findIYqueMsgAnnexByMsgId(id).then((res) => {
-				console.log(res.data)
-				this.form.annexLists = res.data
-			})
-			this.form.startPeriodAnnex &&
-				findIYqueMsgPeriodAnnexByMsgId(id).then((res) => {
-					console.log(res.data)
-					this.form.periodAnnexLists = res.data
-				})
+			// findIYqueMsgAnnexByMsgId(id).then((res) => {
+			// 	console.log(res.data)
+			// 	this.form.annexLists = res.data
+			// })
+			// this.form.startPeriodAnnex &&
+			// 	findIYqueMsgPeriodAnnexByMsgId(id).then((res) => {
+			// 		console.log(res.data)
+			// 		this.form.periodAnnexLists = res.data
+			// 	})
 		},
 
 		async submit() {
 			let valid = await this.$refs.form.validate()
 			if (!valid) return
 			let form = JSON.parse(JSON.stringify(this.form))
-			form.tagId = form.tags.map((e) => e.id) + ''
-			form.tagName = form.tags.map((e) => e.name) + ''
-			form.userId = form.users.map((e) => e.id) + ''
-			form.userName = form.users.map((e) => e.name) + ''
+			console.log(form)
+			// form.tagId = form.tags.map((e) => e.id) + ''
+			// form.tagName = form.tags.map((e) => e.name) + ''
+			// form.userId = form.users.map((e) => e.id) + ''
+			// form.userName = form.users.map((e) => e.name) + ''
 
-			let WelcomeForm = await this.$refs.WelcomeForm.submit()
-			Object.assign(form, WelcomeForm)
+		
 			return (form.id ? update : add)(form)
 				.then(({ data }) => {
 					this.msgSuccess('操作成功')
