@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.constant.IYqueContant;
+import cn.iyque.domain.IYQueCallbackQuery;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueAnnexPeriod;
 import cn.iyque.entity.IYquePeriodMsgAnnex;
@@ -27,9 +28,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SendPeriodWelcomeMsgStrategy implements ActionStrategy{
     @Override
-    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
+    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
 
-           if(iYqueUserCode.isStartPeriodAnnex()){
+           if(iyQueCallbackQuery.isStartPeriodAnnex()){
                WxCpWelcomeMsg wxCpWelcomeMsg=new WxCpWelcomeMsg();
                wxCpWelcomeMsg.setWelcomeCode(callBackBaseMsg.getWelcomeCode());
                Text text = new Text();
@@ -38,7 +39,7 @@ public class SendPeriodWelcomeMsgStrategy implements ActionStrategy{
 
 
                List<IYqueAnnexPeriod> iYqueAnnexPeriods
-                       = SpringUtil.getBean(IYqueAnnexPeriodService.class).findIYqueAnnexPeriodByMsgId(iYqueUserCode.getId());
+                       = SpringUtil.getBean(IYqueAnnexPeriodService.class).findIYqueAnnexPeriodByMsgId(iyQueCallbackQuery.getBusinessId());
                if(CollectionUtil.isNotEmpty(iYqueAnnexPeriods)){
 
                    // 使用filter来筛选符合条件的周期

@@ -9,8 +9,8 @@ public interface IYqueCustomerInfoService {
     void addCustomerCallBackAction( IYqueCallBackBaseMsg callBackBaseMsg);
     void updateCustomerInfoStatus(String externalUserid,String userId,Integer status);
 
-    IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery);
+    IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery,boolean codeOrLink);
 
-    IYQueTrendCount countTrend(IYQueCountQuery queCountQuery);
+    IYQueTrendCount countTrend(IYQueCountQuery queCountQuery,boolean codeOrLink);
 
 }

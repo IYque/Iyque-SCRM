@@ -1,9 +1,18 @@
 <script>
-import { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } from './api'
+import * as api from './api'
+import * as apiLink from './apiLink'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
+
+let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = {}
+
 export default {
 	data() {
+		let isLink = location.href.includes('customerLink')
+		let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = isLink
+			? apiLink
+			: api)
+
 		return {
 			activeName: 'first',
 			query: { page: 0, size: 10 },
@@ -21,6 +30,8 @@ export default {
 			xData: [],
 			series: [],
 			tabCount: {},
+
+			isLink,
 		}
 	},
 	components: { aev },
@@ -180,10 +191,10 @@ export default {
 						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
 						<el-table-column type="selection" width="50" align="center"></el-table-column>
 						<el-table-column label="渠道名称" prop="codeName" show-overflow-tooltip />
-						<el-table-column label="活码地址" prop="codeUrl" show-overflow-tooltip>
-							<template #default="{ row }">
+						<el-table-column label="活码地址" prop="codeUrl">
+							<!-- <template #default="{ row }">
 								<el-image :src="row.codeUrl" style="width: 100px"></el-image>
-							</template>
+							</template> -->
 						</el-table-column>
 						<el-table-column label="使用员工">
 							<template #default="{ row }">
@@ -204,8 +215,10 @@ export default {
 									编辑
 								</el-button>
 								<el-button text @click="del(row.id)">删除</el-button>
-								<el-button text @click="distributeUserCode(row.id)">通知</el-button>
-								<el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+								<template v-if="!isLink">
+									<el-button text @click="distributeUserCode(row.id)">通知</el-button>
+									<el-button text @click="downloadBlob(row.codeUrl, row.codeName)">活码下载</el-button>
+								</template>
 							</template>
 						</el-table-column>
 					</el-table>

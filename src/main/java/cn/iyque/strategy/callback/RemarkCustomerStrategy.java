@@ -2,6 +2,7 @@ package cn.iyque.strategy.callback;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.iyque.domain.IYQueCallbackQuery;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.enums.RemarksType;
 import cn.iyque.service.IYqueConfigService;
@@ -17,21 +18,21 @@ import cn.iyque.entity.IYqueUserCode;
 @Slf4j
 public class RemarkCustomerStrategy implements ActionStrategy {
     @Override
-    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
+    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
 
             log.info("自动备注excute");
         try {
-            Integer remarkType = iYqueUserCode.getRemarkType();
+            Integer remarkType = iyQueCallbackQuery.getRemarkType();
             WxCpUpdateRemarkRequest remarkRequest=new WxCpUpdateRemarkRequest();
             remarkRequest.setExternalUserId(callBackBaseMsg.getExternalUserID());
             remarkRequest.setUserId(callBackBaseMsg.getUserID());
 
             if(RemarksType.REMARKS_TYPE_STATENAME
                     .getCode().equals(remarkType)){
-                remarkRequest.setRemark(contactDetail.getExternalContact().getName()+"-"+iYqueUserCode.getCodeName());
+                remarkRequest.setRemark(contactDetail.getExternalContact().getName()+"-"+iyQueCallbackQuery.getRemarkName());
             }else if(RemarksType.REMARKS_TYPE_TAGS
                     .getCode().equals(remarkType)){
-                remarkRequest.setRemark(contactDetail.getExternalContact().getName()+"-"+iYqueUserCode.getTagName());
+                remarkRequest.setRemark(contactDetail.getExternalContact().getName()+"-"+iyQueCallbackQuery.getTagName());
             }else if(RemarksType.REMARKS_TYPE_ADDTIME
                     .getCode().equals(remarkType)){
                 Long createTime = contactDetail.getFollowedUsers().stream()

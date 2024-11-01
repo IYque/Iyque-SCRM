@@ -6,11 +6,11 @@ import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueAnnexPeriod;
 import cn.iyque.entity.IYqueMsgAnnex;
-import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.entity.IYqueShortLink;
 import cn.iyque.service.IYqueAnnexPeriodService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
-import cn.iyque.service.IYqueUserCodeService;
+import cn.iyque.service.IYqueShortLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,37 +21,36 @@ import java.util.List;
 
 
 /**
- * 客户引流码相关
+ * 获客链接
  */
 @RestController
-@RequestMapping("/iyQue")
-public class IYqueUserCodeController {
+@RequestMapping("/iyQue/shortLink")
+public class IYqueShortLinkController {
 
     @Autowired
-    private IYqueUserCodeService iYqueUserCodeService;
-
+    private IYqueShortLinkService iYqueShortLinkService;
 
     @Autowired
     private IYqueMsgAnnexService iYqueMsgAnnexService;
 
 
     @Autowired
-    private IYqueCustomerInfoService iYqueCustomerInfoService;
-
-
-    @Autowired
     private IYqueAnnexPeriodService iYqueAnnexPeriodService;
 
 
+    @Autowired
+    private IYqueCustomerInfoService iYqueCustomerInfoService;
+
+
     /**
-     * 新增引流码
-     * @param iYqueUserCode
+     * 新增
+     * @param iYqueShortLink
      * @return
      */
     @PostMapping("/save")
-    public ResponseResult save(@RequestBody IYqueUserCode iYqueUserCode) {
+    public ResponseResult save(@RequestBody IYqueShortLink iYqueShortLink) {
         try {
-            iYqueUserCodeService.save(iYqueUserCode);
+            iYqueShortLinkService.save(iYqueShortLink);
         }catch (Exception e){
             return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
         }
@@ -61,14 +60,14 @@ public class IYqueUserCodeController {
 
 
     /**
-     * 更新引流码
-     * @param iYqueUserCode
+     * 更新
+     * @param iYqueShortLink
      * @return
      */
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody IYqueUserCode iYqueUserCode){
+    public ResponseResult update(@RequestBody IYqueShortLink iYqueShortLink){
         try {
-            iYqueUserCodeService.update(iYqueUserCode);
+            iYqueShortLinkService.update(iYqueShortLink);
         }catch (Exception e){
             return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
         }
@@ -79,16 +78,16 @@ public class IYqueUserCodeController {
 
 
     /**
-     * 获取引流码列表
+     * 获取列表
      * @param page
      * @param size
      * @return
      */
-    @GetMapping("/findIYqueUserCode")
-    public ResponseResult<IYqueUserCode> findIYqueUserCode(@RequestParam(defaultValue = "0") int page,
+    @GetMapping("/findIYqueShortLink")
+    public ResponseResult<IYqueShortLink> findIYqueShortLink(@RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "10") int size){
-        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
-        return new ResponseResult(iYqueUserCodes.getContent(),iYqueUserCodes.getTotalElements());
+        Page<IYqueShortLink> iYqueShortLinks = iYqueShortLinkService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
+        return new ResponseResult(iYqueShortLinks.getContent(),iYqueShortLinks.getTotalElements());
     }
 
 
@@ -99,7 +98,7 @@ public class IYqueUserCodeController {
     @GetMapping("/findIYqueUserCodeKvs")
     public ResponseResult<List<IYqueKvalStrVo>>  findIYqueUserCodeKvs(){
 
-        List<IYqueKvalStrVo> iYqueUserCodeKvs = iYqueUserCodeService.findIYqueUserCodeKvs();
+        List<IYqueKvalStrVo> iYqueUserCodeKvs = iYqueShortLinkService.findIYqueShorkLinkKvs();
 
 
         return new ResponseResult<>(iYqueUserCodeKvs);
@@ -121,14 +120,14 @@ public class IYqueUserCodeController {
     @DeleteMapping(path = "/{ids}")
     public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
 
-        iYqueUserCodeService.batchDelete(ids);
+        iYqueShortLinkService.batchDelete(ids);
 
         return new ResponseResult();
     }
 
 
     /**
-     * 获取活码附件
+     * 获取附件
      * @param id
      * @return
      */
@@ -145,7 +144,7 @@ public class IYqueUserCodeController {
 
 
     /**
-     * 获取时段欢迎语活码附件
+     * 获取时段欢迎语附件
      * @param id
      * @return
      */
@@ -160,34 +159,13 @@ public class IYqueUserCodeController {
     }
 
 
-
-
-    /**
-     * 活码下发
-     * @param id
-     * @return
-     */
-    @GetMapping("/distributeUserCode/{id}")
-    public ResponseResult distributeUserCode(@PathVariable("id") Long id){
-
-        try {
-            iYqueUserCodeService.distributeUserCode(id);
-        }catch (Exception e){
-            return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
-        }
-
-
-        return new ResponseResult();
-    }
-
-
     /**
      * 统计tab
      * @return
      */
     @GetMapping("/countTotalTab")
     public ResponseResult<IYqueUserCodeCountVo> countTotalTab(IYQueCountQuery queCountQuery){
-        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery,true);
+        IYqueUserCodeCountVo iYqueUserCodeCountVo = iYqueCustomerInfoService.countTotalTab(queCountQuery,false);
 
         return new ResponseResult<>(iYqueUserCodeCountVo);
     }
@@ -201,11 +179,10 @@ public class IYqueUserCodeController {
     @GetMapping("/countTrend")
     public ResponseResult<IYQueTrendCount> countTrend(IYQueCountQuery queCountQuery){
 
-        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery,true);
+        IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery,false);
 
         return new ResponseResult<>(trendCount);
     }
-
 
 
 

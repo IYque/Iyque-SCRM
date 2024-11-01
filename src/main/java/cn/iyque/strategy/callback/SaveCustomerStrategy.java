@@ -2,6 +2,7 @@ package cn.iyque.strategy.callback;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.dao.IYQueCustomerInfoDao;
+import cn.iyque.domain.IYQueCallbackQuery;
 import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueUserCode;
@@ -22,7 +23,7 @@ public class SaveCustomerStrategy implements ActionStrategy{
 
 
     @Override
-    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYqueUserCode iYqueUserCode, WxCpExternalContactInfo contactDetail) {
+    public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
 
         log.info("客户信息:"+contactDetail);
 
