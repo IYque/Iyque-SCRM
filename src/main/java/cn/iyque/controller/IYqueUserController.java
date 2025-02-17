@@ -2,23 +2,17 @@ package cn.iyque.controller;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
-import cn.iyque.exception.IYqueException;
-import cn.iyque.service.IYqueConfigService;
+import cn.iyque.entity.IYqueUser;
+import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.service.IYqueUserService;
 import cn.iyque.utils.MapUtils;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.cp.api.WxCpDepartmentService;
-import me.chanjar.weixin.cp.api.WxCpService;
-import me.chanjar.weixin.cp.api.WxCpUserService;
-import me.chanjar.weixin.cp.bean.WxCpDepart;
-import me.chanjar.weixin.cp.bean.WxCpUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,50 +24,55 @@ import java.util.stream.Collectors;
 @RequestMapping("/iYqueUser")
 public class IYqueUserController {
 
+
     @Autowired
-    private IYqueConfigService iYqueConfigService;
+    private IYqueUserService iYqueUserService;
 
 
     /**
-     * 获取企业微信员工
+     * 获取企业微信员工(所有)
      * @return
      */
     @GetMapping("/findIYqueUser")
     public ResponseResult findIYqueUser(){
 
-        List<WxCpUser> wxCpUsers=new ArrayList<>();
-        try {
-            WxCpService wxCpServic = iYqueConfigService.findWxcpservice();
-            WxCpDepartmentService departmentService = wxCpServic.getDepartmentService();
-            List<WxCpDepart> departList = departmentService.list(null);
+        List<IYqueUser> iYqueUser = iYqueUserService.findIYqueUser();
 
-            if(CollectionUtil.isNotEmpty(departList)){
-                WxCpUserService userService = wxCpServic.getUserService();
-                departList.stream().forEach(k->{
-
-                    try {
-                        List<WxCpUser> wxCpUserList = userService.listByDepartment(k.getId(), true, 0);
-                        if(CollectionUtil.isNotEmpty(wxCpUserList)){
-                            wxCpUsers.addAll(wxCpUserList);
-                        }
-
-                    }catch (WxErrorException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                });
-            }
-
-
-        }catch (Exception e){
-            return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
-
+        if(CollectionUtil.isNotEmpty(iYqueUser)){
+            return new ResponseResult(iYqueUser.stream()
+                    .filter(MapUtils.distinctByKey(IYqueUser::getUserId))
+                    .collect(Collectors.toList()));
         }
-
-        return new ResponseResult(wxCpUsers.stream()
-                .filter(MapUtils.distinctByKey(WxCpUser::getUserId))
-                .collect(Collectors.toList()));
-
-
+        return new ResponseResult();
     }
+
+
+    /**
+     * 获取企业微信员工(分页)
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/findIYqueUserPage")
+    public ResponseResult<IYqueUser> findIYqueUserPage(@RequestParam String name,@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size){
+        Page<IYqueUser> iYqueUsers = iYqueUserService.findIYqueUserPage(name,PageRequest.of(page, size, Sort.by("updateTime").descending()));
+        return new ResponseResult(iYqueUsers.getContent(),iYqueUsers.getTotalElements());
+    }
+
+
+    /**
+     * 同步成员
+     * @return
+     */
+    @PostMapping("/synchIyqueUser")
+    public  ResponseResult synchIyqueUser(){
+
+        iYqueUserService.synchIyqueUser();
+
+        return new ResponseResult();
+    }
+
+
+
 }
