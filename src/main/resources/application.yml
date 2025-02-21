@@ -6,6 +6,7 @@ iyque:
   demo: false
   fileViewUrl: https://iyque.cn/qapi/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
   uploadDir: ./upload
+  complaintUrl: http://iyque.com #投诉页面
 spring:
   h2:
     console:
