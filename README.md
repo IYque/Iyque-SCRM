@@ -94,6 +94,11 @@
 
 ```
 application.yml
+ ai:
+   model: deepseek-chat #接入的具体模型，deepseek目前支持deepseek-chat与deepseek-reasoner
+   limitToken: 10000 #限制每日token使用上限(输入token+输出token)
+   deepseek:
+      apiKey: #对应deepseek的apiKey
 
  iyque:
     userName: iyque #系统登录账号
