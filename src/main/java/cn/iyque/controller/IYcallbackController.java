@@ -2,12 +2,14 @@ package cn.iyque.controller;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
+import cn.iyque.constant.IYqueWxCpConsts;
 import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.enums.CustomerStatusType;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
+import cn.iyque.service.IYqueKfService;
 import cn.iyque.utils.IYqueCryptUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.constant.WxCpConsts;
@@ -30,6 +32,10 @@ public class IYcallbackController {
 
     @Autowired
     private IYqueCustomerInfoService iYqueCustomerInfoService;
+
+
+    @Autowired
+    private IYqueKfService iYqueKfService;
 
 
     /**
@@ -81,9 +87,17 @@ public class IYcallbackController {
             String decrypt = iYqueCryptUtil.decrypt(signature, timestamp, nonce, msg);
 
             IYqueCallBackBaseMsg callBackBaseMsg = XmlUtil.xmlToBean(XmlUtil.parseXml(decrypt).getFirstChild(), IYqueCallBackBaseMsg.class);
-            log.info("活码欢迎语回调"+callBackBaseMsg);
+            log.info("回调"+callBackBaseMsg);
 
             if(null != callBackBaseMsg){
+
+                //客服事件
+                if(IYqueWxCpConsts.KfChangeType.KF_MSG_OR_EVENT.equals(callBackBaseMsg.getEvent())){
+                    //客服消息处理
+                    iYqueKfService.handleKfMsg(callBackBaseMsg);
+                }
+
+
                 if(WxCpConsts.EventType.CHANGE_EXTERNAL_CONTACT.equals(callBackBaseMsg.getEvent())){//客户变更
                     //客户新增
                     if(WxCpConsts.ExternalContactChangeType.ADD_EXTERNAL_CONTACT.equals(callBackBaseMsg.getChangeType())){

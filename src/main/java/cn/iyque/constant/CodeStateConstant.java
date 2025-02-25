@@ -7,4 +7,7 @@ public class CodeStateConstant {
 
     //获客链接渠道前缀
     public static final String LINK_CODE_STATE="iyLink_";
+
+    //群活码渠道前缀
+    public static final String CHAT_CODE_STATE="iyChat_";
 }
