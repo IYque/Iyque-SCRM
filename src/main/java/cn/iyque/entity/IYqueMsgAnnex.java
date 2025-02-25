@@ -92,6 +92,9 @@ public class IYqueMsgAnnex {
     //附件类型
     @Data
     public static class MsgType{
+
+        //文本
+        public final static String MSG_TEXT="text";
         //图片
         public final static String MSG_TYPE_IMAGE="image";
         //链接

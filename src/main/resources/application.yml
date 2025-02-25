@@ -1,5 +1,10 @@
 server:
   port: 8085
+ai:
+  model: deepseek-chat
+  limitToken: 10000
+  deepseek:
+    apiKey:
 iyque:
   userName: iyque
   pwd: 123456
