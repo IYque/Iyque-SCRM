@@ -7,6 +7,8 @@ import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.enums.CustomerStatusType;
+import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueCustomerInfoService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +27,19 @@ public class SaveCustomerStrategy implements ActionStrategy{
     @Override
     public void execute(IYqueCallBackBaseMsg callBackBaseMsg, IYQueCallbackQuery iyQueCallbackQuery, WxCpExternalContactInfo contactDetail) {
 
-        log.info("客户信息:"+contactDetail);
 
-        SpringUtil.getBean(IYQueCustomerInfoDao.class)
-                        .save(
-                                IYQueCustomerInfo.builder()
-                                        .state(callBackBaseMsg.getState())
-                                        .externalUserid(callBackBaseMsg.getExternalUserID())
-                                        .userId(callBackBaseMsg.getUserID())
-                                        .addTime(new Date( contactDetail.getFollowedUsers().stream().findFirst().get().getCreateTime() * 1000L))
-                                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
-                                        .build()
+        try {
+            log.info("客户信息:"+contactDetail);
 
-                        );
+
+            SpringUtil.getBean(IYqueCustomerInfoService.class).saveCustomer(callBackBaseMsg.getExternalUserID());
+
+        }catch (Exception e){
+            log.error("回调客户入库:"+e.getMessage());
+
+        }
+
+
 
     }
 }

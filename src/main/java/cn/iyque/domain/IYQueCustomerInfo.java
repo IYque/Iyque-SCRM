@@ -22,6 +22,9 @@ public class IYQueCustomerInfo {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    //客户名称
+    private String customerName;
+
     //客户id
     private String externalUserid;
 

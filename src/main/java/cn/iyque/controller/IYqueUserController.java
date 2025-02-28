@@ -4,6 +4,7 @@ package cn.iyque.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.entity.IYqueConfig;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.MapUtils;
@@ -13,6 +14,7 @@ import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.api.WxCpUserService;
 import me.chanjar.weixin.cp.bean.WxCpDepart;
 import me.chanjar.weixin.cp.bean.WxCpUser;
+import me.chanjar.weixin.cp.bean.msgaudit.WxCpChatDatas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,7 @@ public class IYqueUserController {
      */
     @GetMapping("/findIYqueUser")
     public ResponseResult findIYqueUser(){
+
 
         List<WxCpUser> wxCpUsers=new ArrayList<>();
         try {
