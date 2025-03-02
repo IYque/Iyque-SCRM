@@ -17,8 +17,11 @@ spring:
     console:
       path: /h2  #h2嵌入式数据库控制台，可以通过浏览器访问
       enabled: true
+      settings:
+        web-allow-others: true
   datasource:
-    url: jdbc:h2:file:./data/mydb;
+#    url: jdbc:h2:file:./data/mydb;
+    url: jdbc:h2:tcp://localhost/./data/mydb
     username: sa
     password: 123456
   jpa:

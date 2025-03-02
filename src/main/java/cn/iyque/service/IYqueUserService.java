@@ -21,6 +21,14 @@ public interface IYqueUserService {
 
 
     /**
+     * 获取成员，如果不存在则从企业微信端获取同时入库
+     * @param userId
+     * @return
+     */
+    IYqueUser findOrSaveUser(String userId);
+
+
+    /**
      * 分页获取成员数据
      * @param name
      * @param pageable

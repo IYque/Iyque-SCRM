@@ -109,6 +109,41 @@ public class IYqueUserServiceImpl implements IYqueUserService {
     }
 
     @Override
+    public IYqueUser findOrSaveUser(String userId) {
+        List<IYqueUser> iYqueUsers
+                = iYqueUserDao.findIYqueUserByUserId(userId);
+        //不存在则，从企业微信api获取
+        if(!CollectionUtil.isNotEmpty(iYqueUsers)){
+            try {
+                WxCpUser wxCpUser = iYqueConfigService.findWxcpservice()
+                        .getUserService().getById(userId);
+
+                if(null != wxCpUser){
+                    IYqueUser   iYqueUser= IYqueUser.builder()
+                            .userId(wxCpUser.getUserId())
+                            .position(wxCpUser.getPosition())
+                            .name(wxCpUser.getName())
+                            .build();
+
+                    iYqueUserDao.save(
+                            iYqueUser
+                    );
+                    iYqueUsers.add(iYqueUser);
+                }
+
+
+
+            }catch (Exception e){
+                log.error("获取员工失败:"+e.getMessage());
+            }
+
+        }
+
+
+        return iYqueUsers.stream().findFirst().get();
+    }
+
+    @Override
     public Page<IYqueUser> findIYqueUserPage(String name, Pageable pageable) {
         Specification<IYqueUser> spec = Specification.where(null);
 

@@ -17,10 +17,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class IYQueCustomerInfo {
-    //主键为id且自增
+    //主键为 externalUserid+"&"+userId
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private String eId;
 
     //客户名称
     private String customerName;

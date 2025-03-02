@@ -365,6 +365,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
                         infos.add(
                                 IYQueCustomerInfo.builder()
+                                        .eId(externalContact.getExternalContact().getExternalUserId()+"&"+kk.getUserId())
                                         .customerName(externalContact.getExternalContact().getName())
                                         .externalUserid(externalContact.getExternalContact().getExternalUserId())
                                         .userId(kk.getUserId())
@@ -377,7 +378,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
                     });
 
-                    iyQueCustomerInfoDao.saveAll(infos);
+                    iyQueCustomerInfoDao.saveAllAndFlush(infos);
                 }
 
             }
@@ -402,22 +403,20 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                 .findByExternalUserid(externalUserid);
         if(CollectionUtil.isNotEmpty(iyQueCustomerInfos)){
             iyQueCustomerInfo=iyQueCustomerInfos.stream().findFirst().get();
-        }
+        }else{
 
-        try {
+            try {
 
+                List<IYQueCustomerInfo> iyNewQueCustomerInfos = this.saveCustomer(externalUserid);
+                if(CollectionUtil.isNotEmpty(iyNewQueCustomerInfos)){
+                    iyQueCustomerInfo=iyNewQueCustomerInfos.stream().findFirst().get();
+                }
 
-            List<IYQueCustomerInfo> iyNewQueCustomerInfos = this.saveCustomer(externalUserid);
-            if(CollectionUtil.isNotEmpty(iyNewQueCustomerInfos)){
-                iyQueCustomerInfo=iyNewQueCustomerInfos.stream().findFirst().get();
+            }catch (Exception e){
+                log.error("获取客户信息异常:"+e.getMessage());
             }
 
-
-
-        }catch (Exception e){
-            log.error("获取客户信息异常:"+e.getMessage());
         }
-
 
         return iyQueCustomerInfo;
     }

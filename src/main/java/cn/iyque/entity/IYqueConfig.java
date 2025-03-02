@@ -36,15 +36,12 @@ public class IYqueConfig {
 
 
     //会话存档sdk路径
-    @Transient
     private String msgAuditLibPath;
 
     //消息加密私钥
-    @Transient
     private String msgAuditPriKey;
 
 
     //会话存档Secret
-    @Transient
     private String msgAuditSecret;
 }
