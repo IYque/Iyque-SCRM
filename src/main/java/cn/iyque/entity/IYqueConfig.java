@@ -39,6 +39,7 @@ public class IYqueConfig {
     private String msgAuditLibPath;
 
     //消息加密私钥
+    @Lob
     private String msgAuditPriKey;
 
 

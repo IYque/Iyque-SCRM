@@ -24,13 +24,7 @@ public class IYqueConfigServiceImpl implements IYqueConfigService {
             return new IYqueConfig();
         }
         IYqueConfig iYqueConfig = iYqueConfigs.stream().findFirst().get();
-        if(StringUtils.isNotEmpty(iYqueConfig.getMsgAuditLibPath())){
-            String msgAuditLibPath = iYqueConfig.getMsgAuditLibPath();
-            if (msgAuditLibPath.endsWith("/")) {
-                msgAuditLibPath = msgAuditLibPath.substring(0, msgAuditLibPath.length() - 1);
-            }
-            iYqueConfig.setMsgAuditLibPath(iYqueConfig.getMsgAuditLibPath()+"/libWeWorkFinanceSdk_Java.so");
-        }
+
         return iYqueConfig;
     }
 
