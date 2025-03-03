@@ -28,7 +28,7 @@ export const navRoutes = [
 		path: '/liveCode',
 		component: Layout,
 		redirect: '/liveCode/index',
-		meta: { title: '活码', icon: 'user' },
+		meta: { title: '活码', icon: 'toker' },
 		children: [
 			{
 				path: 'index',
@@ -42,7 +42,7 @@ export const navRoutes = [
 		path: '/customerLink',
 		component: Layout,
 		redirect: '/customerLink/index',
-		meta: { title: '获客', icon: 'system' },
+		meta: { title: '获客', icon: 'customer' },
 		children: [
 			{
 				path: 'index',
@@ -56,13 +56,27 @@ export const navRoutes = [
 		path: '/groupCode',
 		component: Layout,
 		redirect: '/groupCode/index',
-		meta: { title: '群码', icon: 'user' },
+		meta: { title: '群码', icon: 'code' },
 		children: [
 			{
 				path: 'index',
 				component: () => import('@/views/groupCode/index'),
 				hidden: true,
 				meta: { title: '群码' },
+			},
+		],
+	},
+	{
+		path: '/chat',
+		component: Layout,
+		redirect: '/chat/index',
+		meta: { title: 'AI会话', icon: 'conversation' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/chat/index'),
+				hidden: true,
+				meta: { title: 'AI会话' },
 			},
 		],
 	},

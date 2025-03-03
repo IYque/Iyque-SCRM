@@ -10,11 +10,14 @@ import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueShortLink;
 import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.enums.CustomerStatusType;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.strategy.callback.*;
 import cn.iyque.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.cp.bean.external.contact.ExternalContact;
+import me.chanjar.weixin.cp.bean.external.contact.FollowedUser;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -345,6 +348,78 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
         return trendCount;
     }
 
+    @Override
+    public List<IYQueCustomerInfo> saveCustomer(String externalUserid) {
+        List<IYQueCustomerInfo> infos=new ArrayList<>();
+        try {
+            //数据库不存在则直接去企业微信api获取
+            WxCpExternalContactInfo externalContact = iYqueConfigService.findWxcpservice().getExternalContactService()
+                    .getExternalContact(externalUserid);
+
+
+            if(null != externalContact){
+
+                List<FollowedUser> followedUsers = externalContact.getFollowedUsers();
+                if(CollectionUtil.isNotEmpty(followedUsers)){
+                    followedUsers.stream().forEach(kk->{
+
+                        infos.add(
+                                IYQueCustomerInfo.builder()
+                                        .eId(externalContact.getExternalContact().getExternalUserId()+"&"+kk.getUserId())
+                                        .customerName(externalContact.getExternalContact().getName())
+                                        .externalUserid(externalContact.getExternalContact().getExternalUserId())
+                                        .userId(kk.getUserId())
+                                        .state(kk.getState())
+                                        .addTime(new Date( kk.getCreateTime() * 1000L))
+                                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
+                                        .build()
+                        );
+
+
+                    });
+
+                    iyQueCustomerInfoDao.saveAllAndFlush(infos);
+                }
+
+            }
+
+
+
+        }catch (Exception e){
+            log.error("企微用户获取失败:"+externalUserid);
+        }
+
+        return infos;
+
+
+
+
+    }
+
+    @Override
+    public IYQueCustomerInfo findCustomerInfoByExternalUserId(String externalUserid) {
+        IYQueCustomerInfo iyQueCustomerInfo=new IYQueCustomerInfo();
+        List<IYQueCustomerInfo> iyQueCustomerInfos = iyQueCustomerInfoDao
+                .findByExternalUserid(externalUserid);
+        if(CollectionUtil.isNotEmpty(iyQueCustomerInfos)){
+            iyQueCustomerInfo=iyQueCustomerInfos.stream().findFirst().get();
+        }else{
+
+            try {
+
+                List<IYQueCustomerInfo> iyNewQueCustomerInfos = this.saveCustomer(externalUserid);
+                if(CollectionUtil.isNotEmpty(iyNewQueCustomerInfos)){
+                    iyQueCustomerInfo=iyNewQueCustomerInfos.stream().findFirst().get();
+                }
+
+            }catch (Exception e){
+                log.error("获取客户信息异常:"+e.getMessage());
+            }
+
+        }
+
+        return iyQueCustomerInfo;
+    }
 
 
 }

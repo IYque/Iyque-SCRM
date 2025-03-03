@@ -11,13 +11,17 @@ iyque:
   demo: false
   fileViewUrl: https://iyque.cn/qapi/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
   uploadDir: ./upload
+  complaintUrl: http://iyque.com #投诉页面
 spring:
   h2:
     console:
       path: /h2  #h2嵌入式数据库控制台，可以通过浏览器访问
       enabled: true
+      settings:
+        web-allow-others: true
   datasource:
-    url: jdbc:h2:file:./data/mydb;
+#    url: jdbc:h2:file:./data/mydb;
+    url: jdbc:h2:tcp://localhost/./data/mydb
     username: sa
     password: 123456
   jpa:

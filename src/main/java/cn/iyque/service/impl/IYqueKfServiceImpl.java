@@ -8,6 +8,7 @@ import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueAiTokenRecord;
 import cn.iyque.entity.IYqueKfMsg;
 import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueAiTokenRecordService;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueKfService;
@@ -43,22 +44,16 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
     @Autowired
-    private AiService aiService;
+    private IYqueAiService iYqueAiService;
 
 
-    @Value("${ai.model}")
-    private String model;
-
-    @Value("${ai.limitToken}")
-    private long limitToken;
 
 
     @Autowired
     private IYqueKfMsgDao kfMsgDao;
 
 
-    @Autowired
-    private IYqueAiTokenRecordService aiTokenRecordService;
+
 
 
 
@@ -155,46 +150,9 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
         if(isAi){
 
-            //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
-            if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
-
-                // 获取chat服务实例
-                IChatService chatService = aiService.getChatService(PlatformType.DEEPSEEK);
-
-                // 构建请求参数
-                ChatCompletion chatCompletion = ChatCompletion.builder()
-                        .model(model)
-                        .message(ChatMessage.withUser(content))
-                        .build();
-
-                ChatCompletionResponse response = chatService.chatCompletion(chatCompletion);
-                List<Choice> choices = response.getChoices();
-                if(CollectionUtil.isNotEmpty(choices)){
-                    resContent.append(
-                            choices.stream().findFirst().get().getMessage().getContent()
-                                    .getText()
-                    );
-                }
-
-                Usage usage = response.getUsage();
-                if(null != usage){
-
-                    aiTokenRecordService.save(
-                            IYqueAiTokenRecord.builder()
-                                    .completionTokens(usage.getCompletionTokens())
-                                    .promptTokens(usage.getPromptTokens())
-                                    .totalTokens(usage.getTotalTokens())
-                                    .createTime(new Date())
-                                    .aiResId(response.getId())
-                                    .model(response.getModel())
-                                    .build()
-                    );
-
-                }
-
-            }else{
-                resContent.append("今日ai,token资源已耗尽");
-            }
+            resContent.append(
+                    iYqueAiService.aiHandleCommonContent(content)
+            );
 
         }else{
 

@@ -24,7 +24,9 @@ public class WxCpServiceFactory {
                     wxCpConfig.setAgentId(Integer.parseInt(config.getAgentId()));
                     wxCpConfig.setToken(config.getToken());
                     wxCpConfig.setAesKey(config.getEncodingAESKey());
-
+                    wxCpConfig.setMsgAuditLibPath(config.getMsgAuditLibPath());
+                    wxCpConfig.setMsgAuditPriKey(config.getMsgAuditPriKey());
+                    wxCpConfig.setMsgAuditSecret(config.getMsgAuditSecret());
                     WxCpServiceImpl wxCpService = new WxCpServiceImpl();
                     wxCpService.setWxCpConfigStorage(wxCpConfig);
                     return wxCpService;

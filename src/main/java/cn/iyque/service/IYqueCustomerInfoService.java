@@ -1,9 +1,8 @@
 package cn.iyque.service;
 
-import cn.iyque.domain.IYQueCountQuery;
-import cn.iyque.domain.IYQueTrendCount;
-import cn.iyque.domain.IYqueCallBackBaseMsg;
-import cn.iyque.domain.IYqueUserCodeCountVo;
+import cn.iyque.domain.*;
+
+import java.util.List;
 
 public interface IYqueCustomerInfoService {
     void addCustomerCallBackAction( IYqueCallBackBaseMsg callBackBaseMsg);
@@ -12,5 +11,10 @@ public interface IYqueCustomerInfoService {
     IYqueUserCodeCountVo countTotalTab(IYQueCountQuery queCountQuery,boolean codeOrLink);
 
     IYQueTrendCount countTrend(IYQueCountQuery queCountQuery,boolean codeOrLink);
+
+    List<IYQueCustomerInfo> saveCustomer(String externalUserid);
+
+
+    IYQueCustomerInfo findCustomerInfoByExternalUserId(String externalUserid);
 
 }

@@ -6,12 +6,21 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DateUtils {
+
+    public static String YYYY = "yyyy";
+
+    public static String YYYY_MM = "yyyy-MM";
+
+    public static String YYYY_MM_DD = "yyyy-MM-dd";
+
+    public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+
+    public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
     public static List<String> getTimePeriods(Date startDate, Date endDate) {
         if (startDate == null && endDate == null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,4 +89,69 @@ public class DateUtils {
                     (currentTime.isBefore(end) || currentTime.compareTo(end) <= 0);
         }
     }
+
+    public static List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) {
+        long numOfDays = startDate.until(endDate).getDays() + 1; // 包含结束日期
+        return Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(numOfDays)
+                .collect(Collectors.toList());
+    }
+
+    public static final String dateTimeNow(final String format)
+    {
+        return parseDateToStr(format, new Date());
+    }
+    public static final String parseDateToStr(final String format, final Date date)
+    {
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    /**
+     * 获取当天凌晨时间
+     * @return
+     */
+    public static Date earlyMorning(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 将 Date 对象的时间部分设置为 00:00:00
+     * @param date
+     * @return
+     */
+    public static Date setTimeToStartOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+
+    /**
+     *  将 Date 对象的时间部分设置为 23:59:59
+     * @param date
+     * @return
+     */
+    public static Date setTimeToEndOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
+    }
+
+
+
 }

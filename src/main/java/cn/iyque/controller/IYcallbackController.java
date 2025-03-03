@@ -7,6 +7,7 @@ import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.enums.CustomerStatusType;
 import cn.iyque.entity.IYqueConfig;
+import cn.iyque.service.IWeMsgAuditService;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueKfService;
@@ -36,6 +37,9 @@ public class IYcallbackController {
 
     @Autowired
     private IYqueKfService iYqueKfService;
+
+    @Autowired
+    private IWeMsgAuditService iWeMsgAuditService;
 
 
     /**
@@ -95,6 +99,12 @@ public class IYcallbackController {
                 if(IYqueWxCpConsts.KfChangeType.KF_MSG_OR_EVENT.equals(callBackBaseMsg.getEvent())){
                     //客服消息处理
                     iYqueKfService.handleKfMsg(callBackBaseMsg);
+                }
+
+
+                //会话回调时间
+                if(WxCpConsts.EventType.MSGAUDIT_NOTIFY.equals(callBackBaseMsg.getEvent())){
+                    iWeMsgAuditService.synchMsg();
                 }
 
 

@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-form ref="form" label-position="right" :model="form" :rules="rules" label-width="130px">
+
       <div class="g-card">
         <div class="my-title">应用参数配置</div>
         <el-form-item label="企业ID:" prop="corpId">
@@ -13,8 +14,9 @@
          <el-form-item label="应用Secert:" prop="agentSecert">
           <el-input type='password'  v-model="form.agentSecert"  placeholder="请输入应用Secert"></el-input>
         </el-form-item>
-
       </div>
+
+
       <div class="g-card">
         <div class="my-title">回调配置</div>
         <el-form-item label="回调地址:">
@@ -22,6 +24,7 @@
             :value="(form.token1 = sysConfig.BASE_API + '/iycallback/handle?corpId={企业id}')"
             readonly
             placeholder="{系统统一访问前缀}/iycallback/handle?corpId={企业id}"></el-input>
+            <div class="g-tip">回调是需要依托域名的,且域名备案主体需要与企微认证主体一致</div>
         </el-form-item>
         <el-form-item label="Token:" prop="token">
           <el-input v-model="form.token"  placeholder="请输入Token"></el-input>
@@ -34,6 +37,29 @@
           </el-button>
         </el-form-item>
       </div>
+
+
+      <div class="g-card">
+        <div class="my-title">会话存档</div>
+        <el-form-item label="会话sdk路径:" prop="msgAuditLibPath">
+          <el-input v-model="form.msgAuditLibPath" placeholder=""></el-input>
+          <div class="g-tip">配置sdk的绝对路径</div>
+        </el-form-item>
+
+        <el-form-item label="会话存档Secret:" prop="msgAuditSecret">
+          <el-input type='password'  v-model="form.msgAuditSecret"  placeholder=""></el-input>
+        </el-form-item>
+
+
+         <el-form-item label="消息加密私钥:" prop="msgAuditPriKey">
+          <el-input type="textarea"  v-model="form.msgAuditPriKey"  :rows="10" placeholder=""></el-input>
+        </el-form-item>
+
+      </div>
+
+
+
+
     </el-form>
   </div>
 </template>

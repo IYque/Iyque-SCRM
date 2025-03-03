@@ -18,4 +18,6 @@ public class IYqueParamConfig {
 
     //文件预览访问前缀
     private String fileViewUrl;
+
+    private String complaintUrl="https://iyque.cn";
 }

@@ -36,6 +36,11 @@ public class ResponseResult<T> implements Serializable {
         this.data = data;
     }
 
+    public ResponseResult(String message) {
+        this.code = HttpStatus.SUCCESS;
+        this.msg=message;
+    }
+
     public ResponseResult(){
         this.code= HttpStatus.SUCCESS;
     }

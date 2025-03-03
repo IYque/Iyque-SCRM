@@ -20,8 +20,7 @@ public class IYqueConfigController {
     @Autowired
     private IYqueConfigService iYqueConfigService;
 
-    @Autowired
-    private IYqueParamConfig iYqueParamConfig;
+
 
 
     /**
