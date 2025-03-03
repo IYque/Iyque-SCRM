@@ -15,7 +15,7 @@ export default {
 
 		return {
 			activeName: 'first',
-			query: { page: 0, size: 10 },
+			query: { page: 1, size: 10 },
 			list: '',
 			total: 0,
 			multipleSelection: [], // 多选数据

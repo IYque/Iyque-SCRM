@@ -29,7 +29,7 @@ public class TableSupport {
     {
         PageDomain pageDomain = new PageDomain();
         Integer pageNum = ServletUtils.getParameterToInt(PAGE_NUM);
-        pageDomain.setPageNum(pageNum==null?1:pageNum);
+        pageDomain.setPageNum(pageNum==null?0:pageNum-1);
         Integer parameterToInt = ServletUtils.getParameterToInt(PAGE_SIZE);
         pageDomain.setPageSize(parameterToInt == null?10:ServletUtils.getParameterToInt(PAGE_SIZE));
         return pageDomain;

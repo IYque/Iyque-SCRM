@@ -19,7 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IYqueMsgAudit {
+public class IYqueMsgAudit extends BaseEntity{
 
 
 

@@ -98,6 +98,12 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
         }
 
 
+        //按照时间查询
+        if (iYqueMsgAudit.getStartTime() != null && iYqueMsgAudit.getEndTime() != null) {
+            spec = spec.and((root, query, cb) -> cb.between(root.get("msgTime"),DateUtils.setTimeToStartOfDay( iYqueMsgAudit.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueMsgAudit.getEndTime())));
+        }
+
+
 
         return   yqueMsgAuditDao.findAll(spec, pageable);
     }
@@ -112,17 +118,17 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
         //员工名称
         if(StringUtils.isNotEmpty(analysisMsgAudit.getEmployeeName())){
-            spec = spec.and((root, query, cb) -> cb.like(root.get("employeeName"), "%" + analysisMsgAudit.getEmployeeName() + "%"));
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("employeeName")), "%" + analysisMsgAudit.getEmployeeName().trim()  + "%"));
         }
 
         //客户名称
         if(StringUtils.isNotEmpty(analysisMsgAudit.getCustomerName())){
-            spec = spec.and((root, query, cb) -> cb.like(root.get("customerName"), "%" + analysisMsgAudit.getCustomerName() + "%"));
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("customerName")), "%" + analysisMsgAudit.getCustomerName().trim() + "%"));
         }
 
         //按照时间查询
         if (analysisMsgAudit.getStartTime() != null && analysisMsgAudit.getEndTime() != null) {
-            spec = spec.and((root, query, cb) -> cb.between(root.get("createTime"), analysisMsgAudit.getStartTime(), analysisMsgAudit.getEndTime()));
+            spec = spec.and((root, query, cb) -> cb.between(root.get("createTime"), DateUtils.setTimeToStartOfDay(analysisMsgAudit.getStartTime()), DateUtils.setTimeToEndOfDay(analysisMsgAudit.getEndTime()) ));
         }
 
         return yqueAiAnalysisMsgAuditDao.findAll(spec,pageable);

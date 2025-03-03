@@ -67,6 +67,20 @@ export const navRoutes = [
 		],
 	},
 	{
+		path: '/chat',
+		component: Layout,
+		redirect: '/chat/index',
+		meta: { title: '会话', icon: 'conversation' },
+		children: [
+			{
+				path: 'index',
+				component: () => import('@/views/chat/index'),
+				hidden: true,
+				meta: { title: '会话' },
+			},
+		],
+	},
+	{
 		path: '/config',
 		component: Layout,
 		redirect: '/config/index',

@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IYqueAiAnalysisMsgAudit {
+public class IYqueAiAnalysisMsgAudit extends BaseEntity{
 
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
@@ -47,10 +47,6 @@ public class IYqueAiAnalysisMsgAudit {
     private Date createTime;
 
 
-    @Transient
-    private Date startTime;
-    @Transient
-    private Date endTime;
 
     // 在实体被持久化之前自动设置 createTime
     @PrePersist
