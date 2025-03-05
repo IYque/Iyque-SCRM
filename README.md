@@ -196,7 +196,7 @@ export const common = {
 
 5. 启动
 
-Node推荐16.x及以上版本。
+Node推荐20.x及以上版本。
 
 ```
 # 进入项目目录
