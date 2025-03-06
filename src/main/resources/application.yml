@@ -21,7 +21,7 @@ spring:
         web-allow-others: true
   datasource:
     url: jdbc:h2:file:./data/mydb;
-    #url: jdbc:h2:tcp://localhost/./data/mydb
+   #  url: jdbc:h2:tcp://localhost/./data/mydb
     username: sa
     password: 123456
   jpa:
