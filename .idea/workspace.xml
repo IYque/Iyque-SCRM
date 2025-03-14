@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bb0d89ba-ff17-4798-a1ec-8d642332a3aa" name="更改" comment="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。">
+      <change afterPath="$PROJECT_DIR$/img/j-5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/j-4.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/j-4.png" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="module" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="临时分支" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2tWbSi4S9KaTlK97hkrGVMOVbtG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.iyque-code [clean].executor": "Run",
+    "Maven.iyque-code [package].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.IyQueApplication.executor": "Debug",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/robin/work/ky/iYqueCode/img",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.SensitiveWordFilter.executor": "Debug"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/img" />
+      <recent name="$PROJECT_DIR$/data" />
+      <recent name="$PROJECT_DIR$/src/main/java/cn/iyque/enums" />
+      <recent name="$PROJECT_DIR$/src/main/java/cn/iyque/dao" />
+      <recent name="$PROJECT_DIR$/src/main/java/cn/iyque/entity" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/icode-ui/src/assets/icons/svg" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.IyQueApplication">
+    <configuration name="IYQueComplaintServiceImpl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.iyque.service.impl.IYQueComplaintServiceImpl" />
+      <module name="iyque-code" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.iyque.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IYqueContant" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.iyque.constant.IYqueContant" />
+      <module name="iyque-code" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.iyque.constant.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IYqueUserController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.iyque.controller.IYqueUserController" />
+      <module name="iyque-code" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.iyque.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SensitiveWordFilter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.iyque.domain.msg.SensitiveWordFilter" />
+      <module name="iyque-code" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.iyque.domain.msg.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IyQueApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="iyque-code" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.iyque.IyQueApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="应用程序.SensitiveWordFilter" />
+        <item itemvalue="应用程序.IYqueUserController" />
+        <item itemvalue="应用程序.IYqueContant" />
+        <item itemvalue="应用程序.IYQueComplaintServiceImpl" />
+        <item itemvalue="应用程序.SensitiveWordFilter" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="bb0d89ba-ff17-4798-a1ec-8d642332a3aa" name="更改" comment="" />
+      <created>1740470779233</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740470779233</updated>
+      <workItem from="1740470781631" duration="3922000" />
+      <workItem from="1740649144320" duration="462000" />
+      <workItem from="1740665583559" duration="31350000" />
+      <workItem from="1740899954486" duration="35488000" />
+      <workItem from="1741230543992" duration="43230000" />
+      <workItem from="1741742908814" duration="18313000" />
+      <workItem from="1741916375608" duration="6823000" />
+    </task>
+    <task id="LOCAL-00001" summary="会话数据拉取，代码提交">
+      <option name="closed" value="true" />
+      <created>1740729656632</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1740729656632</updated>
+    </task>
+    <task id="LOCAL-00002" summary="会话存档文本类数据拉取，以及deepseek ai员工聊天内容预审生成聊天报告等功能提交">
+      <option name="closed" value="true" />
+      <created>1740920560689</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1740920560689</updated>
+    </task>
+    <task id="LOCAL-00003" summary="会话存档文本类数据拉取，以及deepseek ai员工聊天内容预审生成聊天报告等功能提交">
+      <option name="closed" value="true" />
+      <created>1740992999474</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1740992999474</updated>
+    </task>
+    <task id="LOCAL-00004" summary="会话存档文本类数据拉取，以及deepseek ai员工聊天内容预审生成聊天报告等功能提交">
+      <option name="closed" value="true" />
+      <created>1740993055368</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740993055368</updated>
+    </task>
+    <task id="LOCAL-00005" summary="相关文件提交">
+      <option name="closed" value="true" />
+      <created>1740994691019</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1740994691019</updated>
+    </task>
+    <task id="LOCAL-00006" summary="企微AI会话存档功能发布,员工与客户文本聊天记录拉取;结合deepseek对员工聊天记录做预警分析,判断员工是否有敲单,辱骂客户,等行为。帮助企业提高服务质量">
+      <option name="closed" value="true" />
+      <created>1740997622825</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1740997622825</updated>
+    </task>
+    <task id="LOCAL-00007" summary="企微AI会话存档功能发布,员工与客户文本聊天记录拉取;结合deepseek对员工聊天记录做预警分析,判断员工是否有敲单,辱骂客户,等行为。帮助企业提高服务质量">
+      <option name="closed" value="true" />
+      <created>1740998244526</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1740998244526</updated>
+    </task>
+    <task id="LOCAL-00008" summary="ai预设规则自定义">
+      <option name="closed" value="true" />
+      <created>1741428929817</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1741428929818</updated>
+    </task>
+    <task id="LOCAL-00009" summary="相关代码提交">
+      <option name="closed" value="true" />
+      <created>1741662585900</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1741662585900</updated>
+    </task>
+    <task id="LOCAL-00010" summary="相关代码提交">
+      <option name="closed" value="true" />
+      <created>1741662624622</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1741662624622</updated>
+    </task>
+    <task id="LOCAL-00011" summary="ai会话预审规则自定义;员工管理;企微客户投诉拦截等功能发布">
+      <option name="closed" value="true" />
+      <created>1741855189928</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1741855189928</updated>
+    </task>
+    <task id="LOCAL-00012" summary="====">
+      <option name="closed" value="true" />
+      <created>1741855780320</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1741855780320</updated>
+    </task>
+    <task id="LOCAL-00013" summary="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。">
+      <option name="closed" value="true" />
+      <created>1741920959834</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1741920959834</updated>
+    </task>
+    <task id="LOCAL-00014" summary="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。">
+      <option name="closed" value="true" />
+      <created>1741921013104</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1741921013104</updated>
+    </task>
+    <task id="LOCAL-00015" summary="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。">
+      <option name="closed" value="true" />
+      <created>1741921641014</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1741921641014</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="会话数据拉取，代码提交" />
+    <MESSAGE value="会话存档文本类数据拉取，以及deepseek ai员工聊天内容预审生成聊天报告等功能提交" />
+    <MESSAGE value="相关文件提交" />
+    <MESSAGE value="企微AI会话存档功能发布,员工与客户文本聊天记录拉取;结合deepseek对员工聊天记录做预警分析,判断员工是否有敲单,辱骂客户,等行为。帮助企业提高服务质量" />
+    <MESSAGE value="ai预设规则自定义" />
+    <MESSAGE value="相关代码提交" />
+    <MESSAGE value="ai会话预审规则自定义;员工管理;企微客户投诉拦截等功能发布" />
+    <MESSAGE value="代码菜单调整" />
+    <MESSAGE value="====" />
+    <MESSAGE value="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。" />
+    <option name="LAST_COMMIT_MESSAGE" value="AI客户会话预审规则;企微客户反馈;员工列表;客群列表等功能。" />
+  </component>
+</project>
