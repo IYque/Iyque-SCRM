@@ -3,13 +3,12 @@ package cn.iyque.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.json.JSONUtil;
+import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.dao.IYqueAiAnalysisMsgAuditDao;
 import cn.iyque.dao.IYqueMsgAuditDao;
 import cn.iyque.domain.CustomerChatGroup;
 import cn.iyque.domain.EmployeeChatGroup;
-import cn.iyque.entity.IYqueAiAnalysisMsgAudit;
-import cn.iyque.entity.IYqueMsgAnnex;
-import cn.iyque.entity.IYqueMsgAudit;
+import cn.iyque.entity.*;
 import cn.iyque.service.*;
 import cn.iyque.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@SuppressWarnings("all")
 public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
     @Autowired
@@ -52,12 +52,13 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
     @Autowired
     private IYqueAiAnalysisMsgAuditDao yqueAiAnalysisMsgAuditDao;
 
+    @Autowired
+    private IYqueParamConfig yqueParamConfig;
+
 
     private final String promptTpl = "任务描述：\n" +
             "分析以下聊天内容，判断是否存在以下违规行为：\n" +
-            "1.敲单：通过不正当手段要求客户下单或完成交易。\n" +
-            "2.辱骂客户：使用侮辱性、攻击性语言对待客户。\n" +
-            "3.员工向客户索取红包：公园向客户索要红包或其他利益。\n\n" +
+            "%s\n" +
             "聊天内容：\n" +
             "%s\n\n" +
             "分析要求：\n" +
@@ -256,14 +257,19 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
     @Override
     @Async
     @Transactional
-    public void aISessionWarning() {
+    public void aISessionWarning(List<IYqueMsgRule> iYqueMsgRules, BaseEntity baseEntity) {
 
 
-            String nowUserInquiryMsgData = this.findNowUserInquiryMsgData();
+        if(CollectionUtil.isNotEmpty(iYqueMsgRules)){
 
 
-               if(StringUtils.isNotEmpty(nowUserInquiryMsgData)){
-                String prompt = String.format(promptTpl, nowUserInquiryMsgData);
+
+
+            String nowUserInquiryMsgData = this.findNowUserInquiryMsgData(baseEntity);
+
+
+            if(StringUtils.isNotEmpty(nowUserInquiryMsgData)){
+                String prompt = String.format(promptTpl,IYqueMsgRule.formatRules(iYqueMsgRules), nowUserInquiryMsgData);
 
                 log.info("当前聊天内容分析提示词:"+prompt);
 
@@ -283,15 +289,26 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
 
                         if(CollectionUtil.isNotEmpty(msgAuditResults)){
-                            //清空当天已生成的记录,避免重复
-                            yqueAiAnalysisMsgAuditDao.deleteByCreateTimeToday(DateUtils.earlyMorning(
-                            ),new Date());
-                            yqueAiAnalysisMsgAuditDao.saveAll(msgAuditResults);
+                            msgAuditResults.stream().forEach(k->{
+                                k.setStartTime(baseEntity.getStartTime());
+                                k.setEndTime(baseEntity.getEndTime());
+                            });
+//                            //清空当天已生成的记录,避免重复
+//                            yqueAiAnalysisMsgAuditDao.deleteByCreateTimeToday(DateUtils.earlyMorning(
+//                            ),new Date());
                             //记录生成完成后给员工发送通知
+                            yqueAiAnalysisMsgAuditDao.saveAll(msgAuditResults);
+
                         }
                     }
                 }
             }
+
+
+        }
+
+
+
 
 
 
@@ -300,10 +317,11 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
     }
 
     @Override
-    public String findNowUserInquiryMsgData() {
+    public String findNowUserInquiryMsgData(BaseEntity baseEntity) {
         StringBuilder sb=new StringBuilder();
 
-        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetween(DateUtils.earlyMorning(), new Date());
+        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetween(DateUtils.setTimeToStartOfDay(baseEntity.getStartTime()),
+                DateUtils.setTimeToEndOfDay(baseEntity.getEndTime()));
 
         if(CollectionUtil.isNotEmpty(msgAuditList)){
             List<IYqueMsgAudit> filteredList = msgAuditList.stream()

@@ -22,6 +22,14 @@ public interface IYQueComplaintService {
 
 
     /**
+     * 投诉详情
+     * @param id
+     * @return
+     */
+    IYQueComplain findIYQueComplainById(Long id);
+
+
+    /**
      * 处理投诉
      * @param iyQueComplain
      */

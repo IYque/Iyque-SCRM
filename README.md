@@ -85,17 +85,25 @@
 - 群满自动建群；
 - 入群自动备注；
 
+**投诉管理**
+- **企微投诉入口设置**：在企微界面增设客户投诉入口，方便客户反馈问题，位置显著易操作，提升投诉便利性。
+- **投诉信息通知管理**：收到客户投诉后，系统多渠道自动下发通知给相关方，内容根据需求定制，确保信息及时送达。
+- **投诉数据统计分析**：从时间、类型、部门等多维度统计客户投诉，数据以可视化图表呈现，辅助决策改进。
+
+**员工列表|客群列表**
+- 同步企业员工列表与客户列表方便快速查看；
+
 ### 5.2 AI能力
 
 目前源雀SCRM开源版结合 DeepSeek、腾讯混元等AI大模型，实现客户会话相关能力智能化，具体如下：
 
- **AI 会话存档** 
-
+ **AI 会话存档(AI客户会话)**
 - 会话内容: 拉取员工与客户的文本聊天内容。
-- AI会话报告: 结合deepseek对员工发送给客户聊天内容进行ai分析,判断员工是否有敲单,辱骂客户,向客户索要回扣红包等行为。
+- AI会话预审: 结合deepseek对员工发送给客户指定时间聊天内容进行ai分析,判断员工是否有敲单,辱骂客户,向客户索要回扣红包等行为。
+- AI会话预审规则: 针对员工与客户聊天信息预审规则可自定义,根据自身需求实现预审。
 
 ![img.png](img/j-4.png)
-
+![img.png](img/j-5.png)
  **AI 客服** 
 
 - 企微客服接入deepseek,实现AI自动回复
@@ -152,7 +160,7 @@ datasource:
         proxy_pass http://127.0.0.1:8085/;
     }
  
- 前端应用部署设置:
+ 前端PC端部署设置(对应代码/frontEnd/pc):
    location /tools {
         root /usr/local/nginx/html/prod;
         index index.html index.htm;
@@ -168,6 +176,13 @@ datasource:
             return 204;
         }
     }
+    
+   前端移动端端部署设置(对应代码/frontEnd/mobile):
+   location /openmobile {
+			alias /usr/local/nginx/html/prod/openmobile;
+			try_files $uri $uri/ /openmobile/index.html;
+			index index.html;
+		}
 ```
 
 4. 前端部署

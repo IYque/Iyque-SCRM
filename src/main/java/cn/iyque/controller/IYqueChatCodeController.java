@@ -5,7 +5,9 @@ import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueChat;
 import cn.iyque.entity.IYqueChatCode;
 import cn.iyque.service.IYqueChatCodeService;
+import cn.iyque.service.IYqueChatService;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalGroupChatList;
@@ -28,6 +30,10 @@ public class IYqueChatCodeController {
 
     @Autowired
     private IYqueChatCodeService iYqueChatCodeService;
+
+
+    @Autowired
+    private IYqueChatService iYqueChatService;
 
 
 
@@ -69,14 +75,11 @@ public class IYqueChatCodeController {
 
     /**
      * 获取群码列表
-     * @param page
-     * @param size
      * @return
      */
     @GetMapping("/findIYqueChatCode")
-    public ResponseResult<IYqueChatCode> findIYqueChatCode(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size){
-        Page<IYqueChatCode> iYqueChatCodes = iYqueChatCodeService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueChatCode> findIYqueChatCode(){
+        Page<IYqueChatCode> iYqueChatCodes = iYqueChatCodeService.findAll(PageRequest.of( TableSupport.buildPageRequest().getPageNum(),  TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueChatCodes.getContent(),iYqueChatCodes.getTotalElements());
     }
 
@@ -105,10 +108,8 @@ public class IYqueChatCodeController {
         List<IYqueChat> iYqueChats=new ArrayList<>();
 
         try {
-            iYqueChats =
-                    iYqueChatCodeService.listAllGroupChats();
 
-
+            iYqueChats=iYqueChatService.findAllIYqueChat();
         }catch (Exception e){
             return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
         }

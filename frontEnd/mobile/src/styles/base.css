@@ -1,0 +1,588 @@
+/**
+ * 通用css样式布局处理
+ */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  scroll-behavior: inherit;
+  border: 0 solid transparent;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p,
+blockquote,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+pre,
+form,
+fieldset,
+legend,
+button,
+input,
+textarea,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  overflow: auto;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family:
+    Helvetica Neue,
+    Helvetica,
+    PingFang SC,
+    Hiragino Sans GB,
+    Microsoft YaHei,
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.15;
+  color: var(--FontBlack, #333);
+  background: var(--BgWhite, white);
+  scroll-behavior: smooth;
+}
+input:autofill,
+input:-internal-autofill-selected {
+  background-color: #fff !important;
+}
+
+::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  /*高宽分别对应横竖滚动条的尺寸*/
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  visibility: hidden;
+  /*滚动条里面小方块*/
+  border-radius: 5px;
+  /*深色模式*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: var(--BgBlack10, hsl(0, 0%, 95%));
+
+  /*浅色模式*/
+  /*-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+   background: rgb(245, 245, 245);
+   border: 1px solid var(--BorderBlack2);
+   border-bottom-width: 2px;*/
+}
+
+:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+/*滚动条里面轨道*/
+/* ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+     background: var(--BgBlack9);
+  } */
+
+a {
+  cursor: pointer;
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+a:hover {
+  /* 提高hover权重，其他地方的ahover如需改变，也使用important */
+  color: var(--Color, initial) !important;
+}
+
+li {
+  list-style: none;
+}
+
+p,
+span {
+  line-height: normal;
+  white-space: break-spaces;
+}
+
+button + button,
+svg + svg {
+  margin-left: 10px;
+}
+
+svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  outline: none;
+}
+
+/** 原子类 **/
+
+.absolute {
+  position: absolute !important;
+}
+.relative {
+  position: relative !important;
+}
+.floatLeft {
+  float: left;
+  position: relative;
+}
+.floatRight {
+  float: right;
+  position: relative;
+}
+
+/* fixed */
+.fixedTop,
+.fixedBottom {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  height: 50px;
+  z-index: 999;
+}
+.fixedTop {
+  top: 0;
+}
+.fixedBottom {
+  bottom: 0;
+}
+
+/* flex */
+.flex {
+  display: flex !important;
+}
+.flexAuto {
+  flex: auto !important;
+}
+.flexNone {
+  flex: none !important;
+}
+.flex1 {
+  flex: 1 !important;
+}
+.flex0 {
+  flex: 0 !important;
+}
+.flexWrap {
+  display: flex !important;
+  flex-flow: wrap !important;
+}
+.flexCol {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.flexStart {
+  display: flex !important;
+  align-items: flex-start !important;
+}
+.flexCenter {
+  display: flex !important;
+  align-items: center !important;
+}
+.flexBetween {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+.flexAround {
+  display: flex !important;
+  justify-content: space-around !important;
+}
+.flexStartBetween {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.flexCenterBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flexGap10 {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: baseline;
+  gap: 10px;
+}
+.grid {
+  display: grid;
+}
+.gap5 {
+  gap: 5px !important;
+}
+.gap15 {
+  gap: 15px !important;
+}
+.gap20 {
+  gap: 20px !important;
+}
+
+/* align */
+.alignLeft {
+  text-align: left !important;
+}
+.alignCenter {
+  text-align: center !important;
+}
+.alignRight {
+  text-align: right !important;
+}
+
+.stickyTop {
+  position: sticky !important;
+  top: 0;
+  z-index: 9;
+}
+.stickyBottom {
+  position: sticky !important;
+  bottom: 0;
+}
+
+.pt0 {
+  margin-top: 0 !important;
+}
+.pr0 {
+  margin-right: 0 !important;
+}
+.pb0 {
+  margin-bottom: 0 !important;
+}
+.pl0 {
+  margin-left: 0 !important;
+}
+
+/* padding 5px series */
+.pt5 {
+  padding-top: 5px !important;
+}
+.pr5 {
+  padding-right: 5px !important;
+}
+.pb5 {
+  padding-bottom: 5px !important;
+}
+.pl5 {
+  padding-left: 5px !important;
+}
+.pad5 {
+  padding: 5px !important;
+}
+
+/* padding 10px series */
+.pt10 {
+  padding-top: 10px !important;
+}
+.pr10 {
+  padding-right: 10px !important;
+}
+.pb10 {
+  padding-bottom: 10px !important;
+}
+.pl10 {
+  padding-left: 10px !important;
+}
+.pad10 {
+  padding: 10px !important;
+}
+
+/* padding 20px series */
+.pt20 {
+  padding-top: 20px !important;
+}
+.pr20 {
+  padding-right: 20px !important;
+}
+.pb20 {
+  padding-bottom: 20px !important;
+}
+.pl20 {
+  padding-left: 20px !important;
+}
+.pad20 {
+  padding: 20px !important;
+}
+
+.mt0 {
+  margin-top: 0 !important;
+}
+.mr0 {
+  margin-right: 0 !important;
+}
+.mb0 {
+  margin-bottom: 0 !important;
+}
+.ml0 {
+  margin-left: 0 !important;
+}
+
+/* margin 5px series */
+.mt5 {
+  margin-top: 5px !important;
+}
+.mr5 {
+  margin-right: 5px !important;
+}
+.mb5 {
+  margin-bottom: 5px !important;
+}
+.ml5 {
+  margin-left: 5px !important;
+}
+.mar5 {
+  margin: 5px !important;
+}
+
+/* margin 10px series */
+.mt10 {
+  margin-top: 10px !important;
+}
+.mr10 {
+  margin-right: 10px !important;
+}
+.mb10 {
+  margin-bottom: 10px !important;
+}
+.ml10 {
+  margin-left: 10px !important;
+}
+.mar10 {
+  margin: 10px !important;
+}
+
+/* margin 15px series */
+.mt15 {
+  margin-top: 15px !important;
+}
+.mr15 {
+  margin-right: 15px !important;
+}
+.mb15 {
+  margin-bottom: 15px !important;
+}
+.ml15 {
+  margin-left: 15px !important;
+}
+.mar15 {
+  margin: 15px !important;
+}
+
+/* margin 20px series */
+.mt20 {
+  margin-top: 20px !important;
+}
+.mr20 {
+  margin-right: 20px !important;
+}
+.mb20 {
+  margin-bottom: 20px !important;
+}
+.ml20 {
+  margin-left: 20px !important;
+}
+.mar20 {
+  margin: 20px !important;
+}
+
+.font0 {
+  font-size: 0 !important;
+}
+.font12 {
+  font-size: 12px !important;
+}
+.font14 {
+  font-size: 14px !important;
+}
+.font16 {
+  font-size: 16px !important;
+}
+.font18 {
+  font-size: 18px !important;
+}
+.font20 {
+  font-size: 20px !important;
+}
+
+.zindexB1 {
+  z-index: -1 !important;
+}
+.zindex0 {
+  z-index: 0 !important;
+}
+.zindex1 {
+  z-index: 9 !important;
+}
+.zindex2 {
+  z-index: 99 !important;
+}
+.zindex3 {
+  z-index: 999 !important;
+}
+.zindex4 {
+  z-index: 9999 !important;
+}
+.zindex5 {
+  z-index: 99999 !important;
+}
+
+/* . */
+.pointer {
+  cursor: pointer !important;
+}
+
+.blod {
+  font-weight: bold !important;
+}
+
+.block {
+  display: block !important;
+}
+.inlineBlock {
+  display: inline-block !important;
+  vertical-align: top;
+  position: relative;
+}
+.hide {
+  display: none !important;
+}
+
+.bgWhite {
+  background: var(--BgWhite, white) !important;
+}
+
+.bgNone {
+  background: none !important;
+}
+
+.overhide {
+  overflow: hidden !important;
+}
+.overauto {
+  overflow: auto !important;
+}
+
+.height100 {
+  height: 100% !important;
+}
+.width100 {
+  width: 100% !important;
+}
+.vh100 {
+  height: 100vh !important;
+}
+.vw100 {
+  width: 100vw !important;
+}
+
+.lineHeight0 {
+  line-height: 0 !important;
+}
+.lineHeight1 {
+  line-height: 1 !important;
+}
+
+.pre {
+  white-space: pre !important;
+}
+.preLine {
+  white-space: pre-line !important;
+}
+.preWrap {
+  white-space: pre-wrap !important;
+}
+
+.hoverColor:hover {
+  color: var(--Color) !important;
+}
+
+/* 单行文字溢出省略号 */
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* mask */
+.mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(39, 39, 39, 0.76);
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9;
+}
+
+/* 上下左右居中 */
+.centerCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+}
+
+.stickyPadding {
+  --bg: var(--BgWhite);
+  --pad: var(--Margin);
+  background: var(--bg);
+  padding: 0 var(--pad);
+  overflow: auto;
+}
+.stickyPadding::before,
+.stickyPadding::after {
+  content: '';
+  display: block;
+  position: sticky;
+  height: var(--pad);
+  background: var(--bg);
+}
+.stickyPadding::before {
+  top: 0;
+}
+.stickyPadding::after {
+  bottom: 0;
+}
+
+/* pc端主体显示宽度区域 */
+.mainSize {
+  min-width: 1366px;
+}
+
+/* 暗黑模式 Dark mode */
+/* @media (prefers-color-scheme: dark) {
+    body,
+    img,
+    video {
+      filter: invert(1) brightness(1.5) hue-rotate(180deg);
+    }
+
+    不使用暗黑模式
+    .no-dark {
+      position: relative;
+    }
+    .no-dark::before {
+      content: ' ';
+      position: absolute;
+      display: block;
+      height: 100%;
+      width: 100%;
+      backdrop-filter: invert(1) brightness(1.5) hue-rotate(180deg);
+    }
+  } */

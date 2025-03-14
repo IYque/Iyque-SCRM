@@ -9,6 +9,7 @@ import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.enums.ComplaintContent;
 import cn.iyque.service.IYqueUserService;
 import cn.iyque.utils.MapUtils;
+import cn.iyque.utils.TableSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,14 +52,13 @@ public class IYqueUserController {
 
     /**
      * 获取企业微信员工(分页)
-     * @param page
-     * @param size
+     * @param iYqueUser
      * @return
      */
     @GetMapping("/findIYqueUserPage")
-    public ResponseResult<IYqueUser> findIYqueUserPage(@RequestParam String name,@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size){
-        Page<IYqueUser> iYqueUsers = iYqueUserService.findIYqueUserPage(name,PageRequest.of(page, size, Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueUser> findIYqueUserPage(IYqueUser iYqueUser){
+        Page<IYqueUser> iYqueUsers = iYqueUserService.findIYqueUserPage(iYqueUser.getName(),PageRequest.of(
+                TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()));
         return new ResponseResult(iYqueUsers.getContent(),iYqueUsers.getTotalElements());
     }
 
@@ -72,7 +72,7 @@ public class IYqueUserController {
 
         iYqueUserService.synchIyqueUser();
 
-        return new ResponseResult();
+        return new ResponseResult("员工同步中,请稍后查看");
     }
 
 

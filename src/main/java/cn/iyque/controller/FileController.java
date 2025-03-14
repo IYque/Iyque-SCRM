@@ -99,7 +99,7 @@ public class FileController {
             // 将文件写入目标路径
             Files.write(targetPath, file.getBytes());
 
-            return new ResponseResult<>(fileName);
+            return new ResponseResult<>(iYqueParamConfig.getFileViewUrl()+fileName);
         } catch (IOException e) {
              log.error("文件上传失败:"+e.getMessage());
             return new ResponseResult<>(HttpStatus.ERROR,e.getMessage(),null);
@@ -107,7 +107,66 @@ public class FileController {
     }
 
 
+    /**
+     * 文件上传
+     * @param file
+     * @return
+     */
+    @PostMapping("/openUpload")
+    public ResponseResult<String> openUpload(@RequestParam("file") MultipartFile file) {
+        try {
 
+            // 检查文件大小
+            long fileSize = file.getSize();
+            if (fileSize < FileUtils.MIN_FILE_SIZE) {
+                return new ResponseResult<>(HttpStatus.ERROR, "文件大小必须大于5个字节", null);
+            }
+
+            // 创建上传目录
+            File uploadDir = new File(iYqueParamConfig.getUploadDir());
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            // 获取原始文件名及其扩展名
+            String originalFileName = file.getOriginalFilename();
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+
+            // 根据文件类型进行检查和处理
+            String fileType = FileUtils.getFileContentType(fileExtension);
+            switch (fileType) {
+                case IYqueMsgAnnex.MsgType.MSG_TYPE_FILE:
+                    FileUtils.checkFileSize(file, FileUtils.FILE_MAX_SIZE);
+                    break;
+                case IYqueMsgAnnex.MsgType.MSG_TYPE_VIDES:
+                    FileUtils.checkVideoSizeAndFormat(file, fileExtension);
+                    break;
+                case IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE:
+                    //非png或jpg，则转化为jpg
+                    if (!FileUtils.checkImageSizeAndFormat(file,fileExtension)) {
+                        BufferedImage image = ImageIO.read(file.getInputStream());
+                        String jpgFileName = UUID.randomUUID() + ".jpg";
+                        Path jpgTargetPath = Paths.get(iYqueParamConfig.getUploadDir(), jpgFileName);
+                        ImageIO.write(image, "jpg", jpgTargetPath.toFile());
+                        return new ResponseResult<>(jpgFileName);
+                    }
+                    break;
+                default:
+                    return new ResponseResult<>(HttpStatus.ERROR, "不支持的文件类型", null);
+            }
+
+            // 获取文件名
+            String fileName = UUID.randomUUID()+fileExtension;
+            // 构建目标文件路径
+            Path targetPath = Paths.get(iYqueParamConfig.getUploadDir(), fileName);
+            // 将文件写入目标路径
+            Files.write(targetPath, file.getBytes());
+
+            return new ResponseResult<>(iYqueParamConfig.getFileViewUrl()+fileName);
+        } catch (IOException e) {
+            log.error("文件上传失败:"+e.getMessage());
+            return new ResponseResult<>(HttpStatus.ERROR,e.getMessage(),null);
+        }
+    }
 
 
     @GetMapping("/fileView/{filename}")

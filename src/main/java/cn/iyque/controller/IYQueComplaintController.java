@@ -1,5 +1,6 @@
 package cn.iyque.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.domain.*;
 import cn.iyque.entity.IYQueComplain;
 import cn.iyque.entity.IYQueComplaintTip;
@@ -112,9 +113,37 @@ public class IYQueComplaintController {
                 TableSupport.buildPageRequest().getPageSize(),
                 Sort.by("complainTime").descending()
         ));
+        List<IYQueComplain> iyQueComplains = iyQueComplainPage.getContent();
+        if(CollectionUtil.isNotEmpty(iyQueComplains)){
+            iyQueComplains.stream().forEach(k->{
+                k.setComplainTypeContent(
+                        ComplaintContent.getValueByCode(k.getComplainType())
+                );
+            });
+        }
+
+
 
         return new ResponseResult(iyQueComplainPage.getContent(),iyQueComplainPage.getTotalElements());
     }
+
+
+    /**
+     * 获取投诉列表
+     * @param id
+     * @return
+     */
+    @GetMapping("/findIYQueComplainById/{id}")
+    public ResponseResult<IYQueComplain> findIYQueComplainById(@PathVariable Long id){
+
+        IYQueComplain iYQueComplain = queComplaintService.findIYQueComplainById(id);
+
+
+
+
+        return new ResponseResult(iYQueComplain);
+    }
+
 
 
 
@@ -124,7 +153,7 @@ public class IYQueComplaintController {
      * @return
      */
     @PostMapping("/handleComplaint")
-    public ResponseResult handleComplaint(IYQueComplain iyQueComplain){
+    public ResponseResult handleComplaint(@RequestBody IYQueComplain iyQueComplain){
 
         iyQueComplain.setHandleWeUserId(
                 SecurityUtils.getCurrentUserName()

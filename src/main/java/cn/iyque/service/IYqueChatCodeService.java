@@ -37,11 +37,6 @@ public interface IYqueChatCodeService {
      void updateChatCode(IYqueChatCode iYqueChatCode)  throws Exception;
 
 
-    /**
-     * 获取企业微信所有外部群
-     */
-    List<IYqueChat> listAllGroupChats() throws Exception;
-
 
     /**
      * 删除群活码

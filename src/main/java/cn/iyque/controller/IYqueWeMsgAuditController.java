@@ -1,19 +1,24 @@
 package cn.iyque.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.entity.BaseEntity;
 import cn.iyque.entity.IYqueAiAnalysisMsgAudit;
 import cn.iyque.entity.IYqueMsgAudit;
+import cn.iyque.entity.IYqueMsgRule;
 import cn.iyque.service.IWeMsgAuditService;
+import cn.iyque.service.IYqueMsgRuleService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/msg")
@@ -24,6 +29,10 @@ public class IYqueWeMsgAuditController {
 
     @Autowired
     private IWeMsgAuditService weMsgAuditService;
+
+
+    @Autowired
+    private IYqueMsgRuleService yqueMsgRuleService;
 
 
 
@@ -67,8 +76,12 @@ public class IYqueWeMsgAuditController {
      * ai智能分析生成员工聊天是否违规记录
      */
     @GetMapping("/buildAISessionWarning")
-    public ResponseResult buildAISessionWarning(){
-        weMsgAuditService.aISessionWarning();
+    public ResponseResult buildAISessionWarning(BaseEntity baseEntity){
+        List<IYqueMsgRule> iYqueMsgRules = yqueMsgRuleService.findByStartOrStop(true);
+        if(CollectionUtil.isEmpty(iYqueMsgRules)){
+            return new ResponseResult("请设置AI客户预审规则");
+        }
+        weMsgAuditService.aISessionWarning(iYqueMsgRules,baseEntity);
         return new ResponseResult("当前记录正在生成中,请稍后查看");
     }
 
@@ -86,6 +99,70 @@ public class IYqueWeMsgAuditController {
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("createTime").descending()));
 
         return new ResponseResult(msgAudits.getContent(),msgAudits.getTotalElements());
+    }
+
+    /**
+     * 获取ai预审规则列表
+     * @param iYqueMsgRule
+     * @return
+     */
+    @GetMapping("/findIYqueMsgRules")
+    public ResponseResult<IYqueMsgRule> findIYqueMsgRules(IYqueMsgRule iYqueMsgRule){
+
+        Page<IYqueMsgRule> iYqueMsgRules = yqueMsgRuleService.findAll(iYqueMsgRule,
+                PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
+                        TableSupport.buildPageRequest().getPageSize(),
+                        Sort.by(
+                                Sort.Order.desc("defaultRule"),
+                                Sort.Order.desc("createTime")
+                        )
+                        ));
+
+        return new ResponseResult(iYqueMsgRules.getContent(),iYqueMsgRules.getTotalElements());
+    }
+
+
+    /**
+     * 新增或编辑预审规则
+     * @param iYqueMsgRule
+     * @return
+     */
+    @PostMapping("/saveOrUpdateMsgRule")
+    public ResponseResult saveOrUpdateMsgRule(@RequestBody IYqueMsgRule iYqueMsgRule){
+
+
+
+        yqueMsgRuleService.saveOrUpdateMsgRule(iYqueMsgRule);
+
+        return new ResponseResult();
+    }
+
+
+
+    /**
+     * 批量启用或停用
+     * @param ids
+     * @return
+     */
+    @PostMapping(path = "/{ids}")
+    public ResponseResult batchStartOrStop(@PathVariable("ids") Long[] ids) {
+
+        yqueMsgRuleService.batchStartOrStop(ids);
+
+        return new ResponseResult();
+    }
+
+    /**
+     * 规则删除
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(path = "/{ids}")
+    public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
+
+        yqueMsgRuleService.batchDeleteAiMsgRule(ids);
+
+        return new ResponseResult();
     }
 
 

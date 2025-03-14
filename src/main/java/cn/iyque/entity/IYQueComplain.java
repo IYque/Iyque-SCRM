@@ -39,6 +39,10 @@ public class IYQueComplain {
     //投诉类型,对应枚举ComplaintContent
     private Integer complainType;
 
+    //投诉类型
+    @Transient
+    private String complainTypeContent;
+
 
     //投诉时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

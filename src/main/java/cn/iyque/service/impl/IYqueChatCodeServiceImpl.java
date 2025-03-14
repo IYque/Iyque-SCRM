@@ -156,54 +156,6 @@ public class IYqueChatCodeServiceImpl implements IYqueChatCodeService {
 
     }
 
-    @Override
-    public  List<IYqueChat> listAllGroupChats() throws Exception {
-
-        List<IYqueChat> iYqueChatList=new ArrayList<>();
-
-        String cursor = null;
-        int limit = 100; // 每次查询的数量
-
-        while (true) {
-            WxCpService wxCpService = iYqueConfigService.findWxcpservice();
-            WxCpUserExternalGroupChatList groupChat = wxCpService.getExternalContactService().listGroupChat(limit, cursor, 0, null);
-
-            if (groupChat == null || CollectionUtil.isEmpty(groupChat.getGroupChatList() )) {
-                break;
-            }
-            // 处理当前页的数据
-            for (WxCpUserExternalGroupChatList.ChatStatus chat : groupChat.getGroupChatList()) {
-                WxCpUserExternalGroupChatInfo groupChatInfo
-                        = wxCpService.getExternalContactService().getGroupChat(chat.getChatId(), 1);
-               if(null != groupChatInfo){
-                   WxCpUserExternalGroupChatInfo.GroupChat wGroupChat = groupChatInfo.getGroupChat();
-
-                   if(null != wGroupChat){
-                       iYqueChatList.add(
-                               IYqueChat.builder()
-                                       .chatId(wGroupChat.getChatId())
-                                       .chatName(StringUtils.isNotEmpty(wGroupChat.getName())?wGroupChat.getName():"@微信群")
-                                       .build()
-                       );
-                   }
-
-
-               }
-            }
-
-            // 更新cursor为下一页的cursor
-            cursor = groupChat.getNextCursor();
-
-            // 如果cursor为null，表示已经查询完所有数据
-            if (cursor == null) {
-                break;
-            }
-        }
-
-
-        return iYqueChatList;
-
-    }
 
     @Override
     public void batchDelete(Long[] ids) {
