@@ -12,6 +12,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.Date;
 
+@Entity(name = "iyque_chat")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +20,13 @@ import java.util.Date;
 public class IYqueChat {
 
 
+    @Id
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
+    private Long id;
 
     //群id
      private String chatId;
@@ -26,5 +34,20 @@ public class IYqueChat {
 
      //群名
      private String chatName;
+
+
+     //群主id
+     private String owner;
+
+
+     //群主名称
+     @Transient
+     private String ownerName;
+
+
+     //群创建时间
+     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+     private Date createTime;
+
 
 }

@@ -19,5 +19,9 @@ public class IYqueParamConfig {
     //文件预览访问前缀
     private String fileViewUrl;
 
+
+    //是否预审所有数据,fasle默认预审当天0点到此刻的数据，true所有数据
+    private Boolean inquiryAll=false;
+
     private String complaintUrl="https://iyque.cn";
 }

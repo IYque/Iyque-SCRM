@@ -23,6 +23,7 @@ import cn.iyque.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -92,6 +93,35 @@ public class IYQueComplaintServiceImpl implements IYQueComplaintService {
             });
 
         }
+    }
+
+    @Override
+    public IYQueComplain findIYQueComplainById(Long id) {
+        Optional<IYQueComplain> optional = iyQueComplaintDao.findById(id);
+        if(optional.isPresent()){
+            IYQueComplain iyQueComplain = optional.get();
+
+            iyQueComplain.setComplainAnnexList(
+                    iyQueComplaintAnnexDao.findByComplainId(iyQueComplain.getId())
+            );
+
+            if(StringUtils.isNotEmpty(iyQueComplain.getHandleWeUserId())){
+                List<IYqueUser> iYqueUsers = iYqueUserDao.findByUserId(iyQueComplain.getHandleWeUserId());
+                if(CollectionUtil.isNotEmpty(iYqueUsers)){
+                    iyQueComplain.setHandleUserName(
+                            iYqueUsers.stream().findFirst().get().getName()
+                    );
+
+                    iyQueComplain.setComplainTypeContent(
+                            ComplaintContent.getValueByCode(iyQueComplain.getComplainType())
+                    );
+                }
+            }
+
+            return iyQueComplain;
+
+        }
+        return null;
     }
 
 

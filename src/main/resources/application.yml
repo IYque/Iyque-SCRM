@@ -4,14 +4,15 @@ ai:
   model: deepseek-chat #接入的具体模型，deepseek目前支持deepseek-chat与deepseek-reasoner
   limitToken: 10000  #限制每日token使用上限(输入token+输出token)
   deepseek:
-    apiKey: #对应deepseek的apiKey
+    apiKey:  #对应deepseek的apiKey
 iyque:
   userName: iyque
   pwd: 123456
   demo: false
-  fileViewUrl: https://iyque.cn/qapi/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
+  fileViewUrl: http://iyque.cn/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
   uploadDir: ./upload
-  complaintUrl: http://iyque.com #投诉页面
+  inquiryAll: true
+  complaintUrl: http://iyque.cn/openmobile/customerComplaint #投诉页面
 spring:
   h2:
     console:

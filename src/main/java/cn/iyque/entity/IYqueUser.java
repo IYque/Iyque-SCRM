@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity(name = "iyque_user")
 @Data
@@ -35,12 +36,18 @@ public class IYqueUser {
     private String userId;
 
 
-    //员工部门名称，多个使用逗号隔开
-    private String deptNames;
-
 
     //职务
     private String position;
+
+    //员工状态：1=已激活，2=已禁用，4=未激活，5=退出企业。
+    private Integer status;
+
+
+    @Transient
+    private boolean avg=true;
+
+
 
 
 

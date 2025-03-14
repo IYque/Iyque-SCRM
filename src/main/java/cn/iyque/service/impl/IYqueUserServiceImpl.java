@@ -42,7 +42,7 @@ public class IYqueUserServiceImpl implements IYqueUserService {
 
         ThreadUtil.execute(()->{
 
-            log.error("异步同步成员start===");
+            log.info("异步同步成员start===");
 
             try {
                 WxCpService wxCpServic = iYqueConfigService.findWxcpservice();
@@ -54,26 +54,21 @@ public class IYqueUserServiceImpl implements IYqueUserService {
                     WxCpUserService userService = wxCpServic.getUserService();
                     departList.stream().forEach(k->{
 
+
+
                         try {
                             List<WxCpUser> wxCpUserList = userService.listByDepartment(k.getId(), true, 0);
                             if(CollectionUtil.isNotEmpty(wxCpUserList)){
                                 wxCpUserList.stream().forEach(kk->{
-                                    List<WxCpDepart> filteredDepartments = departList.stream()
-                                            .filter(department -> Arrays.stream(kk.getDepartIds()).anyMatch(id -> id.equals(department.getId())))
-                                            .collect(Collectors.toList());
-                                    if(CollectionUtil.isNotEmpty(filteredDepartments)){
-                                        iYqueUsers.add(
-                                                IYqueUser.builder()
-                                                        .userId(kk.getUserId())
-                                                        .deptNames(
-                                                                filteredDepartments.stream()
-                                                                        .map(WxCpDepart::getName)
-                                                                        .collect(Collectors.joining(","))
-                                                        )
-                                                        .position(kk.getPosition())
-                                                        .build()
-                                        );
-                                    }
+
+                                    iYqueUsers.add(
+                                            IYqueUser.builder()
+                                                    .userId(kk.getUserId())
+                                                    .name(kk.getName())
+                                                    .position(kk.getPosition())
+                                                    .status(kk.getStatus())
+                                                    .build()
+                                    );
                                 });
                             }
 
@@ -83,8 +78,27 @@ public class IYqueUserServiceImpl implements IYqueUserService {
 
                     });
 
+
                     iYqueUserDao.deleteAll();
-                    iYqueUserDao.saveAll(iYqueUsers);
+
+                    if(CollectionUtil.isNotEmpty(iYqueUsers)){
+
+                        List<IYqueUser> distinctUsers = iYqueUsers.stream()
+                                .collect(Collectors.toMap(
+                                        IYqueUser::getUserId,
+                                        user -> user,
+                                        (existing, replacement) -> existing
+                                ))
+                                .values()
+                                .stream()
+                                .collect(Collectors.toList());
+
+                        if(CollectionUtil.isNotEmpty(distinctUsers)){
+                            iYqueUserDao.saveAll(distinctUsers);
+                        }
+
+                    }
+
                 }
 
             }catch (Exception e){
@@ -94,7 +108,7 @@ public class IYqueUserServiceImpl implements IYqueUserService {
 
             }
 
-            log.error("异步同步成员end===");
+            log.info("异步同步成员end===");
 
         });
 

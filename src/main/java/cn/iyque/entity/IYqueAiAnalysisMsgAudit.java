@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IYqueAiAnalysisMsgAudit extends BaseEntity{
+public class IYqueAiAnalysisMsgAudit{
 
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
@@ -40,6 +41,14 @@ public class IYqueAiAnalysisMsgAudit extends BaseEntity{
 
     //违规提示
     private String msg;
+
+     // 分析时间段数据-开始时间
+     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date startTime;
+
+    //分析时间段数据-结束时间
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date endTime;
 
 
     //分析时间

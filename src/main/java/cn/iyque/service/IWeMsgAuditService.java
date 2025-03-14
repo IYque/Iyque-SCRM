@@ -1,9 +1,7 @@
 package cn.iyque.service;
 
 import cn.iyque.domain.EmployeeChatGroup;
-import cn.iyque.entity.IYQueComplain;
-import cn.iyque.entity.IYqueAiAnalysisMsgAudit;
-import cn.iyque.entity.IYqueMsgAudit;
+import cn.iyque.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -45,14 +43,14 @@ public interface IWeMsgAuditService {
     /**
      * ai会话预警
      */
-    void aISessionWarning();
+    void aISessionWarning(List<IYqueMsgRule> iYqueMsgRules, BaseEntity baseEntity );
 
 
     /**
      *  获取当天凌晨到此刻时间,员工发送给客户的聊天数据
      * @return
      */
-    String findNowUserInquiryMsgData();
+    String findNowUserInquiryMsgData(BaseEntity baseEntity);
 
 
     /**

@@ -14,5 +14,5 @@ public interface IYqueUserDao extends JpaRepository<IYqueUser,Long> ,JpaSpecific
     List<IYqueUser> findIYqueUserByUserId(String userId);
 
 
-
+    List<IYqueUser> findByUserId(String userId);
 }
