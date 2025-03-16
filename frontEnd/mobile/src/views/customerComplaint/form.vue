@@ -15,7 +15,7 @@ findComplaintFn()
 
 import { showToast, showLoadingToast, showSuccessToast, closeToast } from 'vant'
 function onSubmit() {
-  let _form = form.value
+  let _form = JSON.parse(JSON.stringify(form.value))
 
   if (!_form.complainUserPhone) {
     showToast('请填写联系方式')

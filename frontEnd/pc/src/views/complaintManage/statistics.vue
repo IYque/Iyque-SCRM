@@ -2,7 +2,6 @@
   <div>
     <CardGroup :data="cardData" />
 
-
     <RequestChartTable
       type="lineChart"
       :params="{ svipGroupId: $route.query.id }"
@@ -62,8 +61,8 @@ function dealDataTrend(data, series, xData) {
   xData.length = 0
   series.length = 0
   let _data = [[]]
-  xData = data.xdata
-  data.series = data.series
+  xData.push(...data.xdata)
+  series.push(...data.series)
   // data.series?.forEach((element) => {
   //   xData.push(element.xdata)
   //   _data[0].push(element.addGroupTotalNumber)

@@ -49,30 +49,10 @@ function onSubmit() {
 <template>
   <div class="pad15">
     <van-cell-group>
-      <van-field
-        v-model="form.complainTypeContent"
-        label="投诉类型"
-        placeholder="投诉类型"
-        label-align="top"
-      />
-      <van-field
-        v-model="form.complainTime"
-        label="投诉时间"
-        placeholder="投诉时间"
-        label-align="top"
-      />
-      <van-field
-        v-model="form.complainUserPhone"
-        label="联系方式"
-        placeholder="联系方式"
-        label-align="top"
-      />
-      <van-field
-        v-model="form.complainUserContent"
-        label="投诉内容"
-        placeholder="投诉内容"
-        label-align="top"
-      />
+      <van-field v-model="form.complainTypeContent" label="投诉类型" placeholder="投诉类型" label-align="top" />
+      <van-field v-model="form.complainTime" label="投诉时间" placeholder="投诉时间" label-align="top" />
+      <van-field v-model="form.complainUserPhone" label="联系方式" placeholder="联系方式" label-align="top" />
+      <van-field v-model="form.complainUserContent" label="投诉内容" placeholder="投诉内容" label-align="top" />
       <van-field v-model="form.value" label="投诉举证" placeholder="投诉举证" label-align="top">
         <template #input>
           <van-image
@@ -80,33 +60,18 @@ function onSubmit() {
             :key="index"
             width="80"
             height="80"
+            class="mr5"
             :src="item.annexUrl"
             fit="fill"
-            :lazy="true"
-          />
+            :lazy="true" />
         </template>
       </van-field>
     </van-cell-group>
 
     <van-cell-group class="mt15" v-if="form.handleState == 2">
-      <van-field
-        v-model="form.complainUserPhone"
-        label="处理人"
-        placeholder="处理人"
-        label-align="top"
-      />
-      <van-field
-        v-model="form.complainUserContent"
-        label="处理时间"
-        placeholder="处理时间"
-        label-align="top"
-      />
-      <van-field
-        v-model="form.complainUserContent"
-        label="处理内容"
-        placeholder="处理内容"
-        label-align="top"
-      />
+      <van-field v-model="form.complainUserPhone" label="处理人" placeholder="处理人" label-align="top" />
+      <van-field v-model="form.complainUserContent" label="处理时间" placeholder="处理时间" label-align="top" />
+      <van-field v-model="form.complainUserContent" label="处理内容" placeholder="处理内容" label-align="top" />
       <van-field v-model="form.value" label="处理证明" placeholder="处理证明" label-align="top">
         <template #input>
           <van-image
@@ -114,18 +79,16 @@ function onSubmit() {
             :key="index"
             width="80"
             height="80"
+            class="mr5"
             :src="item.annexUrl"
             fit="fill"
-            :lazy="true"
-          />
+            :lazy="true" />
         </template>
       </van-field>
     </van-cell-group>
 
     <div class="text-center mt-[30px]" v-if="form.handleState == 1">
-      <van-button type="success" class="!px-[41px]" size="small" @click="show = true">
-        处理投诉
-      </van-button>
+      <van-button type="success" class="!px-[41px]" size="small" @click="show = true">处理投诉</van-button>
     </div>
 
     <van-action-sheet
@@ -134,8 +97,7 @@ function onSubmit() {
       round
       position="bottom"
       :closeable="false"
-      :close-on-click-overlay="false"
-    >
+      :close-on-click-overlay="false">
       <van-form @submit="onSubmit">
         <van-field
           class="textarea"
@@ -144,8 +106,7 @@ function onSubmit() {
           :autosize="{ maxHeight: 100, minHeight: 50 }"
           label="处理内容(必填)"
           placeholder="请输入处理内容"
-          label-align="top"
-        />
+          label-align="top" />
 
         <van-field class="upload" label="处理证明(选填)" placeholder="请选择" label-align="top">
           <!-- <template #label>
@@ -153,13 +114,7 @@ function onSubmit() {
             <van-icon name="info ml10" @click.native.stop="showDialog('upload')" />
           </template> -->
           <template #input>
-            <Upload
-              ref="upload"
-              v-model:fileList="form2.complainAnnexList"
-              multiple
-              limit="9"
-              result-type="file"
-            >
+            <Upload ref="upload" v-model:fileList="form2.complainAnnexList" multiple limit="9" result-type="file">
               <template #tip>
                 <div class="">最多上传9张图片</div>
               </template>
@@ -167,9 +122,7 @@ function onSubmit() {
           </template>
         </van-field>
         <div class="footer flex" style="margin: 20px">
-          <van-button class="" native-type="button" round block plain @click="show = false"
-            >取消</van-button
-          >
+          <van-button class="" native-type="button" round block plain @click="show = false">取消</van-button>
           <van-button type="success" native-type="submit" round block class="ml10">提交</van-button>
         </div>
       </van-form>
