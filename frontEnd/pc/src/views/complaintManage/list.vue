@@ -124,16 +124,15 @@ onMounted(async () => {
             <template #label>
               <span style="color: #ff0000; font-size: 16px">投诉举证:</span>
             </template>
-            <template v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
+            <div class="gap10 gap5" v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
               <el-image
                 v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 1)"
                 :key="index"
                 :src="item.annexUrl"
                 style="width: 80px; height: 80px"
-                class="mr5"
                 fit="fill"
                 :lazy="true"></el-image>
-            </template>
+            </div>
             <template v-else>
               <!-- 当列表为空时显示 '-' -->
               <span>-</span>
@@ -163,7 +162,7 @@ onMounted(async () => {
             <template #label>
               <span style="color: #ff0000; font-size: 16px">处理证明:</span>
             </template>
-            <template v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
+            <div class="gap10 gap5" v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
               <!-- 渲染符合条件的图片 -->
               <el-image
                 v-for="(item, index) in form.complainAnnexList.filter((e) => e.annexType === 2)"
@@ -171,7 +170,7 @@ onMounted(async () => {
                 :src="item.annexUrl"
                 fit="fill"
                 lazy></el-image>
-            </template>
+            </div>
             <template v-else>
               <!-- 当列表为空时显示 '-' -->
               <span>-</span>

@@ -55,15 +55,16 @@ function onSubmit() {
       <van-field v-model="form.complainUserContent" label="投诉内容" placeholder="投诉内容" label-align="top" />
       <van-field v-model="form.value" label="投诉举证" placeholder="投诉举证" label-align="top">
         <template #input>
-          <van-image
-            v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 1)"
-            :key="index"
-            width="80"
-            height="80"
-            class="mr5"
-            :src="item.annexUrl"
-            fit="fill"
-            :lazy="true" />
+          <div class="flexGap10 gap5">
+            <van-image
+              v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 1)"
+              :key="index"
+              width="80"
+              height="80"
+              :src="item.annexUrl"
+              fit="fill"
+              :lazy="true" />
+          </div>
         </template>
       </van-field>
     </van-cell-group>
@@ -74,15 +75,16 @@ function onSubmit() {
       <van-field v-model="form.complainUserContent" label="处理内容" placeholder="处理内容" label-align="top" />
       <van-field v-model="form.value" label="处理证明" placeholder="处理证明" label-align="top">
         <template #input>
-          <van-image
-            v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 2)"
-            :key="index"
-            width="80"
-            height="80"
-            class="mr5"
-            :src="item.annexUrl"
-            fit="fill"
-            :lazy="true" />
+          <div class="flexGap10 gap5">
+            <van-image
+              v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 2)"
+              :key="index"
+              width="80"
+              height="80"
+              :src="item.annexUrl"
+              fit="fill"
+              :lazy="true" />
+          </div>
         </template>
       </van-field>
     </van-cell-group>
