@@ -82,8 +82,8 @@ onMounted(async () => {
         <el-table-column prop="handleTime" label="处理时间" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="280" fixed="right">
           <template #default="{ row }">
-            <TableOperateBtn type="detail" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>
-            <TableOperateBtn type="delete" @click="distributeHandle(row.id)">通知</TableOperateBtn>
+            <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>
+            <TableOperateBtn type="" @click="distributeHandle(row.id).then(() => msgSuccess())">通知</TableOperateBtn>
           </template>
         </el-table-column>
       </template>
