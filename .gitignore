@@ -24,3 +24,5 @@ hs_err_pid*
 node_modules
 dist
 icode-ui/deploy/
+frontEnd/mobile/deploy/deploy.config.mjs
+frontEnd/pc/deploy/deploy.config.mjs

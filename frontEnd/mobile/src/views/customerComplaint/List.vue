@@ -1,5 +1,5 @@
 <script setup>
-import { getList, read } from './api'
+import { getList } from './api'
 defineProps({
   type: { type: String, default: '1' },
 })
@@ -20,8 +20,7 @@ defineProps({
                 id: item.id,
               },
             })
-          "
-        >
+          ">
           <div class="list-title">{{ item.complainTypeContent }}</div>
           <div class="list-info">联系方式：{{ item.complainUserPhone }}</div>
           <div class="">投诉时间：{{ item.complainTime }}</div>

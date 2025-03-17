@@ -153,7 +153,7 @@ datasource:
 ```
 
 3. Nginx部署
-
+   (Ningx完整配置文件:/configFile/nginx.conf)
 ```
  后端api代理设置:
  location ^~/iyque/ {

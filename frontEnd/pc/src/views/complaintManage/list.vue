@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { getList, setIYQueComplaintTip, distributeHandle, updateStatus,findIYQueComplaintTips } from './api'
+import { getList, setIYQueComplaintTip, distributeHandle, updateStatus, findIYQueComplaintTips } from './api'
 const handleState = { '1': '未处理', '2': '已处理' }
 
-const employees = ref([]);
-
+const employees = ref([])
+const form = ref({})
 
 const selectedEmployeeName = computed(() => {
   console.log(employees.value)
-  if (employees.value && employees.value.trim() !== "") 
-{
-  return  employees.value;
-}
-  return  '未设置';
-});
+  if (employees.value && employees.value.trim() !== '') {
+    return employees.value
+  }
+  return '未设置'
+})
 onMounted(async () => {
   try {
-    const response = await findIYQueComplaintTips();
+    const response = await findIYQueComplaintTips()
     if (response.data && Array.isArray(response.data)) {
       const userNames = response.data
-      .filter(item => item && typeof item.userName === 'string')
-      .map(item => item.userName) 
-      .join(', ');
+        .filter((item) => item && typeof item.userName === 'string')
+        .map((item) => item.userName)
+        .join(', ')
       employees.value = userNames
+      form.value.users = response.data
     } else {
       // ElMessageBox.warning('获取员工数据格式不正确');
     }
   } catch (error) {
-    console.error('获取员工数据失败:', error);
+    console.error('获取员工数据失败:', error)
   }
-});
+})
 </script>
 
 <template>
@@ -52,29 +52,25 @@ onMounted(async () => {
           :formProps="{ 'label-width': 'auto' }"
           :rules="{ users: { required: true, message: '必选项', trigger: 'change' } }"
           @confirm="
-            ({ form }) =>
-              $refs.dialogRef.confirm(() => setIYQueComplaintTip(form.value.users?.map((e) => ({ userId: e.userId }))))
+            () => $refs.dialogRef.confirm(() => setIYQueComplaintTip(form.users?.map((e) => ({ userId: e.userId }))))
           ">
-          <template #form="{ form }">
+          <template #form="{}">
             <el-form-item prop="users" class="width100" label="投诉处理人">
-              <SelectStaff v-model="form.users" title="选择员工">
+              <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
 
-              </SelectStaff>
-             
-              <div class="g-tip">当前投诉通知员工为:
+              <div class="g-tip">
+                当前投诉通知员工为:
                 <el-button type="success" size="small" plain>
                   {{ selectedEmployeeName }}
                 </el-button>
               </div>
-            
             </el-form-item>
           </template>
         </BaseDialog>
       </template>
 
       <template #table="{ data }">
-        <el-table-column prop="complainTypeContent" label="投诉类型" align="center">
-        </el-table-column>
+        <el-table-column prop="complainTypeContent" label="投诉类型" align="center"></el-table-column>
         <el-table-column prop="complainUserPhone" label="联系方式" align="center"></el-table-column>
         <el-table-column prop="complainTime" label="投诉时间" align="center"></el-table-column>
         <el-table-column prop="groupNameRule" label="处理状态" align="center">
@@ -86,8 +82,8 @@ onMounted(async () => {
         <el-table-column prop="handleTime" label="处理时间" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="280" fixed="right">
           <template #default="{ row }">
-            <TableOperateBtn type="detail" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>
-            <TableOperateBtn type="delete" @click="distributeHandle(row.id)">通知</TableOperateBtn>
+            <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>
+            <TableOperateBtn type="" @click="distributeHandle(row.id).then(() => msgSuccess())">通知</TableOperateBtn>
           </template>
         </el-table-column>
       </template>
@@ -100,85 +96,85 @@ onMounted(async () => {
       :formProps="{ 'label-position': 'top', style: 'display:grid;grid:auto / 1fr 1fr' }">
       <template #form="{ form }">
         <div>
-          <el-form-item >
+          <el-form-item>
             <template #label>
-              <span style="color: #ff0000; font-size: 16px;">投诉类型:</span>
+              <span style="color: #ff0000; font-size: 16px">投诉类型:</span>
             </template>
             {{ handleState[form.handleState] }}
           </el-form-item>
-          <el-form-item >
+          <el-form-item>
             <template #label>
-              <span style="color: #ff0000; font-size: 16px;">投诉时间:</span>
+              <span style="color: #ff0000; font-size: 16px">投诉时间:</span>
             </template>
             {{ form.complainTime }}
           </el-form-item>
-          <el-form-item >
+          <el-form-item>
             <template #label>
-              <span style="color: #ff0000; font-size: 16px;">联系方式:</span>
+              <span style="color: #ff0000; font-size: 16px">联系方式:</span>
             </template>
-            {{ form.complainUserPhone ? form.complainUserPhone : '-'}}
-          </el-form-item>
-          <el-form-item >
-            <template #label>
-              <span style="color: #ff0000; font-size: 16px;">投诉内容:</span>
-            </template>
-            {{ form.complainUserContent ? form.complainUserContent : '-' }}
-          </el-form-item>
-          <el-form-item >
-            <template #label>
-              <span style="color: #ff0000; font-size: 16px;">投诉举证:</span>
-            </template>
-            <template v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
-            <el-image
-              v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 1)"
-              :key="index"
-              :src="item.annexUrl"
-              fit="fill"
-              :lazy="true"></el-image>
-            </template>
-          <template v-else>
-            当列表为空时显示 '-'
-           <span>-</span> 
-          </template>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item  >
-            <template #label>
-              <span style="color: #ff0000; font-size: 16px;">处理人:</span>
-            </template>
-            {{ form.handleUserName ? form.handleUserName : '-' }}
-          </el-form-item>
-          <el-form-item >
-            <template #label>
-              <span style="color: #ff0000; font-size: 16px;">处理时间:</span>
-            </template>
-            {{ form.handleTime ? form.handleTime : '-'}}
-          </el-form-item>
-          <el-form-item >
-            <template #label>
-              <span style="color: #ff0000; font-size: 16px;">处理内容:</span>
-            </template>
-            {{ form.handleContent ?  form.handleContent: '-'}}
+            {{ form.complainUserPhone ? form.complainUserPhone : '-' }}
           </el-form-item>
           <el-form-item>
             <template #label>
-              <span style="color: #ff0000; font-size: 16px;">处理证明:</span>
+              <span style="color: #ff0000; font-size: 16px">投诉内容:</span>
             </template>
-            <template v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
-            <!-- 渲染符合条件的图片 -->
-            <el-image
-              v-for="(item, index) in form.complainAnnexList.filter((e) => e.annexType === 2)"
-              :key="index"
-              :src="item.annexUrl"
-              fit="fill"
-              lazy
-            ></el-image>
-          </template>
-          <template v-else>
-            <!-- 当列表为空时显示 '-' -->
-            <span>-</span>
-          </template>
+            {{ form.complainUserContent ? form.complainUserContent : '-' }}
+          </el-form-item>
+          <el-form-item>
+            <template #label>
+              <span style="color: #ff0000; font-size: 16px">投诉举证:</span>
+            </template>
+            <div class="gap10 gap5" v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
+              <el-image
+                v-for="(item, index) in form.complainAnnexList?.filter((e) => e.annexType == 1)"
+                :key="index"
+                :src="item.annexUrl"
+                style="width: 80px; height: 80px"
+                fit="fill"
+                :lazy="true"></el-image>
+            </div>
+            <template v-else>
+              <!-- 当列表为空时显示 '-' -->
+              <span>-</span>
+            </template>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item>
+            <template #label>
+              <span style="color: #ff0000; font-size: 16px">处理人:</span>
+            </template>
+            {{ form.handleUserName ? form.handleUserName : '-' }}
+          </el-form-item>
+          <el-form-item>
+            <template #label>
+              <span style="color: #ff0000; font-size: 16px">处理时间:</span>
+            </template>
+            {{ form.handleTime ? form.handleTime : '-' }}
+          </el-form-item>
+          <el-form-item>
+            <template #label>
+              <span style="color: #ff0000; font-size: 16px">处理内容:</span>
+            </template>
+            {{ form.handleContent ? form.handleContent : '-' }}
+          </el-form-item>
+          <el-form-item>
+            <template #label>
+              <span style="color: #ff0000; font-size: 16px">处理证明:</span>
+            </template>
+            <div class="gap10 gap5" v-if="form.complainAnnexList && form.complainAnnexList.length > 0">
+              <!-- 渲染符合条件的图片 -->
+              <el-image
+                v-for="(item, index) in form.complainAnnexList.filter((e) => e.annexType === 2)"
+                :key="index"
+                :src="item.annexUrl"
+                fit="fill"
+                lazy></el-image>
+            </div>
+            <template v-else>
+              <!-- 当列表为空时显示 '-' -->
+              <span>-</span>
+            </template>
           </el-form-item>
         </div>
       </template>
