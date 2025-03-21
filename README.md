@@ -119,8 +119,8 @@
 前端：采用vue3+vite+pinia+element-plus；
 
 ### 5.4 系统部署与配置
+
 地址:https://iyque.cn/
-![输入图片说明](img/config.png)
 
 
 ### 5.5 计划
