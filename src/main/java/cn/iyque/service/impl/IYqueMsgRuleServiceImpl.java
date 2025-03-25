@@ -27,11 +27,20 @@ public class IYqueMsgRuleServiceImpl implements IYqueMsgRuleService {
     //系统启动是如果不存在规则插入默认规则
     @PostConstruct
     public void init() {
-       if(iYqueMsgRuleDao.count()<=0){
+        //初始化客户会话预审规则
+       if(iYqueMsgRuleDao.countByRuleTypeAndDefaultRule(1,true)<=0){
            iYqueMsgRuleDao.saveAll(
-                   MsgDefaultRule.getAllRules()
+                   MsgDefaultRule.getAllRules(1)
            );
        }
+
+
+        //初始化客群会话预审规则
+        if(iYqueMsgRuleDao.countByRuleTypeAndDefaultRule(2,true)<=0){
+            iYqueMsgRuleDao.saveAll(
+                    MsgDefaultRule.getAllRules(2)
+            );
+        }
     }
 
     @Override
@@ -41,7 +50,11 @@ public class IYqueMsgRuleServiceImpl implements IYqueMsgRuleService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("defaultRule"),iYqueMsgRule.getDefaultRule()));
         }
         if(iYqueMsgRule.getRuleStatus() != null){
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("startOrStop"), iYqueMsgRule.getRuleStatus()));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("ruleStatus"), iYqueMsgRule.getRuleStatus()));
+        }
+
+        if(iYqueMsgRule.getRuleType() != null){
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("ruleType"), iYqueMsgRule.getRuleType()));
         }
         return   iYqueMsgRuleDao.findAll(spec, pageable);
     }
@@ -92,7 +105,7 @@ public class IYqueMsgRuleServiceImpl implements IYqueMsgRuleService {
     }
 
     @Override
-    public List<IYqueMsgRule> findByStartOrStop(boolean startOrStop) {
-        return iYqueMsgRuleDao.findByRuleStatus(startOrStop);
+    public List<IYqueMsgRule> findByStartOrStop(boolean startOrStop,Integer ruleType) {
+        return iYqueMsgRuleDao.findByRuleStatusAndRuleType(startOrStop,ruleType);
     }
 }

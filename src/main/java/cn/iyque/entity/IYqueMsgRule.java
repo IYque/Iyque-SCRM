@@ -43,6 +43,10 @@ public class IYqueMsgRule {
     private Boolean defaultRule;
 
 
+    //规则类型1:客户规则；2:客群规则
+    private Integer ruleType=1;
+
+
     //当前数据入库创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;

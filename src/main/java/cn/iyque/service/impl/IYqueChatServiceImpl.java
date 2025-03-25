@@ -9,6 +9,7 @@ import cn.iyque.service.IYqueChatService;
 import cn.iyque.service.IYqueConfigService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
+import me.chanjar.weixin.cp.bean.WxCpUser;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalGroupChatInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalGroupChatList;
 import org.apache.commons.lang3.StringUtils;
@@ -97,6 +98,54 @@ public class IYqueChatServiceImpl implements IYqueChatService {
         }catch (Exception e){
             log.error("客群同步失败:"+e.getMessage());
         }
+
+    }
+
+    @Override
+    public IYqueChat findOrSaveChat(String chatId) {
+        List<IYqueChat> iYqueChats = iYqueChatDao.findIYqueChatByChatId(chatId);
+
+
+        //不存在则，从企业微信api获取
+        if(!CollectionUtil.isNotEmpty(iYqueChats)){
+            try {
+
+
+                WxCpUserExternalGroupChatInfo groupChat = iYqueConfigService.findWxcpservice().getExternalContactService()
+                        .getGroupChat(chatId, 1);
+
+
+                if(null != groupChat){
+                    WxCpUserExternalGroupChatInfo.GroupChat groupChatInfo = groupChat.getGroupChat();
+
+                    if(null != groupChatInfo){
+
+                    }
+                    IYqueChat iYqueChat = IYqueChat.builder()
+                            .chatId(groupChatInfo.getChatId())
+                            .chatName(StringUtils.isNotEmpty(groupChatInfo.getName()) ? groupChatInfo.getName() : "@微信群")
+                            .owner(groupChatInfo.getOwner())
+                            .createTime(new Date(groupChatInfo.getCreateTime() * 1000L))
+                            .build();
+
+                    iYqueChatDao.save(
+                            iYqueChat
+                    );
+
+                    return iYqueChat;
+
+                }
+
+
+
+            }catch (Exception e){
+                log.error("获取员工失败:"+e.getMessage());
+            }
+
+        }
+
+
+        return iYqueChats.stream().findFirst().get();
 
     }
 

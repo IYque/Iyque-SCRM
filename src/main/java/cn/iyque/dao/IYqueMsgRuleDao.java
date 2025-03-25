@@ -14,5 +14,14 @@ public interface IYqueMsgRuleDao extends JpaRepository<IYqueMsgRule,Long>, JpaSp
      * @param ruleStatus
      * @return
      */
-    List<IYqueMsgRule>  findByRuleStatus(boolean ruleStatus);
+    List<IYqueMsgRule>  findByRuleStatusAndRuleType(boolean ruleStatus,Integer ruleType);
+
+
+    /**
+     *
+     * @param ruleType
+     * @param defaultRule
+     * @return
+     */
+    long countByRuleTypeAndDefaultRule(Integer ruleType,Boolean defaultRule);
 }

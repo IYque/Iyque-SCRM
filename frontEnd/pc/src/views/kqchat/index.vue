@@ -29,7 +29,7 @@ export default {
 				fromName: null,
 				acceptName: null,
 				time: null,
-				acceptType: 1,
+				acceptType: 2,
 				page: 1,
 				size: 10
 			},
@@ -37,14 +37,14 @@ export default {
 				warning: null,
 				employeeName: null,
 				customerName: null,
+				msgAuditType: 2,
 				time: null,
-				msgAuditType: 1,
 				page: 1,
 				size: 10
 			},
 			aiRuleParm: {
 				ruleStatus: null,
-				ruleType: 1,
+				ruleType: 2,
 				page: 1,
 				size: 10
 			},
@@ -202,7 +202,7 @@ export default {
 				acceptName: this.queryParm.acceptName,
 				startTime: this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[0]),
 				endTime: this.queryParm.time === null ? null : this.formatDate(this.queryParm.time?.[1]),
-				acceptType: 1,
+				acceptType: 2,
 				page: this.queryParm.page,
 				size: this.queryParm.size
 			}
@@ -218,7 +218,7 @@ export default {
 				customerName: this.aiQueryParm.customerName,
 				startTime: this.aiQueryParm.time === null ? null : this.formatDate(this.aiQueryParm.time?.[0]),
 				endTime: this.aiQueryParm.time === null ? null : this.formatDate(this.aiQueryParm.time?.[1]),
-				msgAuditType: 1,
+				msgAuditType: 2,
 				page: this.aiQueryParm.page,
 				size: this.aiQueryParm.size
 			}
@@ -230,7 +230,7 @@ export default {
 		getAIRuleData() {
 			var queryParm = {
 				ruleStatus: this.aiRuleParm.ruleStatus,
-				ruleType: 1,
+				ruleType: 2,
 				page: this.aiRuleParm.page,
 				size: this.aiRuleParm.size
 			}
@@ -325,7 +325,7 @@ export default {
 					</el-form-item>
 
 
-					<el-form-item label="接收人:" prop="value3">
+					<el-form-item label="所属群:" prop="value3">
 						<el-input v-model="queryParm.acceptName" placeholder=""></el-input>
 					</el-form-item>
 
@@ -353,7 +353,7 @@ export default {
 						highlight-current-row
 						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.msgId))">
 						<el-table-column label="发送人" prop="fromName" show-overflow-tooltip />
-						<el-table-column label="接收人" prop="acceptName"/>
+						<el-table-column label="所属群" prop="acceptName"/>
 						<el-table-column label="发送内容" prop="content" show-overflow-tooltip />
 						<el-table-column label="发送时间" prop="msgTime" />
 
@@ -370,14 +370,11 @@ export default {
 
 			<el-tab-pane label="AI会话预审" name="second">
 
-
 				<div class="warning">
-					<strong>
-						依据预审规则,借助AI大模型对员工所发送给【客户】的聊天内容进行审核 。
-					</strong>
-		        </div>
-
-
+				<strong>
+					依据预审规则,借助AI大模型对员工所发送给【客群】的聊天内容进行审核 。
+				</strong>
+		       </div>
 
 				<div class="g-card">
 					<el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
@@ -403,7 +400,7 @@ export default {
 					</el-form-item>
 
 
-					<el-form-item label="客户名称:" prop="value3">
+					<el-form-item label="客群名称:" prop="value3">
 						<el-input v-model="aiQueryParm.customerName" placeholder=""></el-input>
 					</el-form-item>
 
@@ -435,7 +432,7 @@ export default {
 						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
 						<!-- <el-table-column type="selection" width="50" align="center"></el-table-column> -->
 						<el-table-column label="员工名称" prop="employeeName"/>
-						<el-table-column label="客户名称" prop="customerName"/>
+						<el-table-column label="客群名称" prop="customerName"/>
 
 						<el-table-column label="员工是否有违规" prop="warning" :formatter="formatWarning">
 						

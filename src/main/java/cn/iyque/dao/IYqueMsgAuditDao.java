@@ -10,6 +10,10 @@ import java.util.List;
 
 public interface IYqueMsgAuditDao extends JpaRepository<IYqueMsgAudit,String> , JpaSpecificationExecutor<IYqueMsgAudit> {
 
+    /**
+     * 获取最新的分页下标
+     * @return
+     */
     IYqueMsgAudit findTopByOrderByDataSeqDesc();
 
 
@@ -17,8 +21,9 @@ public interface IYqueMsgAuditDao extends JpaRepository<IYqueMsgAudit,String> , 
      * 查询当天凌晨到当前时间的数据
      * @param startTime 开始时间
      * @param endTime 结束时间
+     * @param acceptType
      * @return 符合条件的消息列表
      */
-    List<IYqueMsgAudit> findByMsgTimeBetween(Date startTime, Date endTime);
+    List<IYqueMsgAudit> findByMsgTimeBetweenAndAcceptType(Date startTime, Date endTime,Integer acceptType);
 
 }

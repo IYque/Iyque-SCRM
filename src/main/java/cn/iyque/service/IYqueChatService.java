@@ -2,6 +2,7 @@ package cn.iyque.service;
 
 import cn.iyque.entity.IYqueChat;
 import cn.iyque.entity.IYqueChatCode;
+import cn.iyque.entity.IYqueUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,4 +31,12 @@ public interface IYqueChatService {
      * 同步客群
      */
     void synchIyqueChat();
+
+
+    /**
+     * 根据群id获取群明细，如果不存在则从企微拉取
+     * @param chatId
+     * @return
+     */
+    IYqueChat findOrSaveChat(String chatId);
 }

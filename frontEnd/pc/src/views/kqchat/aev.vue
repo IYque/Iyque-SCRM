@@ -34,7 +34,7 @@ export default {
 			},
 			
 			form: {
-				ruleType: 1,
+				ruleType: 2,
 				id:null,
 				ruleContent: ''
 			}

@@ -28,9 +28,11 @@ public class IYqueAiAnalysisMsgAudit{
 
     //是否预警，true有异常行为,false无异常行为
     private Boolean warning;
-    //员工名称
+
+
+    //当msgAuditType为1的时候，该字段为员工名称;2的时候则为群名称
     private String employeeName;
-    //员工id
+    //当msgAuditType为1的时候，该字段为员工id;2的时候则为群id
     private String employeeId;
 
     //客户名称
@@ -38,6 +40,11 @@ public class IYqueAiAnalysisMsgAudit{
 
     //客户id
     private String customerId;
+
+    //预审类型 1:客户；2:客群
+    private Integer msgAuditType;
+
+
 
     //违规提示
     private String msg;

@@ -77,7 +77,7 @@ public class IYqueWeMsgAuditController {
      */
     @GetMapping("/buildAISessionWarning")
     public ResponseResult buildAISessionWarning(BaseEntity baseEntity){
-        List<IYqueMsgRule> iYqueMsgRules = yqueMsgRuleService.findByStartOrStop(true);
+        List<IYqueMsgRule> iYqueMsgRules = yqueMsgRuleService.findByStartOrStop(true,baseEntity.getMsgAuditType());
         if(CollectionUtil.isEmpty(iYqueMsgRules)){
             return new ResponseResult("请设置AI客户预审规则");
         }

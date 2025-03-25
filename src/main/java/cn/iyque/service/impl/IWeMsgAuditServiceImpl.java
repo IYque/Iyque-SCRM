@@ -55,6 +55,9 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
     @Autowired
     private IYqueParamConfig yqueParamConfig;
 
+    @Autowired
+    private IYqueChatService iYqueChatService;
+
 
     private final String promptTpl = "任务描述：\n" +
             "分析以下聊天内容，判断是否存在以下违规行为：\n" +
@@ -132,6 +135,11 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
             spec = spec.and((root, query, cb) -> cb.between(root.get("createTime"), DateUtils.setTimeToStartOfDay(analysisMsgAudit.getStartTime()), DateUtils.setTimeToEndOfDay(analysisMsgAudit.getEndTime()) ));
         }
 
+        //会话预审类型
+        if(analysisMsgAudit.getMsgAuditType() !=null){
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("msgAuditType"), analysisMsgAudit.getMsgAuditType()));
+        }
+
         return yqueAiAnalysisMsgAuditDao.findAll(spec,pageable);
     }
 
@@ -180,7 +188,28 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
                                                     .build());
                                             log.info("文字类数据获取:"+content);
                                         }
+                                    }else{//群聊消息
+
+                                        if(IYqueMsgAnnex.MsgType.MSG_TEXT.equals(decryptData.getMsgType())){
+                                            String content = decryptData.getText().getContent();
+                                            handleMsg(IYqueMsgAudit.builder()
+                                                    .msgId(decryptData.getMsgId())
+                                                    .fromId(decryptData.getFrom())
+                                                    .acceptType(2)
+                                                    .acceptId(decryptData.getRoomId())
+                                                    .msgType(decryptData.getMsgType())
+                                                    .content(content)
+                                                    .dataSeq(k.getSeq())
+                                                    .msgTime( new Date(decryptData.getMsgTime()))
+                                                    .createTime(new Date())
+                                                    .build());
+                                            log.info("文字类数据获取:"+content);
+                                        }
+
                                     }
+
+
+
                                 }
                             } catch (Exception e) {
                                 log.error("聊天会话数据解密失败:"+e.getMessage());
@@ -226,20 +255,33 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
             }
 
-            //接收人姓名处理
-            if(StringUtils.isNotEmpty(yqueMsgAudit.getAcceptId())){
-                //表示为客户
-                if(yqueMsgAudit.getAcceptId().startsWith("wm")||yqueMsgAudit.getAcceptId().startsWith("wo")){
-                    yqueMsgAudit.setAcceptName(
-                            infoService.findCustomerInfoByExternalUserId(yqueMsgAudit.getAcceptId()).getCustomerName()
-                    );
-                }else{//员工名称处理
 
-                    yqueMsgAudit.setAcceptName(
-                            iYqueUserService.findOrSaveUser(yqueMsgAudit.getAcceptId()).getName()
-                    );
+            if(yqueMsgAudit.getAcceptType().equals(new Integer(1))){//接收人为客户或成员
+                //接收人姓名处理
+                if(StringUtils.isNotEmpty(yqueMsgAudit.getAcceptId())){
+                    //表示为客户
+                    if(yqueMsgAudit.getAcceptId().startsWith("wm")||yqueMsgAudit.getAcceptId().startsWith("wo")){
+                        yqueMsgAudit.setAcceptName(
+                                infoService.findCustomerInfoByExternalUserId(yqueMsgAudit.getAcceptId()).getCustomerName()
+                        );
+                    }else{//员工名称处理
+
+                        yqueMsgAudit.setAcceptName(
+                                iYqueUserService.findOrSaveUser(yqueMsgAudit.getAcceptId()).getName()
+                        );
+
+                    }
 
                 }
+
+            }else{//接收人为客群
+
+                if(StringUtils.isNotEmpty(yqueMsgAudit.getAcceptId())){
+                    yqueMsgAudit.setAcceptName(
+                            iYqueChatService.findOrSaveChat(yqueMsgAudit.getAcceptId()).getChatName()
+                    );
+                }
+
 
             }
 
@@ -290,6 +332,7 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
                         if(CollectionUtil.isNotEmpty(msgAuditResults)){
                             msgAuditResults.stream().forEach(k->{
+                                k.setMsgAuditType(baseEntity.getMsgAuditType());
                                 k.setStartTime(baseEntity.getStartTime());
                                 k.setEndTime(baseEntity.getEndTime());
                             });
@@ -320,8 +363,8 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
     public String findNowUserInquiryMsgData(BaseEntity baseEntity) {
         StringBuilder sb=new StringBuilder();
 
-        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetween(DateUtils.setTimeToStartOfDay(baseEntity.getStartTime()),
-                DateUtils.setTimeToEndOfDay(baseEntity.getEndTime()));
+        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetweenAndAcceptType(DateUtils.setTimeToStartOfDay(baseEntity.getStartTime()),
+                DateUtils.setTimeToEndOfDay(baseEntity.getEndTime()),baseEntity.getMsgAuditType());
 
         if(CollectionUtil.isNotEmpty(msgAuditList)){
             List<IYqueMsgAudit> filteredList = msgAuditList.stream()

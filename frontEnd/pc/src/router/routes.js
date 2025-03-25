@@ -71,6 +71,11 @@ export const navRoutes = [
         component: () => import('@/views/chat/index'),
         meta: { title: 'AI客户会话' },
       },
+      {
+        path: 'kqchat',
+        component: () => import('@/views/kqchat/index'),
+        meta: { title: 'AI客群会话' },
+      }
     ],
   },
   {

@@ -43,5 +43,5 @@ public interface IYqueMsgRuleService {
      * @param startOrStop
      * @return
      */
-    List<IYqueMsgRule> findByStartOrStop(boolean startOrStop);
+    List<IYqueMsgRule> findByStartOrStop(boolean startOrStop,Integer ruleType);
 }

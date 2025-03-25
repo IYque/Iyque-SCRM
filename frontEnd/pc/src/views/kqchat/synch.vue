@@ -61,7 +61,7 @@ export default {
 			if (!valid) return
 			// console.log(this.formatDate(this.query.time?.[0]))
 			buildAISessionWarning({
-				msgAuditType: 1,
+				msgAuditType: 2,
 				startTime: this.formatDate(this.form.time?.[0]),
 				endTime: this.formatDate(this.form.time?.[1])
 			}).then(({ data }) => {
