@@ -7,7 +7,7 @@ import cn.iyque.entity.BaseEntity;
 import cn.iyque.entity.IYqueAiAnalysisMsgAudit;
 import cn.iyque.entity.IYqueMsgAudit;
 import cn.iyque.entity.IYqueMsgRule;
-import cn.iyque.service.IWeMsgAuditService;
+import cn.iyque.service.IYqueMsgAuditService;
 import cn.iyque.service.IYqueMsgRuleService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -28,7 +27,7 @@ public class IYqueWeMsgAuditController {
 
 
     @Autowired
-    private IWeMsgAuditService weMsgAuditService;
+    private IYqueMsgAuditService weMsgAuditService;
 
 
     @Autowired

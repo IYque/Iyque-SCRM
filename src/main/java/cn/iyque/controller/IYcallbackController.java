@@ -7,7 +7,7 @@ import cn.iyque.domain.IYQueCallback;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.enums.CustomerStatusType;
 import cn.iyque.entity.IYqueConfig;
-import cn.iyque.service.IWeMsgAuditService;
+import cn.iyque.service.IYqueMsgAuditService;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueKfService;
@@ -39,7 +39,7 @@ public class IYcallbackController {
     private IYqueKfService iYqueKfService;
 
     @Autowired
-    private IWeMsgAuditService iWeMsgAuditService;
+    private IYqueMsgAuditService iWeMsgAuditService;
 
 
     /**

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @SuppressWarnings("all")
-public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
+public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
 
     @Autowired
     private IYqueConfigService yqueConfigService;
