@@ -87,6 +87,20 @@ public class IYqueWeMsgAuditController {
 
 
     /**
+     * ai意向分析
+     */
+    @GetMapping("/aiIntentionAssay")
+    public ResponseResult aiIntentionAssay(BaseEntity baseEntity){
+        List<IYqueMsgRule> iYqueMsgRules = yqueMsgRuleService.findByStartOrStop(true,baseEntity.getMsgAuditType());
+        if(CollectionUtil.isEmpty(iYqueMsgRules)){
+            return new ResponseResult("请设置AI客户预审规则");
+        }
+        weMsgAuditService.aiIntentionAssay(iYqueMsgRules,baseEntity);
+        return new ResponseResult("当前记录正在生成中,请稍后查看");
+    }
+
+
+    /**
      * ai分析预审报告列表
      * @param analysisMsgAudit
      * @return

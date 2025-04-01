@@ -41,16 +41,32 @@ public interface IWeMsgAuditService {
 
 
     /**
-     * ai会话预警
+     * ai会话预审
      */
     void aISessionWarning(List<IYqueMsgRule> iYqueMsgRules, BaseEntity baseEntity );
 
 
     /**
-     *  获取当天凌晨到此刻时间,员工发送给客户的聊天数据
+     * ai意向分析
+     * @param iYqueMsgRules
+     * @param baseEntity
+     */
+    void aiIntentionAssay(List<IYqueMsgRule> iYqueMsgRules, BaseEntity baseEntity);
+
+
+    /**
+     *  获取指定时间,员工发送给客户的聊天数据
      * @return
      */
     String findNowUserInquiryMsgData(BaseEntity baseEntity);
+
+
+    /**
+     * 获取指定时间，客户发送的聊天信息
+     * @param baseEntity
+     * @return
+     */
+    String findCustomerMsgData(BaseEntity baseEntity);
 
 
     /**

@@ -41,7 +41,7 @@ public class IYqueAiAnalysisMsgAudit{
     //客户id
     private String customerId;
 
-    //预审类型 1:客户；2:客群
+    //1:客户规则；2:客群规则 3:意向客户分析 4:意向群友分析
     private Integer msgAuditType;
 
 

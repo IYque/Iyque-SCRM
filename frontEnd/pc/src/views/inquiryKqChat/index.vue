@@ -317,25 +317,46 @@ export default {
 		</div>
 
 		<el-tabs v-model="activeName">
-			<div class="g-card">
+
+			<el-tab-pane label="AI会话预审" name="first">
+
 				<div class="warning">
-					<strong>
-						获取员工与客户在群中的聊天内容(目前:仅支持文字内容)
-					</strong>
-		        </div>
-					<el-form class="searchForm" ref="searchForm" :model="queryParm" label-width="" inline>
-					<el-form-item label="发送人:" prop="value3">
-						<el-input v-model="queryParm.fromName" placeholder=""></el-input>
+				<strong>
+					依据预审规则,借助AI大模型对员工所发送给【客群】的聊天内容进行审核 。
+				</strong>
+		       </div>
+
+				<div class="g-card">
+					<el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
+
+						<el-form-item label="是否违规:" prop="value3">
+							<el-select
+								v-model="aiQueryParm.warning"
+								collapse-tags
+								collapse-tags-tooltip
+								:max-collapse-tags="2"
+								placeholder="全部"
+								style="width: 260px">
+								<el-option
+									v-for="item in options"
+									:key="item.val"
+									:label="item.key"
+									:value="item.val" />
+							</el-select>
+						</el-form-item>
+
+					<el-form-item label="员工名称:" prop="value3">
+						<el-input v-model="aiQueryParm.employeeName" placeholder=""></el-input>
 					</el-form-item>
 
 
-					<el-form-item label="所属群:" prop="value3">
-						<el-input v-model="queryParm.acceptName" placeholder=""></el-input>
+					<el-form-item label="客群名称:" prop="value3">
+						<el-input v-model="aiQueryParm.customerName" placeholder=""></el-input>
 					</el-form-item>
 
 					<el-form-item label="时间:">
 						<el-date-picker
-							v-model="queryParm.time"
+							v-model="aiQueryParm.time"
 							type="daterange"
 							range-separator="至"
 							start-placeholder="开始日期"
@@ -343,33 +364,141 @@ export default {
 					</el-form-item>
 
 					<el-form-item>
-						<el-button type="primary" @click="getData">查询</el-button>
-						<el-button @click="restting">重置</el-button>
+						<el-button type="primary" @click="getAIData">查询</el-button>
+						<el-button @click="resttingAi">重置</el-button>
 					</el-form-item>
 				</el-form>
 					
 					<div class="fxbw">
-						<el-button type="primary" @click="synchChatMsg()">同步会话</el-button>
+						<el-button type="primary" @click=";(form = {}), (dialogAiVisible = true)">AI会话预审</el-button>
 					</div>
+
+			
+
 					<el-table
-						:data="list"
+						:data="aiList"
 						tooltip-effect="dark"
 						highlight-current-row
-						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.msgId))">
-						<el-table-column label="发送人" prop="fromName" show-overflow-tooltip />
-						<el-table-column label="所属群" prop="acceptName"/>
-						<el-table-column label="发送内容" prop="content" show-overflow-tooltip />
-						<el-table-column label="发送时间" prop="msgTime" />
+						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
+						<!-- <el-table-column type="selection" width="50" align="center"></el-table-column> -->
+						<el-table-column label="员工名称" prop="employeeName"/>
+						<el-table-column label="客群名称" prop="customerName"/>
 
+						<el-table-column label="员工是否有违规" prop="warning" :formatter="formatWarning">
+						
+						</el-table-column>
+
+						<!-- 新增的“数据分析时间范围”列 -->
+						<el-table-column label="数据分析时间范围">
+							<template #default="{ row }">
+							{{ formatDateTimeRange(row.startTime, row.endTime) }}
+							</template>
+						</el-table-column>
+
+						<el-table-column label="违规提示" prop="msg" />
+						<el-table-column label="分析时间" prop="createTime" />
+					</el-table>
+					<pagination
+						v-show="aiTotal > 0"
+						:total="aiTotal"
+						v-model:page="aiQueryParm.page"
+						v-model:limit="aiQueryParm.size"
+						@pagination="findAiAnalysisMsgAudits()" />
+
+						<el-dialog title="AI会话预审" v-model="dialogAiVisible" width="80%" :close-on-click-modal="false">
+							<synch v-if="dialogAiVisible" :data="form" ref="synch"></synch>
+							<template #footer>
+								<el-button @click="dialogAiVisible = false">取消</el-button>
+								<el-button type="primary" @click="submitAiVisible" v-loading="loading">确定</el-button>
+							</template>
+						</el-dialog>
+				</div>
+
+			</el-tab-pane>
+
+			<el-tab-pane label="AI预审规则" name="second">
+				<div class="g-card">
+					<el-form class="searchForm" ref="searchForm" :model="query2" label-width="" inline>
+
+						<el-form-item label="规则状态:" prop="value3">
+							<el-select
+								v-model="aiRuleParm.ruleStatus"
+								collapse-tags
+								collapse-tags-tooltip
+								:max-collapse-tags="2"
+								placeholder="全部"
+								style="width: 260px">
+								<el-option
+									v-for="item in aiRuleOptions"
+									:key="item.val"
+									:label="item.key"
+									:value="item.val" />
+							</el-select>
+						</el-form-item>
+
+
+					<el-form-item>
+						<el-button type="primary" @click="getAIRuleData">查询</el-button>
+						<el-button @click="resttingRuleAi">重置</el-button>
+					</el-form-item>
+				</el-form>
+					
+
+				   <div class="fxbw">
+						<el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+						<el-button :disabled="!multipleSelection.length" @click="handleStatusChange()" type="danger">批量启用或停用</el-button>
+					</div>
+					<el-table
+						:data="aiRuleList"
+						tooltip-effect="dark"
+						highlight-current-row
+						@selection-change="(selection) => (multipleSelection = selection.map((item) => item.id))">
+						<el-table-column type="selection" width="50" align="center"></el-table-column>
+						<el-table-column label="规则内容" prop="ruleContent"/>
+						<el-table-column label="状态" prop="ruleStatus">
+						<template #default="{ row }">
+							<el-switch
+								v-model="row.ruleStatus" disabled
+							></el-switch>
+						</template>
+					    </el-table-column>
+
+				
+
+						<el-table-column label="是否默认" prop="defaultRule" :formatter="formatDefaultRule">						
+						</el-table-column>
+						<el-table-column label="创建时间" prop="createTime" />
+
+						<el-table-column label="操作" fixed="right">
+							<template #default="{ row }">
+								<el-button text  :disabled="row.defaultRule" @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button>
+								<el-button text  :disabled="row.defaultRule" @click="del(row.id)">删除</el-button>
+							</template>
+						</el-table-column>
 
 					</el-table>
 					<pagination
-						v-show="total > 0"
-						:total="total"
-						v-model:page="queryParm.page"
-						v-model:limit="queryParm.size"
-						@pagination="getList()" />
+						v-show="aiRuleTotal > 0"
+						:total="aiRuleTotal"
+						v-model:page="aiRuleParm.page"
+						v-model:limit="aiRuleParm.size"
+						@pagination="findIYqueMsgRules()" />
+
+						<el-dialog :title="form.id ? '编辑' : '新建'" v-model="dialogVisible" width="80%" :close-on-click-modal="false">
+							<aev v-if="dialogVisible" :data="form" ref="aev"></aev>
+							<template #footer>
+								<el-button @click="dialogVisible = false">取消</el-button>
+								<el-button type="primary" @click="submit" v-loading="loading">确定</el-button>
+							</template>
+						</el-dialog>
+
+
+					
+
+
 				</div>
+
+			</el-tab-pane>
 		</el-tabs>
 
 

@@ -15,7 +15,11 @@ public enum MsgDefaultRule {
     D("故意隐瞒客户已有对接人的信息,误导客户与自己交易。",true,1),
     E("使用侮辱性、攻击性语言对待群成员。",true,2),
 
-    F("群内发送反动,政治等敏感词。",true,2);
+    F("群内发送反动,政治等敏感词。",true,2),
+
+    G("咨询产品相关价格,服务等相关信息",true,3),
+
+    H("咨询产品相关价格,服务等相关信息",true,4);
 
 
     private String ruleContent;
