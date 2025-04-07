@@ -21,6 +21,7 @@ let ElSelect = app.component('ElSelect')
 ElSelect.props.clearable = { type: Boolean, default: true }
 
 import '@/styles/index.scss'
+import 'tailwindcss/index.css'
 
 // svg图标
 import 'virtual:svg-icons-register'
