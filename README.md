@@ -147,7 +147,10 @@
 ![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 
-## 七、联系
+## 七、版权说明
+  该项目使用了Apache2.0授权许可，详情请参阅 [LICENSE.txt](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
+
+## 八、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
 
