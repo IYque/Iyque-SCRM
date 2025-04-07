@@ -148,7 +148,7 @@
 ![img.png](img/j-3.jpg)
 
 ## 七、版权说明
-  该项目使用了Apache2.0授权许可，详情请参阅 LICENSE.txt
+  该项目使用了Apache2.0授权许可，详情请参阅 [LICENSE.txt](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
 
 ## 八、联系
 
