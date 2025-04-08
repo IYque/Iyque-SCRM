@@ -119,6 +119,9 @@ export default defineComponent({
       }
       delete query.dateRange
 
+      query.page = query.pageNum
+      query.size = query.pageSize
+
       return this.request(query)
         .then((resp) => {
           let { rows, total, data } = resp
