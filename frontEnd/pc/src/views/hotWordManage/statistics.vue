@@ -151,10 +151,10 @@ function dealDataTrend(data, series, xData) {
                 (query._name = selected.value?.map((e) => e.name)?.join(',')),
                 (query.hotWordId = selected.value?.map((e) => e.id)?.join(',')),
                 (visible.value = false),
-                (loading.value = false)
+                (loading.value = false),
                 $nextTick(() => {
                   $refs.rctRef2.getList(1)
-                }),
+                })
               )
             "></SelectHotWord>
         </el-form-item>
