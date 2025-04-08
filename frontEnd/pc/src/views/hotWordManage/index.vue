@@ -93,8 +93,7 @@ function delCategory(item) {
           ref="rctRef"
           :isCreateRequest="false"
           :request="(pa) => (Object.assign(pa, query), getList(pa))"
-          @selection-change="(val) => $emit('selectionChange', val)"
-          @reset="qrUserName = query.qrUserIds = ''">
+          @selection-change="(val) => $emit('selectionChange', val)">
           <template #query="{ query }">
             <el-form-item label="热词名称" prop="hotWord">
               <el-input v-model="query.hotWord" placeholder="请输入" clearable />
