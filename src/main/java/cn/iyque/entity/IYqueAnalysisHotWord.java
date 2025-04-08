@@ -12,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
-@Entity(name = "iyque_category")
+@Entity(name = "iyque_analysis_hot_word")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
