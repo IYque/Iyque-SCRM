@@ -57,17 +57,12 @@ function dealDataConversionTop(data, series, xData) {
 }
 
 const categoryList = ref([])
-function getCategoryList(isFresh) {
+function getCategoryList() {
   apiCategory.getList().then(({ data }) => {
     categoryList.value = data
-    query.value.categoryId ||= categoryList.value[0].id
-    isFresh &&
-      $nextTick(() => {
-        $refs.rctRef.getList(1)
-      })
   })
 }
-getCategoryList(true)
+getCategoryList()
 
 let hotWordCategoryTop5 = ref([])
 function dealDataWordCategoryTop5(data, series, xData) {

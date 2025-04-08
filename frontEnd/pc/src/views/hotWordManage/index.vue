@@ -7,21 +7,21 @@ defineProps({
 })
 
 const query = ref({})
-const rctRef = ref()
 const categoryList = ref([])
 
 function getCategoryList(isFresh) {
   apiCategory.getList().then(({ data }) => {
     categoryList.value = data
-    isFresh && switchGroup(data[0])
+    ;(isFresh || !query.value.categoryId) && switchGroup(data[0])
   })
 }
 getCategoryList(true)
 
+const rctRef = ref()
 function switchGroup(data) {
   query.value.categoryId = data?.id
-  $nextTick(() => {
-    $refs.rctRef.getList(1)
+  nextTick(() => {
+    rctRef.value.getList(1)
   })
 }
 

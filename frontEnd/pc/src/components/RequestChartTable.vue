@@ -80,7 +80,7 @@ export default defineComponent({
   data() {
     return {
       loading: false,
-      query: { page: 1, size: 10 },
+      query: { pageNum: 1, pageSize: 10 },
       // 列表接口返回数据
       response: {},
       // 表格列表数据，或图表的series数据
