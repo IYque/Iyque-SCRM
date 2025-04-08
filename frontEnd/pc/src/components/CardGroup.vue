@@ -9,15 +9,16 @@ export default {
       type: Array,
       default: () => [],
     },
-    // isArrow: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    isCardWrap: {
+      type: Boolean,
+      default: false,
+    },
     defaultProps: {
       type: Object,
       default: () => ({
         title: 'title',
         value: 'value',
+        tips: 'tips',
       }),
     },
   },
@@ -33,10 +34,18 @@ export default {
 </script>
 
 <template>
-  <ul class="card-group-index">
+  <ul class="card-group-index" :class="{ 'card-wrap': isCardWrap }">
     <li v-for="(row, index) in data" :key="index" class="card-index-li">
       <div class="label">
         <span>{{ row[defaultProps.title] }}</span>
+
+        <div class="tips toe mt10" v-if="row[defaultProps.tips] !== undefined">
+          <el-popover trigger="hover" :content="row[defaultProps.tips]" placement="top-start">
+            <template #reference>
+              {{ row[defaultProps.tips] }}
+            </template>
+          </el-popover>
+        </div>
       </div>
       <div class="mt10 value">
         <template v-if="+row[defaultProps.value] == row[defaultProps.value]">
@@ -52,13 +61,16 @@ export default {
 
 <style lang="scss" scoped>
 .card-group-index {
-  display: grid;
-  grid: auto/repeat(3, 1fr);
+  display: flex;
   flex-wrap: wrap;
-  background: var(--bg-white);
   gap: var(--card-margin);
   margin-bottom: var(--card-margin);
   border-radius: var(--border-radius-big);
+  &.card-wrap {
+    display: grid;
+    grid: auto/repeat(3, 1fr);
+    background: var(--bg-white);
+  }
 }
 // 指标卡片
 .card-index-li {
@@ -66,8 +78,8 @@ export default {
   flex: 1;
   min-width: 200px;
   // max-width: 240px;
-  // background: var(--bg-white);
-  // border-radius: var(--border-radius-big);
+  background: var(--bg-white);
+  border-radius: var(--border-radius-big);
   // border: 1px solid var(--border-black-10);
   line-height: 1;
   padding: 22px 20px;

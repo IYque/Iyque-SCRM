@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CardGroup :data="cardData" />
+    <CardGroup :data="cardData" isCardWrap />
 
     <RequestChartTable
       type="lineChart"

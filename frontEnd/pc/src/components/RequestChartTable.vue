@@ -4,6 +4,7 @@ export default defineComponent({
   components: {
     ChartLine: defineAsyncComponent(() => import('@/components/ChartLine')),
     ChartBar: defineAsyncComponent(() => import('@/components/ChartBar')),
+    TimeButtonGroup: defineAsyncComponent(() => import('@/components/TimeButtonGroup')),
   },
   props: {
     // 标题
@@ -240,7 +241,15 @@ export default defineComponent({
 
     <div :class="$slots.query && 'g-card'">
       <!-- 卡片标题 -->
-      <div class="g-card-title" v-if="title">{{ title }}</div>
+      <div class="g-card-title justify-between" v-if="title">
+        {{ title }}
+        <!-- 快捷时间查询 -->
+        <TimeButtonGroup
+          style="display: inline-flex"
+          v-if="isTimeQuery"
+          isDiy
+          @search="(data) => (Object.assign(query, data), getList(1))"></TimeButtonGroup>
+      </div>
 
       <!-- 查询框和操作栏 -->
       <div
@@ -285,7 +294,7 @@ export default defineComponent({
         <el-table
           v-if="$slots.table"
           :data="data"
-          @selection-change="(val) => (selectedIds = val.map((e) => e[dataKey]))">
+          @selection-change="(val) => ((selectedIds = val.map((e) => e[dataKey])), $emit('selectionChange', val))">
           <el-table-column type="selection" width="50" align="center"></el-table-column>
           <slot name="table"></slot>
         </el-table>

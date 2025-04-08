@@ -84,10 +84,10 @@ export const navRoutes = [
             path: 'intentionCustomer',
             component: () => import('@/views/intentionCustomer/index'),
             meta: { title: 'AI意向客户' },
-          }
-        ]
+          },
+        ],
       },
-     
+
       {
         path: 'kqchat',
         meta: { title: '客群会话' },
@@ -106,10 +106,27 @@ export const navRoutes = [
             path: 'intentionGroupFriend',
             component: () => import('@/views/intentionGroupFriend/index'),
             meta: { title: 'AI意向群友' },
-          }
-        ]
+          },
+        ],
       },
 
+      {
+        path: 'conversationalInsights',
+        redirect: '/chat/conversationalInsights/hotWordManage',
+        meta: { title: '会话洞察' },
+        children: [
+          {
+            path: 'hotWordManage',
+            component: () => import('@/views/hotWordManage/index'),
+            meta: { title: '热词管理' },
+          },
+          {
+            path: 'hotWordAnalysis',
+            component: () => import('@/views/hotWordManage/statistics'),
+            meta: { title: '热词分析' },
+          },
+        ],
+      },
     ],
   },
   // {
