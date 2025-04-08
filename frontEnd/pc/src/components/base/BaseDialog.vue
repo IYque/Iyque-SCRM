@@ -35,19 +35,19 @@ function action(data = {}, callback: () => {}) {
   callback?.()
 }
 
-function submit() {
-  formRef.value.validate().then(() => {
-    loading.value = true
-    $emit('confirm', { form, visible, loading })
-  })
+const slots = useSlots()
+async function submit() {
+  slots.form && (await formRef.value.validate())
+  loading.value = true
+  $emit('confirm', { form, visible, loading })
 }
 function confirm(add, callback, update, idKey = 'id') {
   loading.value = true
   ;(form.value[idKey] ? update || add : add)(form.value)
     .then(() => {
       callback?.()
-      $app.config.globalProperties.msgSuccess()
-      // $sdk.msgSuccess()
+      // $app.config.globalProperties.msgSuccess()
+      $sdk.msgSuccess()
       visible.value = false
     })
     .finally(() => (loading.value = false))

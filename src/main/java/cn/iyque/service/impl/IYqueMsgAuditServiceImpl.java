@@ -59,6 +59,7 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
     private IYqueChatService iYqueChatService;
 
 
+    //ai预审提示词模版
     private final String promptTpl = "任务描述：\n" +
             "分析以下聊天内容，判断是否存在以下违规行为：\n" +
             "%s\n" +
@@ -70,6 +71,21 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
             "3.最终输出结果必须严格为以下格式结构化输出之一,不可包含其他内容：\n" +
             "- 存在违规行为：[{\"warning\":true, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"具体违规行为描述\"}]\n" +
             "- 不存在违规行为：[{\"warning\":false, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"未发现违规行为\"}]";
+
+
+
+    //ai意向分析提示词模版
+    private final String intentionPromptTpl = "任务描述：\n" +
+            "分析以下聊天内容，判断是否存在意向客户：\n" +
+            "%s\n" +
+            "聊天内容：\n" +
+            "%s\n\n" +
+            "分析要求：\n" +
+            "1.逐条分析聊天内容，判断是否存在意向客户。\n" +
+            "2.如果存在意向客户，需明确意向客户类型，其中`warning`为true表示为意向客户,false为非意向客户 并在 `msg` 字段中描述具体意向行为。\n" +
+            "3.最终输出结果必须严格为以下格式结构化输出之一,不可包含其他内容：\n" +
+            "- 存在意向客户行为：[{\"warning\":true, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"具体意向行为描述\"}]\n" +
+            "- 不存在意向客户行为：[{\"warning\":false, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"未发现意向行为\"}]";
 
 
 
@@ -360,6 +376,54 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
     }
 
     @Override
+    @Async
+    @Transactional
+    public void aiIntentionAssay(List<IYqueMsgRule> iYqueMsgRules, BaseEntity baseEntity) {
+        if(CollectionUtil.isNotEmpty(iYqueMsgRules)){
+            //获取客户聊天内容
+            String customerMsgData = this.findCustomerMsgData(baseEntity);
+            if(StringUtils.isNotEmpty(customerMsgData)){
+
+
+                String prompt = String.format(intentionPromptTpl,IYqueMsgRule.formatRules(iYqueMsgRules), customerMsgData);
+
+                log.info("当前聊天内容分析提示词:"+prompt);
+
+                String result = aiService.aiHandleCommonContent(prompt);
+
+                log.info("大模型输出原生结果:"+result);
+
+                if(StringUtils.isNotEmpty(result)){
+                    // 清理字符串：去除 ```json 和换行符
+                    String cleanJsonString = result
+                            .replace("```json", "")
+                            .replace("```", "")
+                            .trim();
+                    if(StringUtils.isNotEmpty(cleanJsonString)){
+                        List<IYqueAiAnalysisMsgAudit> msgAuditResults
+                                = JSONUtil.toList(cleanJsonString, IYqueAiAnalysisMsgAudit.class);
+
+                        if(CollectionUtil.isNotEmpty(msgAuditResults)){
+                            msgAuditResults.stream().forEach(k->{
+                                k.setMsgAuditType(baseEntity.getMsgAuditType());
+                                k.setStartTime(baseEntity.getStartTime());
+                                k.setEndTime(baseEntity.getEndTime());
+                            });
+//                            //清空当天已生成的记录,避免重复
+//                            yqueAiAnalysisMsgAuditDao.deleteByCreateTimeToday(DateUtils.earlyMorning(
+//                            ),new Date());
+                            //记录生成完成后给员工发送通知
+                            yqueAiAnalysisMsgAuditDao.saveAll(msgAuditResults);
+
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    @Override
     public String findNowUserInquiryMsgData(BaseEntity baseEntity) {
         StringBuilder sb=new StringBuilder();
 
@@ -380,6 +444,33 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
                 }
             }
         }
+        return sb.toString();
+    }
+
+    @Override
+    public String findCustomerMsgData(BaseEntity baseEntity) {
+        StringBuilder sb=new StringBuilder();
+        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetweenAndAcceptType(DateUtils.setTimeToStartOfDay(baseEntity.getStartTime()),
+                DateUtils.setTimeToEndOfDay(baseEntity.getEndTime()),baseEntity.getMsgAuditType()==3?1:2);
+
+        if(CollectionUtil.isNotEmpty(msgAuditList)){
+
+            List<IYqueMsgAudit> filteredList = msgAuditList.stream()
+                    .filter(msg -> msg.getFromId().startsWith("wm") || msg.getFromId().startsWith("wo"))
+                    .collect(Collectors.toList());
+
+            if(CollectionUtil.isNotEmpty(filteredList)){
+                List<EmployeeChatGroup> employeeChatGroups = this.groupByEmployeeAndCustomer(filteredList);
+                if(CollectionUtil.isNotEmpty(employeeChatGroups)){
+                    sb.append(
+                            JSONUtil.toJsonStr(employeeChatGroups)
+                    );
+                }
+            }
+
+
+        }
+
         return sb.toString();
     }
 

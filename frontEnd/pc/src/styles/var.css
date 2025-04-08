@@ -1,181 +1,299 @@
 :root {
   /* 主题色hsl*/
-  --h: 263;
-  --s: 99%;
-  --l: 66%;
-  --l-dark: calc(var(--l) - 5%); /* 深主题色 l */
+  --H: 263;
+  --S: 99%;
+  --L: 66%;
+  --LDark: calc(var(--L) - 5%); /* 深主题色 l */
 
-  --hsl: var(--h), var(--s), var(--l); /* 主题色hsl*/
-  --hsl-dark: var(--h), var(--s), var(--l-dark); /* 深主题色hsl*/
+  --Hsl: var(--H), var(--S), var(--L); /* 主题色hsl*/
+  --HslDark: var(--H), var(--S), var(--LDark); /* 深主题色hsl*/
 
-  --color: hsl(var(--hsl)); /* 主题色 hsl(263, 99%, 66%)*/
-  --color-dark: hsl(var(--hsl-dark)); /* 深主题色 hsl(263, 99%, 60%) */
-  --color-sub: hsl(var(--hsl)); /* 主题辅色 */
+  --Color: hsl(var(--Hsl)); /* 主题色 hsl(263, 99%, 66%)*/
+  --ColorDark: hsl(var(--HslDark)); /* 深主题色 hsl(263, 99%, 60%) */
+  --ColorSub: hsl(var(--Hsl)); /* 主题辅色 */
+  .--Color {
+    color: var(--Color) !important;
+  }
+  .--ColorDark {
+    color: var(--ColorDark) !important;
+  }
+  .--ColorSub {
+    color: var(--ColorSub) !important;
+  }
+
+  --MainBg: var(--ColorLight12) !important;
 
   /* ------ 功能色 ------ */
-  --color-success: #07c160;
-  --color-warning: #faad14;
-  --color-danger: #eb5e12;
+  --ColorSuccess: #07c160;
+  --ColorWarning: #faad14;
+  --ColorDanger: #eb5e12;
+  .--ColorSuccess {
+    color: var(--ColorSuccess) !important;
+  }
+  .--ColorWarning {
+    color: var(--ColorWarning) !important;
+  }
+  .--ColorDanger {
+    color: var(--ColorDanger) !important;
+  }
 
   /* ------ 距离大小 ------ */
-  --border-radius: 10px; /* 常规圆角 */
-  --border-radius-small: 6px; /* 小圆角 */
-  --border-radius-big: 20px; /* 大圆角 */
-  --card-margin: 16px; /* 卡片间距 */
+  --Radius: 10px; /* 常规圆角 */
+  --RadiusSmall: 6px; /* 小圆角 */
+  --RadiusBig: calc(var(--Radius) * 2); /* 大圆角 */
+  --RadiusRound: 100px;
+  --RadiusCircle: 50%;
+  .--Radius {
+    border-radius: var(--Radius) !important;
+  }
+  .--RadiusSmall {
+    border-radius: var(--RadiusSmall) !important;
+  }
+  .--RadiusBig {
+    border-radius: var(--RadiusBig) !important;
+  }
+  .--RadiusRound {
+    border-radius: var(--RadiusRound) !important;
+  }
+  .--RadiusCircle {
+    border-radius: var(--RadiusCircle) !important;
+  }
+
+  --Gap: 16px; /* 外间距 */
+  .--Gap {
+    gap: var(--Gap);
+  }
+  --FormGap: 16px; /* 外间距 */
+  .--FormGap {
+    gap: var(--FormGap);
+  }
+  --Margin: 16px; /* 外间距 */
+  .--Margin {
+    margin: var(--Margin);
+  }
+  .--MarginT {
+    margin-top: var(--Margin) !important;
+  }
+  .--MarginB {
+    margin-bottom: var(--Margin) !important;
+  }
+  .--MarginL {
+    margin-left: var(--Margin) !important;
+  }
+  .--MarginR {
+    margin-right: var(--Margin) !important;
+  }
+
+  --Padding: 20px; /* 内间距 */
+  .--Padding {
+    padding: var(--Padding);
+  }
+  .--PaddingT {
+    padding-top: var(--Padding) !important;
+  }
+  .--PaddingB {
+    padding-bottom: var(--Padding) !important;
+  }
+  .--PaddingL {
+    padding-left: var(--Padding) !important;
+  }
+  .--PaddingR {
+    padding-right: var(--Padding) !important;
+  }
+
   /* 顶部导航条高度 */
-  /* --top-nav-heght: 64px;  */
-  --side-bar-width: 160px;
+  --TopNavHeght: 60px;
+  .--TopNavHeght {
+    height: var(--TopNavHeght);
+  }
+  --SideBarWidth: 200px;
+  .--SideBarWidth {
+    width: var(--SideBarWidth);
+  }
 
   /* ------ 主题色 递浅色阶 ------  */
-  --step: calc((100% - var(--l)) / 10); /* 100 - 66 / 10 = 3.4 */
-  --color-light-1: hsl(var(--h), var(--s), calc(var(--step) * 1 + var(--l)));
-  --color-light-2: hsl(var(--h), var(--s), calc(var(--step) * 2 + var(--l)));
-  --color-light-3: hsl(var(--h), var(--s), calc(var(--step) * 3 + var(--l)));
-  --color-light-4: hsl(var(--h), var(--s), calc(var(--step) * 4 + var(--l)));
-  --color-light-5: hsl(var(--h), var(--s), calc(var(--step) * 5 + var(--l)));
-  --color-light-6: hsl(var(--h), var(--s), calc(var(--step) * 6 + var(--l)));
-  --color-light-7: hsl(var(--h), var(--s), calc(var(--step) * 7 + var(--l)));
-  --color-light-8: hsl(var(--h), var(--s), calc(var(--step) * 8 + var(--l)));
-  --color-light-9: hsl(var(--h), var(--s), calc(var(--step) * 9 + var(--l)));
-  --color-light-10: hsl(var(--h), var(--s), calc(var(--step) * 9.5 + var(--l)));
-  --color-light-11: hsl(var(--h), var(--s), calc(var(--step) * 9.6 + var(--l)));
-  /* --test: hsl(263, 99%, 88%); */
+  --_step: calc((100% - var(--L)) / 10);
+  --ColorLight1: hsl(var(--H), var(--S), calc(var(--_step) * 1 + var(--L)));
+  --ColorLight2: hsl(var(--H), var(--S), calc(var(--_step) * 2 + var(--L)));
+  --ColorLight3: hsl(var(--H), var(--S), calc(var(--_step) * 3 + var(--L)));
+  --ColorLight4: hsl(var(--H), var(--S), calc(var(--_step) * 4 + var(--L)));
+  --ColorLight5: hsl(var(--H), var(--S), calc(var(--_step) * 5 + var(--L)));
+  --ColorLight6: hsl(var(--H), var(--S), calc(var(--_step) * 6 + var(--L)));
+  --ColorLight7: hsl(var(--H), var(--S), calc(var(--_step) * 7 + var(--L)));
+  --ColorLight8: hsl(var(--H), var(--S), calc(var(--_step) * 8 + var(--L)));
+  --ColorLight9: hsl(var(--H), var(--S), calc(var(--_step) * 9 + var(--L)));
+  --ColorLight10: hsl(var(--H), var(--S), calc(var(--_step) * 9.3 + var(--L)));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--_step) * 9.6 + var(--L)));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--_step) * 9.8 + var(--L)));
+
+  .--ColorLight1 {
+    color: var(--ColorLight1);
+  }
+  .--ColorLight2 {
+    color: var(--ColorLight2);
+  }
+  .--ColorLight3 {
+    color: var(--ColorLight3);
+  }
+  .--ColorLight4 {
+    color: var(--ColorLight4);
+  }
+  .--ColorLight5 {
+    color: var(--ColorLight5);
+  }
+  .--ColorLight6 {
+    color: var(--ColorLight6);
+  }
+  .--ColorLight7 {
+    color: var(--ColorLight7);
+  }
+  .--ColorLight8 {
+    color: var(--ColorLight8);
+  }
+  .--ColorLight9 {
+    color: var(--ColorLight9);
+  }
+  .--ColorLight10 {
+    color: var(--ColorLight10);
+  }
+  .--ColorLight11 {
+    color: var(--ColorLight11);
+  }
+  .--ColorLight12 {
+    color: var(--ColorLight12);
+  }
 
   /* ------ 通用字体白色 ------ */
-  --font-white: #fff;
+  --FontWhite: #fff;
 
   /* 通用字体黑灰色阶  */
-  --font-black: #1d2129;
-  --font-black-2: hsl(0, 0%, 20%); /* #333*/
-  --font-black-3: hsl(0, 0%, 30%); /* #444*/
-  --font-black-4: hsl(0, 0%, 40%); /* #666 */
-  --font-black-5: hsl(0, 0%, 50%); /* #808080 #777*/
-  --font-black-6: hsl(0, 0%, 60%); /* #999*/
-  --font-black-7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
-  --font-black-8: hsl(0, 0%, 80%); /* #ccc #ddd*/
-  --font-black-9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
+  --FontBlack: #1d2129;
+  --FontBlack2: hsl(0, 0%, 20%);
+  --FontBlack3: hsl(0, 0%, 30%);
+  --FontBlack4: hsl(0, 0%, 40%);
+  --FontBlack5: hsl(0, 0%, 50%);
+  --FontBlack6: hsl(0, 0%, 60%);
+  --FontBlack7: hsl(0, 0%, 70%);
+  --FontBlack8: hsl(0, 0%, 80%);
+  --FontBlack9: hsl(0, 0%, 90%);
+
+  .--FontWhite {
+    color: var(--FontWhite);
+  }
+  .--FontBlack {
+    color: var(--FontBlack);
+  }
+  .--FontBlack2 {
+    color: var(--FontBlack2);
+  }
+  .--FontBlack3 {
+    color: var(--FontBlack3);
+  }
+  .--FontBlack4 {
+    color: var(--FontBlack4);
+  }
+  .--FontBlack5 {
+    color: var(--FontBlack5);
+  }
+  .--FontBlack6 {
+    color: var(--FontBlack6);
+  }
+  .--FontBlack7 {
+    color: var(--FontBlack7);
+  }
+  .--FontBlack8 {
+    color: var(--FontBlack8);
+  }
+  .--FontBlack9 {
+    color: var(--FontBlack9);
+  }
 
   /* ------ 通用边框白色 ------ */
-  --border-white: #fff;
+  --BorderWhite: #fff;
 
   /* 通用边框黑灰色阶  */
-  --border-black: #1d2129;
-  --border-black-2: hsl(0, 0%, 20%); /* #333*/
-  --border-black-3: hsl(0, 0%, 30%); /* #444*/
-  --border-black-4: hsl(0, 0%, 40%); /* #666 */
-  --border-black-5: hsl(0, 0%, 50%); /* #808080 #777*/
-  --border-black-6: hsl(0, 0%, 60%); /* #999*/
-  --border-black-7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
-  --border-black-8: hsl(0, 0%, 80%); /* #ccc #ddd*/
-  --border-black-9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
-  --border-black-10: hsl(0, 0%, 95%); /* #f2f2f2 */
-  --border-black-11: hsl(0, 0%, 97%); /* #f7f7f7 #f8f8f8 #f5f8fe #f5f7fb #fafafa #edf2f9*/
+  --BorderBlack: #1d2129;
+  --BorderBlack2: hsl(0, 0%, 20%);
+  --BorderBlack3: hsl(0, 0%, 30%);
+  --BorderBlack4: hsl(0, 0%, 40%);
+  --BorderBlack5: hsl(0, 0%, 50%);
+  --BorderBlack6: hsl(0, 0%, 60%);
+  --BorderBlack7: hsl(0, 0%, 70%);
+  --BorderBlack8: hsl(0, 0%, 80%);
+  --BorderBlack9: hsl(0, 0%, 90%);
+  --BorderBlack10: hsl(0, 0%, 95%);
+  --BorderBlack11: hsl(0, 0%, 97%);
 
   /* ------ 通用背景白色 ------ */
-  --bg-white: #fff;
+  --BgWhite: #fff;
 
   /* 通用背景黑灰色阶 */
-  --bg-black: #000;
-  --bg-black-1-2: hsl(0, 0%, 3%); /* #080808*/
-  --bg-black-1-1: hsl(0, 0%, 5%); /* #0d0d0d*/
-  --bg-black-1: hsl(0, 0%, 10%); /* #1a1a1a*/
-  --bg-black-2: hsl(0, 0%, 20%); /* #333*/
-  --bg-black-3: hsl(0, 0%, 30%); /* #444*/
-  --bg-black-4: hsl(0, 0%, 40%); /* #666 */
-  --bg-black-5: hsl(0, 0%, 50%); /* #808080 #777*/
-  --bg-black-6: hsl(0, 0%, 60%); /* #999*/
-  --bg-black-7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
-  --bg-black-8: hsl(0, 0%, 80%); /* #ccc #ddd*/
-  --bg-black-9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
-  --bg-black-10: hsl(0, 0%, 95%); /* #f2f2f2 */
-  --bg-black-11: hsl(0, 0%, 97%); /* #f7f7f7 #f8f8f8 #f5f8fe #f5f7fb #fafafa #edf2f9*/
+  --BgBlack: #000;
+  --BgBlack1-1: hsl(0, 0%, 5%);
+  --BgBlack1-2: hsl(0, 0%, 3%);
+  --BgBlack1: hsl(0, 0%, 10%);
+  --BgBlack2: hsl(0, 0%, 20%);
+  --BgBlack3: hsl(0, 0%, 30%);
+  --BgBlack4: hsl(0, 0%, 40%);
+  --BgBlack5: hsl(0, 0%, 50%);
+  --BgBlack6: hsl(0, 0%, 60%);
+  --BgBlack7: hsl(0, 0%, 70%);
+  --BgBlack8: hsl(0, 0%, 80%);
+  --BgBlack9: hsl(0, 0%, 90%);
+  --BgBlack10: hsl(0, 0%, 95%);
+  --BgBlack11: hsl(0, 0%, 97%);
 }
 
 /* 暗黑模式 */
 html.dark {
-  /* ------ 主题色 递浅色阶 ------  */
-  --step: calc(var(--l) / 12); /* 39 / 12  */
-  --color-light-1: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 1));
-  --color-light-2: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 2));
-  --color-light-3: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 3));
-  --color-light-4: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 4));
-  --color-light-5: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 5));
-  --color-light-6: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 6));
-  --color-light-7: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 7));
-  --color-light-8: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 8));
-  --color-light-9: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 9));
-  --color-light-10: hsl(var(--h), var(--s), calc(var(--l) - var(--step) * 10));
+  --L: 44%;
 
-  --font-white: #f2f2f2;
+  /* ------ 主题色 递暗色阶 ------  */
+  --_step: calc(var(--L) / 11); /* 39 / 12  */
+  --ColorLight1: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 1));
+  --ColorLight2: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 2));
+  --ColorLight3: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 3));
+  --ColorLight4: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 4));
+  --ColorLight5: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 5));
+  --ColorLight6: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 6));
+  --ColorLight7: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 7));
+  --ColorLight8: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 8));
+  --ColorLight9: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 9));
+  --ColorLight10: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 9.5));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10.5));
+  /* --ColorLight10: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 11));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 11.5)); */
 
-  --font-black: #f2f2f2;
-  --font-black-2: hsl(0, 0%, 80%);
-  --font-black-3: hsl(0, 0%, 70%);
-  --font-black-4: hsl(0, 0%, 60%);
+  --FontWhite: #f2f2f2;
 
-  --border-white: #f2f2f2;
+  --FontBlack: #f2f2f2;
+  --FontBlack2: hsl(0, 0%, 80%);
+  --FontBlack3: hsl(0, 0%, 70%);
+  --FontBlack4: hsl(0, 0%, 60%);
 
-  --border-black: #f2f2f2;
-  --border-black-2: hsl(0, 0%, 80%);
-  --border-black-3: hsl(0, 0%, 70%);
-  --border-black-4: hsl(0, 0%, 60%);
-  --border-black-5: hsl(0, 0%, 50%);
-  --border-black-6: hsl(0, 0%, 47%);
-  --border-black-7: hsl(0, 0%, 45%);
-  --border-black-8: hsl(0, 0%, 42%);
-  --border-black-9: hsl(0, 0%, 40%);
-  --border-black-10: hsl(0, 0%, 30%);
-  --border-black-11: hsl(0, 0%, 20%);
+  --BorderWhite: #f2f2f2;
 
-  --bg-white: #141414;
+  --BorderBlack: #f2f2f2;
+  --BorderBlack2: hsl(0, 0%, 80%);
+  --BorderBlack3: hsl(0, 0%, 70%);
+  --BorderBlack4: hsl(0, 0%, 60%);
+  --BorderBlack5: hsl(0, 0%, 50%);
+  --BorderBlack6: hsl(0, 0%, 47%);
+  --BorderBlack7: hsl(0, 0%, 45%);
+  --BorderBlack8: hsl(0, 0%, 42%);
+  --BorderBlack9: hsl(0, 0%, 40%);
+  --BorderBlack10: hsl(0, 0%, 30%);
+  --BorderBlack11: hsl(0, 0%, 20%);
 
-  --bg-black: var(--bg-white);
-  --bg-black-6: hsl(0, 0%, 70%);
-  --bg-black-7: hsl(0, 0%, 60%);
-  --bg-black-8: hsl(0, 0%, 50%);
-  --bg-black-9: hsl(0, 0%, 40%);
-  --bg-black-10: hsl(0, 0%, 30%);
-  --bg-black-11: hsl(0, 0%, 20%);
-}
+  --BgWhite: #141414;
 
-/* 项目定制原子类 */
-.g-radius {
-  border-radius: 8px !important;
-}
-.g-radius-small {
-  border-radius: 16px !important;
-}
-.g-radius-big {
-  border-radius: 16px !important;
-}
-
-.g-margin {
-  margin: var(--card-margin) !important;
-}
-.g-margin-t {
-  margin-top: var(--card-margin) !important;
-}
-.g-margin-r {
-  margin-right: var(--card-margin) !important;
-}
-.g-margin-b {
-  margin-bottom: var(--card-margin) !important;
-}
-.g-margin-l {
-  margin-left: var(--card-margin) !important;
-}
-
-.g-color {
-  color: var(--color) !important;
-}
-
-/* 渐变背景 */
-.g-bg-lg {
-  background: linear-gradient(to left, var(--color) 0%, var(--color-sub) 100%);
-  box-shadow: 0px 13px 16px 0px hsl(var(--hsl-dark), 0.2);
-}
-
-:root {
-  color: var(--font-black);
-  background: var(--bg-white);
+  --BgBlack: var(--BgWhite);
+  --BgBlack6: hsl(0, 0%, 70%);
+  --BgBlack7: hsl(0, 0%, 60%);
+  --BgBlack8: hsl(0, 0%, 50%);
+  --BgBlack9: hsl(0, 0%, 40%);
+  --BgBlack10: hsl(0, 0%, 30%);
+  --BgBlack11: hsl(0, 0%, 20%);
 }

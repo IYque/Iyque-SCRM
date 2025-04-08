@@ -1,10 +1,8 @@
 package cn.iyque.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.Transient;
 import java.util.Date;
 
@@ -19,7 +17,7 @@ public class BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
-    //预审类型 1:客户；2:客群
+    //规则类型1:客户规则；2:客群规则 3:意向客户分析 4:意向群友分析
     @Transient
     private Integer msgAuditType;
 }

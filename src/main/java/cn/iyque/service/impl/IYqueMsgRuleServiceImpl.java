@@ -41,6 +41,21 @@ public class IYqueMsgRuleServiceImpl implements IYqueMsgRuleService {
                     MsgDefaultRule.getAllRules(2)
             );
         }
+
+        //初始化意向客户分析规则
+        if(iYqueMsgRuleDao.countByRuleTypeAndDefaultRule(3,true)<=0){
+            iYqueMsgRuleDao.saveAll(
+                    MsgDefaultRule.getAllRules(3)
+            );
+        }
+
+
+        //初始化意向群友分析规则
+        if(iYqueMsgRuleDao.countByRuleTypeAndDefaultRule(4,true)<=0){
+            iYqueMsgRuleDao.saveAll(
+                    MsgDefaultRule.getAllRules(4)
+            );
+        }
     }
 
     @Override

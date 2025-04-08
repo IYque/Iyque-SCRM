@@ -43,7 +43,7 @@ public class IYqueMsgRule {
     private Boolean defaultRule;
 
 
-    //规则类型1:客户规则；2:客群规则
+    //规则类型1:客户规则；2:客群规则 3:意向客户分析 4:意向群友分析
     private Integer ruleType=1;
 
 

@@ -63,21 +63,73 @@ export const navRoutes = [
   {
     path: '/chat',
     component: Layout,
-    redirect: '/chat/index',
+    redirect: '/chat/khchat/index',
     meta: { title: 'AI会话-AI会话存档-企微会话内容存档', icon: 'conversation' },
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/chat/index'),
-        meta: { title: 'AI客户会话' },
+        path: 'khchat',
+        meta: { title: '客户会话' },
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/views/chat/index'),
+            meta: { title: '会话内容' },
+          },
+          {
+            path: 'inquiryCustomer',
+            component: () => import('@/views/inquiryCustomer/index'),
+            meta: { title: 'AI会话预审' },
+          },
+          {
+            path: 'intentionCustomer',
+            component: () => import('@/views/intentionCustomer/index'),
+            meta: { title: 'AI意向客户' },
+          }
+        ]
       },
+     
       {
         path: 'kqchat',
-        component: () => import('@/views/kqchat/index'),
-        meta: { title: 'AI客群会话' },
-      }
+        meta: { title: '客群会话' },
+        children: [
+          {
+            path: 'kqchat',
+            component: () => import('@/views/kqchat/index'),
+            meta: { title: '会话内容' },
+          },
+          {
+            path: 'inquiryKqChat',
+            component: () => import('@/views/inquiryKqChat/index'),
+            meta: { title: 'AI会话预审' },
+          },
+          {
+            path: 'intentionGroupFriend',
+            component: () => import('@/views/intentionGroupFriend/index'),
+            meta: { title: 'AI意向群友' },
+          }
+        ]
+      },
+
     ],
   },
+  // {
+  //   path: '/chat',
+  //   component: Layout,
+  //   redirect: '/chat/index',
+  //   meta: { title: 'AI会话-AI会话存档-企微会话内容存档', icon: 'conversation' },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/chat/index'),
+  //       meta: { title: 'AI客户会话' },
+  //     },
+  //     {
+  //       path: 'kqchat',
+  //       component: () => import('@/views/kqchat/index'),
+  //       meta: { title: 'AI客群会话' },
+  //     }
+  //   ],
+  // },
   {
     path: '/config',
     component: Layout,
