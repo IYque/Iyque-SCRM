@@ -1,5 +1,5 @@
 <script setup>
-import { getList, del } from './api'
+import { getList, del, save } from './api'
 import * as apiCategory from './apiCategory'
 
 defineProps({
@@ -59,14 +59,14 @@ function delCategory(item) {
         </div>
         <el-scrollbar class="item-list">
           <div
-            class="item"
+            class="item group"
             v-for="(item, key) in categoryList"
             :key="item.id"
-            :class="{ active: item.id == categoryId }"
+            :class="{ active: item.id == query.categoryId }"
             @click="switchGroup(item)">
             <div class="name">{{ item.name }}</div>
 
-            <div class="hidden item-hover:flex" v-if="!isSelect">
+            <div class="hidden group-hover:flex" v-if="!isSelect && item.id != 0">
               <el-icon-EditPen class="hoverColor" @click="$refs.dialogRef.action(item)" title="编辑"></el-icon-EditPen>
               <el-icon-delete class="hoverColor" @click="delCategory(item)" title="删除"></el-icon-delete>
             </div>
@@ -145,10 +145,10 @@ function delCategory(item) {
           width="500"
           :formProps="{ 'label-width': 'auto' }"
           :rules="{ categoryId: [$sdk.ruleRequiredChange], hotWord: [$sdk.ruleRequiredBlur] }"
-          @confirm="({ form }) => $refs.dialogRef.confirm(apiCategory.save)">
+          @confirm="({ form }) => $refs.dialogHotWordRef.confirm(save)">
           <template #form="{ form }">
             <el-form-item label="热词分类" prop="categoryId">
-              <el-select v-model="query.categoryId" :popper-append-to-body="false">
+              <el-select v-model="form.categoryId" :popper-append-to-body="false">
                 <el-option v-for="(item, key) in categoryList" :key="key" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>

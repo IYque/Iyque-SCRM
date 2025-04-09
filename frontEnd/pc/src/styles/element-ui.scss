@@ -46,6 +46,9 @@
 .el-button.is-circle {
   padding: 9px;
 }
+.el-button:not(.is-text) {
+  overflow: hidden;
+}
 .el-button:not(.is-text, .is-circle, .is-round) {
   border-radius: var(--border-radius-small);
 }
