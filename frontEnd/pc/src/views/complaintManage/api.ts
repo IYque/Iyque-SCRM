@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const { get, post, put, del: _del } = request
+const { get, post, put, delt: _del } = request
 
 const service = '/iYqueComplaint'
 
@@ -27,13 +27,11 @@ export const setIYQueComplaintTip = (data) => {
   return post(`${service}/setIYQueComplaintTip`, data)
 }
 
-
 /**
  * 获取投诉通知人
- * @returns 
+ * @returns
  */
 export const findIYQueComplaintTips = () => get(`${service}/findIYQueComplaintTips`)
-
 
 /** 删除
  * @param {*} ids

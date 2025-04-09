@@ -31,7 +31,7 @@ export class SDK {
     } else {
       Object.assign(defaultConfig, options, title || {})
     }
-    return ElMessageBox.confirm(message, title, options)
+    return ElMessageBox.confirm(message, defaultConfig)
   }
 
   /** 通用删除

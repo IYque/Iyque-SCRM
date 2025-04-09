@@ -106,11 +106,7 @@ function delCategory(item) {
                 <el-button type="primary" @click="$refs.dialogHotWordRef.action()">新建热词</el-button>
               </CommonTopRight>
 
-              <el-button
-                type="primary"
-                plain
-                :disabled="!selectedIds?.length"
-                @click="$refs.rctRef?.apiConfirm(remove)">
+              <el-button type="primary" plain :disabled="!selectedIds?.length" @click="$refs.rctRef?.apiConfirm(del)">
                 删除
               </el-button>
             </div>
@@ -152,11 +148,11 @@ function delCategory(item) {
                 <el-option v-for="(item, key) in categoryList" :key="key" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
-            <el-form-item prop="hotWord" class="width100" label="热词名称" show-word-limit maxlength="10">
+            <el-form-item prop="hotWord" label="热词名称" show-word-limit maxlength="10">
               <el-input v-model="form.hotWord" placeholder="请输入" clearable />
               <div class="g-tip">分类名称不允许重复</div>
             </el-form-item>
-            <el-form-item prop="nearHotWord" class="width100" label="热词相近词" show-word-limit maxlength="10">
+            <el-form-item prop="nearHotWord" label="热词相近词" show-word-limit maxlength="10">
               <el-input v-model="form.nearHotWord" placeholder="请输入" clearable />
               <div class="g-tip">多个相近词时用英文逗号隔开</div>
             </el-form-item>

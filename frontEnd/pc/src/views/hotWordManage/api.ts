@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const { get, post, put, del: _del } = request
+const { get, post, put, delt: _del } = request
 
 const service = '/hotWord'
 
