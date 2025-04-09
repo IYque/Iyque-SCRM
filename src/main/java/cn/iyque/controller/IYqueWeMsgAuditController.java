@@ -2,6 +2,7 @@ package cn.iyque.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.iyque.domain.IYqueCustomerMsgDto;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.BaseEntity;
 import cn.iyque.entity.IYqueAiAnalysisMsgAudit;
@@ -9,6 +10,9 @@ import cn.iyque.entity.IYqueMsgAudit;
 import cn.iyque.entity.IYqueMsgRule;
 import cn.iyque.service.IWeMsgAuditService;
 import cn.iyque.service.IYqueMsgRuleService;
+import cn.iyque.utils.DateUtils;
+import cn.iyque.utils.IYqueExcelUtils;
+import cn.iyque.utils.ServletUtils;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +125,23 @@ public class IYqueWeMsgAuditController {
 
         return new ResponseResult(msgAudits.getContent(),msgAudits.getTotalElements());
     }
+
+
+    /**
+     * 导出客户或员工聊天内容
+     * @param id
+     */
+    @GetMapping("/exprotMsg/{id}")
+    public void exprotMsg(@PathVariable Long id){
+
+        IYqueExcelUtils.export(  ServletUtils.getResponse(), IYqueCustomerMsgDto.class,
+                weMsgAuditService.exprotMsg(id),"会话明细_" + System.currentTimeMillis());
+
+    }
+
+
+
+
 
     /**
      * 获取ai预审规则列表

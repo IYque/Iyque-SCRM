@@ -26,4 +26,14 @@ public interface IYqueMsgAuditDao extends JpaRepository<IYqueMsgAudit,String> , 
      */
     List<IYqueMsgAudit> findByMsgTimeBetweenAndAcceptType(Date startTime, Date endTime,Integer acceptType);
 
+
+    /**
+     *  查询指定时间段内,指定人员发送的信息
+     * @param startTime
+     * @param endTime
+     * @param fromId
+     * @return
+     */
+    List<IYqueMsgAudit> findByMsgTimeBetweenAndFromId(Date startTime, Date endTime,String fromId);
+
 }

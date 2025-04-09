@@ -56,8 +56,8 @@ export const buildAISessionWarning = (data) => get(`${serve}/buildAISessionWarni
 
 
 
-// 删除
-export const del = (ids) => delt(`${serve}/${ids}`)
+// 明细下载
+export const exprotMsg = (ids) => get(`${serve}/exprotMsg/${ids}`)
 
 
 //启用或停用

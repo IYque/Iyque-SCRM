@@ -8,6 +8,7 @@ import cn.iyque.dao.IYqueAiAnalysisMsgAuditDao;
 import cn.iyque.dao.IYqueMsgAuditDao;
 import cn.iyque.domain.CustomerChatGroup;
 import cn.iyque.domain.EmployeeChatGroup;
+import cn.iyque.domain.IYqueCustomerMsgDto;
 import cn.iyque.entity.*;
 import cn.iyque.service.*;
 import cn.iyque.utils.DateUtils;
@@ -158,6 +159,41 @@ public class IWeMsgAuditServiceImpl implements IWeMsgAuditService {
 
         return yqueAiAnalysisMsgAuditDao.findAll(spec,pageable);
     }
+
+    @Override
+    public List<IYqueCustomerMsgDto> exprotMsg(Long id) {
+        List<IYqueCustomerMsgDto> msgDtoList=new ArrayList<>();
+
+        IYqueAiAnalysisMsgAudit msgAudit = yqueAiAnalysisMsgAuditDao.getById(id);
+        if(null != msgAudit){
+            List<IYqueMsgAudit> iYqueMsgAudits = yqueMsgAuditDao.findByMsgTimeBetweenAndFromId(DateUtils.setTimeToStartOfDay(msgAudit.getStartTime()),
+                    DateUtils.setTimeToEndOfDay(msgAudit.getEndTime()), msgAudit.getEmployeeId());
+
+            if(CollectionUtil.isNotEmpty(iYqueMsgAudits)){
+
+                iYqueMsgAudits.stream().forEach(k->{
+
+                    msgDtoList.add(
+                            IYqueCustomerMsgDto.builder()
+                                    .fromName(k.getFromName())
+                                    .acceptName(k.getAcceptName())
+                                    .content(k.getContent())
+                                    .sendTime(k.getMsgTime())
+                                    .build()
+                    );
+
+                });
+            }
+
+
+        }
+
+
+        return msgDtoList;
+
+    }
+
+
 
     @Override
     public void synchMsg(){

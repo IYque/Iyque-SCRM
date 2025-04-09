@@ -1,9 +1,11 @@
 package cn.iyque.service;
 
 import cn.iyque.domain.EmployeeChatGroup;
+import cn.iyque.domain.IYqueCustomerMsgDto;
 import cn.iyque.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -26,6 +28,15 @@ public interface IWeMsgAuditService {
      * @return
      */
     Page<IYqueAiAnalysisMsgAudit> findAiAnalysisMsgAudits(IYqueAiAnalysisMsgAudit analysisMsgAudit, Pageable pageable);
+
+
+    /**
+     * 相关信息导出
+     * @param id
+     * @return
+     */
+    List<IYqueCustomerMsgDto> exprotMsg(Long id);
+
 
     /**
      * 同步会话数据

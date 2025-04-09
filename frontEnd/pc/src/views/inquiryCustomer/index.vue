@@ -5,12 +5,12 @@ import { env } from '../../../sys.config'
 import aev from './aev.vue'
 import synch from './synch.vue'
 
-let { getList,findAiAnalysisMsgAudits,synchMsg,buildAISessionWarning,findIYqueMsgRules,del,saveOrUpdateMsgRule,batchStartOrStop} = {}
+let { getList,findAiAnalysisMsgAudits,synchMsg,buildAISessionWarning,findIYqueMsgRules,exprotMsg,saveOrUpdateMsgRule,batchStartOrStop} = {}
 
 export default {
 	data() {
 		// let isLink = location.href.includes('customerLink')
-		let _ = ({ getList,findAiAnalysisMsgAudits,synchMsg,buildAISessionWarning,findIYqueMsgRules,del,saveOrUpdateMsgRule,batchStartOrStop} = api)
+		let _ = ({ getList,findAiAnalysisMsgAudits,synchMsg,buildAISessionWarning,findIYqueMsgRules,exprotMsg,saveOrUpdateMsgRule,batchStartOrStop} = api)
 
 		return {
 			activeName: 'first',
@@ -98,15 +98,16 @@ export default {
 				.finally(() => (this.$store.loading = false))
 		},
 
-		del(id) {
+		downloadFile(id) {
 			let ids = id
+
+			console.log(ids)
 			
 			this.$confirm()
 				.then(() => {
 					this.$store.loading = true
-					return del(ids).then((res) => {
-						this.msgSuccess('删除成功')
-						this.findIYqueMsgRules()
+					return exprotMsg(ids).then((res) => {
+						this.msgSuccess('会话明细下载')
 					})
 				})
 				.catch((e) => {
@@ -399,6 +400,14 @@ export default {
 
 						<el-table-column label="违规提示" prop="msg" />
 						<el-table-column label="分析时间" prop="createTime" />
+
+						<el-table-column label="操作" fixed="right">
+							<template #default="{ row }">
+								<!-- <el-button text @click=";(form = JSON.parse(JSON.stringify(row))), (dialogVisible = true)">编辑</el-button> -->
+								<el-button text @click="downloadFile(row.id)">聊天明细下载</el-button>
+							</template>
+						</el-table-column>
+
 					</el-table>
 					<pagination
 						v-show="aiTotal > 0"
