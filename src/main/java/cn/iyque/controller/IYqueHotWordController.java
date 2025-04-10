@@ -1,10 +1,13 @@
 package cn.iyque.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.entity.BaseEntity;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.entity.IYqueHotWord;
+import cn.iyque.entity.IYqueMsgRule;
 import cn.iyque.service.IYqueHotWordService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 /**
@@ -61,6 +65,25 @@ public class IYqueHotWordController {
 
         return new ResponseResult(iYqueHotWords.getContent(),iYqueHotWords.getTotalElements());
 
+    }
+
+
+
+    /**
+     * ai热词分析
+     */
+    @GetMapping("/aiHotWordAnalysis")
+    public ResponseResult aiHotWordAnalysis(BaseEntity baseEntity){
+
+        List<IYqueHotWord> iYqueHotWords = yqueHotWordService.findAll();
+
+        if(CollectionUtil.isEmpty(iYqueHotWords)){
+            return new ResponseResult("请前往热词管理设置热词");
+        }
+
+        yqueHotWordService.aiHotWordAnalysis(iYqueHotWords,baseEntity);
+
+        return new ResponseResult("当前ai热词分析中,请稍后查看");
     }
 
 

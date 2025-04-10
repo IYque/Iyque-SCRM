@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "iyque_category")
@@ -29,14 +27,13 @@ public class IYqueCategory {
             name = "snowflakeIdGenerator",
             strategy = "cn.iyque.utils.SnowFlakeUtils"
     )
-    @JsonIgnore
     private Long id;
 
 
     /**
      * 分类:7 热词分类
      */
-    private String mediaType;
+    private String mediaType=new String("7");
 
     /**
      * 分类名称
@@ -63,6 +60,15 @@ public class IYqueCategory {
      * 素材状态:0 正常 1 删除
      */
     private Integer delFlag;
+
+
+    @PrePersist
+    @PreUpdate
+    private void setDefaultDelFlag() {
+        if (this.delFlag == null) {
+            this.delFlag = 0;
+        }
+    }
 
 
 
