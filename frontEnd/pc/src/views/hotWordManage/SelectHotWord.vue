@@ -2,6 +2,7 @@
 import index from './index.vue'
 const dialogRef = ref()
 const selected = ref([])
+const $emit = defineEmits(['confirm'])
 
 defineExpose({
   dialogRef,
