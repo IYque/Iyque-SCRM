@@ -71,8 +71,8 @@ function dealDataWordCategoryTop5(data, series, xData) {
   if (data?.length) {
     let _data = []
     data.forEach((element) => {
-      hotWordCategoryTop5.value.push(element.userName)
-      _data.push(element.rate)
+      hotWordCategoryTop5.value.push(element.hotWord)
+      _data.push(element.hotWordDiscussNumber)
     })
     series.push(_data)
   }

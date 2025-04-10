@@ -69,7 +69,7 @@ export default defineComponent({
       default: null,
     },
     searchBtnType: {
-      type: String,
+      type: [Boolean, String],
       // default: button,
       // validator(value) {
       // 	// 这个值必须匹配下列字符串中的一个

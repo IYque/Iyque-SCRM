@@ -141,7 +141,7 @@ function delCategory(item) {
           width="500"
           :formProps="{ 'label-width': 'auto' }"
           :rules="{ categoryId: [$sdk.ruleRequiredChange], hotWord: [$sdk.ruleRequiredBlur] }"
-          @confirm="({ form }) => $refs.dialogHotWordRef.confirm(save)">
+          @confirm="({ form }) => $refs.dialogHotWordRef.confirm(save, $refs.rctRef.getList)">
           <template #form="{ form }">
             <el-form-item label="热词分类" prop="categoryId">
               <el-select v-model="form.categoryId" :popper-append-to-body="false">
