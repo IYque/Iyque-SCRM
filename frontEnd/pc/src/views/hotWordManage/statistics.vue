@@ -23,21 +23,21 @@ let cardData = ref([])
           tips: '预设的热词讨论累计总数',
           value: data.discussTotalNumber || 0,
         },
-        {
-          title: '昨日热词讨论数',
-          tips: '昨日热词讨论总数',
-          value: data.ydDiscussTotalNumber || 0,
-        },
-        {
-          title: '昨日客户焦点热词',
-          tips: '昨日客户讨论热度最高的热词',
-          value: data.ydHotWord || 0,
-        },
-        {
-          title: '昨日客户焦点类别',
-          tips: '昨日客户讨论热度最高的热词分组',
-          value: data.ydHotWordCategory || 0,
-        },
+        // {
+        //   title: '昨日热词讨论数',
+        //   tips: '昨日热词讨论总数',
+        //   value: data.ydDiscussTotalNumber || 0,
+        // },
+        // {
+        //   title: '昨日客户焦点热词',
+        //   tips: '昨日客户讨论热度最高的热词',
+        //   value: data.ydHotWord || 0,
+        // },
+        // {
+        //   title: '昨日客户焦点类别',
+        //   tips: '昨日客户讨论热度最高的热词分组',
+        //   value: data.ydHotWordCategory || 0,
+        // },
       ]
     })
     .finally(() => {
@@ -230,6 +230,10 @@ const submitAiVisible = () => {
       <template #table="{ data }">
         <el-table-column label="热词讨论客户" prop="fromName"></el-table-column>
         <el-table-column label="会话员工" prop="acceptName" show-overflow-tooltip />
+      
+        <el-table-column label="热词" prop="hotWordName"></el-table-column>
+        <el-table-column label="热词分类" prop="categoryName"></el-table-column>
+
         <el-table-column label="会话原文" prop="content" min-width="160px" show-overflow-tooltip>
           <!-- <template #default="{ row }">
             <div v-html="row.content.repleace()"></div>

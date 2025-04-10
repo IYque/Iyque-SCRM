@@ -16,7 +16,7 @@
 							end-placeholder="结束日期"></el-date-picker>
 							<br/>
 							<span style="color: #f00; font-size: 12px;">
-                              请选择指定时间段内客户的与员工的会话内容进行热词分析
+                              请选择指定时间段内客户的与员工的会话内容进行热词分析(受限于大模型的单词会话,每次分析建议时间间隔小一点)
                          </span>
 					</el-form-item>
 		        </el-form>

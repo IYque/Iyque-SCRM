@@ -1,11 +1,15 @@
 package cn.iyque.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.domain.IYqueAnalysisHotWordTabVo;
 import cn.iyque.domain.IYqueAnalysisHotWordVo;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.entity.BaseEntity;
 import cn.iyque.entity.IYqueAnalysisHotWord;
+import cn.iyque.entity.IYqueHotWord;
 import cn.iyque.service.IYqueAnalysisHotWordService;
+import cn.iyque.service.IYqueHotWordService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,10 @@ public class IYqueAnalysisHotWordController {
 
     @Autowired
     private IYqueAnalysisHotWordService yqueAnalysisHotWordService;
+
+
+    @Autowired
+    private IYqueHotWordService yqueHotWordService;
 
 
 
@@ -87,6 +95,24 @@ public class IYqueAnalysisHotWordController {
     public ResponseResult<IYqueAnalysisHotWordTabVo> findHotWordTab(){
         IYqueAnalysisHotWordTabVo hotWordTab = yqueAnalysisHotWordService.findHotWordTab();
         return new ResponseResult<>(hotWordTab);
+    }
+
+
+    /**
+     * ai热词分析
+     */
+    @GetMapping("/aiHotWordAnalysis")
+    public ResponseResult aiHotWordAnalysis(BaseEntity baseEntity){
+
+        List<IYqueHotWord> iYqueHotWords = yqueHotWordService.findAll();
+
+        if(CollectionUtil.isEmpty(iYqueHotWords)){
+            return new ResponseResult("请前往热词管理设置热词");
+        }
+        baseEntity.setMsgAuditType(new Integer(1));
+        yqueHotWordService.aiHotWordAnalysis(iYqueHotWords,baseEntity);
+
+        return new ResponseResult("当前ai热词分析中,请稍后查看");
     }
 
 
