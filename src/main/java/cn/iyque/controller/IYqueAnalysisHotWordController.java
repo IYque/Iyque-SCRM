@@ -110,9 +110,10 @@ public class IYqueAnalysisHotWordController {
             return new ResponseResult("请前往热词管理设置热词");
         }
         baseEntity.setMsgAuditType(new Integer(1));
-        yqueHotWordService.aiHotWordAnalysis(iYqueHotWords,baseEntity);
 
-        return new ResponseResult("当前ai热词分析中,请稍后查看");
+        return new ResponseResult(
+                yqueHotWordService.aiHotWordAnalysis(iYqueHotWords,baseEntity)
+        );
     }
 
 

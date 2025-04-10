@@ -41,5 +41,5 @@ public interface IYqueHotWordService {
      * @param iYqueHotWords
      * @param baseEntity
      */
-    void aiHotWordAnalysis( List<IYqueHotWord> iYqueHotWords,BaseEntity baseEntity);
+    String aiHotWordAnalysis( List<IYqueHotWord> iYqueHotWords,BaseEntity baseEntity);
 }

@@ -2,6 +2,7 @@ package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.entity.IYqueAiTokenRecord;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueAiTokenRecordService;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
@@ -13,6 +14,7 @@ import io.github.lnyocly.ai4j.service.IChatService;
 import io.github.lnyocly.ai4j.service.PlatformType;
 import io.github.lnyocly.ai4j.service.factor.AiService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class IYqueAiServiceImpl implements IYqueAiService {
 
     @Value("${ai.limitToken}")
     private long limitToken;
+
+    @Value("${ai.deepseek.apiKey}")
+    private String apiKey;
 
 
     @Autowired
@@ -48,6 +53,10 @@ public class IYqueAiServiceImpl implements IYqueAiService {
         StringBuilder resContent=new StringBuilder();
 
         try {
+
+            if(StringUtils.isEmpty(apiKey)){
+                throw new IYqueException("请配置apiKey");
+            }
 
             //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
             if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
@@ -87,13 +96,13 @@ public class IYqueAiServiceImpl implements IYqueAiService {
                 }
 
             }else{
-                resContent.append("今日ai,token资源已耗尽");
+                throw new IYqueException("今日ai,token资源已耗尽");
             }
 
 
         }catch (Exception e){
-
             log.error("ai处理问题异常:"+e.getMessage());
+            throw new IYqueException("ai处理问题异常:"+e.getMessage());
 
         }
 

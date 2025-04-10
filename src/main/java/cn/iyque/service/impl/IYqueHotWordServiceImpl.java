@@ -125,7 +125,7 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
     }
 
     @Override
-    public void aiHotWordAnalysis(List<IYqueHotWord> iYqueHotWords, BaseEntity baseEntity) {
+    public String aiHotWordAnalysis(List<IYqueHotWord> iYqueHotWords, BaseEntity baseEntity) {
         if(CollectionUtil.isNotEmpty(iYqueHotWords)){
 
             String customerMsgData = iYqueMsgAuditService.findByMsgTimeBetweenAndAcceptType(baseEntity.getStartTime(),baseEntity.getEndTime(),baseEntity.getMsgAuditType());
@@ -133,60 +133,78 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
             if(StringUtils.isNotEmpty(customerMsgData)){
 
 
-                String prompt = String.format(aiHotWordAnalysisTpl,customerMsgData, JSONUtil.toJsonStr(iYqueHotWords));
+                try {
 
-                log.info("当前热词分析提示词:"+prompt);
+                    String prompt = String.format(aiHotWordAnalysisTpl,customerMsgData, JSONUtil.toJsonStr(iYqueHotWords));
 
-                String result = aiService.aiHandleCommonContent(prompt);
+                    log.info("当前热词分析提示词:"+prompt);
 
-                log.info("大模型输出原生结果:"+result);
+                    String result = aiService.aiHandleCommonContent(prompt);
 
-                if(StringUtils.isNotEmpty(result)){
-                    // 清理字符串：去除 ```json 和换行符
-                    String cleanJsonString = result
-                            .replace("```json", "")
-                            .replace("```", "")
-                            .trim();
+                    log.info("大模型输出原生结果:"+result);
 
-                    if(StringUtils.isNotEmpty(cleanJsonString)){
-                        List<IYqueAnalysisHotWord> analysisHotWords
-                                = JSONUtil.toList(cleanJsonString, IYqueAnalysisHotWord.class);
+                    if(StringUtils.isNotEmpty(result)){
+                        // 清理字符串：去除 ```json 和换行符
+                        String cleanJsonString = result
+                                .replace("```json", "")
+                                .replace("```", "")
+                                .trim();
 
-                        if(CollectionUtil.isNotEmpty(analysisHotWords)){
-                            List<IYqueCategory> iYqueCategories = categoryService.findAll();
+                        if(StringUtils.isNotEmpty(cleanJsonString)){
+                            List<IYqueAnalysisHotWord> analysisHotWords
+                                    = JSONUtil.toList(cleanJsonString, IYqueAnalysisHotWord.class);
 
-                            analysisHotWords.stream().forEach(k->{
-                                k.setAcceptType(
-                                        baseEntity.getMsgAuditType()
-                                );
-                                if(k.getCategoryId() !=null && CollectionUtil.isNotEmpty(iYqueCategories)){
-                                    k.setCategoryName(
-                                            iYqueCategories.stream().filter(item->item.getId().equals(k.getCategoryId())).findFirst().get().getName()
+                            if(CollectionUtil.isNotEmpty(analysisHotWords)){
+                                List<IYqueCategory> iYqueCategories = categoryService.findAll();
+
+                                analysisHotWords.stream().forEach(k->{
+                                    k.setAcceptType(
+                                            baseEntity.getMsgAuditType()
                                     );
-                                }
-                                k.setAnalysisTime(new Date());
-                            });
+                                    if(k.getCategoryId() !=null && CollectionUtil.isNotEmpty(iYqueCategories)){
+                                        k.setCategoryName(
+                                                iYqueCategories.stream().filter(item->item.getId().equals(k.getCategoryId())).findFirst().get().getName()
+                                        );
+                                    }
+                                    k.setAnalysisTime(new Date());
+                                });
 
 
-                            yqueAnalysisHotWordDao.deleteByMsgIds(
-                                    analysisHotWords.stream()
-                                            .map(IYqueAnalysisHotWord::getMsgId)
-                                            .collect(Collectors.toList())
-                            );
+                                yqueAnalysisHotWordDao.deleteByMsgIds(
+                                        analysisHotWords.stream()
+                                                .map(IYqueAnalysisHotWord::getMsgId)
+                                                .collect(Collectors.toList())
+                                );
 
-                            yqueAnalysisHotWordDao.saveAll(analysisHotWords);
+                                yqueAnalysisHotWordDao.saveAll(analysisHotWords);
+
+
+                            }
+
+
                         }
 
 
                     }
 
+                }catch (Exception e){
 
+                    return new String(e.getMessage());
                 }
 
 
+
+
+
+
+            }else{
+
+                return new String("当前时间段内不存在会话内容");
             }
 
         }
+
+        return new String("当前ai热词分析中,请稍后查看");
 
     }
 

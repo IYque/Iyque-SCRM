@@ -63,9 +63,11 @@ export default {
 			aiHotWordAnalysis({
 				startTime: this.formatDate(this.form.time?.[0]),
 				endTime: this.formatDate(this.form.time?.[1])
-			}).then(({ data }) => {
-					this.msgSuccess('操作成功')
-				})
+			}).then(response => {
+				// console.log(response.msg)
+					this.msgSuccess(response.msg)
+					
+			})
 				.finally(() => {
 					this.$store.loading = false
 				})

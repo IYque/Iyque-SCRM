@@ -1,5 +1,7 @@
 package cn.iyque.service;
 
+import cn.iyque.exception.IYqueException;
+
 public interface IYqueAiService {
 
     /**
@@ -7,7 +9,7 @@ public interface IYqueAiService {
      * @param content
      * @return
      */
-    String aiHandleCommonContent(String content);
+    String aiHandleCommonContent(String content) throws IYqueException;
 
 
 

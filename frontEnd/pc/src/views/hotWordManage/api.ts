@@ -68,4 +68,4 @@ export const findAll = (data) => get(`${service1}/findAll`, data)
  * 
  * @returns ai热词分析
  */
-export const aiHotWordAnalysis = (data) => get(`${serve}/aiHotWordAnalysis`,data)
+export const aiHotWordAnalysis = (data) => get(`${service1}/aiHotWordAnalysis`,data)
