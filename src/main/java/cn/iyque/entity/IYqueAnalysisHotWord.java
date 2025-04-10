@@ -25,16 +25,22 @@ public class IYqueAnalysisHotWord extends BaseEntity{
             name = "snowflakeIdGenerator",
             strategy = "cn.iyque.utils.SnowFlakeUtils"
     )
-    @JsonIgnore
+//    @JsonIgnore
     private Long id;
 
 
     //热词的id
     private Long hotWordId;
 
+    //热词
+    private String hotWordName;
+
 
     //分类id
     private Long categoryId;
+
+    //分类
+    private String categoryName;
 
 
     //对应的消息id

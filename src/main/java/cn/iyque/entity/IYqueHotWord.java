@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "iyque_hot_word")
@@ -29,7 +27,6 @@ public class IYqueHotWord {
             name = "snowflakeIdGenerator",
             strategy = "cn.iyque.utils.SnowFlakeUtils"
     )
-    @JsonIgnore
     private Long id;
 
     /**
@@ -76,5 +73,14 @@ public class IYqueHotWord {
      * 素材状态:0 正常 1 删除
      */
     private Integer delFlag;
+
+    @PrePersist
+    @PreUpdate
+    private void setDefaultDelFlag() {
+        if (this.delFlag == null) {
+            this.delFlag = 0;
+        }
+    }
+
 
 }

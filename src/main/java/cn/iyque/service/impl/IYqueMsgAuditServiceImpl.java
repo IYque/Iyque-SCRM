@@ -468,7 +468,6 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
                 }
             }
 
-
         }
 
         return sb.toString();

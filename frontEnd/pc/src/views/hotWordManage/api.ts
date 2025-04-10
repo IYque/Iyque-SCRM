@@ -62,3 +62,10 @@ pageNum,number,false,,,当前页从1开始
 pageSize,number,false,,,每页显示条数
  */
 export const findAll = (data) => get(`${service1}/findAll`, data)
+
+
+/**
+ * 
+ * @returns ai热词分析
+ */
+export const aiHotWordAnalysis = (data) => get(`${serve}/aiHotWordAnalysis`,data)

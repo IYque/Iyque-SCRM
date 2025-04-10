@@ -1,5 +1,6 @@
 package cn.iyque.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.dao.IYqueAnalysisHotWordDao;
 import cn.iyque.domain.IYqueAnalysisHotWordTabVo;
 import cn.iyque.domain.IYqueAnalysisHotWordVo;
@@ -13,7 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -49,12 +51,78 @@ public class IYqueAnalysisHotWordServiceImpl implements IYqueAnalysisHotWordServ
 
     @Override
     public List<IYqueAnalysisHotWordVo> hotWordTop5(IYqueAnalysisHotWord iYqueAnalysisHotWord) {
-        return null;
+        List<IYqueAnalysisHotWordVo> hotWordVos=new ArrayList<>();
+
+        Specification<IYqueAnalysisHotWord> spec = Specification.where(null);
+        if (iYqueAnalysisHotWord.getStartTime() != null && iYqueAnalysisHotWord.getEndTime() != null) {
+            spec = spec.and((root, query, cb) -> cb.between(root.get("msgTime"), DateUtils.setTimeToStartOfDay( iYqueAnalysisHotWord.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueAnalysisHotWord.getEndTime())));
+        }
+
+        List<IYqueAnalysisHotWord> hotWords = yqueAnalysisHotWordDao.findAll(spec);
+        if(CollectionUtil.isNotEmpty(hotWords)){
+
+
+
+          hotWords.stream()
+                    .collect(Collectors.groupingBy(IYqueAnalysisHotWord::getHotWordName))
+                  .forEach((k,v)->{
+
+                      hotWordVos.add(
+                              IYqueAnalysisHotWordVo.builder()
+                                      .hotWord(k)
+                                      .hotWordDiscussNumber(v.size())
+                                      .build()
+                      );
+
+                  });
+
+        }
+
+        return hotWordVos.stream()
+                // 按hotWordDiscussNumber降序排序
+                .sorted(Comparator.comparingLong(IYqueAnalysisHotWordVo::getHotWordDiscussNumber).reversed())
+                // 提取前五个元素
+                .limit(5)
+                // 收集为List
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<IYqueAnalysisHotWordVo> hotWordCategoryTop5(IYqueAnalysisHotWord iYqueAnalysisHotWord) {
-        return null;
+        List<IYqueAnalysisHotWordVo> hotWordVos=new ArrayList<>();
+
+        Specification<IYqueAnalysisHotWord> spec = Specification.where(null);
+        if (iYqueAnalysisHotWord.getStartTime() != null && iYqueAnalysisHotWord.getEndTime() != null) {
+            spec = spec.and((root, query, cb) -> cb.between(root.get("msgTime"), DateUtils.setTimeToStartOfDay( iYqueAnalysisHotWord.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueAnalysisHotWord.getEndTime())));
+        }
+
+        List<IYqueAnalysisHotWord> hotWords = yqueAnalysisHotWordDao.findAll(spec);
+        if(CollectionUtil.isNotEmpty(hotWords)){
+
+
+
+            hotWords.stream()
+                    .collect(Collectors.groupingBy(IYqueAnalysisHotWord::getCategoryName))
+                    .forEach((k,v)->{
+
+                        hotWordVos.add(
+                                IYqueAnalysisHotWordVo.builder()
+                                        .hotWord(k)
+                                        .hotWordDiscussNumber(v.size())
+                                        .build()
+                        );
+
+                    });
+
+        }
+
+        return hotWordVos.stream()
+                // 按hotWordDiscussNumber降序排序
+                .sorted(Comparator.comparingLong(IYqueAnalysisHotWordVo::getHotWordDiscussNumber).reversed())
+                // 提取前五个元素
+                .limit(5)
+                // 收集为List
+                .collect(Collectors.toList());
     }
 
     @Override

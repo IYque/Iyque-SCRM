@@ -1,6 +1,7 @@
 package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueCategoryDao;
 import cn.iyque.entity.IYqueCategory;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +27,20 @@ public class IYqueCategoryServiceImpl implements IYqueCategoryService {
     @Override
     public List<IYqueCategory> findAll() {
 
-        return iYqueCategoryDao.findAll(Sort.by("createTime").descending());
+
+        List<IYqueCategory> iYqueCategories=ListUtil.toList(IYqueCategory.builder()
+                        .id(0L)
+                        .name("默认分类")
+                .build());
+
+        List<IYqueCategory> all = iYqueCategoryDao.findAll(Sort.by("createTime").descending());
+
+         if(CollectionUtil.isNotEmpty(all)){
+             iYqueCategories.addAll(all);
+         }
+
+
+        return iYqueCategories;
     }
 
     @Override

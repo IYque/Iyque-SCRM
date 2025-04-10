@@ -4,9 +4,11 @@ import * as api from './api'
 import * as apiCategory from './apiCategory'
 
 import SelectHotWord from './SelectHotWord.vue'
+import synch from './synch.vue'
 
 let loading = ref(false)
 let id = useRoute().query.id
+
 
 let cardData = ref([])
 // 获取指标数据
@@ -91,10 +93,80 @@ function dealDataTrend(data, series, xData) {
   // })
   // series.push(..._data)
 }
+
+// 使用 reactive 创建响应式对象
+const state = reactive({
+  loading: false,
+  id: useRoute().query.id,
+  dialogAiVisible: false,
+  form: {}
+})
+
+// 方法：打开 AI 热词分析对话框
+const openAIDialog = () => {
+  state.form = {} // 重置表单
+  state.dialogAiVisible = true // 显示对话框
+}
+
+// 方法：提交 AI 对话（假设你需要这个方法）
+const submitAiVisible = () => {
+
+  state.loading = true
+			this.$refs.synch
+				.submit()
+				.then(() => {
+					this.dialogAiVisible = false
+				})
+				.catch((e) => console.error(e))
+				.finally(() => (this.loading = false))
+  // state.loading = true
+  // 这里调用你的 API 提交逻辑，例如 api.submitAI(state.form)
+  // 处理完成后重置 loading 和关闭对话框
+  // api.submitAI(state.form).then(response => {
+  //   state.dialogAiVisible = false
+  //   state.loading = false
+  // }).catch(error => {
+  //   console.error(error)
+  //   state.loading = false
+  // })
+}
+
 </script>
 
 <template>
   <div>
+    <div class="warning">
+			<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">
+				<strong>
+					源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台。:https://www.iyque.cn/
+				</strong>
+			</a>
+		</div>
+
+    <div class="fxbw">
+					 <!-- 绑定点击事件到 openAIDialog 方法 -->
+           <el-button type="primary" @click="openAIDialog">AI热词分析</el-button>
+		</div>
+    <br/>
+
+    <el-dialog 
+      title="AI会话预审" 
+      v-model="state.dialogAiVisible" 
+      width="80%" 
+      :close-on-click-modal="false"
+    >
+      <!-- 使用 synch 组件，并绑定 data -->
+      <synch v-if="state.dialogAiVisible" :data="state.form" ref="synch"></synch>
+      
+      <!-- 对话框底部按钮 -->
+      <template #footer>
+        <el-button @click="state.dialogAiVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitAiVisible" :loading="state.loading">
+          确定
+        </el-button>
+      </template>
+    </el-dialog>
+    
     <CardGroup :data="cardData" />
 
     <div class="grid grid-cols-2 --Gap --MarginT">
@@ -169,4 +241,20 @@ function dealDataTrend(data, series, xData) {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+.warning {
+	padding: 8px 16px;
+	background-color: #fff6f7;
+	border-radius: 4px;
+	border-left: 5px solid #fe6c6f;
+	margin: 20px 0;
+	line-height: 40px;
+}
+
+.like {
+	cursor: pointer;
+	font-size: 25px;
+	display: inline-block;
+}
+</style>
