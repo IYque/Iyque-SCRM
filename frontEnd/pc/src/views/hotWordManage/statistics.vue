@@ -9,6 +9,7 @@ import synch from './synch.vue'
 let loading = ref(false)
 let id = useRoute().query.id
 
+let query = ref({})
 let cardData = ref([])
 // 获取指标数据
 ;(function getStatistic() {
@@ -163,7 +164,7 @@ const submitAiVisible = () => {
     <div class="grid grid-cols-2 --Gap --MarginT">
       <RequestChartTable
         title="热词Top5"
-        type="lineChart"
+        type="barChart"
         isTimeQuery
         :request="api.hotWordTop5"
         :option="{
@@ -176,7 +177,7 @@ const submitAiVisible = () => {
         class="mt0"
         ref="rctRef"
         title="分类热词 Top5"
-        type="lineChart"
+        type="barChart"
         isTimeQuery
         :searchBtnType="false"
         :request="api.hotWordCategoryTop5"
@@ -195,8 +196,15 @@ const submitAiVisible = () => {
       </RequestChartTable>
     </div>
 
-    <RequestChartTable ref="rctRef2" type="table" title="热词讨论明细" isTimeQuery :request="api.findAll">
-      <template #queryMiddle="{ query }">
+    <RequestChartTable
+      ref="rctRef2"
+      type="table"
+      title="热词讨论明细"
+      isTimeQuery
+      :request="api.findAll"
+      :params="query"
+      @reset=";(query._name = ''), (query.hotWordId = '')">
+      <template #queryMiddle="{}">
         <el-form-item label="选择热词" prop="categoryId">
           <el-input
             v-model="query._name"
