@@ -127,11 +127,14 @@ public class IYqueAnalysisHotWordServiceImpl implements IYqueAnalysisHotWordServ
 
     @Override
     public IYqueAnalysisHotWordTabVo findHotWordTab() {
-        return null;
+        IYqueAnalysisHotWordTabVo analysisHotWordTabVo=new IYqueAnalysisHotWordTabVo();
+        analysisHotWordTabVo.setDiscussTotalNumber(
+                yqueAnalysisHotWordDao.count()
+        );
+
+
+
+        return analysisHotWordTabVo;
     }
 
-    @Override
-    public void buildAiHotWordAnalysis() {
-
-    }
 }

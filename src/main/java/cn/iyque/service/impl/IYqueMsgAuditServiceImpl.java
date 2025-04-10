@@ -516,4 +516,23 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
 
 
     }
+
+    @Override
+    public String findByMsgTimeBetweenAndAcceptType(Date startTime, Date endTime, Integer AcceptType) {
+        StringBuilder sb=new StringBuilder();
+        List<IYqueMsgAudit> msgAuditList = yqueMsgAuditDao.findByMsgTimeBetweenAndAcceptType(DateUtils.setTimeToStartOfDay(startTime),   DateUtils.setTimeToEndOfDay(endTime), AcceptType);
+
+        if(CollectionUtil.isNotEmpty(msgAuditList)){
+            List<IYqueMsgAudit> filteredList = msgAuditList.stream()
+                    .filter(msg -> msg.getFromId().startsWith("wm") || msg.getFromId().startsWith("wo"))
+                    .collect(Collectors.toList());
+
+            if(CollectionUtil.isNotEmpty(filteredList)){
+                sb.append(
+                        JSONUtil.toJsonStr(filteredList)
+                );
+            }
+        }
+        return sb.toString();
+    }
 }

@@ -2,9 +2,11 @@ package cn.iyque.service;
 
 import cn.iyque.domain.EmployeeChatGroup;
 import cn.iyque.entity.*;
+import cn.iyque.utils.DateUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IYqueMsgAuditService {
@@ -75,4 +77,15 @@ public interface IYqueMsgAuditService {
      * @return 分组后的结果
      */
      List<EmployeeChatGroup> groupByEmployeeAndCustomer(List<IYqueMsgAudit> msgAuditList);
+
+
+    /**
+     * 获取指定时间段内客户的聊天内容
+     * @param startTime
+     * @param endTime
+     * @param AcceptType
+     * @return
+     */
+     String findByMsgTimeBetweenAndAcceptType(Date startTime,
+                                                           Date endTime, Integer AcceptType);
 }

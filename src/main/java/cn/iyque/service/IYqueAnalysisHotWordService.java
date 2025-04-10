@@ -44,8 +44,5 @@ public interface IYqueAnalysisHotWordService {
     IYqueAnalysisHotWordTabVo findHotWordTab();
 
 
-    /**
-     * ai热词分析构建
-     */
-    void  buildAiHotWordAnalysis();
+
 }

@@ -69,22 +69,7 @@ public class IYqueHotWordController {
 
 
 
-    /**
-     * ai热词分析
-     */
-    @GetMapping("/aiHotWordAnalysis")
-    public ResponseResult aiHotWordAnalysis(BaseEntity baseEntity){
 
-        List<IYqueHotWord> iYqueHotWords = yqueHotWordService.findAll();
-
-        if(CollectionUtil.isEmpty(iYqueHotWords)){
-            return new ResponseResult("请前往热词管理设置热词");
-        }
-
-        yqueHotWordService.aiHotWordAnalysis(iYqueHotWords,baseEntity);
-
-        return new ResponseResult("当前ai热词分析中,请稍后查看");
-    }
 
 
     /**

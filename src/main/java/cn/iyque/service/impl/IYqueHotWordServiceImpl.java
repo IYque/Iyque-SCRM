@@ -1,11 +1,13 @@
 package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import cn.iyque.constant.IYqueContant;
+import cn.iyque.dao.IYqueAnalysisHotWordDao;
 import cn.iyque.dao.IYqueHotWordDao;
-import cn.iyque.entity.BaseEntity;
-import cn.iyque.entity.IYqueHotWord;
-import cn.iyque.entity.IYqueMsgRule;
+import cn.iyque.entity.*;
+import cn.iyque.service.IYqueAiService;
+import cn.iyque.service.IYqueCategoryService;
 import cn.iyque.service.IYqueHotWordService;
 import cn.iyque.service.IYqueMsgAuditService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,19 +34,30 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
     @Autowired
     private IYqueMsgAuditService iYqueMsgAuditService;
 
+    @Autowired
+    private IYqueAnalysisHotWordDao yqueAnalysisHotWordDao;
+
+
+    @Autowired
+    private IYqueCategoryService categoryService;
+
+
+
+    @Autowired
+    private IYqueAiService aiService;
 
 
     private final String aiHotWordAnalysisTpl = "任务描述：\n" +
-            "分析以下聊天内容，判断是否存在意向客户：\n" +
+            "逐条分析以下聊天内容:" +
             "%s\n" +
-            "聊天内容：\n" +
+            "判断是否包含相关热词,与热词相近词相同的语义：\n" +
             "%s\n\n" +
             "分析要求：\n" +
-            "1.逐条分析聊天内容，判断是否存在意向客户。\n" +
-            "2.如果存在意向客户，需明确意向客户类型，其中`warning`为true表示为意向客户,false为非意向客户 并在 `msg` 字段中描述具体意向行为。\n" +
-            "3.最终输出结果必须严格为以下格式结构化输出之一,不可包含其他内容：\n" +
-            "- 存在意向客户行为：[{\"warning\":true, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"具体意向行为描述\"}]\n" +
-            "- 不存在意向客户行为：[{\"warning\":false, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"未发现意向行为\"}]";
+            "1.逐条分析聊天内容(其中content表示具体的聊天内容),判断是否包含热词以及热词下相关词的语义（hotWord表示热词,nearHotWord表示热词相似词多个使用逗号隔开）。\n" +
+            "2.如何聊天内容未与相关热词语义匹配上,则该内容不做输出。\n" +
+            "3.最终输出结果必须严格按照以下JSON格式结构化输出,不可包含任何无关格式与内容：\n" +
+            "[{\"msgId\":\"消息的id\", \"fromId\":\"发送人的id\", \"fromName\":\"发送人名称\", \"acceptId\":\"接收人id\", \"acceptName\":\"接收人名称\", \"content\":\"会话内容\", \"msgTime\":\"消息发送时间,以Date类型输出\", \"hotWordId\":\"热词id\", \"hotWordName\":\"热词名称\", \"categoryId\":\"分类id\", \"categoryName\":\"分类名称\"}]";
+
 
 
 
@@ -113,15 +127,61 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
     @Override
     public void aiHotWordAnalysis(List<IYqueHotWord> iYqueHotWords, BaseEntity baseEntity) {
         if(CollectionUtil.isNotEmpty(iYqueHotWords)){
-            baseEntity.setMsgAuditType(1);
-            String customerMsgData = iYqueMsgAuditService.findCustomerMsgData(baseEntity);
+
+            String customerMsgData = iYqueMsgAuditService.findByMsgTimeBetweenAndAcceptType(baseEntity.getStartTime(),baseEntity.getEndTime(),baseEntity.getMsgAuditType());
 
             if(StringUtils.isNotEmpty(customerMsgData)){
 
-//                String prompt = String.format(aiHotWordAnalysisTpl, IYqueMsgRule.formatRules(iYqueMsgRules), customerMsgData);
-//
-//                log.info("当前聊天内容分析提示词:"+prompt);
 
+                String prompt = String.format(aiHotWordAnalysisTpl,customerMsgData, JSONUtil.toJsonStr(iYqueHotWords));
+
+                log.info("当前热词分析提示词:"+prompt);
+
+                String result = aiService.aiHandleCommonContent(prompt);
+
+                log.info("大模型输出原生结果:"+result);
+
+                if(StringUtils.isNotEmpty(result)){
+                    // 清理字符串：去除 ```json 和换行符
+                    String cleanJsonString = result
+                            .replace("```json", "")
+                            .replace("```", "")
+                            .trim();
+
+                    if(StringUtils.isNotEmpty(cleanJsonString)){
+                        List<IYqueAnalysisHotWord> analysisHotWords
+                                = JSONUtil.toList(cleanJsonString, IYqueAnalysisHotWord.class);
+
+                        if(CollectionUtil.isNotEmpty(analysisHotWords)){
+                            List<IYqueCategory> iYqueCategories = categoryService.findAll();
+
+                            analysisHotWords.stream().forEach(k->{
+                                k.setAcceptType(
+                                        baseEntity.getMsgAuditType()
+                                );
+                                if(k.getCategoryId() !=null && CollectionUtil.isNotEmpty(iYqueCategories)){
+                                    k.setCategoryName(
+                                            iYqueCategories.stream().filter(item->item.getId().equals(k.getCategoryId())).findFirst().get().getName()
+                                    );
+                                }
+                                k.setAnalysisTime(new Date());
+                            });
+
+
+                            yqueAnalysisHotWordDao.deleteByMsgIds(
+                                    analysisHotWords.stream()
+                                            .map(IYqueAnalysisHotWord::getMsgId)
+                                            .collect(Collectors.toList())
+                            );
+
+                            yqueAnalysisHotWordDao.saveAll(analysisHotWords);
+                        }
+
+
+                    }
+
+
+                }
 
 
             }
