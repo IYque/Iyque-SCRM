@@ -70,7 +70,7 @@ export default defineComponent({
     },
     searchBtnType: {
       type: [Boolean, String],
-      // default: button,
+      default: undefined,
       // validator(value) {
       // 	// 这个值必须匹配下列字符串中的一个
       // 	return Object.values(dict).includes(value)
@@ -261,6 +261,7 @@ export default defineComponent({
         <el-form v-if="$slots.queryMiddle" :model="query" ref="queryFormMiddle" inline class="query-wrap">
           <slot name="queryMiddle" v-bind="{ query }"></slot>
           <SearchResetButton
+            v-if="searchBtnType !== false"
             @search="getList(1)"
             @reset="reset('queryFormMiddle')"
             :type="searchBtnType"></SearchResetButton>

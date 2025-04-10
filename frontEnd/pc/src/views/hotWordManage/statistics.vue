@@ -178,6 +178,7 @@ const submitAiVisible = () => {
         title="分类热词 Top5"
         type="lineChart"
         isTimeQuery
+        :searchBtnType="false"
         :request="api.hotWordCategoryTop5"
         :option="{
           xAxis: [{ type: 'value' }],
@@ -221,7 +222,7 @@ const submitAiVisible = () => {
       <template #table="{ data }">
         <el-table-column label="热词讨论客户" prop="fromName"></el-table-column>
         <el-table-column label="会话员工" prop="acceptName" show-overflow-tooltip />
-      
+
         <el-table-column label="热词" prop="hotWordName"></el-table-column>
         <el-table-column label="热词分类" prop="categoryName"></el-table-column>
 
