@@ -1,0 +1,299 @@
+:root {
+  /* 主题色hsl*/
+  --H: 345;
+  --S: 82%;
+  --L: 54%;
+  --LDark: calc(var(--L) - 5%); /* 深主题色 l */
+
+  --Hsl: var(--H), var(--S), var(--L); /* 主题色hsl*/
+  --HslDark: var(--H), var(--S), var(--LDark); /* 深主题色hsl*/
+
+  --Color: hsl(var(--Hsl)); /* 主题色 hsl(345, 82%, 54%)*/
+  --ColorDark: hsl(var(--HslDark)); /* 深主题色 hsl(345, 54%, 49%) */
+  --ColorSub: hsl(var(--Hsl)); /* 主题辅色 */
+  .--Color {
+    color: var(--Color) !important;
+  }
+  .--ColorDark {
+    color: var(--ColorDark) !important;
+  }
+  .--ColorSub {
+    color: var(--ColorSub) !important;
+  }
+
+  --MainBg: var(--ColorLight12) !important;
+
+  /* ------ 功能色 ------ */
+  --ColorSuccess: #07c160;
+  --ColorWarning: #faad14;
+  --ColorDanger: #eb5e12;
+  .--ColorSuccess {
+    color: var(--ColorSuccess) !important;
+  }
+  .--ColorWarning {
+    color: var(--ColorWarning) !important;
+  }
+  .--ColorDanger {
+    color: var(--ColorDanger) !important;
+  }
+
+  /* ------ 距离大小 ------ */
+  --Radius: 6px; /* 常规圆角 */
+  --RadiusSmall: 3px; /* 小圆角 */
+  --RadiusBig: calc(var(--Radius) * 2); /* 大圆角 */
+  --RadiusRound: 100px;
+  --RadiusCircle: 50%;
+  .--Radius {
+    border-radius: var(--Radius) !important;
+  }
+  .--RadiusSmall {
+    border-radius: var(--RadiusSmall) !important;
+  }
+  .--RadiusBig {
+    border-radius: var(--RadiusBig) !important;
+  }
+  .--RadiusRound {
+    border-radius: var(--RadiusRound) !important;
+  }
+  .--RadiusCircle {
+    border-radius: var(--RadiusCircle) !important;
+  }
+
+  --Gap: 16px; /* 外间距 */
+  .--Gap {
+    gap: var(--Gap);
+  }
+  --FormGap: 16px; /* 外间距 */
+  .--FormGap {
+    gap: var(--FormGap);
+  }
+  --Margin: 16px; /* 外间距 */
+  .--Margin {
+    margin: var(--Margin);
+  }
+  .--MarginT {
+    margin-top: var(--Margin) !important;
+  }
+  .--MarginB {
+    margin-bottom: var(--Margin) !important;
+  }
+  .--MarginL {
+    margin-left: var(--Margin) !important;
+  }
+  .--MarginR {
+    margin-right: var(--Margin) !important;
+  }
+
+  --Padding: 20px; /* 内间距 */
+  .--Padding {
+    padding: var(--Padding);
+  }
+  .--PaddingT {
+    padding-top: var(--Padding) !important;
+  }
+  .--PaddingB {
+    padding-bottom: var(--Padding) !important;
+  }
+  .--PaddingL {
+    padding-left: var(--Padding) !important;
+  }
+  .--PaddingR {
+    padding-right: var(--Padding) !important;
+  }
+
+  /* 顶部导航条高度 */
+  --TopNavHeght: 60px;
+  .--TopNavHeght {
+    height: var(--TopNavHeght);
+  }
+  --SideBarWidth: 200px;
+  .--SideBarWidth {
+    width: var(--SideBarWidth);
+  }
+
+  /* ------ 主题色 递浅色阶 ------  */
+  --_step: calc((100% - var(--L)) / 10);
+  --ColorLight1: hsl(var(--H), var(--S), calc(var(--_step) * 1 + var(--L)));
+  --ColorLight2: hsl(var(--H), var(--S), calc(var(--_step) * 2 + var(--L)));
+  --ColorLight3: hsl(var(--H), var(--S), calc(var(--_step) * 3 + var(--L)));
+  --ColorLight4: hsl(var(--H), var(--S), calc(var(--_step) * 4 + var(--L)));
+  --ColorLight5: hsl(var(--H), var(--S), calc(var(--_step) * 5 + var(--L)));
+  --ColorLight6: hsl(var(--H), var(--S), calc(var(--_step) * 6 + var(--L)));
+  --ColorLight7: hsl(var(--H), var(--S), calc(var(--_step) * 7 + var(--L)));
+  --ColorLight8: hsl(var(--H), var(--S), calc(var(--_step) * 8 + var(--L)));
+  --ColorLight9: hsl(var(--H), var(--S), calc(var(--_step) * 9 + var(--L)));
+  --ColorLight10: hsl(var(--H), var(--S), calc(var(--_step) * 9.3 + var(--L)));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--_step) * 9.6 + var(--L)));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--_step) * 9.8 + var(--L)));
+
+  .--ColorLight1 {
+    color: var(--ColorLight1);
+  }
+  .--ColorLight2 {
+    color: var(--ColorLight2);
+  }
+  .--ColorLight3 {
+    color: var(--ColorLight3);
+  }
+  .--ColorLight4 {
+    color: var(--ColorLight4);
+  }
+  .--ColorLight5 {
+    color: var(--ColorLight5);
+  }
+  .--ColorLight6 {
+    color: var(--ColorLight6);
+  }
+  .--ColorLight7 {
+    color: var(--ColorLight7);
+  }
+  .--ColorLight8 {
+    color: var(--ColorLight8);
+  }
+  .--ColorLight9 {
+    color: var(--ColorLight9);
+  }
+  .--ColorLight10 {
+    color: var(--ColorLight10);
+  }
+  .--ColorLight11 {
+    color: var(--ColorLight11);
+  }
+  .--ColorLight12 {
+    color: var(--ColorLight12);
+  }
+
+  /* ------ 通用字体白色 ------ */
+  --FontWhite: #fff;
+
+  /* 通用字体黑灰色阶  */
+  --FontBlack: #1d2129;
+  --FontBlack2: hsl(0, 0%, 20%);
+  --FontBlack3: hsl(0, 0%, 30%);
+  --FontBlack4: hsl(0, 0%, 40%);
+  --FontBlack5: hsl(0, 0%, 50%);
+  --FontBlack6: hsl(0, 0%, 60%);
+  --FontBlack7: hsl(0, 0%, 70%);
+  --FontBlack8: hsl(0, 0%, 80%);
+  --FontBlack9: hsl(0, 0%, 90%);
+
+  .--FontWhite {
+    color: var(--FontWhite);
+  }
+  .--FontBlack {
+    color: var(--FontBlack);
+  }
+  .--FontBlack2 {
+    color: var(--FontBlack2);
+  }
+  .--FontBlack3 {
+    color: var(--FontBlack3);
+  }
+  .--FontBlack4 {
+    color: var(--FontBlack4);
+  }
+  .--FontBlack5 {
+    color: var(--FontBlack5);
+  }
+  .--FontBlack6 {
+    color: var(--FontBlack6);
+  }
+  .--FontBlack7 {
+    color: var(--FontBlack7);
+  }
+  .--FontBlack8 {
+    color: var(--FontBlack8);
+  }
+  .--FontBlack9 {
+    color: var(--FontBlack9);
+  }
+
+  /* ------ 通用边框白色 ------ */
+  --BorderWhite: #fff;
+
+  /* 通用边框黑灰色阶  */
+  --BorderBlack: #1d2129;
+  --BorderBlack2: hsl(0, 0%, 20%);
+  --BorderBlack3: hsl(0, 0%, 30%);
+  --BorderBlack4: hsl(0, 0%, 40%);
+  --BorderBlack5: hsl(0, 0%, 50%);
+  --BorderBlack6: hsl(0, 0%, 60%);
+  --BorderBlack7: hsl(0, 0%, 70%);
+  --BorderBlack8: hsl(0, 0%, 80%);
+  --BorderBlack9: hsl(0, 0%, 90%);
+  --BorderBlack10: hsl(0, 0%, 95%);
+  --BorderBlack11: hsl(0, 0%, 97%);
+
+  /* ------ 通用背景白色 ------ */
+  --BgWhite: #fff;
+
+  /* 通用背景黑灰色阶 */
+  --BgBlack: #000;
+  --BgBlack1-1: hsl(0, 0%, 5%);
+  --BgBlack1-2: hsl(0, 0%, 3%);
+  --BgBlack1: hsl(0, 0%, 10%);
+  --BgBlack2: hsl(0, 0%, 20%);
+  --BgBlack3: hsl(0, 0%, 30%);
+  --BgBlack4: hsl(0, 0%, 40%);
+  --BgBlack5: hsl(0, 0%, 50%);
+  --BgBlack6: hsl(0, 0%, 60%);
+  --BgBlack7: hsl(0, 0%, 70%);
+  --BgBlack8: hsl(0, 0%, 80%);
+  --BgBlack9: hsl(0, 0%, 90%);
+  --BgBlack10: hsl(0, 0%, 95%);
+  --BgBlack11: hsl(0, 0%, 97%);
+}
+
+/* 暗黑模式 */
+html.dark {
+  --L: 44%;
+
+  /* ------ 主题色 递暗色阶 ------  */
+  --_step: calc(var(--L) / 11); /* 39 / 12  */
+  --ColorLight1: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 1));
+  --ColorLight2: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 2));
+  --ColorLight3: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 3));
+  --ColorLight4: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 4));
+  --ColorLight5: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 5));
+  --ColorLight6: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 6));
+  --ColorLight7: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 7));
+  --ColorLight8: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 8));
+  --ColorLight9: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 9));
+  --ColorLight10: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 9.5));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10.5));
+  /* --ColorLight10: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 10));
+  --ColorLight11: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 11));
+  --ColorLight12: hsl(var(--H), var(--S), calc(var(--L) - var(--_step) * 11.5)); */
+
+  --FontWhite: #f2f2f2;
+
+  --FontBlack: #f2f2f2;
+  --FontBlack2: hsl(0, 0%, 80%);
+  --FontBlack3: hsl(0, 0%, 70%);
+  --FontBlack4: hsl(0, 0%, 60%);
+
+  --BorderWhite: #f2f2f2;
+
+  --BorderBlack: #f2f2f2;
+  --BorderBlack2: hsl(0, 0%, 80%);
+  --BorderBlack3: hsl(0, 0%, 70%);
+  --BorderBlack4: hsl(0, 0%, 60%);
+  --BorderBlack5: hsl(0, 0%, 50%);
+  --BorderBlack6: hsl(0, 0%, 47%);
+  --BorderBlack7: hsl(0, 0%, 45%);
+  --BorderBlack8: hsl(0, 0%, 42%);
+  --BorderBlack9: hsl(0, 0%, 40%);
+  --BorderBlack10: hsl(0, 0%, 30%);
+  --BorderBlack11: hsl(0, 0%, 20%);
+
+  --BgWhite: #141414;
+
+  --BgBlack: var(--BgWhite);
+  --BgBlack6: hsl(0, 0%, 70%);
+  --BgBlack7: hsl(0, 0%, 60%);
+  --BgBlack8: hsl(0, 0%, 50%);
+  --BgBlack9: hsl(0, 0%, 40%);
+  --BgBlack10: hsl(0, 0%, 30%);
+  --BgBlack11: hsl(0, 0%, 20%);
+}

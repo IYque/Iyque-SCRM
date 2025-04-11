@@ -11,6 +11,7 @@ import cn.iyque.service.IYqueAnnexPeriodService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueShortLinkService;
+import cn.iyque.utils.TableSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,14 +80,11 @@ public class IYqueShortLinkController {
 
     /**
      * 获取列表
-     * @param page
-     * @param size
      * @return
      */
     @GetMapping("/findIYqueShortLink")
-    public ResponseResult<IYqueShortLink> findIYqueShortLink(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size){
-        Page<IYqueShortLink> iYqueShortLinks = iYqueShortLinkService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueShortLink> findIYqueShortLink(){
+        Page<IYqueShortLink> iYqueShortLinks = iYqueShortLinkService.findAll(PageRequest.of(TableSupport.buildPageRequest().getPageNum(),  TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueShortLinks.getContent(),iYqueShortLinks.getTotalElements());
     }
 

@@ -5,6 +5,7 @@ import cn.iyque.dao.IYqueConfigDao;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
 import me.chanjar.weixin.cp.api.WxCpService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,9 @@ public class IYqueConfigServiceImpl implements IYqueConfigService {
         if(CollectionUtil.isEmpty(iYqueConfigs)){
             return new IYqueConfig();
         }
-        return iYqueConfigs.stream().findFirst().get();
+        IYqueConfig iYqueConfig = iYqueConfigs.stream().findFirst().get();
+
+        return iYqueConfig;
     }
 
     @Override

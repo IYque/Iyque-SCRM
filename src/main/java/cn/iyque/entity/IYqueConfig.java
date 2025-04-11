@@ -7,10 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "iyque_config")
 @Data
@@ -35,4 +32,17 @@ public class IYqueConfig {
     private String token;
 
     private String encodingAESKey;
+
+
+
+    //会话存档sdk路径
+    private String msgAuditLibPath;
+
+    //消息加密私钥
+    @Lob
+    private String msgAuditPriKey;
+
+
+    //会话存档Secret
+    private String msgAuditSecret;
 }

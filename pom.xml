@@ -82,6 +82,13 @@
       <version>3.4.1</version>
     </dependency>
 
+    <!-- Spring应用 -->
+    <dependency>
+      <groupId>io.github.lnyo-cly</groupId>
+      <artifactId>ai4j-spring-boot-starter</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+
 
 
 

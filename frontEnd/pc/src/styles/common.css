@@ -1,0 +1,237 @@
+/**
+ * 旧版通用css样式布局处理
+ */
+
+/** 原子类 **/
+
+/* flex */
+.flex {
+  display: flex !important;
+}
+.fxauto {
+  flex: auto !important;
+}
+.fxnone {
+  flex: none !important;
+}
+.ais {
+  display: flex;
+  align-items: stretch !important;
+}
+.ait {
+  display: flex;
+  align-items: flex-start !important;
+}
+.aic {
+  display: flex;
+  align-items: center !important;
+}
+.fxwrap {
+  display: flex;
+  flex-flow: wrap !important;
+}
+.fxbw {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.fcbw {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fxcol {
+  display: flex;
+  flex-direction: column !important;
+}
+.gap10 {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: baseline;
+  gap: 10px;
+}
+.gap5 {
+  gap: 5px !important;
+}
+.gap15 {
+  gap: 15px !important;
+}
+.gap20 {
+  gap: 20px !important;
+}
+
+/* align */
+.fl {
+  float: left;
+  position: relative;
+}
+.fr {
+  float: right;
+  position: relative;
+}
+.al {
+  text-align: left !important;
+}
+.ac {
+  text-align: center !important;
+}
+.ar {
+  text-align: right !important;
+}
+
+.sticky-t {
+  position: sticky !important;
+  top: 0;
+  z-index: 9;
+}
+.sticky-b {
+  position: sticky !important;
+  bottom: 0;
+}
+
+/* . */
+.cp {
+  cursor: pointer !important;
+}
+
+.lh1 {
+  line-height: 1 !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.bgw {
+  background: white !important;
+}
+
+.bgnone {
+  background: none !important;
+}
+
+.overhide {
+  overflow: hidden !important;
+}
+.overauto {
+  overflow: auto !important;
+}
+
+.blod {
+  font-weight: bold !important;
+}
+
+.h100 {
+  height: 100% !important;
+}
+
+.block {
+  display: block !important;
+}
+
+/* bfc模型 / 闭合清楚浮动 */
+.bfc-o {
+  overflow: hidden;
+  position: relative;
+}
+.bfc-d {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+}
+.bfc-p {
+  position: absolute;
+}
+
+/* fixed */
+.tf,
+.bf {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  min-height: 50px;
+  z-index: 999;
+}
+.tf {
+  top: 0;
+}
+.bf {
+  bottom: 0;
+}
+
+/* mask */
+.mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(39, 39, 39, 0.76);
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9;
+}
+
+/* 上下左右居中 */
+.cc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+}
+
+/* 单行文字溢出省略号 */
+.toe {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sticky-padding {
+  --bg: var(--bg-black-8);
+  --pad: var(--card-margin);
+  background: var(--bg);
+  padding: 0 var(--pad);
+  overflow: auto;
+}
+.sticky-padding::before,
+.sticky-padding::after {
+  content: '';
+  display: block;
+  position: sticky;
+  height: var(--pad);
+  background: var(--bg);
+}
+.sticky-padding::before {
+  top: 0;
+}
+.sticky-padding::after {
+  bottom: 0;
+}
+
+/* pc端主体显示宽度区域 */
+.main-size {
+  min-width: 1366px;
+}
+
+/* 暗黑模式 Dark mode */
+/* @media (prefers-color-scheme: dark) {
+  body,
+  img,
+  video {
+    filter: invert(1) brightness(1.5) hue-rotate(180deg);
+  }
+
+  不使用暗黑模式
+  .no-dark {
+    position: relative;
+  }
+  .no-dark::before {
+    content: ' ';
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: invert(1) brightness(1.5) hue-rotate(180deg);
+  }
+} */

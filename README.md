@@ -39,7 +39,7 @@
 - **分析链路：** 
   - 数据洞察：私域全链路数据分析，优化营销策略，驱动业务增长；
 
-![输入图片说明](pic/3.png)
+![输入图片说明](pic/4.png)
 
 ## 四、优势
 
@@ -54,12 +54,14 @@
 
 ## 五、开源
 
-### 5.1 介绍
+源雀SCRM基于源码100%开放的策略，积极拥抱开源，目前已推出了一个完全开源、免费使用的源雀SCRM开源版工具，结合DeepSeek等AI大模型，让企业快速拥有更强大、更丰富、更智能的企业微信管理能力。
 
-源雀SCRM基于源码100%开放的策略，积极拥抱开源，目前已推出了一个完全开源、免费使用的源雀SCRM开源版，让企业快速拥有更强大、更丰富、更智能的企业微信管理能力。
+### 5.1 基础能力
 
 目前源雀SCRM开源版已开源基础引流能力，具体如下：
- #### 员工智能活码:
+
+ **员工智能活码** 
+
 - 自动打标签：客户通过定义的活码添加好友会，会自动为客户打上相关的标签；
 - 免验证添加：客户扫码添加员工好友,无需员工确认，自动同意；
 - 重复添加：同一客户扫码，只可添加到指定员工，避免客户添加多个员工；
@@ -67,7 +69,9 @@
 - 活码logo自定义：二维码logo可自行定义；
 - 自动备注：按照添加时间，标签，渠道名为客户添加自动备注；
 - 渠道统计：按照时间或渠道维度，统计客户增加流失等情况；
- #### 获客外链:
+
+ **获客外链** 
+
 - 通过外部短链自动拉起微信。
 - 自动打标签：客户通过定义的活码添加好友会，会自动为客户打上相关的标签；
 - 免验证添加：客户扫码添加员工好友,无需员工确认，自动同意；
@@ -76,146 +80,81 @@
 - 自动备注：按照添加时间，标签，渠道名为客户添加自动备注；
 - 渠道统计：按照时间或渠道维度，统计客户增加流失等情况；
 
+ **智能群码** 
+
+- 群满自动建群；
+- 入群自动备注；
+
+**投诉管理**
+- **企微投诉入口设置**：在企微界面增设客户投诉入口，方便客户反馈问题，位置显著易操作，提升投诉便利性。
+- **投诉信息通知管理**：收到客户投诉后，系统多渠道自动下发通知给相关方，内容根据需求定制，确保信息及时送达。
+- **投诉数据统计分析**：从时间、类型、部门等多维度统计客户投诉，数据以可视化图表呈现，辅助决策改进。
+
+**员工列表|客群列表**
+- 同步企业员工列表与客户列表方便快速查看；
+
+### 5.2 AI能力
+
+目前源雀SCRM开源版结合 DeepSeek、腾讯混元等AI大模型，实现客户会话相关能力智能化，具体如下：
+
+ **AI客户会话**
+- 会话内容: 拉取员工与客户的文本聊天内容。
+  ![img.png](img/j-4.png)
+- AI会话预审: 结合deepseek对员工发送给客户指定时间聊天内容进行ai分析,判断员工是否有敲单,辱骂客户,向客户索要回扣红包等行为。
+  ![img.png](img/j-5.png)
+- AI意向客户: 针对客户与员工的聊天内容,通过AI进行上下文分析,从而判断是否为意向客户。
+  ![img.png](img/j-6.png)
+
+
+
+**AI客群会话**
+- 会话内容: 拉取员工在客群中的文本聊天内容。
+  ![img.png](img/j-7.png)
+- AI会话预审: 结合deepseek对员工发送给客群指定时间聊天内容进行ai分析,判断员工在群中是否有相关违规等行为。
+  ![img.png](img/j-8.png)
+- AI意向群友: 对群成员在客群中的聊天内容,通过AI进行上下文分析,从而判断是否为潜在意向客户。
+  ![img.png](img/j-9.png)
+
+**AI会话洞察**
+- 热词管理: 多维度设定客户聊天热词。
+  ![img.png](img/j-10.png)
+- AI热词分析: 依据设定的多维度热词，借助AI大模型分析客户聊天内容，识别相关热词，洞察客户兴趣，提升成单率 。
+  ![img.png](img/j-11.png)
+
+ **AI 客服** 
+
+- 企微客服接入deepseek,实现AI自动回复
+- 动态设置token每日上限，避免资源无限消耗
+- 系统后端接入[ai4j](https://github.com/LnYo-Cly/ai4j),可自行拓展多个大模型。
+
 注: 目前开源版功能只涉及活码相关功能,后续会不断迭代企微常用的相关功能。
 
-### 5.2 架构
+### 5.3 架构
 
 后端：采用springboot+jpa+h2架构，项目内置h2数据库，开箱即可使用；
 
 前端：采用vue3+vite+pinia+element-plus；
 
-### 5.3 安装
+### 5.4 系统部署与配置
 
-1. 后端配置文件修改
+地址:https://iyque.cn/
 
-```
-application.yml
-
- iyque:
-    userName: iyque #系统登录账号
-    pwd: 123456 # 系统登录密码
-    demo: true #设置为false后系统不可进行修改操作
-    fileViewUrl: https://iyque.cn/qapi/file/fileView/ #即后端api路径
-    uploadDir: ./upload #文件本地存储路径
-
-#系统内置了H2数据库,无需安装单独的数据库,username与password可以使用默认的也可自定义
-#数据库控制台默认访问地址: {系统访问前缀}/h2
-datasource:
-   url: jdbc:h2:file:./data/mydb;
-   username: iyque
-   password: 123456
-```
-
-2. 后端应用打包与启动
-
-```
-打包: mvn clean package
-启动: nohup java -jar xxx.jar > iyque.log 2>&1 &
-```
-
-3. Nginx部署
-
-```
- 后端api代理设置:
- location ^~/oApi/ {
-        proxy_pass http://127.0.0.1:8086/;
-    }
- 
- 前端应用部署设置:
-   location /tools {
-        root /usr/local/nginx/html/prod;
-        index index.html index.htm;
-        try_files $uri $uri/ /tools/index.html;
-        proxy_read_timeout 150;
-
-        # 处理跨域
-        add_header Access-Control-Allow-Origin '*' always;
-        # add_header Access-Control-Allow-Headers '*';
-        add_header Access-Control-Allow-Methods '*';
-        # add_header Access-Control-Allow-Credentials 'true';
-        if ($request_method = 'OPTIONS') {
-            return 204;
-        }
-    }
-```
-
-4. 前端部署
-
-在 `sys.config.ts` 中配置开发、生产等各个环境的：接口域名、路由基础路径，页面基础路径等：
-
-```
-// 环境变量
-const envs = {
-  development: {
-    DOMAIN: 'https://iyque.cn', // 站点域名，会根据此处域名判断应用环境
-    BASE_URL: '/tools/', // 页面路由基础路径 /*/*/，eg：/a/
-    BASE_API: 'https://iyque.cn', // 后端api接口地址
-  },
-  production: {
-    DOMAIN: 'https://iyque.cn',
-    BASE_URL: '/tools/',
-    BASE_API: 'https://iyque.cn',
-  },
-}
-
-let mode =
-  process.env.NODE_ENV == 'development' || !globalThis.document
-    ? process.env.VUE_APP_ENV
-    : Object.keys(envs).find((e) => envs[e].DOMAIN === window?.location.origin)
-
-export const env = { ...envs[mode], ENV: mode }
-
-// 系统常量配置
-export const common = {
-  SYSTEM_NAME: '源雀', // 系统简称
-  SYSTEM_SLOGAN:
-    '<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">源雀SCRM -基于SpringCloud+Vue架构,100%开放源码的企微私域营销系统</a> ', // 系统标语
-  COPYRIGHT: 'Copyright © 2024 源雀 All Rights Reserved.', // 版权信息
-  LOGO: env.BASE_URL + 'static/logo.png', // 深色logo
-  COOKIEEXPIRES: 0.5, // token在Cookie中存储的天数，默认0.5天
-}
-```
-
-5. 启动
-
-Node推荐16.x及以上版本。
-
-```
-# 进入项目目录
-cd you-project-name
-
-# 安装依赖
-npm i
-# 或者使用cnpm
-npm install -g cnpm --registry=https://registry.npmmirror.com
-cnpm i
-
-# 启动开发服务
-npm run dev
-
-# 构建生产环境
-npm run build
-```
-### 5.4 配置文档
-地址:https://www.iyque.cn/
-![输入图片说明](img/WeChat849dd143d0c7f00591a3287acd7d13f3.jpg)
 
 ### 5.5 计划
 
-源雀SCRM开源版会根据产品实际情况，积极开放更多能力。目前初步开源计划如下：
+源雀SCRM开源版会根据产品实际情况，积极开放更多能力。
 
-- 2024.Q3：开源源雀SCRM增强引流及场景化能力；
-- 2024.Q4：开源企业微信客户/客群基础管理能力；
-- 2025.Q1：开源源雀SCRM客户/客群运营能力；
-- 2025.Q2：开源源雀SCRM群发场景化能力；
 - 更多计划正在积极筹备中...
+
 ## 六、页面展示
 ![img.png](img/j-1.jpg)
 ![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 
+## 七、版权说明
+  该项目使用了Apache2.0授权许可，详情请参阅 [LICENSE.txt](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
 
-## 七、联系
+## 八、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
 

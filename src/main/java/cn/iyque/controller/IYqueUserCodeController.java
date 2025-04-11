@@ -11,6 +11,7 @@ import cn.iyque.service.IYqueAnnexPeriodService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.service.IYqueUserCodeService;
+import cn.iyque.utils.TableSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -80,14 +81,11 @@ public class IYqueUserCodeController {
 
     /**
      * 获取引流码列表
-     * @param page
-     * @param size
      * @return
      */
     @GetMapping("/findIYqueUserCode")
-    public ResponseResult<IYqueUserCode> findIYqueUserCode(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size){
-        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(page, size, Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueUserCode> findIYqueUserCode(){
+        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(TableSupport.buildPageRequest().getPageNum(),  TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueUserCodes.getContent(),iYqueUserCodes.getTotalElements());
     }
 
