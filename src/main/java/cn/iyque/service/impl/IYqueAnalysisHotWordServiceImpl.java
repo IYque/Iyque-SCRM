@@ -96,6 +96,10 @@ public class IYqueAnalysisHotWordServiceImpl implements IYqueAnalysisHotWordServ
             spec = spec.and((root, query, cb) -> cb.between(root.get("msgTime"), DateUtils.setTimeToStartOfDay( iYqueAnalysisHotWord.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueAnalysisHotWord.getEndTime())));
         }
 
+        if(iYqueAnalysisHotWord.getCategoryId() != null){
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("categoryId"), iYqueAnalysisHotWord.getCategoryId()));
+        }
+
         List<IYqueAnalysisHotWord> hotWords = yqueAnalysisHotWordDao.findAll(spec);
         if(CollectionUtil.isNotEmpty(hotWords)){
 
