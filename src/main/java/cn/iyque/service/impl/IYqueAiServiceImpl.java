@@ -9,6 +9,8 @@ import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletionResponse;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatMessage;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.Choice;
+import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
+import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
 import io.github.lnyocly.ai4j.platform.openai.usage.Usage;
 import io.github.lnyocly.ai4j.service.IChatService;
 import io.github.lnyocly.ai4j.service.PlatformType;
@@ -110,6 +112,18 @@ public class IYqueAiServiceImpl implements IYqueAiService {
         return resContent.toString();
     }
 
+    @Override
+    public EmbeddingResponse embedding(Embedding embedding) {
+
+        try {
+           return aiService.getEmbeddingService(PlatformType.OPENAI)
+                    .embedding(embedding);
+        }catch (Exception e){
+            log.error("向量计算异常:"+e.getMessage());
+        }
+
+        return null;
+    }
 
 
 

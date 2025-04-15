@@ -89,6 +89,11 @@
       <version>1.2.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>io.weaviate</groupId>
+      <artifactId>client</artifactId>
+      <version>4.0.0</version>  <!-- Check latest version -->
+    </dependency>
 
 
 

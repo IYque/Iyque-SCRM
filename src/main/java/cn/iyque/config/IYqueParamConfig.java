@@ -24,4 +24,19 @@ public class IYqueParamConfig {
     private Boolean inquiryAll=false;
 
     private String complaintUrl="https://iyque.cn";
+
+
+    //向量数据库相关配置
+    private VectorStoreParam vector;
+
+
+
+    @Data
+    public static class VectorStoreParam{
+
+
+        private  String protocol;
+        private  String host;
+        private  String className;
+    }
 }

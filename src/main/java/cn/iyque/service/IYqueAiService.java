@@ -1,6 +1,8 @@
 package cn.iyque.service;
 
 import cn.iyque.exception.IYqueException;
+import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
+import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
 
 public interface IYqueAiService {
 
@@ -12,6 +14,11 @@ public interface IYqueAiService {
     String aiHandleCommonContent(String content) throws IYqueException;
 
 
-
+    /**
+     * 向量值计算
+     * @param embedding
+     * @return
+     */
+    EmbeddingResponse embedding(Embedding embedding);
 
 }
