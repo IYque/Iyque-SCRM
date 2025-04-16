@@ -48,13 +48,28 @@ export const navRoutes = [
     ],
   },
   {
-    path: '/complaintManage',
+    path: '/customerService',
     component: Layout,
-    redirect: '/complaintManage/index',
+    redirect: '/customerService/customerServiceManage',
     meta: { title: '客服-AI会话存档-企微会话内容存档', icon: 'customerService' },
     children: [
       {
-        path: 'index',
+        path: 'customerServiceManage',
+        component: () => import('@/views/customerServiceManage/index'),
+        meta: { title: '客服管理' },
+      },
+      {
+        path: 'serviceRecord',
+        component: () => import('@/views/serviceRecord/index'),
+        meta: { title: '服务记录' },
+      },
+      {
+        path: 'KBM',
+        component: () => import('@/views/KBM/index'),
+        meta: { title: '知识库管理' },
+      },
+      {
+        path: 'complaintManage',
         component: () => import('@/views/complaintManage/index'),
         meta: { title: '投诉管理' },
       },
