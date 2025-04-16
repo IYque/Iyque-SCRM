@@ -54,6 +54,12 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
     private IYqueKnowledgeFragmentDao knowledgeFragmentDao;
 
 
+
+    @Override
+    public String recover(String content, String openKfId) {
+        return null;
+    }
+
     @Override
     public Page<IYqueKnowledgeInfo> findAll(IYqueKnowledgeInfo iYqueKnowledgeInfo, Pageable pageable) {
         Specification<IYqueKnowledgeInfo> spec = Specification.where(null);

@@ -9,6 +9,15 @@ import org.springframework.data.domain.Pageable;
 public interface IYqueKnowledgeInfoService {
 
 
+    /**
+     * 知识库获取客户相关信息进行回复
+     * @param content
+     * @param openKfId
+     * @return
+     */
+    String recover(String content,String openKfId);
+
+
 
 
     /**

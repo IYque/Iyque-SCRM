@@ -3,7 +3,12 @@ package cn.iyque.utils;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.config.IYqueParamConfig;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -15,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Paths;
 
 
 @Slf4j
@@ -114,32 +120,33 @@ public class FileUtils {
             File file = FileUtils.downloadImage(oldQrUrl);
             BufferedImage image = ImageIO.read(file);
 
-            int logoWidth = 110; // logo的宽度
-            int logoHeight = 110; // logo的高度
-            int x = (image.getWidth() - logoWidth) / 2; // logo的x坐标
-            int y = (image.getHeight() - logoHeight) / 2; // logo的y坐标
 
-            // 使用白色像素覆盖logo区域
-            for (int i = 0; i < logoWidth; i++) {
-                for (int j = 0; j < logoHeight; j++) {
-                    image.setRGB(x + i, y + j, 0xFFFFFFFF); // 白色
-                }
-            }
 
 
             //读取新logo图片
-            BufferedImage newLogoImage =ImageIO.read(FileUtils.downloadImage(logoUrl));
+            if(StringUtils.isNotEmpty(logoUrl)){
 
 
+                int logoWidth = 110; // logo的宽度
+                int logoHeight = 110; // logo的高度
+                int x = (image.getWidth() - logoWidth) / 2; // logo的x坐标
+                int y = (image.getHeight() - logoHeight) / 2; // logo的y坐标
 
+                // 使用白色像素覆盖logo区域
+                for (int i = 0; i < logoWidth; i++) {
+                    for (int j = 0; j < logoHeight; j++) {
+                        image.setRGB(x + i, y + j, 0xFFFFFFFF); // 白色
+                    }
+                }
+                BufferedImage newLogoImage =ImageIO.read(FileUtils.downloadImage(logoUrl));
+                Graphics2D graphics = image.createGraphics();
+                // 设置抗锯齿的属性
+                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                graphics.drawImage(newLogoImage, x, y, logoWidth, logoHeight, null);
+                graphics.dispose();
+            }
 
-
-            Graphics2D graphics = image.createGraphics();
-            // 设置抗锯齿的属性
-            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            graphics.drawImage(newLogoImage, x, y, logoWidth, logoHeight, null);
-            graphics.dispose();
 
              fileName=SnowFlakeUtils.nextId() +".png";
             ImageIO.write(image, "png", new File(savePath, fileName));
@@ -154,6 +161,28 @@ public class FileUtils {
 
 
     }
+
+
+    /**
+     * 链接生成二维码
+     * @param url 链接地址
+     * @param filePath 生成后的二维码存储地址
+     * @return
+     * @throws Exception
+     */
+    public static String generateQRCode(String url, String filePath) throws Exception {
+        // 设置二维码参数
+        BitMatrix matrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, 300, 300);
+
+        // 生成二维码图片并保存到文件
+       String fileName=filePath+"/"+SnowFlakeUtils.nextId() +".png";
+
+        MatrixToImageWriter.writeToPath(matrix, "png", Paths.get(fileName));
+
+       return fileName;
+    }
+
+
 
 
 
