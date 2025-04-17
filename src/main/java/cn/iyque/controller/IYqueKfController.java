@@ -3,6 +3,8 @@ package cn.iyque.controller;
 
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueKf;
+import cn.iyque.entity.IYqueKfMsgSub;
+import cn.iyque.service.IYqueKfMsgService;
 import cn.iyque.service.IYqueKfService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,10 @@ public class IYqueKfController {
 
     @Autowired
     private IYqueKfService yqueKfService;
+
+
+    @Autowired
+    private IYqueKfMsgService yqueKfMsgService;
 
 
 
@@ -69,5 +75,21 @@ public class IYqueKfController {
         yqueKfService.batchDelete(Arrays.asList(ids));
 
         return new ResponseResult();
+    }
+
+
+
+    /**
+     * 获取客服会话列表
+     * @param iYqueKfMsgSub
+     * @return
+     */
+    @GetMapping("/findKfMsgAll")
+    public ResponseResult<IYqueKfMsgSub> findKfMsgAll(IYqueKfMsgSub iYqueKfMsgSub){
+
+        Page<IYqueKfMsgSub> kfMsgSubs = yqueKfMsgService.findAll(iYqueKfMsgSub,
+                PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
+                        TableSupport.buildPageRequest().getPageSize(), Sort.by("sendTime").descending()));
+        return new ResponseResult(kfMsgSubs.getContent(),kfMsgSubs.getTotalElements());
     }
 }

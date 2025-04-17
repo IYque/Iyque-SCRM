@@ -1,25 +1,31 @@
 package cn.iyque.utils;
 
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iyque.config.IYqueParamConfig;
+import cn.iyque.exception.IYqueException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
@@ -180,6 +186,39 @@ public class FileUtils {
         MatrixToImageWriter.writeToPath(matrix, "png", Paths.get(fileName));
 
        return fileName;
+    }
+
+
+    /**
+     * File图片保存
+     * @param uploadDir
+     * @param file
+     * @param imgPrefix
+     * @return
+     */
+    public static String mediaToSaveImg(String uploadDir,File file,String imgPrefix){
+
+        String fileName = SnowFlakeUtils.nextId() + ".jpg";
+        try {
+
+
+            // 构建目标文件路径
+            Path targetPath = Paths.get(uploadDir, fileName);
+
+            MockMultipartFile multipartFile = new MockMultipartFile(FileUtil.getPrefix(fileName), fileName, Files.probeContentType(file.toPath()), new FileInputStream(file));
+            // 将文件写入目标路径
+            Files.write(targetPath, multipartFile.getBytes());
+
+        }catch (Exception e){
+
+            throw new IYqueException("图片获取失败:"+e.getMessage());
+        }
+
+        return imgPrefix+fileName;
+
+
+
+
     }
 
 

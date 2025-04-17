@@ -11,6 +11,7 @@ import cn.iyque.entity.*;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueKfMsgService;
 import cn.iyque.service.IYqueKfService;
 import cn.iyque.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -56,6 +58,10 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
     @Autowired
     private IYqueParamConfig iYqueParamConfig;
+
+
+    @Autowired
+    private IYqueKfMsgService yqueKfMsgService;
 
 
     @Override
@@ -99,12 +105,13 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                     callBackBaseMsg.getOpenKfId());
 
                     if(null != wxCpKfMsgListResp){
+                        kfMsg=IYqueKfMsg.builder()
+                                .cursor(wxCpKfMsgListResp.getNextCursor())
+                                .openKfid(callBackBaseMsg.getOpenKfId())
+                                .pullTime(new Date())
+                                .build();
                         kfMsgDao.save(
-                                IYqueKfMsg.builder()
-                                        .cursor(wxCpKfMsgListResp.getNextCursor())
-                                        .openKfid(callBackBaseMsg.getOpenKfId())
-                                        .pullTime(new Date())
-                                        .build()
+                                kfMsg
                         );
                     }
 
@@ -117,34 +124,37 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                         List<WxCpKfMsgListResp.WxCpKfMsgItem> msgList =
                                 wxCpKfMsgListResp.getMsgList();
                         if(CollectionUtil.isNotEmpty(msgList)){
+                            Map<String, List<WxCpKfMsgListResp.WxCpKfMsgItem>> listMap = msgList.stream()
+                                    .collect(Collectors.groupingBy(WxCpKfMsgListResp.WxCpKfMsgItem::getExternalUserId));
+                            for (String k : listMap.keySet()) {
 
-                            msgList.stream()
-                                    .collect(Collectors.groupingBy(WxCpKfMsgListResp.WxCpKfMsgItem::getExternalUserId)).forEach((k,v)->{
-                                        ThreadUtil.execute(()->{
 
-                                                //判断消息类型
-                                                WxCpKfMsgListResp.WxCpKfMsgItem lastItem
-                                                        = v.get(v.size() - 1);
-                                                try {
-                                                    //文本类型
-                                                    if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
-                                                        this.sendKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
+                                //判断消息类型
+                                WxCpKfMsgListResp.WxCpKfMsgItem lastItem
+                                        =  listMap.get(k).get( listMap.get(k).size() - 1);
 
-                                                        log.info("文本类型客户消息:"+lastItem.getText().getContent());
-                                                        //非文本类型基于提示
-                                                    }else {
-                                                        this.sendKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
+                                yqueKfMsgService.saveIYqueKfMsg(kfMsg.getId(),lastItem);
+                                try {
+                                    //文本类型
+                                    if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
+                                        //拓展从知识库中获取相关数据
+                                        this.sendKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
 
-                                                        log.info("其他类型文本消息:"+lastItem);
-                                                    }
-                                                }catch (Exception e){
+                                        log.info("文本类型客户消息:"+lastItem.getText().getContent());
+                                        //非文本类型基于提示
+                                    }else {
+                                        this.sendKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
 
-                                                    log.error("消息发送失败:"+e.getMessage());
+                                        log.info("其他类型文本消息:"+lastItem);
+                                    }
+                                }catch (Exception e){
 
-                                                }
+                                    log.error("消息发送失败:"+e.getMessage());
 
-                                        });
-                                    });
+                                }
+
+                            }
+
 
                         }
                     }

@@ -12,6 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
+
+/**
+ * 客服信息拉取记录表
+ */
 @Entity(name = "iyque_kf_msg")
 @Data
 @AllArgsConstructor
