@@ -8,10 +8,7 @@ import cn.iyque.dao.IYqueKnowledgeAttachDao;
 import cn.iyque.dao.IYqueKnowledgeFragmentDao;
 import cn.iyque.dao.IYqueKnowledgeInfoDao;
 import cn.iyque.domain.KnowledgeInfoUploadRequest;
-import cn.iyque.entity.IYqueKnowledgeAttach;
-import cn.iyque.entity.IYqueKnowledgeFragment;
-import cn.iyque.entity.IYqueKnowledgeInfo;
-import cn.iyque.entity.IYqueMsgAudit;
+import cn.iyque.entity.*;
 import cn.iyque.service.IYqueEmbeddingService;
 import cn.iyque.service.IYqueKnowledgeInfoService;
 import cn.iyque.utils.SnowFlakeUtils;
@@ -24,7 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +51,7 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
 
 
 
-    @Override
-    public String recover(String content, String openKfId) {
-        return null;
-    }
+
 
     @Override
     public Page<IYqueKnowledgeInfo> findAll(IYqueKnowledgeInfo iYqueKnowledgeInfo, Pageable pageable) {

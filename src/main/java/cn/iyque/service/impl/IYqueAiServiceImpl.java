@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -107,6 +108,79 @@ public class IYqueAiServiceImpl implements IYqueAiService {
             throw new IYqueException("ai处理问题异常:"+e.getMessage());
 
         }
+
+
+        return resContent.toString();
+    }
+
+    @Override
+    public String aiHandleCommonContent(List<String> contents) throws IYqueException {
+        StringBuilder resContent=new StringBuilder();
+
+        if(CollectionUtil.isNotEmpty(contents)){
+            try {
+
+                if(StringUtils.isEmpty(apiKey)){
+                    throw new IYqueException("请配置apiKey");
+                }
+
+                //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
+                if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
+
+                    // 获取chat服务实例
+                    IChatService chatService = aiService.getChatService(PlatformType.DEEPSEEK);
+
+                    List<ChatMessage> chatMessages=new ArrayList<>();
+                    contents.stream().forEach(k->{
+                        chatMessages.add(
+                                ChatMessage.withUser(k)
+                        );
+
+                    });
+
+                    // 构建请求参数
+                    ChatCompletion chatCompletion = ChatCompletion.builder()
+                            .model(model)
+                            .messages(chatMessages)
+                            .build();
+
+                    ChatCompletionResponse response = chatService.chatCompletion(chatCompletion);
+                    List<Choice> choices = response.getChoices();
+                    if(CollectionUtil.isNotEmpty(choices)){
+                        resContent.append(
+                                choices.stream().findFirst().get().getMessage().getContent()
+                                        .getText()
+                        );
+                    }
+
+                    Usage usage = response.getUsage();
+                    if(null != usage){
+
+                        aiTokenRecordService.save(
+                                IYqueAiTokenRecord.builder()
+                                        .completionTokens(usage.getCompletionTokens())
+                                        .promptTokens(usage.getPromptTokens())
+                                        .totalTokens(usage.getTotalTokens())
+                                        .createTime(new Date())
+                                        .aiResId(response.getId())
+                                        .model(response.getModel())
+                                        .build()
+                        );
+
+                    }
+
+                }else{
+                    throw new IYqueException("今日ai,token资源已耗尽");
+                }
+
+
+            }catch (Exception e){
+                log.error("ai处理问题异常:"+e.getMessage());
+                throw new IYqueException("ai处理问题异常:"+e.getMessage());
+
+            }
+        }
+
 
 
         return resContent.toString();

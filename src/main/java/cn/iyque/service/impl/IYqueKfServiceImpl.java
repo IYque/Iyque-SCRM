@@ -1,7 +1,9 @@
 package cn.iyque.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.iyque.chain.vectorstore.IYqueVectorStore;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.WxFileType;
 import cn.iyque.dao.IYqueKfDao;
@@ -9,10 +11,7 @@ import cn.iyque.dao.IYqueKfMsgDao;
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.*;
 import cn.iyque.exception.IYqueException;
-import cn.iyque.service.IYqueAiService;
-import cn.iyque.service.IYqueConfigService;
-import cn.iyque.service.IYqueKfMsgService;
-import cn.iyque.service.IYqueKfService;
+import cn.iyque.service.*;
 import cn.iyque.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
@@ -20,6 +19,7 @@ import me.chanjar.weixin.cp.api.WxCpKfService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpBaseResp;
 import me.chanjar.weixin.cp.bean.kf.*;
+import me.chanjar.weixin.cp.bean.kf.msg.WxCpKfResourceMsg;
 import me.chanjar.weixin.cp.bean.kf.msg.WxCpKfTextMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@SuppressWarnings("all")
 public class IYqueKfServiceImpl implements IYqueKfService {
 
     @Autowired
@@ -64,6 +65,15 @@ public class IYqueKfServiceImpl implements IYqueKfService {
     private IYqueKfMsgService yqueKfMsgService;
 
 
+
+    @Autowired
+    private IYqueVectorStore iYqueVectorStore;
+
+
+    @Autowired
+    private IYqueEmbeddingService yqueEmbeddingService;
+
+
     @Override
     public Page<IYqueKf> findAll(IYqueKf iYqueKf, Pageable pageable) {
         Specification<IYqueKf> spec = Specification.where(null);
@@ -88,6 +98,26 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                 WxCpKfService kfService = wxcpservice.getKfService();
 
                 if(null != kfService){
+
+                    //欢迎语
+                    if(StringUtils.isNotEmpty(callBackBaseMsg.getWelcomeCode())){
+
+                        IYqueKf iYqueKf = kfDao.findByOpenKfid(callBackBaseMsg.getOpenKfId());
+                        if(null != iYqueKf && StringUtils.isNotEmpty(iYqueKf.getWelcomeMsg())){
+                            WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+                            sendRequest.setCode(callBackBaseMsg.getWelcomeCode());
+                            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+                            WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+                            textMsg.setContent(iYqueKf.getWelcomeMsg());
+                            sendRequest.setText(textMsg);
+                            //发送转接欢迎语
+                            iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
+                        }
+
+                    }
+
+
+
                     StringBuilder dataCursor=new StringBuilder();
 
 
@@ -137,13 +167,59 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                 try {
                                     //文本类型
                                     if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
-                                        //拓展从知识库中获取相关数据
-                                        this.sendKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
+                                        IYqueKf iYqueKf = kfDao.findByOpenKfid(callBackBaseMsg.getOpenKfId());
+
+
+                                        if(null != iYqueKf){
+                                            if(StringUtils.isNotEmpty(iYqueKf.getKId())){
+
+                                                //向量库检索相关数据
+                                                List<String> nearest = iYqueVectorStore
+                                                        .nearest(yqueEmbeddingService.getQueryVector(lastItem.getText().getContent(), callBackBaseMsg.getOpenKfId()), callBackBaseMsg.getOpenKfId());
+
+                                                if(CollUtil.isNotEmpty(nearest)){
+
+                                                    nearest.add(
+                                                            lastItem.getText().getContent() + "\n\n注意：回答问题时，须严格根据我给你的系统上下文内容原文进行回答，请不要自己发挥,回答时保持原来文本的段落层级"
+
+                                                    );
+
+                                                    this.sendBatchAIKfMsg(kfService,nearest
+                                                            ,k, callBackBaseMsg.getOpenKfId(),true);
+
+
+                                                }else{//为空则，按照客服设定的规则响应
+
+
+                                                    switch (iYqueKf.getSwitchType()){
+                                                        case 1://文字
+                                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,iYqueKf.getSwitchText(),k, callBackBaseMsg.getOpenKfId());
+                                                            break;
+                                                        case 2://转人工回复
+                                                            this.kfTransferPersonnel(callBackBaseMsg.getOpenKfId(),  lastItem.getExternalUserId(),iYqueKf.getSwitchUserIds(),iYqueKf.getSwitchUserNames());
+                                                            break;
+                                                        case 3: //发布外部联系人二维码
+                                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE,kfService,iYqueKf.getSwichQrUrl(),k, callBackBaseMsg.getOpenKfId());
+                                                            break;
+                                                        case 4: //ai大模型直接回复
+                                                            this.sendAiKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
+                                                            break;
+                                                    }
+
+
+
+                                                }
+
+
+                                            }
+                                        }
+
+
 
                                         log.info("文本类型客户消息:"+lastItem.getText().getContent());
                                         //非文本类型基于提示
                                     }else {
-                                        this.sendKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
+                                        this.sendAiKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
 
                                         log.info("其他类型文本消息:"+lastItem);
                                     }
@@ -284,7 +360,18 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
     }
 
-    public void sendKfMsg( WxCpKfService kfService,String content,String toUser,String openKfid,boolean isAi) throws Exception {
+
+    /**
+     * ai输入单条msg,回复
+     * @param kfService
+     * @param content
+     * @param toUser
+     * @param openKfid
+     * @param isAi
+     * @throws Exception
+     */
+    public void sendAiKfMsg( WxCpKfService kfService,String content,String toUser,String openKfid,boolean isAi) throws Exception {
+
 
         StringBuilder resContent=new StringBuilder();
 
@@ -295,20 +382,134 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                     iYqueAiService.aiHandleCommonContent(content)
             );
 
+            log.info("ai大模型处理后回复的内容:"+resContent.toString());
+
         }else{
 
             resContent.append(content);
         }
 
+
+
+        this.sendKfMsg(
+                IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,resContent.toString(),toUser,openKfid
+        );
+
+
+    }
+
+
+    /**
+     * 客服转接人工
+     * @param openKfid 客服id
+     * @param externalUserid 客服id
+     * @param servicerUserid 接待人员id
+     * @param servicerUserName 接待人员名称
+     */
+    public void kfTransferPersonnel(String openKfid,String externalUserid,String servicerUserid,String servicerUserName){
+
+        try {
+
+            WxCpKfServiceStateTransResp transResp
+                    = iYqueConfigService.findWxcpservice().getKfService().transServiceState(openKfid, externalUserid, new Integer(3), servicerUserid);
+            if(transResp.success()){
+                if(StringUtils.isNotEmpty(transResp.getMsgCode())){
+                    WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+                    sendRequest.setCode(transResp.getMsgCode());
+                    sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+
+                    WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+                    textMsg.setContent("当前信息AI客服无法处理,已转接人工客服["+servicerUserName+"],为您服务");
+                    sendRequest.setText(textMsg);
+
+                    //发送转接欢迎语
+                    iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
+
+                }
+            }
+
+        }catch (Exception e){
+
+            log.error("客服转接人工失败:"+e.getMessage());
+        }
+
+    }
+
+
+    /**
+     * 发送客服消息
+     * @param msgType
+     * @param kfService
+     * @param content
+     * @param toUser
+     * @param openKfid
+     * @throws Exception
+     */
+    private void sendKfMsg(String msgType,WxCpKfService kfService,String content,String toUser,String openKfid)throws Exception {
+
         WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
         sendRequest.setToUser(toUser);
         sendRequest.setOpenKfid(openKfid);
-        sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
-        WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
-        textMsg.setContent(resContent.toString());
-        sendRequest.setText(textMsg);
+
+        //发送文本内容
+        if(msgType.equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
+            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+            WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+            textMsg.setContent(content);
+            sendRequest.setText(textMsg);
+        //发送图片内容
+        }else if(msgType.equals(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE)){
+
+            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE);
+            WxCpKfResourceMsg resourceMsg=new WxCpKfResourceMsg();
+
+            WxMediaUploadResult uploadResult = iYqueConfigService.findWxcpservice().getMediaService().upload(WxFileType.IMAGE, FileUtils.downloadImage(
+                    content
+            ));
+
+
+            if(StringUtils.isEmpty(uploadResult.getMediaId())){
+                throw new IYqueException("回复内容上传失败");
+            }
+            resourceMsg.setMediaId(uploadResult.getMediaId());
+
+            sendRequest.setImage(resourceMsg);
+        }
+
+
+
+
         WxCpKfMsgSendResp wxCpKfMsgSendResp = kfService.sendMsg(sendRequest);
         log.info("客服消息发送:"+wxCpKfMsgSendResp);
+    }
+
+
+    /**
+     * ai输入多天msg,回复
+     * @param kfService
+     * @param contents
+     * @param toUser
+     * @param openKfid
+     * @param isAi
+     * @throws Exception
+     */
+    public void sendBatchAIKfMsg( WxCpKfService kfService,List<String> contents,String toUser,String openKfid,boolean isAi) throws Exception {
+
+        StringBuilder resContent=new StringBuilder();
+
+
+        if(isAi){
+
+            resContent.append(
+                    iYqueAiService.aiHandleCommonContent(contents)
+            );
+
+            log.info("ai大模型处理后回复的内容:"+resContent.toString());
+
+        }
+        this.sendKfMsg(
+                IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,resContent.toString(),toUser,openKfid
+        );
 
 
 

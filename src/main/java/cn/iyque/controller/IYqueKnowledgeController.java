@@ -74,7 +74,7 @@ public class IYqueKnowledgeController {
     /**
      * 删除知识库
      */
-    @PostMapping("/remove/{id}")
+    @DeleteMapping("/remove/{id}")
     public ResponseResult remove(@PathVariable Long id){
         iYqueKnowledgeInfoService.removeKnowledge(id);
         return new ResponseResult();
@@ -101,7 +101,7 @@ public class IYqueKnowledgeController {
      * 删除知识库附件
      *
      */
-    @PostMapping("attach/remove/{docId}")
+    @DeleteMapping("/attach/remove/{docId}")
     public ResponseResult removeAttach(@PathVariable Long docId) {
         yqueKnowledgeAttachService.removeKnowledgeAttach(docId);
         return new ResponseResult();

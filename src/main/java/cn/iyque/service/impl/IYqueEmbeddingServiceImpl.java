@@ -36,4 +36,9 @@ public class IYqueEmbeddingServiceImpl implements IYqueEmbeddingService {
     public void removeByKid(String kid) {
         iYqueVectorStore.removeByKid(kid);
     }
+
+    @Override
+    public List<Double> getQueryVector(String query, String kid) {
+        return vectorization.singleVectorization(query,kid);
+    }
 }

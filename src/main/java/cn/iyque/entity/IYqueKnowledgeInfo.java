@@ -39,25 +39,13 @@ public class IYqueKnowledgeInfo {
     private Long id;
 
 
-//    /**
-//     * 知识库ID
-//     */
-//    private String kid;
-
-//    /**
-//     * 用户ID
-//     */
-//    private Long uid;
 
     /**
      * 知识库名称
      */
     private String kname;
 
-    /**
-     * 是否公开知识库（0 否 1是）
-     */
-    private String share;
+
 
     /**
      * 描述
@@ -94,10 +82,7 @@ public class IYqueKnowledgeInfo {
     @Transient
     private MultipartFile file;
 
-//    /**
-//     * 向量库
-//     */
-//    private String vector;
+
 
     /**
      * 向量模型

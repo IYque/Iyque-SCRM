@@ -27,4 +27,13 @@ public interface IYqueEmbeddingService {
      * @param kid
      */
     void removeByKid(String kid);
+
+
+    /**
+     * 根据内容检索对应的知识库相关数据向量值
+     * @param query
+     * @param kid
+     * @return
+     */
+    List<Double> getQueryVector(String query, String kid);
 }

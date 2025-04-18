@@ -56,6 +56,10 @@ public class IYqueKf {
     private String welcomeMsg;
 
 
+    //是否使用知识库(默认为true,便于后续拓展)
+    private boolean useKnowLedge=true;
+
+
 
     //知识库id,多个使用逗号隔开(当前暂时只支持单个)
     private String kId;
@@ -63,7 +67,7 @@ public class IYqueKf {
     //知识库名称,多个使用逗号隔开(当前暂时只支持单个)
     private String kName;
 
-    //如果ai知识库匹配不到,转接方式:1:文字;2:直接转人工客服;3:发送外部联系人二维码
+    //如果ai知识库匹配不到,转接方式:1:文字;2:直接转人工客服;3:发送外部联系人二维码;4:ai大模型直接回复
     private  Integer switchType;
 
     //当转接方式为1的时候,转接文字
