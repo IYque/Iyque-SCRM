@@ -28,7 +28,7 @@ public class IYqueEmbeddingServiceImpl implements IYqueEmbeddingService {
 
     @Override
     public void storeEmbeddings(List<String> chunkList, String kid, String docId, List<String> fidList) {
-        List<List<Double>> vectorList = vectorization.batchVectorization(chunkList, kid);
+        List<List<Float>> vectorList = vectorization.batchVectorization(chunkList, kid);
         iYqueVectorStore.storeEmbeddings(chunkList,vectorList,kid,docId,fidList);
     }
 
@@ -38,7 +38,7 @@ public class IYqueEmbeddingServiceImpl implements IYqueEmbeddingService {
     }
 
     @Override
-    public List<Double> getQueryVector(String query, String kid) {
+    public List<Float> getQueryVector(String query, String kid) {
         return vectorization.singleVectorization(query,kid);
     }
 }

@@ -13,6 +13,10 @@
     <wxJava.version>4.6.0</wxJava.version>
     <srpingboot.maven.version>2.3.3.RELEASE</srpingboot.maven.version>
     <jjwt.version>0.9.1</jjwt.version>
+    <zxing.version>3.4.1</zxing.version>
+    <ai4j.version>1.2.2</ai4j.version>
+    <milvus.version>2.5.4</milvus.version>
+    <retrofit2.version>2.9.0</retrofit2.version>
   </properties>
 
   <parent>
@@ -74,26 +78,26 @@
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
-      <version>3.4.1</version>
+      <version>${zxing.version}</version>
     </dependency>
+
+
+
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>javase</artifactId>
-      <version>3.4.1</version>
+      <version>${zxing.version}</version>
     </dependency>
+
+
 
     <!-- Spring应用 -->
     <dependency>
       <groupId>io.github.lnyo-cly</groupId>
       <artifactId>ai4j-spring-boot-starter</artifactId>
-      <version>1.2.2</version>
+      <version>${ai4j.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>io.weaviate</groupId>
-      <artifactId>client</artifactId>
-      <version>4.0.0</version>  <!-- Check latest version -->
-    </dependency>
 
 
     <dependency>
@@ -101,8 +105,20 @@
       <artifactId>spring-boot-starter-test</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.milvus</groupId>
+      <artifactId>milvus-sdk-java</artifactId>
+      <version>${milvus.version}</version>
+    </dependency>
 
 
+
+
+    <dependency>
+      <groupId>com.squareup.retrofit2</groupId>
+      <artifactId>adapter-rxjava2</artifactId>
+      <version>${retrofit2.version}</version>
+    </dependency>
 
   </dependencies>
 

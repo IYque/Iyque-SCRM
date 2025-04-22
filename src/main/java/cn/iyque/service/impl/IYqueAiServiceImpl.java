@@ -1,10 +1,13 @@
 package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.entity.IYqueAiTokenRecord;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueAiTokenRecordService;
+import io.github.lnyocly.ai4j.config.OpenAiConfig;
+import io.github.lnyocly.ai4j.interceptor.ErrorInterceptor;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletionResponse;
 import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatMessage;
@@ -12,18 +15,24 @@ import io.github.lnyocly.ai4j.platform.openai.chat.entity.Choice;
 import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
 import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
 import io.github.lnyocly.ai4j.platform.openai.usage.Usage;
+import io.github.lnyocly.ai4j.service.Configuration;
 import io.github.lnyocly.ai4j.service.IChatService;
 import io.github.lnyocly.ai4j.service.PlatformType;
 import io.github.lnyocly.ai4j.service.factor.AiService;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -37,6 +46,10 @@ public class IYqueAiServiceImpl implements IYqueAiService {
 
     @Value("${ai.deepseek.apiKey}")
     private String apiKey;
+
+
+    @Autowired
+    private IYqueParamConfig yqueParamConfig;
 
 
     @Autowired
@@ -190,8 +203,10 @@ public class IYqueAiServiceImpl implements IYqueAiService {
     public EmbeddingResponse embedding(Embedding embedding) {
 
         try {
+
+//            embedding.setDimensions(yqueParamConfig.getVector().getDimension().toString());
            return aiService.getEmbeddingService(PlatformType.OPENAI)
-                    .embedding(embedding);
+                    .embedding(yqueParamConfig.getVector().getApiUrl(),yqueParamConfig.getVector().getApiKey(),embedding);
         }catch (Exception e){
             log.error("向量计算异常:"+e.getMessage());
         }

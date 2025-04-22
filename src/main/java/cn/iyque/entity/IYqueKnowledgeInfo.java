@@ -11,10 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 
@@ -52,30 +49,7 @@ public class IYqueKnowledgeInfo {
      */
     private String description;
 
-    /**
-     * 知识分隔符
-     */
-    private String knowledgeSeparator;
 
-    /**
-     * 提问分隔符
-     */
-    private String questionSeparator;
-
-    /**
-     * 重叠字符数
-     */
-    private Integer overlapChar;
-
-    /**
-     * 知识库中检索的条数
-     */
-    private Integer retrieveLimit;
-
-    /**
-     * 文本块大小
-     */
-    private Integer textBlockSize;
 
 
     //附件相关接受参数
@@ -84,13 +58,24 @@ public class IYqueKnowledgeInfo {
 
 
 
-    /**
-     * 向量模型
-     */
-    private String vectorModel;
+
+
 
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+
+
+    //是否删除标识
+    private Integer delFlag;
+
+
+    @PrePersist
+    @PreUpdate
+    private void setDefaultDelFlag() {
+        if (this.delFlag == null) {
+            this.delFlag = 0;
+        }
+    }
 
 }

@@ -35,5 +35,5 @@ public interface IYqueEmbeddingService {
      * @param kid
      * @return
      */
-    List<Double> getQueryVector(String query, String kid);
+    List<Float> getQueryVector(String query, String kid);
 }

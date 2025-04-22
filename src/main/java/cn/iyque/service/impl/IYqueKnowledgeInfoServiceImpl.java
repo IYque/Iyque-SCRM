@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -108,6 +109,7 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
         String fileName = file.getOriginalFilename();
         List<String> chunkList = new ArrayList<>();
         IYqueKnowledgeAttach knowledgeAttach = new  IYqueKnowledgeAttach();
+        knowledgeAttach.setCreateTime(new Date());
         knowledgeAttach.setId(SnowFlakeUtils.nextId());
         knowledgeAttach.setKid(kid);
         knowledgeAttach.setDocName(fileName);
@@ -117,13 +119,14 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
         List<String> fids = new ArrayList<>();
         try {
             content = resourceLoader.getContent(file.getInputStream());
-            chunkList = resourceLoader.getChunkList(content, String.valueOf(kid));
+            chunkList = resourceLoader.getChunkList(content);
             List<IYqueKnowledgeFragment> knowledgeFragmentList = new ArrayList<>();
             if (CollUtil.isNotEmpty(chunkList)) {
                 for (int i = 0; i < chunkList.size(); i++) {
                     String fid = RandomUtil.randomString(16);
                     fids.add(fid);
                     IYqueKnowledgeFragment knowledgeFragment = new IYqueKnowledgeFragment();
+                    knowledgeFragment.setCreateTime(new Date());
                     knowledgeFragment.setKid(kid);
                     knowledgeFragment.setDocId(knowledgeAttach.getId());
                     knowledgeFragment.setIdx(i);

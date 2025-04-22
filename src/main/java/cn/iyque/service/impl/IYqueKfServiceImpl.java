@@ -179,12 +179,23 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
                                                 if(CollUtil.isNotEmpty(nearest)){
 
-                                                    nearest.add(
-                                                            lastItem.getText().getContent() + "\n\n注意：回答问题时，须严格根据我给你的系统上下文内容原文进行回答，请不要自己发挥,回答时保持原来文本的段落层级"
+                                                    StringBuilder sb = new StringBuilder();
+                                                    sb.append("问题：").append(k).append("\n\n");
+                                                    sb.append("参考内容：\n");
 
-                                                    );
 
-                                                    this.sendBatchAIKfMsg(kfService,nearest
+                                                    nearest.stream().forEach(kk->{
+                                                        sb.append("- ").append(kk);
+                                                    });
+
+                                                    sb.append("请根据以上问题和参考内容，生成简洁准确的回答。\n");
+                                                    sb.append("要求：\n");
+                                                    sb.append("1. 须严格根据我给你的系统上下文内容原文进行回答；\n");
+                                                    sb.append("2. 请不要自己发挥,回答时保持原来文本的段落层级；\n");
+                                                    sb.append("3. 如果没有用户需要的相关内容，则返回无相关内容。");
+
+
+                                                    this.sendAiKfMsg(kfService,sb.toString()
                                                             ,k, callBackBaseMsg.getOpenKfId(),true);
 
 

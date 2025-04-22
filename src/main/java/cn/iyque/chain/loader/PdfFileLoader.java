@@ -28,8 +28,8 @@ public class PdfFileLoader implements ResourceLoader{
     }
 
     @Override
-    public List<String> getChunkList(String content, String kid) {
-        return characterTextSplitter.split(content, kid);
+    public List<String> getChunkList(String content) {
+        return characterTextSplitter.split(content);
     }
 }
 

@@ -31,12 +31,29 @@ public class IYqueParamConfig {
 
 
 
+    //向量相关设置
     @Data
     public static class VectorStoreParam{
 
+        //向量维度（需与实际数据匹配）
+        private  Integer dimension;
+        //自定义集合名称
+        private  String collectionName;
 
-        private  String protocol;
-        private  String host;
-        private  String className;
+        //向量模型
+        private String vectorModel;
+
+        //余弦相似度
+        private Float score=0.5f;
+
+        //Milvus地址
+        private String host;
+        //Milvus端口
+        private String port;
+        //模型的apikey
+        private String apiKey;
+        //模型的请求地址
+        private String apiUrl;
+
     }
 }

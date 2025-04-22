@@ -13,6 +13,6 @@ public class IyQueApplication {
         Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
         new SpringApplicationBuilder(IyQueApplication.class)
                 .build().run(args);
-        System.out.println("(♥◠‿◠)ﾉﾞ iyque-code启动成功   ლ(´ڡ`ლ)ﾞ ");
+        System.out.println("(♥◠‿◠)ﾉﾞ 源雀SCRM【开源版】启动成功。官方文档地址【https://iyque.cn】ლ(´ڡ`ლ)ﾞ");
     }
 }
