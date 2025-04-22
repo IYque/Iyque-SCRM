@@ -47,6 +47,8 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
     private IYqueAiService aiService;
 
 
+
+
     private final String aiHotWordAnalysisTpl = "任务描述：\n" +
             "逐条分析以下聊天内容:" +
             "%s\n" +

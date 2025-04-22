@@ -18,12 +18,6 @@ public interface IYqueAiService {
 
 
 
-    /**
-     * 调用ai同步处理通用内容 (多条会话)
-     * @param contents
-     * @return
-     */
-    String aiHandleCommonContent(List<String> contents) throws IYqueException;
 
 
     /**

@@ -3,6 +3,7 @@ package cn.iyque.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.json.JSONUtil;
 import cn.iyque.chain.vectorstore.IYqueVectorStore;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.WxFileType;
@@ -72,6 +73,18 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
     @Autowired
     private IYqueEmbeddingService yqueEmbeddingService;
+
+
+
+    private final String aiKftpl= "问题:%s\n"
+            +"参考内容:\n"
+            +"%s\n"
+            +"请根据以上问题和参考内容，生成简洁准确的回答。\n"
+            +"要求如下:\n"
+            +"1.须严格根据我给你的系统上下文内容原文进行回答;\n"
+            +"2.请不要自己发挥,回答时保持原来文本的段落层级;\n"
+            +"3.如果没有用户需要的相关内容，则返回无相关内容。";
+
 
 
     @Override
@@ -179,23 +192,14 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
                                                 if(CollUtil.isNotEmpty(nearest)){
 
-                                                    StringBuilder sb = new StringBuilder();
-                                                    sb.append("问题：").append(k).append("\n\n");
-                                                    sb.append("参考内容：\n");
+
+                                                    String prompt = String.format(aiKftpl,lastItem.getText().getContent(), nearest.stream()
+                                                            .map(s -> "— " + s)
+                                                            .collect(Collectors.joining(System.lineSeparator())));
+                                                    log.info("客服自动会话提示词:"+prompt);
 
 
-                                                    nearest.stream().forEach(kk->{
-                                                        sb.append("- ").append(kk);
-                                                    });
-
-                                                    sb.append("请根据以上问题和参考内容，生成简洁准确的回答。\n");
-                                                    sb.append("要求：\n");
-                                                    sb.append("1. 须严格根据我给你的系统上下文内容原文进行回答；\n");
-                                                    sb.append("2. 请不要自己发挥,回答时保持原来文本的段落层级；\n");
-                                                    sb.append("3. 如果没有用户需要的相关内容，则返回无相关内容。");
-
-
-                                                    this.sendAiKfMsg(kfService,sb.toString()
+                                                    this.sendAiKfMsg(kfService,prompt
                                                             ,k, callBackBaseMsg.getOpenKfId(),true);
 
 
@@ -373,7 +377,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
     /**
-     * ai输入单条msg,回复
+     * ai输入msg,回复
      * @param kfService
      * @param content
      * @param toUser
@@ -495,36 +499,5 @@ public class IYqueKfServiceImpl implements IYqueKfService {
     }
 
 
-    /**
-     * ai输入多天msg,回复
-     * @param kfService
-     * @param contents
-     * @param toUser
-     * @param openKfid
-     * @param isAi
-     * @throws Exception
-     */
-    public void sendBatchAIKfMsg( WxCpKfService kfService,List<String> contents,String toUser,String openKfid,boolean isAi) throws Exception {
-
-        StringBuilder resContent=new StringBuilder();
-
-
-        if(isAi){
-
-            resContent.append(
-                    iYqueAiService.aiHandleCommonContent(contents)
-            );
-
-            log.info("ai大模型处理后回复的内容:"+resContent.toString());
-
-        }
-        this.sendKfMsg(
-                IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,resContent.toString(),toUser,openKfid
-        );
-
-
-
-
-    }
 
 }
