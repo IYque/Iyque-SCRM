@@ -1,4 +1,4 @@
-![输入图片说明](pic/tab_logo.png)
+![输入图片说明](pic/tab_logo2.png)
 
 ## 一、背景
 
