@@ -1,37 +1,13 @@
 import request from '@/utils/request'
 const { get, post, put, delt: _del } = request
 
-const service = '/iYqueComplaint'
+const service = '/kf'
 
 /** 列表
  * @param {*} params
-tplName,string,true,,false,模版名称
-status,string,true,,false,状态(1:启用；0:停用)
+kfName,string,false,,,知识库名称
  */
-export const getList = (data) => get(`${service}/findComplaintByPage`, data)
-
-/** 通知
- * @param {*} params
- */
-export const distributeHandle = (id) => get(`${service}/distributeHandle/${id}`)
-
-/** 设置通知人
- * @param {Object} data
-[
-    {
-        "userId": "string"
-    }
-]
- */
-export const setIYQueComplaintTip = (data) => {
-  return post(`${service}/setIYQueComplaintTip`, data)
-}
-
-/**
- * 获取投诉通知人
- * @returns
- */
-export const findIYQueComplaintTips = () => get(`${service}/findIYQueComplaintTips`)
+export const getList = (data) => get(`${service}/findAll`, data)
 
 /** 删除
  * @param {*} ids
@@ -48,7 +24,7 @@ export const del = (ids) => _del(`${service}/${ids}`)
 }
  * @returns
  */
-export const updateStatus = (data) => post(`${service}/updateStatus`, data)
+export const save = (data) => post(`${service}/saveOrUpdateKf`, data)
 
 // 建群统计-头部tab
 export const getStatistic = (svipGroupId) => get(`${service}/countTotalTab`, { svipGroupId })

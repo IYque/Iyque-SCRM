@@ -55,7 +55,7 @@ export const navRoutes = [
     children: [
       {
         path: 'customerServiceManage',
-        component: () => import('@/views/customerServiceManage/index'),
+        component: () => import('@/views/customerServiceManage/list'),
         meta: { title: '客服管理' },
       },
       {

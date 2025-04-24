@@ -1,57 +1,46 @@
 import request from '@/utils/request'
 const { get, post, put, delt: _del } = request
 
-const service = '/iYqueComplaint'
+const service = '/knowledge'
 
 /** 列表
  * @param {*} params
-tplName,string,true,,false,模版名称
-status,string,true,,false,状态(1:启用；0:停用)
+kname,string,false,,,知识库名称
  */
-export const getList = (data) => get(`${service}/findComplaintByPage`, data)
-
-/** 通知
- * @param {*} params
- */
-export const distributeHandle = (id) => get(`${service}/distributeHandle/${id}`)
-
-/** 设置通知人
- * @param {Object} data
-[
-    {
-        "userId": "string"
-    }
-]
- */
-export const setIYQueComplaintTip = (data) => {
-  return post(`${service}/setIYQueComplaintTip`, data)
-}
-
-/**
- * 获取投诉通知人
- * @returns
- */
-export const findIYQueComplaintTips = () => get(`${service}/findIYQueComplaintTips`)
+export const getList = (data) => get(`${service}/findMsgAuditByPage`, data)
 
 /** 删除
  * @param {*} ids
  */
-export const del = (ids) => _del(`${service}/${ids}`)
+export const del = (ids) => _del(`${service}/remove/${ids}`)
 
-/** 启用或者停用
+/** 新增
 {
-    "svipGroupIds": "", //一客一群模版id，多个使用逗号隔开
-    "status": 0, //状态(1:启用；0:停用)
-    "chatId": "", //群id
-    "weUserId": "", //成员id
-    "externalUserid": "" //客户id
+    "kname": "string",
+    "description": "string",
+    "knowledgeSeparator": "string",
+    "questionSeparator": "string",
+    "overlapChar": "string",
+    "retrieveLimit": "string",
+    "textBlockSize": "string"
 }
  * @returns
  */
-export const updateStatus = (data) => post(`${service}/updateStatus`, data)
+export const save = (data) => post(`${service}/saveOrUpdateKf`, data)
 
-// 建群统计-头部tab
-export const getStatistic = (svipGroupId) => get(`${service}/countTotalTab`, { svipGroupId })
+/** 查询知识附件信息列表
+ * @param {*} params
+kid,string,知识库主键id
+ */
+export const getListDetail = (data) => get(`${service}/detail/${data.kid}`, data)
 
-// 建群统计-折线图
-export const getDataTrend = (data) => get(`${service}/countTrend`, data)
+/** 删除知识库附件
+ * @param {*} docId 知识库附件主键id
+ */
+export const delAttach = (docId) => _del(`${service}/attach/remove/${docId}`)
+
+/** 查询知识附件片段
+ * @param {*} params
+docId string  知识库附件文档id
+ */
+export const getListFragment = (data) => get(`${service}/fragment/list/${data.docId}`, data)

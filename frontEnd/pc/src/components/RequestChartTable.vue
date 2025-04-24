@@ -76,6 +76,12 @@ export default defineComponent({
       // 	return Object.values(dict).includes(value)
       // },
     },
+
+    // 是否单选
+    isSigleSelect: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -299,7 +305,10 @@ export default defineComponent({
           v-if="$slots.table"
           :data="data"
           @selection-change="(val) => ((selectedIds = val.map((e) => e[dataKey])), $emit('selectionChange', val))">
-          <el-table-column type="selection" width="50" align="center"></el-table-column>
+          <el-table-column
+            type="selection"
+            width="50"
+            :selectable="isSigleSelect && selectedIds?.length"></el-table-column>
           <slot name="table"></slot>
         </el-table>
 
