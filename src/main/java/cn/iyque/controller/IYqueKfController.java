@@ -21,6 +21,7 @@ import java.util.Arrays;
  */
 @RequestMapping("/kf")
 @Slf4j
+@RestController
 public class IYqueKfController {
 
 

@@ -8,8 +8,8 @@ let docId = ref('')
   <div :_="$store.setBusininessDesc(`<div>查看所有客服场景中客户咨询的详细记录</div>`)">
     <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
       <template #query="{ query }">
-        <el-form-item label="知识库名称" prop="kfName">
-          <el-input v-model="query.kfName" placeholder="请输入" clearable />
+        <el-form-item label="知识库名称" prop="kname">
+          <el-input v-model="query.kname" placeholder="请输入" clearable />
         </el-form-item>
       </template>
       <template #operation="{ selectedIds }">
@@ -34,57 +34,57 @@ let docId = ref('')
             <el-form-item prop="kname" label="知识库名称">
               <el-input v-model="form.kname" maxlength="15" placeholder="请输入" show-word-limit clearable></el-input>
             </el-form-item>
-            <el-form-item prop="knowledgeSeparator" label="分隔符">
+            <!-- <el-form-item prop="knowledgeSeparator" label="分隔符">
               <el-input
                 v-model="form.knowledgeSeparator"
                 maxlength="15"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-            </el-form-item>
-            <el-form-item prop="retrieveLimit" class="" label="知识库中检索的条数">
+            </el-form-item> -->
+            <!-- <el-form-item prop="retrieveLimit" class="" label="知识库中检索的条数">
               <el-input
                 v-model="form.retrieveLimit"
                 maxlength="15"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-            </el-form-item>
-            <el-form-item prop="textBlockSize" label="文本块大小">
+            </el-form-item> -->
+            <!-- <el-form-item prop="textBlockSize" label="文本块大小">
               <el-input
                 v-model="form.textBlockSize"
                 maxlength="15"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-            </el-form-item>
-            <el-form-item prop="overlapChar" label="重叠字符">
+            </el-form-item> -->
+            <!-- <el-form-item prop="overlapChar" label="重叠字符">
               <el-input
                 v-model="form.overlapChar"
                 maxlength="15"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <!-- <el-form-item prop="hotWord" label="向量库">
               <el-select v-model="query.handleState" :popper-append-to-body="false">
                 <el-option v-for="(value, key) in handleState" :key="key" :label="value" :value="key" />
               </el-select>
             </el-form-item> -->
-            <el-form-item prop="questionSeparator" label="提问分割符">
+            <!-- <el-form-item prop="questionSeparator" label="提问分割符">
               <el-input
                 v-model="form.questionSeparator"
                 maxlength="15"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <!-- <el-form-item prop="hotWord" label="向量模型">
               <el-select v-model="query.handleState" :popper-append-to-body="false">
                 <el-option v-for="(value, key) in handleState" :key="key" :label="value" :value="key" />
               </el-select>
             </el-form-item> -->
-            <el-form-item prop="description" label="知识描述">
+            <el-form-item prop="description" label="知识库描述">
               <el-input
                 v-model="form.description"
                 maxlength="15"
@@ -106,13 +106,15 @@ let docId = ref('')
       </template>
 
       <template #table="{ data }">
-        <el-table-column label="编号" prop="kid" min-width="140"></el-table-column>
-        <el-table-column label="知识名称" min-width="200" prop="kname"></el-table-column>
-        <el-table-column label="知识描述" min-width="100" prop="description">
+        <!-- <el-table-column label="编号" prop="kid" min-width="140"></el-table-column> -->
+        <el-table-column label="知识库名称" min-width="200" prop="kname"></el-table-column>
+        <el-table-column label="知识库描述" min-width="100" prop="description">
           <!-- <template #default="{ row }">
             {{ row.userName ? row.userName : '-' }}
           </template> -->
         </el-table-column>
+        <el-table-column label="创建时间" min-width="200" prop="createTime"></el-table-column>
+
         <el-table-column label="操作" fixed="right" width="130">
           <template #default="{ row }">
             <TableOperateBtn type="" @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>

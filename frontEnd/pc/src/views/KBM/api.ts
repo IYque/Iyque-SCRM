@@ -7,7 +7,7 @@ const service = '/knowledge'
  * @param {*} params
 kname,string,false,,,知识库名称
  */
-export const getList = (data) => get(`${service}/findMsgAuditByPage`, data)
+export const getList = (data) => get(`${service}/findKnowledgeByPage`, data)
 
 /** 删除
  * @param {*} ids

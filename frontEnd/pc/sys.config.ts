@@ -1,9 +1,9 @@
 // 环境变量
 const envs = {
   development: {
-    DOMAIN: 'https://iyque.cn',
+    DOMAIN: 'http://127.0.0.1:8085',
     BASE_URL: '/tools/',
-    BASE_API: 'https://iyque.cn/iyque',
+    BASE_API: 'http://127.0.0.1:8085',
   },
   production: {
     DOMAIN: 'https://iyque.cn',

@@ -43,8 +43,8 @@ public class IYqueKnowledgeController {
      * @param knowledgeInfo
      * @return
      */
-    @GetMapping("/findMsgAuditByPage")
-    public ResponseResult<IYqueKnowledgeInfo> findMsgAuditByPage(IYqueKnowledgeInfo knowledgeInfo){
+    @GetMapping("/findKnowledgeByPage")
+    public ResponseResult<IYqueKnowledgeInfo> findKnowledgeByPage(IYqueKnowledgeInfo knowledgeInfo){
 
         Page<IYqueKnowledgeInfo> iYqueKnowledgeInfos = iYqueKnowledgeInfoService.findAll(knowledgeInfo,
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
