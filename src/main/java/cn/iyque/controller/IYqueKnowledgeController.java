@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -50,6 +51,19 @@ public class IYqueKnowledgeController {
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("createTime").descending()));
         return new ResponseResult(iYqueKnowledgeInfos.getContent(),iYqueKnowledgeInfos.getTotalElements());
+    }
+
+
+    /**
+     * 获取所有知识库
+     * @return
+     */
+    @GetMapping("/findAll")
+    public ResponseResult<List<IYqueKnowledgeInfo>> findAll(){
+       List<IYqueKnowledgeInfo> infoList=iYqueKnowledgeInfoService.findAll();
+
+       return new ResponseResult<>(infoList);
+
     }
 
 

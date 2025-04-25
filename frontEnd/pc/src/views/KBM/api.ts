@@ -9,6 +9,15 @@ kname,string,false,,,知识库名称
  */
 export const getList = (data) => get(`${service}/findKnowledgeByPage`, data)
 
+
+
+/**
+ * 
+ * @returns 获取所有知识库
+ */
+
+export const getKnowledgeAll = () => get(`${service}/findAll`)
+
 /** 删除
  * @param {*} ids
  */

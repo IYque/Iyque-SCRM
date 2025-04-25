@@ -1,6 +1,4 @@
-<script setup lang="ts">
-import { getList, save, del } from './api'
-</script>
+
 
 <template>
   <div
@@ -53,7 +51,7 @@ import { getList, save, del } from './api'
             </el-form-item>
             <el-form-item label="客服知识库" prop="kId">
               <el-select v-model="form.kId" :popper-append-to-body="false">
-                <el-option v-for="(item, key) in categoryList" :key="key" :label="item.name" :value="item.id" />
+                <el-option v-for="(item, key) in knowledges" :key="key" :label="item.kname" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="" required prop="">
@@ -132,5 +130,22 @@ import { getList, save, del } from './api'
     </RequestChartTable>
   </div>
 </template>
-
+<script  setup>
+import { getList, save, del } from './api'
+import * as knowApi from  '../KBM/api'
+const knowledges = ref([]) // 知识库列表
+// 获取指标数据
+;(function getKnowledgeAll() {
+ 
+  knowApi
+    .getKnowledgeAll()
+    .then(({ data }) => {
+      knowledges.value = data
+      console.log(data)
+    })
+    .finally(() => {
+    
+    })
+})()
+</script>
 <style scoped lang="scss"></style>

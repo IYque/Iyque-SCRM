@@ -68,6 +68,11 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
     }
 
     @Override
+    public List<IYqueKnowledgeInfo> findAll() {
+        return   knowledgeInfoDao.findAll();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdate(IYqueKnowledgeInfo iYqueKnowledgeInfo) {
 
