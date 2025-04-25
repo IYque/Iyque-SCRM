@@ -308,7 +308,7 @@ export default defineComponent({
           <el-table-column
             type="selection"
             width="50"
-            :selectable="isSigleSelect && selectedIds?.length"></el-table-column>
+            :selectable="() => !(isSigleSelect && selectedIds?.length)"></el-table-column>
           <slot name="table"></slot>
         </el-table>
 

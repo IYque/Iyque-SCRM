@@ -126,7 +126,7 @@ export default {
       formData.append('file', file)
       upload(formData).then((dd) => {
         if (dd.code == 200) {
-          let location = dd.data
+          let location = dd.data || dd.msg
           this.loading = false
           let url = window.URL.createObjectURL(file)
 

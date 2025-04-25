@@ -200,16 +200,19 @@ svg {
 }
 
 .pt0 {
-  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 .pr0 {
-  margin-right: 0 !important;
+  padding-right: 0 !important;
 }
 .pb0 {
-  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 .pl0 {
-  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+.pad0 {
+  padding: 0px !important;
 }
 
 /* padding 5px series */

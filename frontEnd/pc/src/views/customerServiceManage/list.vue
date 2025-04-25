@@ -1,5 +1,3 @@
-
-
 <template>
   <div
     :_="$store.setBusininessDesc(`<div>微信客服支持企业在微信内、外各场景中接入，由用户发起咨询，企业进行回复</div>`)">
@@ -22,13 +20,12 @@
         <BaseDialog
           ref="dialogRef"
           dynamicTitle="客服"
-          width="500"
+          width="630"
           :formProps="{ 'label-width': '100px' }"
           :rules="{
             kfName: $sdk.ruleRequiredBlur,
             kfPicUrl: $sdk.ruleRequiredChange,
             welcomeMsg: $sdk.ruleRequiredBlur,
-            kId: $sdk.ruleRequiredChange,
           }"
           @confirm="() => $refs.dialogRef.confirm(save)">
           <template #form="{ form }">
@@ -56,48 +53,46 @@
             </el-form-item>
             <el-form-item label="" required prop="">
               <div class="--Padding --RadiusSmall bg-(--BgBlack9)">
-                当知识库无匹配数据时：
-                <el-radio-group v-model="form.switchType" class="!block">
-                  <div>
-                    <el-radio :value="2">转人工</el-radio>
-                    <SelectStaff
-                      v-model="form._switchUser"
-                      :multiple="false"
-                      @modelValueUpdate="
-                        (val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))
-                      "
-                      title="选择员工"></SelectStaff>
-                  </div>
-                  <div>
-                    <el-radio :value="3">员工活码</el-radio>
-                    <el-button type="primary" plain @click="$refs.SelectStaffQrCodeRef.dialogRef.visible = true">
-                      选择活码
-                    </el-button>
-                    <SelectStaffQrCode
-                      isSigleSelect
-                      ref="SelectStaffQrCodeRef"
-                      title="选择活码"
-                      @confirm="
-                        ({ visible, loading, selected }) => (
-                          (form.swichQrUrl = selected[0].codeUrl), (visible.value = false), (loading.value = false)
-                        )
-                      "></SelectStaffQrCode>
-                    <el-image v-if="form.swichQrUrl" :src="form.swichQrUrl" style="width: 200px"></el-image>
-                  </div>
-                  <div>
-                    <el-radio :value="4">AI 大模型回复</el-radio>
-                  </div>
-                  <div>
-                    <el-radio :value="1">文字回复</el-radio>
-                    <TextareaExtend
-                      v-model="form.switchText"
-                      maxlength="200"
-                      show-word-limit
-                      placeholder="请输入"
-                      :autosize="{ minRows: 5, maxRows: 20 }"
-                      clearable />
-                  </div>
+                <div>当知识库无匹配数据时：</div>
+                <el-radio-group v-model="form.switchType" class="">
+                  <el-radio value="1">文字回复</el-radio>
+                  <el-radio value="2">转人工</el-radio>
+                  <el-radio value="3">员工活码</el-radio>
+                  <el-radio value="4">AI 大模型回复</el-radio>
                 </el-radio-group>
+                <TextareaExtend
+                  v-if="form.switchType == 1"
+                  v-model="form.switchText"
+                  maxlength="200"
+                  show-word-limit
+                  placeholder="请输入"
+                  :autosize="{ minRows: 5, maxRows: 20 }"
+                  clearable />
+                <SelectStaff
+                  v-if="form.switchType == 2"
+                  v-model="form._switchUser"
+                  :multiple="false"
+                  @modelValueUpdate="(val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))"
+                  title="选择员工"></SelectStaff>
+                <div v-if="form.switchType == 3">
+                  <el-button type="primary" plain @click="$refs.SelectStaffQrCodeRef.dialogRef.visible = true">
+                    选择活码
+                  </el-button>
+                  <br />
+                  <el-image class="w-[200px] mt10" v-if="form.swichQrUrl" :src="form.swichQrUrl"></el-image>
+
+                  <SelectStaffQrCode
+                    isSigleSelect
+                    append-to-body
+                    width="800"
+                    ref="SelectStaffQrCodeRef"
+                    title="选择活码"
+                    @confirm="
+                      ({ visible, loading, selected }) => (
+                        (form.swichQrUrl = selected[0].codeUrl), (visible.value = false), (loading.value = false)
+                      )
+                    "></SelectStaffQrCode>
+                </div>
               </div>
             </el-form-item>
           </template>
@@ -130,22 +125,19 @@
     </RequestChartTable>
   </div>
 </template>
-<script  setup>
+<script setup>
 import { getList, save, del } from './api'
-import * as knowApi from  '../KBM/api'
+import * as knowApi from '../KBM/api'
 const knowledges = ref([]) // 知识库列表
 // 获取指标数据
 ;(function getKnowledgeAll() {
- 
   knowApi
     .getKnowledgeAll()
     .then(({ data }) => {
       knowledges.value = data
       console.log(data)
     })
-    .finally(() => {
-    
-    })
+    .finally(() => {})
 })()
 </script>
 <style scoped lang="scss"></style>

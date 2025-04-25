@@ -9,10 +9,8 @@ kname,string,false,,,知识库名称
  */
 export const getList = (data) => get(`${service}/findKnowledgeByPage`, data)
 
-
-
 /**
- * 
+ *
  * @returns 获取所有知识库
  */
 
@@ -35,7 +33,7 @@ export const del = (ids) => _del(`${service}/remove/${ids}`)
 }
  * @returns
  */
-export const save = (data) => post(`${service}/saveOrUpdateKf`, data)
+export const save = (data) => post(`${service}/save`, data)
 
 /** 查询知识附件信息列表
  * @param {*} params
