@@ -1,7 +1,33 @@
 <script setup lang="ts">
-import { getList, save, del, getListDetail, getListFragment, delAttach } from './api'
+import { getList, save, upload, del, getListDetail, getListFragment, delAttach } from './api'
 let kid = ref('')
+let file = ref()
 let docId = ref('')
+let loading = ref(false)
+let rctRefFile = ref()
+function _upload() {
+  let formData = new FormData()
+  formData.append('file', file.value)
+  formData.append('kid', kid.value)
+
+  loading.value = true
+  upload(formData)
+    .then((dd) => {
+      if (dd.code == 200) {
+        $sdk.msgSuccess()
+        rctRefFile.value?.getList()
+      } else {
+        loading.value = false
+        $sdk.msgError('上传失败，请稍后再试')
+      }
+    })
+    .catch((err) => {
+      $sdk.msgError('上传失败，请稍后再试')
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 </script>
 
 <template>
@@ -27,9 +53,7 @@ let docId = ref('')
           width="500"
           :formProps="{ 'label-width': '100px' }"
           :rules="{ users: { required: true, message: '必选项', trigger: 'change' } }"
-          @confirm="
-            () => $refs.dialogRef.confirm(() => setIYQueComplaintTip(form.users?.map((e) => ({ userId: e.userId }))))
-          ">
+          @confirm="() => $refs.dialogRef.confirm(save, $refs.rctRef.getList)">
           <template #form="{ form }">
             <el-form-item prop="kname" label="知识库名称">
               <el-input v-model="form.kname" maxlength="15" placeholder="请输入" show-word-limit clearable></el-input>
@@ -127,15 +151,34 @@ let docId = ref('')
     </RequestChartTable>
 
     <BaseDialog ref="dialogRefFile" title="知识库附件" width="1000">
-      <RequestChartTable ref="rctRefFile" :request="getListDetail" :params="{ kid }" searchBtnType="icon">
+      <RequestChartTable ref="rctRefFile" class="pad0" :request="getListDetail" :params="{ kid }" searchBtnType="icon">
         <template #operation="{ query }">
-          <Upload v-model:fileUrl="form.coverUrl" v-model:imgSize="form.memorySize" type="0">文件上传</Upload>
+          <el-upload :http-request="_upload" :limit="1" :before-upload="(val) => (file = val)">
+            <el-button v-loading="loading" type="primary">文件上传</el-button>
+          </el-upload>
+          <!--
+          <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="3"
+            :on-exceed="handleExceed">
+            <el-button type="primary">Click to upload</el-button>
+            <template #tip>
+              <div class="el-upload__tip">jpg/png files with a size less than 500KB.</div>
+            </template>
+          </el-upload> -->
+          <!-- <Upload v-model:fileUrl="form.coverUrl" v-model:imgSize="form.memorySize" type="0">文件上传</Upload> -->
         </template>
 
         <template #table="{ data }">
-          <el-table-column label="文档编号" prop="id" min-width="140"></el-table-column>
-          <el-table-column label="文档名称" min-width="200" prop="docName"></el-table-column>
-          <el-table-column label="文档类型" min-width="100" prop="docType">
+          <el-table-column label="文档编号" prop="id"></el-table-column>
+          <el-table-column label="文档名称" prop="docName"></el-table-column>
+          <el-table-column label="文档类型" prop="docType">
             <!-- <template #default="{ row }">
               {{ row.userName ? row.userName : '-' }}
             </template> -->
@@ -155,8 +198,8 @@ let docId = ref('')
     <BaseDialog ref="dialogRefFragments" title="知识片段" width="1000">
       <RequestChartTable ref="rct" :request="getListFragment" :params="{ docId }" searchBtnType="icon">
         <template #table="{ data }">
-          <el-table-column label="片段编号" prop="id" min-width="140"></el-table-column>
-          <el-table-column label="片段内容" min-width="200" prop="content">
+          <el-table-column label="片段编号" prop="id"></el-table-column>
+          <el-table-column label="片段内容" prop="content">
             <!-- <template #default="{ row }"></template> -->
           </el-table-column>
         </template>

@@ -26,6 +26,7 @@
             kfName: $sdk.ruleRequiredBlur,
             kfPicUrl: $sdk.ruleRequiredChange,
             welcomeMsg: $sdk.ruleRequiredBlur,
+            kId: $sdk.ruleRequiredChange,
           }"
           @confirm="() => $refs.dialogRef.confirm(save)">
           <template #form="{ form }">

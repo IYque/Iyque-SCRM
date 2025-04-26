@@ -35,6 +35,8 @@ export const del = (ids) => _del(`${service}/remove/${ids}`)
  */
 export const save = (data) => post(`${service}/save`, data)
 
+export const upload = (data) => post(`${service}/attach/upload`, data)
+
 /** 查询知识附件信息列表
  * @param {*} params
 kid,string,知识库主键id
