@@ -4,7 +4,7 @@ ai:
   model: deepseek-chat #接入的具体模型，deepseek目前支持deepseek-chat与deepseek-reasoner
   limitToken: 100000  #限制每日token使用上限(输入token+输出token)
   deepseek:
-    apiKey: sk-83673ea3afac4f02b47443ac0d9a1cce #对应deepseek的apiKey
+    apiKey:  #对应deepseek的apiKey
 iyque:
   userName: iyque
   pwd: 123456
@@ -21,7 +21,7 @@ iyque:
     collectionName: iyque_vectors
     score: 0.5f
     apiUrl: https://api.pandarobot.chat/
-    apiKey: sk-4nLONNwyyxRg5S9wA6D278F017Ec420cBeAa6b4423Ce5bA2
+    apiKey: 
 spring:
   h2:
     console:
