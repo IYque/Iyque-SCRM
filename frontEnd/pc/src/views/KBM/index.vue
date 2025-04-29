@@ -150,7 +150,7 @@ function _upload() {
       </template>
     </RequestChartTable>
 
-    <BaseDialog ref="dialogRefFile" title="知识库附件" width="1000">
+    <BaseDialog ref="dialogRefFile" title="知识库附件" width="1000" :isFooter="false">
       <RequestChartTable ref="rctRefFile" class="pad0" :request="getListDetail" :params="{ kid }" searchBtnType="icon">
         <template #operation="{ query }">
           <el-upload :http-request="_upload" :limit="1" :before-upload="(val) => (file = val)">
@@ -195,7 +195,7 @@ function _upload() {
       </RequestChartTable>
     </BaseDialog>
 
-    <BaseDialog ref="dialogRefFragments" title="知识片段" width="1000">
+    <BaseDialog ref="dialogRefFragments" title="知识片段" width="1000" :isFooter="false">
       <RequestChartTable ref="rct" :request="getListFragment" :params="{ docId }" searchBtnType="icon">
         <template #table="{ data }">
           <el-table-column label="片段编号" prop="id"></el-table-column>

@@ -15,6 +15,7 @@ defineProps({
   dynamicTitle: { type: String, default: '' },
   rules: { type: Object, default: () => ({}) },
   formProps: { type: Object, default: () => ({}) },
+  isFooter: { type: Boolean, default: true },
 })
 const $emit = defineEmits(['confirm', 'cancel'])
 
@@ -87,7 +88,7 @@ defineExpose({
     </div>
 
     <template #footer>
-      <slot name="footer">
+      <slot name="footer" v-if="isFooter">
         <el-button @click="$emit('cancel'), (visible = false)">取消</el-button>
         <el-button type="primary" :disabled="loading" v-loading="loading" @click="submit">确定</el-button>
       </slot>

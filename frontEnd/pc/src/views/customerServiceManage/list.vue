@@ -27,8 +27,12 @@
             kfPicUrl: $sdk.ruleRequiredChange,
             welcomeMsg: $sdk.ruleRequiredBlur,
             kId: $sdk.ruleRequiredChange,
+            switchType: $sdk.ruleRequiredChange,
+            switchText: $sdk.ruleRequiredBlur,
+            switchUserIds: $sdk.ruleRequiredChange,
+            swichQrUrl: $sdk.ruleRequiredChange,
           }"
-          @confirm="() => $refs.dialogRef.confirm(save)">
+          @confirm="() => $refs.dialogRef.confirm(save, $refs.rctRef.getList)">
           <template #form="{ form }">
             <el-form-item prop="kfName" label="客服名称">
               <el-input v-model="form.kfName" placeholder="请输入" maxlength="15" show-word-limit clearable></el-input>
@@ -52,48 +56,52 @@
                 <el-option v-for="(item, key) in knowledges" :key="key" :label="item.kname" :value="item.id" />
               </el-select>
             </el-form-item>
-            <el-form-item label="" required prop="">
+            <el-form-item label="" required prop="switchType">
               <div class="--Padding --RadiusSmall bg-(--BgBlack9)">
                 <div>当知识库无匹配数据时：</div>
                 <el-radio-group v-model="form.switchType" class="">
-                  <el-radio value="1">文字回复</el-radio>
-                  <el-radio value="2">转人工</el-radio>
-                  <el-radio value="3">员工活码</el-radio>
-                  <el-radio value="4">AI 大模型回复</el-radio>
+                  <el-radio :value="1">文字回复</el-radio>
+                  <el-radio :value="2">转人工</el-radio>
+                  <el-radio :value="3">员工活码</el-radio>
+                  <el-radio :value="4">AI 大模型回复</el-radio>
                 </el-radio-group>
-                <TextareaExtend
-                  v-if="form.switchType == 1"
-                  v-model="form.switchText"
-                  maxlength="200"
-                  show-word-limit
-                  placeholder="请输入"
-                  :autosize="{ minRows: 5, maxRows: 20 }"
-                  clearable />
-                <SelectStaff
-                  v-if="form.switchType == 2"
-                  v-model="form._switchUser"
-                  :multiple="false"
-                  @modelValueUpdate="(val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))"
-                  title="选择员工"></SelectStaff>
-                <div v-if="form.switchType == 3">
-                  <el-button type="primary" plain @click="$refs.SelectStaffQrCodeRef.dialogRef.visible = true">
-                    选择活码
-                  </el-button>
-                  <br />
-                  <el-image class="w-[200px] mt10" v-if="form.swichQrUrl" :src="form.swichQrUrl"></el-image>
+                <el-form-item label="" required prop="switchText" v-if="form.switchType == 1">
+                  <TextareaExtend
+                    v-model="form.switchText"
+                    maxlength="200"
+                    show-word-limit
+                    placeholder="请输入"
+                    :autosize="{ minRows: 5, maxRows: 20 }"
+                    clearable />
+                </el-form-item>
+                <el-form-item label="" required prop="switchUserIds" v-if="form.switchType == 2">
+                  <SelectStaff
+                    v-model="form._switchUser"
+                    :multiple="false"
+                    @modelValueUpdate="(val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))"
+                    title="选择员工"></SelectStaff>
+                </el-form-item>
+                <el-form-item label="" required prop="swichQrUrl" v-if="form.switchType == 3">
+                  <div>
+                    <el-button type="primary" plain @click="$refs.SelectStaffQrCodeRef.dialogRef.visible = true">
+                      选择活码
+                    </el-button>
+                    <br />
+                    <el-image class="w-[200px] mt10" v-if="form.swichQrUrl" :src="form.swichQrUrl"></el-image>
 
-                  <SelectStaffQrCode
-                    isSigleSelect
-                    append-to-body
-                    width="800"
-                    ref="SelectStaffQrCodeRef"
-                    title="选择活码"
-                    @confirm="
-                      ({ visible, loading, selected }) => (
-                        (form.swichQrUrl = selected[0].codeUrl), (visible.value = false), (loading.value = false)
-                      )
-                    "></SelectStaffQrCode>
-                </div>
+                    <SelectStaffQrCode
+                      isSigleSelect
+                      append-to-body
+                      width="800"
+                      ref="SelectStaffQrCodeRef"
+                      title="选择活码"
+                      @confirm="
+                        ({ visible, loading, selected }) => (
+                          (form.swichQrUrl = selected[0].codeUrl), (visible.value = false), (loading.value = false)
+                        )
+                      "></SelectStaffQrCode>
+                  </div>
+                </el-form-item>
               </div>
             </el-form-item>
           </template>
