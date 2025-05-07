@@ -1,16 +1,28 @@
 // 环境变量
 const envs = {
   development: {
-    DOMAIN: 'http://127.0.0.1:8085',
+    DOMAIN: 'https://show.iyque.cn',
     BASE_URL: '/tools/',
-    BASE_API: 'http://127.0.0.1:8085',
+    BASE_API: 'https://show.iyque.cn/iyque',
   },
   production: {
-    DOMAIN: 'https://iyque.cn',
+    DOMAIN: 'https://show.iyque.cn',
     BASE_URL: '/tools/',
-    BASE_API: 'https://iyque.cn/iyque',
+    BASE_API: 'https://show.iyque.cn/iyque',
   },
 }
+// const envs = {
+//   development: {
+//     DOMAIN: 'http://127.0.0.1:8085',
+//     BASE_URL: '/tools/',
+//     BASE_API: 'http://127.0.0.1:8085',
+//   },
+//   production: {
+//     DOMAIN: 'http://127.0.0.1:8085',
+//     BASE_URL: '/tools/',
+//     BASE_API: 'http://127.0.0.1:8085',
+//   },
+// }
 
 let mode =
   process.env.NODE_ENV == 'development' || !globalThis.document

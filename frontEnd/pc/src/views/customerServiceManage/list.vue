@@ -26,7 +26,7 @@
             kfName: $sdk.ruleRequiredBlur,
             kfPicUrl: $sdk.ruleRequiredChange,
             welcomeMsg: $sdk.ruleRequiredBlur,
-            kId: $sdk.ruleRequiredChange,
+            kid: $sdk.ruleRequiredChange,
             switchType: $sdk.ruleRequiredChange,
             switchText: $sdk.ruleRequiredBlur,
             switchUserIds: $sdk.ruleRequiredChange,
@@ -51,8 +51,8 @@
                 :autosize="{ minRows: 5, maxRows: 20 }"
                 clearable />
             </el-form-item>
-            <el-form-item label="客服知识库" prop="kId">
-              <el-select v-model="form.kId" :popper-append-to-body="false">
+            <el-form-item label="客服知识库" prop="kid">
+              <el-select v-model="form.kid" :popper-append-to-body="false">
                 <el-option v-for="(item, key) in knowledges" :key="key" :label="item.kname" :value="item.id" />
               </el-select>
             </el-form-item>

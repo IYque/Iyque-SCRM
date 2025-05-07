@@ -51,6 +51,8 @@ public class IYqueKnowledgeFragment {
     /**
      * 文档内容
      */
+    @Lob // 表示大对象
+    @Column(columnDefinition = "TEXT") // 明确指定数据库类型为 TEXT
     private String content;
 
 

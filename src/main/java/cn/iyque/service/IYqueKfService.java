@@ -2,6 +2,7 @@ package cn.iyque.service;
 
 import cn.iyque.domain.IYqueCallBackBaseMsg;
 import cn.iyque.entity.IYqueKf;
+import cn.iyque.exception.IYqueException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -30,7 +31,7 @@ public interface IYqueKfService {
      * 新建或更新客服
      * @param iYqueKf
      */
-    void saveOrUpdateKf(IYqueKf iYqueKf);
+    void saveOrUpdateKf(IYqueKf iYqueKf) throws IYqueException;
 
 
     /**

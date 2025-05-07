@@ -172,20 +172,19 @@ public class FileUtils {
     /**
      * 链接生成二维码
      * @param url 链接地址
-     * @param filePath 生成后的二维码存储地址
      * @return
      * @throws Exception
      */
-    public static String generateQRCode(String url, String filePath) throws Exception {
+    public static String generateQRCode(String url) throws Exception {
         // 设置二维码参数
         BitMatrix matrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
         // 生成二维码图片并保存到文件
-       String fileName=filePath+"/"+SnowFlakeUtils.nextId() +".png";
+       String fileName=SnowFlakeUtils.nextId() +".png";
 
-        MatrixToImageWriter.writeToPath(matrix, "png", Paths.get(fileName));
+        MatrixToImageWriter.writeToPath(matrix, "png", Paths.get(SpringUtils.getBean(IYqueParamConfig.class).getUploadDir()+"/"+fileName));
 
-       return fileName;
+       return SpringUtils.getBean(IYqueParamConfig.class).getFileViewUrl()+fileName;
     }
 
 

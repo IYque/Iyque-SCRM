@@ -16,11 +16,11 @@ const routerView = {
  * redirect: noRedirect           // 当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
  * name:'router-name'             // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
  * meta : {
-    roles: ['admin','editor']    // 设置该路由进入的权限，支持多个权限叠加
-    title: 'title'               // 设置该路由在侧边栏和面包屑中展示的名字
-    icon: 'svg-name'             // 设置该路由的图标，对应路径src/icons/svg
-    breadcrumb: false            // 如果设置为false，则不会在breadcrumb面包屑中显示
-  }
+ roles: ['admin','editor']    // 设置该路由进入的权限，支持多个权限叠加
+ title: 'title'               // 设置该路由在侧边栏和面包屑中展示的名字
+ icon: 'svg-name'             // 设置该路由的图标，对应路径src/icons/svg
+ breadcrumb: false            // 如果设置为false，则不会在breadcrumb面包屑中显示
+ }
  */
 
 export const navRoutes = [
@@ -50,29 +50,63 @@ export const navRoutes = [
   {
     path: '/customerService',
     component: Layout,
-    redirect: '/customerService/customerServiceManage',
+    redirect: '/customerService/corpCustomerService/customerServiceManage',
     meta: { title: '客服-AI会话存档-企微会话内容存档', icon: 'customerService' },
     children: [
       {
-        path: 'customerServiceManage',
-        component: () => import('@/views/customerServiceManage/list'),
-        meta: { title: '客服管理' },
+        path: 'corpCustomerService',
+        meta: { title: '企微客服' },
+        children: [
+          {
+            path: 'customerServiceManage',
+            component: () => import('@/views/customerServiceManage/list'),
+            meta: { title: '客服管理' },
+          },
+          {
+            path: 'KBM',
+            component: () => import('@/views/KBM/index'),
+            meta: { title: 'AI知识库管理' },
+          },
+          {
+            path: 'serviceRecord',
+            component: () => import('@/views/serviceRecord/index'),
+            meta: { title: '服务记录' },
+          },
+        ],
       },
+
       {
-        path: 'serviceRecord',
-        component: () => import('@/views/serviceRecord/index'),
-        meta: { title: '服务记录' },
+        path: 'complaint',
+        meta: { title: '客户投诉' },
+        children: [
+          {
+            path: 'complaintManage',
+            component: () => import('@/views/complaintManage/index'),
+            meta: { title: '投诉管理' },
+          },
+        ],
       },
-      {
-        path: 'KBM',
-        component: () => import('@/views/KBM/index'),
-        meta: { title: '知识库管理' },
-      },
-      {
-        path: 'complaintManage',
-        component: () => import('@/views/complaintManage/index'),
-        meta: { title: '投诉管理' },
-      },
+
+      // {
+      //   path: 'customerServiceManage',
+      //   component: () => import('@/views/customerServiceManage/list'),
+      //   meta: { title: '客服管理' },
+      // },
+      // {
+      //   path: 'serviceRecord',
+      //   component: () => import('@/views/serviceRecord/index'),
+      //   meta: { title: '服务记录' },
+      // },
+      // {
+      //   path: 'KBM',
+      //   component: () => import('@/views/KBM/index'),
+      //   meta: { title: '知识库管理' },
+      // },
+      // {
+      //   path: 'complaintManage',
+      //   component: () => import('@/views/complaintManage/index'),
+      //   meta: { title: '投诉管理' },
+      // },
     ],
   },
   {

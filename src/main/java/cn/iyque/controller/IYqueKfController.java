@@ -1,9 +1,11 @@
 package cn.iyque.controller;
 
 
+import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueKf;
 import cn.iyque.entity.IYqueKfMsgSub;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueKfMsgService;
 import cn.iyque.service.IYqueKfService;
 import cn.iyque.utils.TableSupport;
@@ -57,7 +59,13 @@ public class IYqueKfController {
      */
     @PostMapping("/saveOrUpdateKf")
     public ResponseResult saveOrUpdateKf(@RequestBody IYqueKf iYqueKf) {
-        yqueKfService.saveOrUpdateKf(iYqueKf);
+
+        try {
+            yqueKfService.saveOrUpdateKf(iYqueKf);
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.ERROR,e.getMsg(),null);
+        }
+
         return new ResponseResult();
     }
 

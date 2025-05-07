@@ -35,8 +35,14 @@ public class IYqueParamConfig {
     @Data
     public static class VectorStoreParam{
 
+        //片段截取字符数,控制分片的长度，确保均匀分割
+        private int chunkSize=1000;
+        //重叠数	保留分片边界的上下文，避免语义断裂,通常设置为片段数的10%-20%之间
+        private int chunkOverlap=200;
+
         //向量维度（需与实际数据匹配）
-        private  Integer dimension;
+        private  Integer dimension=1536;
+
         //自定义集合名称
         private  String collectionName;
 

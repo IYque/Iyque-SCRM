@@ -96,7 +96,7 @@ public class IYqueMsgAnnex {
         public final static String MSG_TEXT="text";
         //图片
         public final static String MSG_TYPE_IMAGE="image";
-        //链接
+        //图文链接
         public final  static String MSG_TYPE_LINK="link";
         //小程序
         public final static String MSG_TYPE_MINIPROGRAM="miniprogram";

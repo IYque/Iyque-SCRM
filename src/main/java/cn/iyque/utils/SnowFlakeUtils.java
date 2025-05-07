@@ -21,6 +21,7 @@ public class SnowFlakeUtils implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
+
         return nextId();
     }
 }

@@ -7,21 +7,21 @@ ai:
     apiKey:  #对应deepseek的apiKey
 iyque:
   userName: iyque
-  pwd: 123456
+  pwd: iyque@5879
   demo: false
-  fileViewUrl: http://iyque.cn/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
+  fileViewUrl: https://show.iyque.cn/iyque/file/fileView/ #文件统一访问前缀，后端api指向 FileController.readFile
   uploadDir: ./upload
   inquiryAll: true
-  complaintUrl: http://iyque.cn/openmobile/customerComplaint #投诉页面
+  complaintUrl: http://show.iyque.cn/openmobile/customerComplaint #投诉页面
   vector:
-    host: 175.27.245.232
-    port: 19530
-    dimension: 1536
-    vectorModel: text-embedding-3-small
-    collectionName: iyque_vectors
-    score: 0.5f
-    apiUrl: https://api.pandarobot.chat/
-    apiKey: 
+    host: 127.0.0.1  #Milvus地址
+    port: 19530 #Milvus端口,api通信端口,非web访问端口.
+    collectionName: iyque_vectors #向量集合名称
+    dimension: 1536 #向量维度
+    apiUrl: https://api.pandarobot.chat/ #向量模型地址
+    apiKey: sk-4nLONNwyyxRg5S9wA6D278F017Ec420cBeAa6b4423Ce5 #向量模型key
+    vectorModel: text-embedding-3-small #向量模型,目前暂时只支持text-embedding-3-small
+    score: 0.5f #向量查询相似度
 spring:
   h2:
     console:
@@ -31,7 +31,7 @@ spring:
         web-allow-others: true
   datasource:
     url: jdbc:h2:file:./data/mydb;
-   #  url: jdbc:h2:tcp://localhost/./data/mydb
+    #  url: jdbc:h2:tcp://localhost/./data/mydb
     username: sa
     password: 123456
   jpa:
@@ -49,6 +49,7 @@ spring:
     time-zone: Asia/Shanghai
     serialization:
       fail-on-empty-beans: false
+    property-naming-strategy: SNAKE_CASE
   servlet:
     multipart:
       max-file-size: 20MB

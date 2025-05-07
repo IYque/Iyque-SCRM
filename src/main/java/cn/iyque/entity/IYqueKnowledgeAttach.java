@@ -48,10 +48,6 @@ public class IYqueKnowledgeAttach {
      */
     private String docType;
 
-    /**
-     * 文档内容
-     */
-    private String content;
 
 
 

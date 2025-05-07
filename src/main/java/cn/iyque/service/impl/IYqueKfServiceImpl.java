@@ -2,10 +2,7 @@ package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.json.JSONUtil;
 import cn.iyque.chain.vectorstore.IYqueVectorStore;
-import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.WxFileType;
 import cn.iyque.dao.IYqueKfDao;
 import cn.iyque.dao.IYqueKfMsgDao;
@@ -16,10 +13,12 @@ import cn.iyque.service.*;
 import cn.iyque.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
+import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpKfService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpBaseResp;
 import me.chanjar.weixin.cp.bean.kf.*;
+import me.chanjar.weixin.cp.bean.kf.msg.WxCpKfLinkMsg;
 import me.chanjar.weixin.cp.bean.kf.msg.WxCpKfResourceMsg;
 import me.chanjar.weixin.cp.bean.kf.msg.WxCpKfTextMsg;
 import org.apache.commons.lang3.StringUtils;
@@ -58,8 +57,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
     private IYqueKfDao kfDao;
 
 
-    @Autowired
-    private IYqueParamConfig iYqueParamConfig;
+
 
 
     @Autowired
@@ -73,6 +71,11 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
     @Autowired
     private IYqueEmbeddingService yqueEmbeddingService;
+
+
+
+    @Autowired
+    private IYqueKnowledgeFragmentService yqueKnowledgeFragmentService;
 
 
 
@@ -182,16 +185,16 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                     if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
                                         IYqueKf iYqueKf = kfDao.findByOpenKfid(callBackBaseMsg.getOpenKfId());
 
+                                        log.info("客服明细:"+iYqueKf);
 
                                         if(null != iYqueKf){
-                                            if(StringUtils.isNotEmpty(iYqueKf.getKId())){
+                                            if(StringUtils.isNotEmpty(iYqueKf.getKid())){
 
-                                                //向量库检索相关数据
-                                                List<String> nearest = iYqueVectorStore
-                                                        .nearest(yqueEmbeddingService.getQueryVector(lastItem.getText().getContent(), callBackBaseMsg.getOpenKfId()), callBackBaseMsg.getOpenKfId());
+                                                //检索相似数据片段
+                                                List<IYqueKnowledgeFragment> nearest = yqueKnowledgeFragmentService
+                                                        .nearest(lastItem.getText().getContent(), iYqueKf.getKid());
 
                                                 if(CollUtil.isNotEmpty(nearest)){
-
 
                                                     String prompt = String.format(aiKftpl,lastItem.getText().getContent(), nearest.stream()
                                                             .map(s -> "— " + s)
@@ -214,7 +217,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                                             this.kfTransferPersonnel(callBackBaseMsg.getOpenKfId(),  lastItem.getExternalUserId(),iYqueKf.getSwitchUserIds(),iYqueKf.getSwitchUserNames());
                                                             break;
                                                         case 3: //发布外部联系人二维码
-                                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE,kfService,iYqueKf.getSwichQrUrl(),k, callBackBaseMsg.getOpenKfId());
+                                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK,kfService,iYqueKf.getSwichQrUrl(),k, callBackBaseMsg.getOpenKfId());
                                                             break;
                                                         case 4: //ai大模型直接回复
                                                             this.sendAiKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
@@ -302,8 +305,8 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                 if(StringUtils.isNotEmpty(accountLinkResp.getUrl())){
                     iYqueKf.setKfUrl(accountLinkResp.getUrl());
                     //客服链接转二维码
-                    iYqueKf.setKfUrl(
-                            FileUtils.generateQRCode(accountLinkResp.getUrl(),iYqueParamConfig.getUploadDir())
+                    iYqueKf.setKfQrUrl(
+                            FileUtils.generateQRCode(accountLinkResp.getUrl())
                     );
 
                 }
@@ -325,11 +328,15 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
                 }
 
-                //删除接待人员
-                iYqueConfigService.findWxcpservice().getKfService().delServicer(iYqueKf.getOpenKfid(), Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
 
-                //重新添加接待人员
+
+
+                //保证接待人员最终一致性
                 if(iYqueKf.getSwitchType().equals(new Integer(2))&&StringUtils.isNotEmpty(iYqueKf.getSwitchUserIds())){
+                    //删除接待人员
+                    iYqueConfigService.findWxcpservice()
+                            .getKfService().delServicer(iYqueKf.getOpenKfid(), Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
+                    //重新添加接待人员
                     iYqueConfigService.findWxcpservice().getKfService().addServicer(iYqueKf.getOpenKfid(),
                             Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
                 }
@@ -339,8 +346,12 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
             }
         }catch (Exception e){
-            log.error("客户编辑或更新异常:"+e.getMessage());
-            throw new IYqueException(e.getMessage());
+            String errorMsg=e.getMessage();
+            if(e instanceof WxErrorException){
+                errorMsg = ((WxErrorException) e).getError().getErrorMsg();
+            }
+            log.error("客服新增或编辑异常:"+errorMsg);
+            throw new IYqueException(errorMsg);
         }
 
 
@@ -472,12 +483,12 @@ public class IYqueKfServiceImpl implements IYqueKfService {
             WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
             textMsg.setContent(content);
             sendRequest.setText(textMsg);
-        //发送图片内容
-        }else if(msgType.equals(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE)){
+        //发送图文链接
+        }else if(msgType.equals(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK)){
 
-            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE);
-            WxCpKfResourceMsg resourceMsg=new WxCpKfResourceMsg();
-
+            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK);
+//            WxCpKfResourceMsg resourceMsg=new WxCpKfResourceMsg();
+            WxCpKfLinkMsg wxCpKfLinkMsg=new WxCpKfLinkMsg();
             WxMediaUploadResult uploadResult = iYqueConfigService.findWxcpservice().getMediaService().upload(WxFileType.IMAGE, FileUtils.downloadImage(
                     content
             ));
@@ -486,9 +497,17 @@ public class IYqueKfServiceImpl implements IYqueKfService {
             if(StringUtils.isEmpty(uploadResult.getMediaId())){
                 throw new IYqueException("回复内容上传失败");
             }
-            resourceMsg.setMediaId(uploadResult.getMediaId());
+            wxCpKfLinkMsg.setTitle("添加员工企微");
+            wxCpKfLinkMsg.setDesc("当前AI客服无法提供服务,请添加员工企微");
+            wxCpKfLinkMsg.setUrl(content);
+            wxCpKfLinkMsg.setThumb_media_id(uploadResult.getMediaId());
+//            resourceMsg.setMediaId(uploadResult.getMediaId());
 
-            sendRequest.setImage(resourceMsg);
+//            sendRequest.setImage(resourceMsg);
+
+
+
+            sendRequest.setLink(wxCpKfLinkMsg);
         }
 
 

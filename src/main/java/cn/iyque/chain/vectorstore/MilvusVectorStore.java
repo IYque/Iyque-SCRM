@@ -69,11 +69,11 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .withPrimaryKey(true)
                 .withAutoID(true)
                 .build();
-        FieldType contentField = FieldType.newBuilder()
-                .withName("content")
-                .withDataType(DataType.VarChar)
-                .withMaxLength(1000)
-                .build();
+//        FieldType contentField = FieldType.newBuilder()
+//                .withName("content")
+//                .withDataType(DataType.VarChar)
+//                .withMaxLength(1000)
+//                .build();
         FieldType kidField = FieldType.newBuilder()
                 .withName("kid")
                 .withDataType(DataType.VarChar)
@@ -98,7 +98,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .withCollectionName(paramConfig.getVector().getCollectionName() + kid)
                 .withDescription("local knowledge")
                 .addFieldType(primaryField)
-                .addFieldType(contentField)
+//                .addFieldType(contentField)
                 .addFieldType(kidField)
                 .addFieldType(docIdField)
                 .addFieldType(fidField)
@@ -132,6 +132,8 @@ public class MilvusVectorStore implements IYqueVectorStore {
 
     @Override
     public void storeEmbeddings(List<String> chunkList, List<List<Float>> vectorList, String kid, String docId, List<String> fidList) {
+
+
         String fullCollectionName = paramConfig.getVector().getCollectionName() + kid;
 
         // 检查集合是否存在
@@ -163,12 +165,18 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 fieldTypes.add(vectorField);
 
                 // 定义其他字段
-                FieldType contentField = FieldType.newBuilder()
-                        .withName("content")
-                        .withDataType(DataType.VarChar)
-                        .withMaxLength(chunkList.size() * 1024) // 根据实际情况修改
-                        .build();
-                fieldTypes.add(contentField);
+//                FieldType contentField = FieldType.newBuilder()
+//                        .withName("content")
+//                        .withDataType(DataType.VarChar)
+//                        .withMaxLength(chunkList.size() * 1024) // 根据实际情况修改
+//                        .build();
+//                fieldTypes.add(contentField);
+
+
+
+
+
+
 
                 FieldType kidField = FieldType.newBuilder()
                         .withName("kid")
@@ -249,7 +257,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
             docIdList.add(docId);
         }
         List<InsertParam.Field> fields = new ArrayList<>();
-        fields.add(new InsertParam.Field("content", chunkList));
+//        fields.add(new InsertParam.Field("content", chunkList));
         fields.add(new InsertParam.Field("kid", kidList));
         fields.add(new InsertParam.Field("docId", docIdList));
         fields.add(new InsertParam.Field("fid", fidList));
@@ -321,7 +329,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
         }
 
 
-        List<String> search_output_fields = Arrays.asList("content", "fv");
+        List<String> search_output_fields = Arrays.asList("fid", "fv");
         List<Float> fv = new ArrayList<>();
         for (int i = 0; i < queryVector.size(); i++) {
             fv.add(queryVector.get(i).floatValue());
@@ -355,7 +363,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
 
                     if(CollectionUtil.isNotEmpty(recordList)){
                         for (QueryResultsWrapper.RowRecord rowRecord : recordList) {
-                            String content = rowRecord.get("content").toString();
+                            String content = rowRecord.get("fid").toString();
                             resultList.add(content);
                         }
                     }

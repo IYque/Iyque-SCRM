@@ -15,7 +15,7 @@
     <jjwt.version>0.9.1</jjwt.version>
     <zxing.version>3.4.1</zxing.version>
     <ai4j.version>1.2.2</ai4j.version>
-    <milvus.version>2.5.4</milvus.version>
+    <milvus.version>2.5.6</milvus.version>
     <retrofit2.version>2.9.0</retrofit2.version>
   </properties>
 

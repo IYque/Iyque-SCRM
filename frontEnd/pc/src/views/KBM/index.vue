@@ -42,9 +42,9 @@ function _upload() {
         <div class="mid-action mb0">
           <el-button type="primary" @click="$refs.dialogRef.action()">新建</el-button>
 
-          <el-button type="primary" plain :disabled="!selectedIds?.length" @click="$refs.rctRef?.apiConfirm(del)">
+          <!-- <el-button type="primary" plain :disabled="!selectedIds?.length" @click="$refs.rctRef?.apiConfirm(del)">
             批量删除
-          </el-button>
+          </el-button> -->
         </div>
 
         <BaseDialog
@@ -110,11 +110,14 @@ function _upload() {
             </el-form-item> -->
             <el-form-item prop="description" label="知识库描述">
               <el-input
+                 type="textarea"
                 v-model="form.description"
-                maxlength="15"
+                maxlength="200"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
+
+            
             </el-form-item>
             <!-- <el-form-item prop="hotWord" label="是否公开">
               <el-radio-group v-model="form.isActive">
@@ -179,10 +182,13 @@ function _upload() {
           <el-table-column label="文档编号" prop="id"></el-table-column>
           <el-table-column label="文档名称" prop="docName"></el-table-column>
           <el-table-column label="文档类型" prop="docType">
+           
+
             <!-- <template #default="{ row }">
               {{ row.userName ? row.userName : '-' }}
             </template> -->
           </el-table-column>
+          <el-table-column label="创建时间" min-width="200" prop="createTime"></el-table-column>
           <el-table-column label="操作" fixed="right" width="130">
             <template #default="{ row }">
               <TableOperateBtn type="" @click="$refs.rctRefFile.apiConfirm(delAttach, row.id)">删除</TableOperateBtn>
@@ -200,8 +206,10 @@ function _upload() {
         <template #table="{ data }">
           <el-table-column label="片段编号" prop="id"></el-table-column>
           <el-table-column label="片段内容" prop="content">
+           
             <!-- <template #default="{ row }"></template> -->
           </el-table-column>
+         
         </template>
       </RequestChartTable>
     </BaseDialog>

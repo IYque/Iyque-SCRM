@@ -1,6 +1,8 @@
 package cn.iyque.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.iyque.chain.vectorstore.IYqueVectorStore;
 import cn.iyque.domain.KnowledgeInfoUploadRequest;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueKnowledgeAttach;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -35,6 +38,34 @@ public class IYqueKnowledgeController {
 
     @Autowired
     private IYqueKnowledgeFragmentService yqueKnowledgeFragmentService;
+
+
+    @Autowired
+    private IYqueVectorStore iYqueVectorStore;
+
+    @Autowired
+    private IYqueEmbeddingService yqueEmbeddingService;
+
+
+
+
+      @GetMapping("/getXXX")
+      public void getXXX(String content,String kid){
+          //向量库检索相关数据
+          List<String> nearest = iYqueVectorStore
+                  .nearest(yqueEmbeddingService.getQueryVector(content,kid),kid);
+          //从数据库获取片段内容
+          if(CollectionUtil.isNotEmpty(nearest)){
+              List<IYqueKnowledgeFragment> fragmentList = yqueKnowledgeFragmentService.findAllByIds(nearest.stream()
+                      .map(Long::parseLong)  // 或使用 s -> Long.parseLong(s)
+                      .collect(Collectors.toList()));
+              System.out.println(fragmentList);
+          }
+
+
+          System.out.println(nearest);
+
+      }
 
 
 

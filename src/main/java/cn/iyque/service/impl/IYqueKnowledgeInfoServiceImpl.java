@@ -9,6 +9,7 @@ import cn.iyque.dao.IYqueKnowledgeFragmentDao;
 import cn.iyque.dao.IYqueKnowledgeInfoDao;
 import cn.iyque.domain.KnowledgeInfoUploadRequest;
 import cn.iyque.entity.*;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueEmbeddingService;
 import cn.iyque.service.IYqueKnowledgeInfoService;
 import cn.iyque.utils.SnowFlakeUtils;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -110,26 +112,27 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
         knowledgeInfoDao.deleteById(id);
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     public void storeContent(MultipartFile file, Long kid) {
         String fileName = file.getOriginalFilename();
         List<String> chunkList = new ArrayList<>();
         IYqueKnowledgeAttach knowledgeAttach = new  IYqueKnowledgeAttach();
         knowledgeAttach.setCreateTime(new Date());
-        knowledgeAttach.setId(SnowFlakeUtils.nextId());
         knowledgeAttach.setKid(kid);
         knowledgeAttach.setDocName(fileName);
         knowledgeAttach.setDocType(fileName.substring(fileName.lastIndexOf(".")+1));
+
+        knowledgeAttachDao.save(knowledgeAttach);
         String content = "";
         ResourceLoader resourceLoader = resourceLoaderFactory.getLoaderByFileType(knowledgeAttach.getDocType());
-        List<String> fids = new ArrayList<>();
+
         try {
             content = resourceLoader.getContent(file.getInputStream());
             chunkList = resourceLoader.getChunkList(content);
             List<IYqueKnowledgeFragment> knowledgeFragmentList = new ArrayList<>();
             if (CollUtil.isNotEmpty(chunkList)) {
                 for (int i = 0; i < chunkList.size(); i++) {
-                    String fid = RandomUtil.randomString(16);
-                    fids.add(fid);
                     IYqueKnowledgeFragment knowledgeFragment = new IYqueKnowledgeFragment();
                     knowledgeFragment.setCreateTime(new Date());
                     knowledgeFragment.setKid(kid);
@@ -138,14 +141,21 @@ public class IYqueKnowledgeInfoServiceImpl implements IYqueKnowledgeInfoService 
                     knowledgeFragment.setContent(chunkList.get(i));
                     knowledgeFragmentList.add(knowledgeFragment);
                 }
+
+                knowledgeFragmentDao.saveAll(knowledgeFragmentList);
+
+                yqueEmbeddingService.storeEmbeddings(chunkList,String.valueOf(kid),String.valueOf(knowledgeAttach.getId()),
+                        knowledgeFragmentList.stream()
+                                .map(fragment -> String.valueOf(fragment.getId()))
+                                .collect(Collectors.toList()));
             }
-            knowledgeFragmentDao.saveAll(knowledgeFragmentList);
+
         } catch (IOException e) {
-           log.error("附件存储异常:"+e.getMessage());
+            log.error("附件存储异常:"+e.getMessage());
+            throw new IYqueException(e.getMessage());
         }
-        knowledgeAttach.setContent(content);
-        knowledgeAttachDao.save(knowledgeAttach);
-        yqueEmbeddingService.storeEmbeddings(chunkList,String.valueOf(kid),String.valueOf(knowledgeAttach.getId()),fids);
+
+
     }
 
 }

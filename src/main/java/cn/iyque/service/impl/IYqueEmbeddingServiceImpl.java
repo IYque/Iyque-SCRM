@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,6 +29,7 @@ public class IYqueEmbeddingServiceImpl implements IYqueEmbeddingService {
 
     @Override
     public void storeEmbeddings(List<String> chunkList, String kid, String docId, List<String> fidList) {
+
         List<List<Float>> vectorList = vectorization.batchVectorization(chunkList, kid);
         iYqueVectorStore.storeEmbeddings(chunkList,vectorList,kid,docId,fidList);
     }
