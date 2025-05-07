@@ -38,8 +38,6 @@ public class IYqueCallBackBaseMsg {
     //添加此用户的「联系我」方式配置的state参数，可用于识别添加此用户的渠道
     private String State;
 
-    //欢迎语code
-    private String WelcomeCode;
 
     //删除客户的操作来源，DELETE_BY_TRANSFER表示此客户是因在职继承自动被转接成员删除
     private String Source;

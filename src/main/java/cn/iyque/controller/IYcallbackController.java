@@ -89,7 +89,6 @@ public class IYcallbackController {
         IYqueCryptUtil iYqueCryptUtil = new IYqueCryptUtil(iYqueConfig.getToken(), iYqueConfig.getEncodingAESKey(), iYqueConfig.getCorpId());
         try {
             String decrypt = iYqueCryptUtil.decrypt(signature, timestamp, nonce, msg);
-
             IYqueCallBackBaseMsg callBackBaseMsg = XmlUtil.xmlToBean(XmlUtil.parseXml(decrypt).getFirstChild(), IYqueCallBackBaseMsg.class);
             log.info("回调"+callBackBaseMsg);
 

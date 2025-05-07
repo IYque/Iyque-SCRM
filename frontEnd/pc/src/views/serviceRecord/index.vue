@@ -3,6 +3,12 @@ import { getList } from './api'
 </script>
 
 <template>
+  	<div class="warning">
+					<strong>
+						客户为客服发送的聊天信息(目前:仅支持文字内容)(如果接待员工位【-】则为AI回复的)
+					</strong>
+		        </div>
+
   <div :_="$store.setBusininessDesc(`<div>查看所有客服场景中客户咨询的详细记录</div>`)">
     <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
       <template #query="{ query }">
@@ -60,4 +66,13 @@ import { getList } from './api'
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.warning {
+	padding: 8px 16px;
+	background-color: #fff6f7;
+	border-radius: 4px;
+	border-left: 5px solid #fe6c6f;
+	margin: 20px 0;
+	line-height: 40px;
+}
+</style>

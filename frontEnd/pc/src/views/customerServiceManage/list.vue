@@ -76,9 +76,9 @@
                 </el-form-item>
                 <el-form-item label="" required prop="switchUserIds" v-if="form.switchType == 2">
                   <SelectStaff
-                    v-model="form._switchUser"
+                    :modelValue="form.switchUserIds && { userId: form.switchUserIds }"
                     :multiple="false"
-                    @modelValueUpdate="(val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))"
+                    @update:modelValue="(val) => ((form.switchUserIds = val.userId), (form.switchUserNames = val.name))"
                     title="选择员工"></SelectStaff>
                 </el-form-item>
                 <el-form-item label="" required prop="swichQrUrl" v-if="form.switchType == 3">
@@ -124,7 +124,7 @@
         <el-table-column label="操作" width="280" fixed="right">
           <template #default="{ row }">
             <TableOperateBtn type="" @click="$refs.dialogRef.action(row)">编辑</TableOperateBtn>
-            <TableOperateBtn type="" @click="$sdk.downloadBlob(row.kfUrl, row.kfName + '.png', 'image')">
+            <TableOperateBtn type="" @click="$sdk.downloadBlob(row.kfQrUrl, row.kfName + '.png', 'image')">
               二维码下载
             </TableOperateBtn>
             <TableOperateBtn type="" @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>

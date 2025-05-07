@@ -1,5 +1,6 @@
 package cn.iyque.service;
 
+import cn.iyque.entity.IYqueKf;
 import cn.iyque.entity.IYqueKfMsgSub;
 import cn.iyque.entity.IYqueKnowledgeInfo;
 import me.chanjar.weixin.cp.bean.kf.WxCpKfMsgListResp;
@@ -10,10 +11,11 @@ public interface IYqueKfMsgService {
 
     /**
      * 客户与客服会话信息入库
-     * @param kfMsgId
+     * @param iyqueKf
      * @param item
+     * @param isArtificial 是否人工
      */
-    void  saveIYqueKfMsg(Long kfMsgId, WxCpKfMsgListResp.WxCpKfMsgItem item);
+    void  saveIYqueKfMsg(IYqueKf iyqueKf,WxCpKfMsgListResp.WxCpKfMsgItem item,boolean isArtificial);
 
 
 

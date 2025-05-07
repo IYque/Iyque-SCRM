@@ -47,7 +47,7 @@ public class IYqueKfController {
 
         Page<IYqueKf> iYqueKfs = yqueKfService.findAll(iYqueKf,
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
-                        TableSupport.buildPageRequest().getPageSize(), Sort.by("createTime").descending()));
+                        TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueKfs.getContent(),iYqueKfs.getTotalElements());
     }
 

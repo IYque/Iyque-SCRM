@@ -45,6 +45,10 @@ public class IYqueKfMsgSub {
     private String kfName;
 
 
+    //客服头像
+    private String kfPicUrl;
+
+
     //客户id
     private String externalUserId;
 

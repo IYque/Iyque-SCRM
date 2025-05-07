@@ -5,6 +5,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.dao.IYqueKfMsgSubDao;
 import cn.iyque.entity.IYqueHotWord;
+import cn.iyque.entity.IYqueKf;
 import cn.iyque.entity.IYqueKfMsgSub;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.service.IYqueConfigService;
@@ -43,7 +44,7 @@ public class IYqueKfMsgServiceImpl implements IYqueKfMsgService {
 
     @Override
     @Async
-    public void saveIYqueKfMsg(Long kfMsgId, WxCpKfMsgListResp.WxCpKfMsgItem item) {
+    public void saveIYqueKfMsg(IYqueKf iyqueKf, WxCpKfMsgListResp.WxCpKfMsgItem item,boolean isArtificial) {
 
 
         try {
@@ -61,7 +62,9 @@ public class IYqueKfMsgServiceImpl implements IYqueKfMsgService {
                     ExternalContact externalContact = customerList.stream().findFirst().get();
 
                     IYqueKfMsgSub kfMsgSub = IYqueKfMsgSub.builder()
-                            .kfMsgId(kfMsgId)
+                            .kfMsgId(iyqueKf.getId())
+                            .kfName(iyqueKf.getKfName())
+                            .kfPicUrl(iyqueKf.getKfPicUrl())
                             .openKfid(item.getOpenKfid())
                             .switchUserId(item.getServicerUserId())
                             .origin(item.getOrigin())
@@ -73,6 +76,11 @@ public class IYqueKfMsgServiceImpl implements IYqueKfMsgService {
                             .gender(externalContact.getGender())
                             .sendTime(new Date(item.getSendTime() * 1000L))
                             .build();
+                    //人工，则设置人工信息
+                    if(isArtificial){
+                        kfMsgSub.setSwitchUserName(iyqueKf.getSwitchUserNames());
+                        kfMsgSub.setSwitchUserId(iyqueKf.getSwitchUserIds());
+                    }
 
 
                     if(item.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){//文本
@@ -127,7 +135,17 @@ public class IYqueKfMsgServiceImpl implements IYqueKfMsgService {
             spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("nickname")), "%" + iYqueKfMsgSub.getNickname().toLowerCase() + "%"));
         }
 
+        Page<IYqueKfMsgSub> iYqueKfMsgSubs = iYqueKfMsgSubDao.findAll(spec, pageable);
+        List<IYqueKfMsgSub> content = iYqueKfMsgSubs.getContent();
+        if(CollectionUtil.isNotEmpty(content)){
+            content.stream().forEach(item->{
 
-        return iYqueKfMsgSubDao.findAll(spec,pageable);
+
+
+            });
+        }
+
+
+        return iYqueKfMsgSubs;
     }
 }

@@ -32,7 +32,6 @@ public class SendPeriodWelcomeMsgStrategy implements ActionStrategy{
 
            if(iyQueCallbackQuery.isStartPeriodAnnex()){
                WxCpWelcomeMsg wxCpWelcomeMsg=new WxCpWelcomeMsg();
-               wxCpWelcomeMsg.setWelcomeCode(callBackBaseMsg.getWelcomeCode());
                Text text = new Text();
                //是否发送默认欢迎语
                boolean sendDefaultMsg=true;

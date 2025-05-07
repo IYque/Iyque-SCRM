@@ -1,6 +1,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
+import { dateFormat } from '@/utils/common'
 
 // $sdk 公共方法，挂在到全局 window 和 vue app.config.globalProperties
 export class SDK {
