@@ -1,4 +1,4 @@
-![输入图片说明](pic/1.png)
+![输入图片说明](pic/tab_logo2.png)
 
 ## 一、背景
 
@@ -152,7 +152,7 @@
 ![img.png](img/j-3.jpg)
 
 ## 七、版权说明
-  该项目使用了Apache2.0授权许可，详情请参阅 [LICENSE.txt](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
+  该项目在遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
 
 ## 八、联系
 
