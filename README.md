@@ -164,7 +164,12 @@
 ## 七、版权说明
   该项目在遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
 
-## 八、联系
+## 八、致谢与引用声明
+   本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
+- [ruoyi-ai](https://gitee.com/ageerle/ruoyi-ai): 参考其知识库相关功能。
+- [ai4j](https://github.com/LnYo-Cly/ai4j): 引用该组件实现deekseek的接入,向量的计算等。
+
+## 九、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
 
