@@ -166,8 +166,8 @@
 
 ## 八、致谢与引用声明
    本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
-- [ruoyi-ai](https://gitee.com/ageerle/ruoyi-ai): 参考其知识库相关功能。
-- [ai4j](https://github.com/LnYo-Cly/ai4j): 引用该组件实现deekseek的接入,向量的计算等。
+-  <a href="https://gitee.com/ageerle/ruoyi-ai" target="_blank">ruoyi-ai</a>: 参考其知识库相关功能。
+-  <a href="https://github.com/LnYo-Cly/ai4j" target="_blank">ai4j</a>: 引用该组件实现deekseek的接入,向量的计算等。
 
 ## 九、联系
 
