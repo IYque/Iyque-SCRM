@@ -14,7 +14,7 @@ iyque:
   inquiryAll: true
   complaintUrl: http://iyque.cn/openmobile/customerComplaint #投诉页面
   vector:
-    host: 175.27.245.232  #Milvus地址
+    host: 127.0.0.1  #Milvus地址
     port: 19530 #Milvus端口,api通信端口,非web访问端口.
     collectionName: iyque_vectors #向量集合名称
     dimension: 1536 #向量维度
