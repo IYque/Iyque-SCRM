@@ -235,11 +235,6 @@
   // }
 
   // 统一页面表单输入框宽度
-  .el-form-item__content {
-    min-width: 240px;
-    width: var(--formItemWidth);
-    max-width: var(--formItemWidth, 360px);
-  }
   .el-input,
   .el-select,
   .el-textarea,
@@ -248,6 +243,8 @@
   .el-date-editor--daterange,
   .el-date-editor--datetimerange {
     width: 100%;
+    width: var(--formItemWidth);
+    max-width: var(--formItemWidth, 360px);
   }
   // .el-select,
   // .el-cascader,
