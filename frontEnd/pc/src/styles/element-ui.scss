@@ -242,8 +242,7 @@
   .el-cascader,
   .el-date-editor--daterange,
   .el-date-editor--datetimerange {
-    width: 100%;
-    width: var(--formItemWidth);
+    width: var(--formItemWidth, 100%);
     max-width: var(--formItemWidth, 360px);
   }
   // .el-select,
