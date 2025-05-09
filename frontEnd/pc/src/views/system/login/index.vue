@@ -1,6 +1,6 @@
 <template>
   <div class="loginPage">
-    <div class="w-[1200px] h-[690px] centerCenter flex --Radius">
+    <div class="w-[1200px] h-[730px] centerCenter flex --Radius">
       <div class="w-[50%] bg-(--ColorLight8) p-[40px]">
         <img
           class="h-[35px]"
@@ -8,8 +8,8 @@
           v-if="sysConfig.LOGO"
           :src="$store.app.isDark ? sysConfig.LOGO : sysConfig.LOGO"
           alt="" />
-        <span class="font20 blod ml5" style="vertical-align: middle">{{ sysConfig.SYSTEM_NAME }}</span>
-        <el-tag type="primary" size="normal" effect="dark">AI开源版</el-tag>
+        <span class="text-[29px] blod ml5" style="vertical-align: middle">{{ sysConfig.SYSTEM_NAME }}</span>
+        <el-tag class="bold" type="primary" size="large" effect="dark">AI开源版</el-tag>
 
         <div class="bold mt20 font16 mb-[90px]">
           源码交付的私域数智化营销解决方案
@@ -30,9 +30,15 @@
         </div>
       </div>
       <div class="w-[50%] bg-(--BgWhite) relative">
-        <div class="centerCenter w-[360px]">
-          <div class="text-[29px] blod mt-[50px] mb-[20px]">登录</div>
-          <el-form ref="loginForm" size="large" :model="loginForm" :rules="loginRules" class="login-form">
+        <div class="centerCenter">
+          <div class="text-[29px] blod mb-[30px]">登录</div>
+          <el-form
+            ref="loginForm"
+            size="large"
+            :model="loginForm"
+            :rules="loginRules"
+            class="login-form"
+            style="--formItemWidth: 390px">
             <template v-if="loginType === 'username'">
               <el-form-item prop="username">
                 <el-input v-model.trim="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -69,8 +75,8 @@
                   <span v-else>登 录 中...</span>
                 </el-button>
               </el-form-item>
-              <el-button class="w-[100%]" type="primary" @click="">
-                <svg-icon icon="gitee" class="input-icon" />
+              <el-button class="w-[100%] blod" type="primary" @click="">
+                <svg-icon icon="gitee" class="text-[25px] mr5" />
                 使用 Gitee 账号 Star 一下，直接免密登录
               </el-button>
             </template>
@@ -78,7 +84,7 @@
         </div>
       </div>
     </div>
-    <div class="fixed bottom-[10px] left-[50%] translate-x-[-50%] --FontBlack5">
+    <div class="fixed bottom-[30px] left-[50%] translate-x-[-50%] --FontBlack5 font12">
       <span v-html="sysConfig.COPYRIGHT"></span>
     </div>
   </div>
@@ -195,10 +201,5 @@ export default {
   .input-icon {
     font-size: 16px;
   }
-}
-.copyright {
-  font-size: 12px;
-  bottom: 10px;
-  color: var(--font-black-5);
 }
 </style>

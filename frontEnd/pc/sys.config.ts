@@ -1,9 +1,9 @@
 // 环境变量
 const envs = {
   development: {
-    DOMAIN: 'https://iyque.cn',
+    DOMAIN: 'https://show.iyque.cn',
     BASE_URL: '/tools/',
-    BASE_API: 'https://iyque.cn/iyque',
+    BASE_API: 'https://show.iyque.cn/iyque',
   },
   production: {
     DOMAIN: 'https://iyque.cn',
@@ -11,7 +11,6 @@ const envs = {
     BASE_API: 'https://iyque.cn/iyque',
   },
 }
-
 
 let mode =
   process.env.NODE_ENV == 'development' || !globalThis.document
@@ -25,6 +24,6 @@ export const common = {
   SYSTEM_NAME: '源雀', // 系统简称
   SYSTEM_SLOGAN:
     '<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台.</a> ', // 系统标语
-  COPYRIGHT: 'Copyright © 2024 源雀 All Rights Reserved.', // 版权信息
+  COPYRIGHT: 'Copyright © 2022-2025 源雀 All Rights Reserved.', // 版权信息
   LOGO: env.BASE_URL + 'static/logo.png', // 深色logo
 }
