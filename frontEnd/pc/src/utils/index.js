@@ -25,3 +25,17 @@ export const echartColors = [
   '#749E84',
   '#B0BBDC',
 ]
+/**
+ * 获取query请求参数中name对应的值
+ * @param string name
+ */
+export function getQueryValue(name) {
+  let url = window.location.href
+
+  let reg = new RegExp('(^|&|\\?)' + name + '=([^&#]*)(&|#|$)')
+  let r = url.match(reg)
+  if (r != null) {
+    return decodeURIComponent(r[2])
+  }
+  return ''
+}

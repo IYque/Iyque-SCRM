@@ -75,10 +75,12 @@
                   <span v-else>登 录 中...</span>
                 </el-button>
               </el-form-item>
-              <el-button class="w-[100%] blod" type="primary" @click="">
-                <svg-icon icon="gitee" class="text-[25px] mr5" />
-                使用 Gitee 账号 Star 一下，直接免密登录
-              </el-button>
+              <a :href="threeLoginInfo.threeLoginUrl" v-if="threeLoginInfo.startThreeLogin">
+                <el-button class="w-[100%] blod" type="primary" @click="">
+                  <svg-icon icon="gitee" class="text-[25px] mr5" />
+                  使用 Gitee 账号 Star 一下，直接免密登录
+                </el-button>
+              </a>
             </template>
           </el-form>
         </div>
@@ -91,7 +93,7 @@
 </template>
 
 <script>
-import { login } from './api'
+import { login, findThreeLoginInfo, giteeLogin } from './api'
 import Cookies from 'js-cookie'
 import { setToken } from '@/utils/auth'
 
@@ -118,6 +120,7 @@ export default {
       redirect: undefined,
       dialogVisible: true,
       isDemonstrationLogin: false,
+      threeLoginInfo: {},
     }
   },
   watch: {
@@ -130,8 +133,15 @@ export default {
   },
   created() {
     this.getCookie()
+    this.findThreeLoginInfo()
   },
   methods: {
+    findThreeLoginInfo() {
+      findThreeLoginInfo().then(({ data }) => {
+        this.threeLoginInfo.startThreeLogin = data.startThreeLogin
+        this.threeLoginInfo.threeLoginUrl = data.threeLoginUrl
+      })
+    },
     getCookie() {
       const username = Cookies.get('username')
       const password = Cookies.get('password')
