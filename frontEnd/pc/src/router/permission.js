@@ -16,7 +16,7 @@ export default function permission(router) {
     } else if (getToken()) {
       /* has token*/
       if (noLoginList.includes(to.path)) {
-        next({ path: window.sysConfig.BASE_URL })
+        next({ path: '/' })
       } else {
         next()
       }
