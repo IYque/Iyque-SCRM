@@ -174,7 +174,7 @@ export default {
           login(loginForm)
             .then(({ data }) => {
               setToken(data.token)
-              this.$router.push(this.redirect || window.sysConfig.BASE_URL)
+              this.$router.push(this.redirect || '/')
             })
             .catch(() => {
               this.loading = false

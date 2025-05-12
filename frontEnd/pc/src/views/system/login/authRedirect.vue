@@ -15,7 +15,7 @@ export default {
       // 用以重置浏览器回调的url
       history.replaceState({}, 'page', window.sysConfig.BASE_URL)
       next((vm) => {
-        vm.$router.replace(window.sysConfig.BASE_URL)
+        vm.$router.replace('/')
       })
       // location.href = window.sysConfig.BASE_URL
     } catch (error) {
