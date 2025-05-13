@@ -104,8 +104,8 @@ export default {
       loginType: 'username',
       ispassword: true,
       loginForm: {
-        username: 'iyque',
-        password: '123456',
+        username: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: '',
