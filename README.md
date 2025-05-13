@@ -156,27 +156,27 @@
 
 - 更多计划正在积极筹备中...
 
-## 五、 开源版演示
+## 六、 开源版演示
 https://iyque.cn/tools (演示环境因资源有限只做展示,如需体验全部可自行部署)
 
 <span style="color:red">(注：当前演示地址为开源版，如需商业版演示可添加以下产品企微申请)</span>
 
 ![输入图片说明](pic/contactus.png)
 
-## 六、商业版页面展示
+## 七、商业版页面展示
 ![img.png](img/j-1.jpg)
 ![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 
-## 七、版权说明
+## 八、版权说明
   该项目在遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
 
-## 八、特别鸣谢
+## 九、特别鸣谢
    本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
 -  <a href="https://gitee.com/ageerle/ruoyi-ai" target="_blank">ruoyi-ai</a>: 参考其知识库相关功能。
 -  <a href="https://github.com/LnYo-Cly/ai4j" target="_blank">ai4j</a>: 引用该组件实现deekseek的接入,向量的计算等。
 
-## 九、联系
+## 十、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
 
