@@ -157,7 +157,7 @@
 - 更多计划正在积极筹备中...
 
 ## 五、 开源版演示
-https://iyque.cn/tools
+https://iyque.cn/tools (演示环境因资源有限只做展示,如需体验全部可自行部署)
 
 <span style="color:red">(注：当前演示地址为开源版，如需商业版演示可添加以下产品企微申请)</span>
 
