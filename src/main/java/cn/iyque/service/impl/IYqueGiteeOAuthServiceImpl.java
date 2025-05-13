@@ -44,6 +44,7 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
                 .form("client_secret", giteeLoginParam.getClientSecret())
                 .execute();
 
+
         if (!response.isOk()) {
             log.error("gitee获取token请求失败:" + response.getStatus());
             return null;
@@ -64,13 +65,18 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
         GiteeTokenResponse response = this.getAccessToken(code);
 
 
+        log.info("token:"+response);
+
+
         if(null != response){
 
            if(StringUtils.isNotEmpty(response.getAccessToken())){
 
                if(!this.isRepoStarred(response.getAccessToken())){
                    //未star则执行star操作
-                   this.starRepository(response.getAccessToken());
+                   if(!this.starRepository(response.getAccessToken())){
+                      return null;
+                   }
                }
 
                return JwtUtils.generateToken(yqueParamConfig.getUserName());
@@ -83,9 +89,10 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
 
     @Override
     public boolean isRepoStarred(String accessToken) {
+
         // 发送 GET 请求
         HttpResponse response = HttpRequest.get(
-                yqueParamConfig.getThreeLoginParam().getGiteeLoginParam().getStarUlr()
+                MessageFormat.format( yqueParamConfig.getThreeLoginParam().getGiteeLoginParam().getStarUlr(),accessToken)
         ).execute();
 
         // 解析响应

@@ -1,5 +1,6 @@
 package cn.iyque.controller;
 
+import cn.iyque.annotation.RateLimit;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.JwtResponse;
@@ -42,16 +43,19 @@ public class IYqueThreeLoginController {
 
         ThreeLoginInfo threeLoginInfo=new ThreeLoginInfo();
         threeLoginInfo.setStartThreeLogin(
-                threeLoginParam.isStartThreeLogin()
+                threeLoginParam==null?false: threeLoginParam.isStartThreeLogin()
         );
 
-        IYqueParamConfig.GiteeLoginParam giteeLoginParam = threeLoginParam.getGiteeLoginParam();
+        if(    threeLoginParam==null?false: threeLoginParam.isStartThreeLogin()){
+            IYqueParamConfig.GiteeLoginParam giteeLoginParam = threeLoginParam.getGiteeLoginParam();
 
-        threeLoginInfo.setThreeLoginUrl(
-                MessageFormat.format(
-                        giteeLoginParam.getThreeLoginUrl(),giteeLoginParam.getClientId(),giteeLoginParam.getRedirectUri()
-                )
-        );
+            threeLoginInfo.setThreeLoginUrl(
+                    MessageFormat.format(
+                            giteeLoginParam.getThreeLoginUrl(),giteeLoginParam.getClientId(),giteeLoginParam.getRedirectUri()
+                    )
+            );
+        }
+
         return new ResponseResult(threeLoginInfo);
     }
 
@@ -62,7 +66,8 @@ public class IYqueThreeLoginController {
      * @return
      */
     @GetMapping("/giteeLogin/{code}")
-      public ResponseResult<JwtResponse> giteeLogin(@PathVariable String code){
+    @RateLimit(attempts = 5, lockTime = 300)
+    public ResponseResult<JwtResponse> giteeLogin(@PathVariable String code){
 
         String iYqueLoginToken = giteeOAuthService.getIYqueLoginToken(code);
 
@@ -71,7 +76,7 @@ public class IYqueThreeLoginController {
                     .token(iYqueLoginToken)
                     .build());
         }
-        return new ResponseResult<>(HttpStatus.ERROR,"登录异常,请重新授权登录",null);
+        return new ResponseResult<>(HttpStatus.ERROR,"登录授权异常,请重新授权登录所需权限",null);
       }
 
 

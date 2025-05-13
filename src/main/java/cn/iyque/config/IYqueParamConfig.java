@@ -68,7 +68,7 @@ public class IYqueParamConfig {
 
 
         //判断用户是否star的url
-        private String starUlr="https://gitee.com/api/v5/user/starred/iyque/iYqueCode";
+        private String starUlr="https://gitee.com/api/v5/user/starred/iyque/iYqueCode?access_token={0}";
 
 
         //star仓库的url

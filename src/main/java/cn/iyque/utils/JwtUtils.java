@@ -10,8 +10,8 @@ import java.util.function.Function;
 
 public class JwtUtils {
     private static final String SECRET_KEY = "iYque";
-    //默认一小时
-    private static final long EXPIRATION_TIME = 3600000;
+    //默认7天
+    private static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
 
     public static String generateToken(String username) {
         return Jwts.builder()
