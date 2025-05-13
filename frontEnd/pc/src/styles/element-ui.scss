@@ -242,13 +242,14 @@
   .el-cascader,
   .el-date-editor--daterange,
   .el-date-editor--datetimerange {
-    max-width: 360px;
+    width: var(--formItemWidth, 100%);
+    max-width: var(--formItemWidth, 360px);
   }
-  .el-select,
-  .el-cascader,
-  .el-input-number {
-    width: 100%;
-  }
+  // .el-select,
+  // .el-cascader,
+  // .el-input-number {
+  //   width: 100%;
+  // }
 
   // 会导致提示信息被滚动隐藏
   // .el-form-item:last-child {

@@ -350,6 +350,9 @@ svg {
 .font0 {
   font-size: 0 !important;
 }
+.font12 {
+  font-size: 12px !important;
+}
 .font14 {
   font-size: 14px !important;
 }
@@ -390,7 +393,7 @@ svg {
   cursor: pointer !important;
 }
 
-.blod {
+.bold {
   font-weight: bold !important;
 }
 

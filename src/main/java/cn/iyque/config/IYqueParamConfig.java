@@ -31,6 +31,64 @@ public class IYqueParamConfig {
 
 
 
+    //三方登录相关参数
+    private ThreeLoginParam threeLoginParam;
+
+
+
+
+
+    @Data
+    public static class ThreeLoginParam{
+
+        //是否启动三方登录，默认是不启动
+        private boolean startThreeLogin=false;
+
+
+        //gitee登录相关信息
+        private GiteeLoginParam giteeLoginParam;
+
+
+
+
+
+    }
+
+
+    @Data
+    public static class GiteeLoginParam{
+
+
+        //获取授权码code地址
+        private String threeLoginUrl="https://gitee.com/oauth/authorize?client_id={0}&redirect_uri={1}&response_type=code";
+
+
+        //获取token地址
+        private String getTokenUrl ="https://gitee.com/oauth/token";
+
+
+        //判断用户是否star的url
+        private String starUlr="https://gitee.com/api/v5/user/starred/iyque/iYqueCode?access_token={0}";
+
+
+        //star仓库的url
+        private String starRepositoryUrl="https://gitee.com/api/v5/user/starred/iyque/iYqueCode";
+
+
+
+        //客户端id
+        private String clientId;
+
+        //客户端密钥
+        private String clientSecret;
+
+        //重定向地址
+        private String redirectUri;
+
+    }
+
+
+
     //向量相关设置
     @Data
     public static class VectorStoreParam{

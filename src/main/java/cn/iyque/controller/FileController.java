@@ -5,6 +5,7 @@ import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.service.IYqueMsgAuditService;
 import cn.iyque.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,16 @@ public class FileController {
 
     @Autowired
     IYqueParamConfig iYqueParamConfig;
+
+
+    @Autowired
+    private IYqueMsgAuditService iWeMsgAuditService;
+
+
+    @GetMapping("/getXXX")
+    public  void getXXX() throws Exception {
+        iWeMsgAuditService.synchMsg();
+    }
 
 
     /**

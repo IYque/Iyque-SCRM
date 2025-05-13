@@ -12,7 +12,6 @@ const envs = {
   },
 }
 
-
 let mode =
   process.env.NODE_ENV == 'development' || !globalThis.document
     ? process.env.VUE_APP_ENV
@@ -25,6 +24,6 @@ export const common = {
   SYSTEM_NAME: '源雀', // 系统简称
   SYSTEM_SLOGAN:
     '<a href="https://www.iyque.cn?utm_source=iyquecode" target="_blank">源雀Scrm-是基于Java源码交付的企微SCRM,帮助企业构建高度自由安全的私域平台.</a> ', // 系统标语
-  COPYRIGHT: 'Copyright © 2024 源雀 All Rights Reserved.', // 版权信息
+  COPYRIGHT: 'Copyright © 2022-2025 源雀 All Rights Reserved.', // 版权信息
   LOGO: env.BASE_URL + 'static/logo.png', // 深色logo
 }

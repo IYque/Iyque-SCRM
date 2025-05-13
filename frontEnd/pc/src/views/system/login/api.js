@@ -4,15 +4,11 @@ const serve = '/iYqueSys'
 
 export const login = (data) => post(`${serve}/login`, data)
 /**
- * 列表
- * @param {*} data
-{
-  pageNum:
-  pageSize:
-  type:''
- }
+ * 获取gitee登录地址
  */
-export const getList = (data) => get(`${serve}/findIYqueUserCode`, data)
+export const findThreeLoginInfo = () => get(`${serve}/threeLogin/findThreeLoginInfo`)
+
+export const giteeLogin = (code) => get(`${serve}/threeLogin/giteeLogin/${code}`)
 
 // 详情
 export const getDetail = (id) => get(`${serve}/getKeyWordGroupBaseInfo/${id}`)

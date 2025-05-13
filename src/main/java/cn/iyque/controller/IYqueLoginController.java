@@ -1,6 +1,7 @@
 package cn.iyque.controller;
 
 
+import cn.iyque.annotation.RateLimit;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.IYQueAuthInfo;
@@ -42,6 +43,7 @@ public class IYqueLoginController {
      * @return
      */
     @PostMapping("/login")
+    @RateLimit(attempts = 5, lockTime = 300) // 5次失败后锁定5分钟
     public ResponseResult<JwtResponse> login(@RequestBody IYQueAuthInfo iQyqueAuthInfo){
 
 

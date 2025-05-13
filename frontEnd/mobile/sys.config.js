@@ -3,14 +3,14 @@
  */
 const envs = {
   development: {
-    DOMAIN: 'https://show.iyque.cn', // 站点域名，会根据此处域名判断应用环境
+    DOMAIN: 'https://iyque.cn', // 站点域名，会根据此处域名判断应用环境
     BASE_URL: '/openmobile/', // 路由基础路径
-    BASE_API: 'https://show.iyque.cn/iyque', // 接口基础路径
+    BASE_API: 'https://iyque.cn/iyque', // 接口基础路径
   },
   production: {
-    DOMAIN: 'https://show.iyque.cn',
+    DOMAIN: 'https://iyque.cn',
     BASE_URL: '/openmobile/',
-    BASE_API: 'https://show.iyque.cn/iyque',
+    BASE_API: 'https://iyque.cn/iyque',
   },
 }
 

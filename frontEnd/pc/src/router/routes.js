@@ -240,6 +240,11 @@ export const constantRoutes = navRoutes.concat([
     ],
   },
   {
+    path: '/authRedirect',
+    component: () => import('@/views/system/login/authRedirect'),
+    hidden: true,
+  },
+  {
     path: '/404',
     component: () => import('@/views/system/error/404'),
     hidden: true,
