@@ -148,17 +148,16 @@
 
 ### 5.4 系统部署与配置
 
-  https://iyque.cn/docs/
+   https://iyque.cn
 
 ### 5.5 计划
 
-源雀SCRM开源版会根据产品实际情况，积极开放更多能力。
+源雀SCRM AI开源版会根据产品实际情况，积极开放更多能力。
 
 - 更多计划正在积极筹备中...
 
 ## 六、 开源版演示
-https://iyque.cn/tools (演示环境因资源有限只做展示,如需体验全部可自行部署)
-
+https://iyque.cn/tools 
 <span style="color:red">(注：当前演示地址为开源版，如需商业版演示可添加以下产品企微申请)</span>
 
 ![输入图片说明](pic/contactus.png)
