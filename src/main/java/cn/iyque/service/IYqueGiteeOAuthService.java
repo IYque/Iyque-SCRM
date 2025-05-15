@@ -10,7 +10,7 @@ public interface IYqueGiteeOAuthService {
      * @param code
      * @return
      */
-    GiteeTokenResponse getAccessToken(String code);
+    GiteeTokenResponse getAccessToken(String code,String redirectUri);
 
 
     /**
@@ -19,7 +19,7 @@ public interface IYqueGiteeOAuthService {
      * @param code
      * @return
      */
-    String getIYqueLoginToken(String code);
+    String getIYqueLoginToken(String code,String redirectUri);
 
 
     /**

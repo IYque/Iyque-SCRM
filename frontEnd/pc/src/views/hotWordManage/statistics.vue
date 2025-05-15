@@ -216,7 +216,7 @@ const submitAiVisible = () => {
             @confirm="
               ({ visible, loading, selected }) => (
                 (query._name = selected?.map((e) => e.hotWord)?.join(',')),
-                (query.hotWordId = selected?.map((e) => e.id)?.join(',')),
+                (query.hotWordIds = selected?.map((e) => e.id)?.join(',')),
                 (visible.value = false),
                 (loading.value = false),
                 $nextTick(() => {

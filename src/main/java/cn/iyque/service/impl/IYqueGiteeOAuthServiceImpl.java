@@ -30,7 +30,8 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
     /**
      * 获取 AccessToken 并转换为实体类
      */
-    public  GiteeTokenResponse getAccessToken(String code) {
+    @Override
+    public  GiteeTokenResponse getAccessToken(String code,String redirectUri) {
 
         IYqueParamConfig.GiteeLoginParam giteeLoginParam
                 = yqueParamConfig.getThreeLoginParam().getGiteeLoginParam();
@@ -40,7 +41,7 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
                 .form("grant_type", "authorization_code")
                 .form("code", code)
                 .form("client_id", giteeLoginParam.getClientId())
-                .form("redirect_uri", giteeLoginParam.getRedirectUri())
+                .form("redirect_uri",StringUtils.isEmpty(redirectUri)? giteeLoginParam.getRedirectUri():redirectUri)
                 .form("client_secret", giteeLoginParam.getClientSecret())
                 .execute();
 
@@ -58,11 +59,11 @@ public class IYqueGiteeOAuthServiceImpl implements IYqueGiteeOAuthService {
     }
 
     @Override
-    public String getIYqueLoginToken(String code) {
+    public String getIYqueLoginToken(String code,String redirectUri) {
 
 
 
-        GiteeTokenResponse response = this.getAccessToken(code);
+        GiteeTokenResponse response = this.getAccessToken(code,redirectUri);
 
 
         log.info("token:"+response);

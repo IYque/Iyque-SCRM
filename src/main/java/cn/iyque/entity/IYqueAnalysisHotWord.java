@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity(name = "iyque_analysis_hot_word")
@@ -65,6 +66,10 @@ public class IYqueAnalysisHotWord extends BaseEntity{
 
     //消息内容
     private String content;
+
+
+    @Transient
+    private String hotWordIds;
 
     //消息的发送时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
