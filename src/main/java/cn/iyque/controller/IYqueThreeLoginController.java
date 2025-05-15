@@ -69,7 +69,7 @@ public class IYqueThreeLoginController {
     @RateLimit(attempts = 5, lockTime = 300)
     public ResponseResult<JwtResponse> giteeLogin(@PathVariable String code){
 
-        String iYqueLoginToken = giteeOAuthService.getIYqueLoginToken(code);
+        String iYqueLoginToken = giteeOAuthService.getIYqueLoginToken(code,null);
 
         if(StringUtils.isNotEmpty(iYqueLoginToken)){
             return new ResponseResult<>(JwtResponse.builder()
@@ -78,6 +78,27 @@ public class IYqueThreeLoginController {
         }
         return new ResponseResult<>(HttpStatus.ERROR,"登录授权异常,请重新授权登录所需权限",null);
       }
+
+
+    /**
+     * gitee授权登录逻辑
+     * @param code
+     * @return
+     */
+    @GetMapping("/giteeLoginRedirectUri")
+    @RateLimit(attempts = 20, lockTime = 300)
+    public ResponseResult<JwtResponse> giteeLoginRedirectUri(String code,String redirectUri){
+
+        String iYqueLoginToken = giteeOAuthService.getIYqueLoginToken(code,redirectUri);
+
+        if(StringUtils.isNotEmpty(iYqueLoginToken)){
+            return new ResponseResult<>(JwtResponse.builder()
+                    .token(iYqueLoginToken)
+                    .build());
+        }
+        return new ResponseResult<>(HttpStatus.ERROR,"登录授权异常,请重新授权登录所需权限",null);
+    }
+
 
 
 }

@@ -84,7 +84,7 @@ public class ReadOnlyInterceptor implements HandlerInterceptor {
 
         // 写入响应
         response.getWriter().write(new ObjectMapper().writeValueAsString(
-                new ResponseResult( HttpStatus.INTERNAL_SERVER_ERROR.value(),"演示环境只允许查看，不允许修改操作",null)
+                new ResponseResult( HttpStatus.INTERNAL_SERVER_ERROR.value(),"演示环境数据无法修改,如需体验完整功能,可自行部署",null)
 
         ));
 

@@ -32,7 +32,7 @@ public class IYqueParamConfig {
 
 
     //三方登录相关参数
-    private ThreeLoginParam threeLoginParam;
+    private ThreeLoginParam threeLoginParam=new ThreeLoginParam();
 
 
 
@@ -46,7 +46,7 @@ public class IYqueParamConfig {
 
 
         //gitee登录相关信息
-        private GiteeLoginParam giteeLoginParam;
+        private GiteeLoginParam giteeLoginParam=new GiteeLoginParam();
 
 
 
