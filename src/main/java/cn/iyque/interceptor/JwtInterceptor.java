@@ -36,13 +36,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 
 
-        if(SpringUtil.getBean(IYqueParamConfig.class).getDemo()){
-            String method = request.getMethod();
-            if (!"GET".equalsIgnoreCase(method)) {
-                sendJsonErrorResponse(response,HttpStatus.ERROR,"演示环境数据无法修改,如需使用请自行部署");
-                return false;
-            }
-        }
+
 
 
         return true;
