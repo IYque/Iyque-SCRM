@@ -1,0 +1,94 @@
+package cn.iyque.entity;
+
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * 群发主表
+ */
+@Entity(name = "iyque_group_msg")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Where(clause = "delFlag = 0")
+public class IYqueGroupMsg {
+
+    @Id
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(
+            name = "snowflakeIdGenerator",
+            strategy = "cn.iyque.utils.SnowFlakeUtils"
+    )
+    private Long id;
+
+    //群发类型：1:客户群发 2:客群群发
+    private Integer groupType;
+
+    //群发范围：1:全部 2:部份
+    private Integer scopeType;
+
+
+    //发送类型: 1:立即发送 2:定时发送
+    private Integer sendType;
+
+    //群发任务消息的id
+    private String msgId;
+
+
+    //群发文字内容
+    private String content;
+
+
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date sendTime;
+
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
+
+
+    /**
+     * 更新时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
+
+
+    /**
+     * 接受对象
+     */
+    @Transient
+    private List<IYqueGroupMsgSub> groupMsgSubList;
+
+
+    /**
+     * 发送附件
+     */
+    @Transient
+    private List<IYqueMsgAnnex> annexLists;
+
+
+
+}
