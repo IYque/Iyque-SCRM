@@ -3,8 +3,7 @@
 - 官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 开源版部署配置文档: <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs/</a>
 - BUG等问题反馈：<a href="https://gitee.com/iyque/iYqueCode/issues/new" target="_blank">ISSUES</a>
-- 开源版演示【基于源雀SCRM开源版工具】: <a href="https://iyque.cn/tools/" target="_blank">https://iyque.cn/tools/</a>
-- 商业版演示【完整的SCRM解决方案】地址获取,请联系客服
+- 商业版演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
   ![输入图片说明](pic/contactus.png)
 ## 一、背景
