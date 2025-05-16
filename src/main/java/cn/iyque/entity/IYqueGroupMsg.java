@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.chanjar.weixin.cp.bean.external.msg.Attachment;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
@@ -36,8 +37,12 @@ public class IYqueGroupMsg {
     )
     private Long id;
 
-    //群发类型：1:客户群发 2:客群群发
-    private Integer groupType;
+
+    //群发名称
+    private String groupMsgName;
+
+    //群发类型：single:客户群发 group:客群群发
+    private String chatType;
 
     //群发范围：1:全部 2:部份
     private Integer scopeType;
@@ -46,9 +51,6 @@ public class IYqueGroupMsg {
     //发送类型: 1:立即发送 2:定时发送
     private Integer sendType;
 
-    //群发任务消息的id
-    private String msgId;
-
 
     //群发文字内容
     private String content;
@@ -56,7 +58,7 @@ public class IYqueGroupMsg {
 
 
     /**
-     * 创建时间
+     * 发送时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date sendTime;
@@ -88,6 +90,9 @@ public class IYqueGroupMsg {
      */
     @Transient
     private List<IYqueMsgAnnex> annexLists;
+
+
+
 
 
 

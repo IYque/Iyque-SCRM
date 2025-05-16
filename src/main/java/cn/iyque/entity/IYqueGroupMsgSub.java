@@ -53,11 +53,15 @@ public class IYqueGroupMsgSub {
     private String acceptName;
 
 
+    //发送人id
+    private String senderId;
+
+
     //对应消息的id
     private String msgId;
 
 
-    //0-未发送 1-已发送  3-发送失败（2-因客户不是好友导致发送失败 3-因客户已经收到其他群发消息导致发送失败  企业微信中返回的这二种状态对应该系统的3）4-无法发送
+    //0-未发送 1-已发送  2-发送失败（2-因客户不是好友导致发送失败 3-因客户已经收到其他群发消息导致发送失败  企业微信中返回的这二种状态对应该系统的3）3-无法发送
     private Integer status;
 
 
