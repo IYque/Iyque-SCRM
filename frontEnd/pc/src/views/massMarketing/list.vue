@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getList, del, save } from './api'
 
-defineProps({
+const props = defineProps({
   type: { type: String, default: 'single' },
 })
 
@@ -10,11 +10,11 @@ const sendType = { '1': '立即发送', '2': '定时发送' }
 // const form = ref({})
 const addAttachmentRef = ref({})
 
-async function submit(form) {
+async function submit({ form, visible, loading }) {
   form = JSON.parse(JSON.stringify(form.value))
-  form.chatType = type.value
+  form.chatType = props.type
   form.periodAnnexLists = []
-  let tasks = form.annexLists.map(async (e, i) => {
+  let tasks = form.annexLists?.map(async (e, i) => {
     let contentForm = await addAttachmentRef.value[i].submit()
     if (contentForm) {
       e[e.msgtype] = Object.assign(e[e.msgtype] || {}, contentForm)
@@ -24,7 +24,16 @@ async function submit(form) {
     }
   })
   let validate1 = tasks ? await Promise.all(tasks) : true
-  return form
+  save(form)
+    .then((res) => {
+      $sdk.msgSuccess()
+      $refs.rct.getList()
+    })
+    .finally((err) => {
+      $sdk.msgError(err)
+      visible.value = false
+      loading.value = false
+    })
 }
 </script>
 
@@ -35,7 +44,7 @@ async function submit(form) {
         <el-form-item label="群发内容" prop="groupMsgName">
           <el-input v-model="query.groupMsgName" placeholder="请输入" clearable />
         </el-form-item>
-        <el-form-item label="发送类型" prop="complainType">
+        <el-form-item label="发送类型" prop="sendType">
           <el-select v-model="query.sendType" :popper-append-to-body="false">
             <el-option v-for="(value, key) in sendType" :key="key" :label="value" :value="key" />
           </el-select>
@@ -59,7 +68,7 @@ async function submit(form) {
           }"
           @confirm="
             ({ form, visible, loading }) => {
-              submit(form)
+              submit({ form, visible, loading })
             }
           ">
           <template #form="{ form }">
@@ -71,7 +80,7 @@ async function submit(form) {
                 maxlength="15"
                 show-word-limit></el-input>
             </el-form-item>
-            <template v-if="type == 'single'">
+            <template v-if="type == 'group'">
               <el-form-item label="群发客户群" prop="scopeType">
                 <el-radio-group v-model="form.scopeType">
                   <el-radio :label="0">全部群</el-radio>
@@ -80,13 +89,29 @@ async function submit(form) {
               </el-form-item>
               <template v-if="form.scopeType == 1">
                 <el-form-item label="选择客群" prop="scopeType">
-                  <el-button type="primary" @click="$refs.selectHotWordRef.dialogRef.visible = true">
+                  <el-button class="mr10" type="primary" @click="$refs.SelectGroupRef.dialogRef.visible = true">
                     选择客群
                   </el-button>
+                  <TagEllipsis :list="form.groupMsgSubList" defaultProps="acceptName"></TagEllipsis>
+
+                  <SelectGroup
+                    ref="SelectGroupRef"
+                    @confirm="
+                      ({ visible, loading, selected }) => (
+                        (form.groupMsgSubList = selected.map((e) => ({
+                          acceptId: e.chatId,
+                          acceptName: e.chatName,
+                          acceptType: '2',
+                          senderId: e.owner,
+                        }))),
+                        (visible.value = false),
+                        (loading.value = false)
+                      )
+                    "></SelectGroup>
                 </el-form-item>
               </template>
             </template>
-            <template v-if="type == 'group'">
+            <template v-if="type == 'single'">
               <el-form-item label="群发客户" prop="scopeType">
                 <el-radio-group v-model="form.scopeType">
                   <el-radio :label="0">全部客户</el-radio>
@@ -104,11 +129,13 @@ async function submit(form) {
 
             <el-form-item label="发送类型" prop="sendType">
               <el-radio-group v-model="form.sendType">
-                <el-radio :label="index" v-for="(item, index) in sendType" :key="index">{{ item }}</el-radio>
+                <el-radio :label="index" v-for="(item, index) in sendType" :disabled="index == 2" :key="index">
+                  {{ item }}
+                </el-radio>
                 <!-- <el-radio :label="1" disabled>定时发送</el-radio> -->
               </el-radio-group>
             </el-form-item>
-            <template v-if="form.sendType == 1">
+            <template v-if="form.sendType == 2">
               <el-form-item label="发送时间" prop="complainTime">
                 <el-date-picker
                   v-model="form.complainTime"
@@ -125,7 +152,7 @@ async function submit(form) {
                   clearable></el-date-picker>
               </el-form-item>
             </template>
-            <el-form-item label="群发内容" prop="content" :required="form.annexLists?.length > 0">
+            <el-form-item label="群发内容" prop="content">
               <TextareaExtend
                 v-model="form.content"
                 :toolbar="['emoji']"
@@ -151,8 +178,8 @@ async function submit(form) {
             {{ sendType[row.sendType] }}
           </template>
         </el-table-column>
-        <el-table-column prop="complainTime" label="发送时间"></el-table-column>
-        <el-table-column prop="handleTime" label="最近更新时间"></el-table-column>
+        <el-table-column prop="sendTime" label="发送时间"></el-table-column>
+        <el-table-column prop="updateTime" label="最近更新时间"></el-table-column>
         <el-table-column label="操作" width="280" fixed="right">
           <template #default="{ row }">
             <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>

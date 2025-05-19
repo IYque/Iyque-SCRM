@@ -22,7 +22,7 @@ export default {
       <list v-if="opened.includes('0')" />
     </el-tab-pane>
     <el-tab-pane label="群发客群">
-      <list v-if="opened.includes('1')" />
+      <list v-if="opened.includes('1')" type="group" />
     </el-tab-pane>
   </CacheElTabs>
 </template>
