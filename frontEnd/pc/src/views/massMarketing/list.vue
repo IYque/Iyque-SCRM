@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getList, del, save } from './api'
+import { getList, getDetail, save } from './api'
 
 const props = defineProps({
   type: { type: String, default: 'single' },
@@ -34,6 +34,22 @@ async function submit({ form, visible, loading }) {
       visible.value = false
       loading.value = false
     })
+}
+
+const dialogRef = ref()
+function goDetail(row) {
+  getDetail(row.id).then((res) => {
+    row = res
+    dialogRef.action(row)
+  })
+  return
+  $router.push({
+    name: 'massMarketingDetail',
+    query: {
+      id: row.id,
+      type: props.type,
+    },
+  })
 }
 </script>
 
@@ -182,7 +198,7 @@ async function submit({ form, visible, loading }) {
         <el-table-column prop="updateTime" label="最近更新时间"></el-table-column>
         <el-table-column label="操作" width="280" fixed="right">
           <template #default="{ row }">
-            <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">详情</TableOperateBtn>
+            <TableOperateBtn type="" @click="goDetail(row)">详情</TableOperateBtn>
             <!-- <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">统计</TableOperateBtn> -->
           </template>
         </el-table-column>
