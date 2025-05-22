@@ -1,4 +1,16 @@
 ![输入图片说明](pic/tab_logo2.png)
+
+<div align="center">
+
+[![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
+[![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
+[![iYQue](https://img.shields.io/badge/iYQue-V1.0.0-brightgreen)](https://gitee.com/iyque/iYqueCode/releases/tag/V20250507)
+[![license](http://img.shields.io/badge/license-Apache%202.0-orange)](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
+
+
+</div>
+
+
 ### 重要链接
 - 官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 开源版部署配置文档: <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs/</a>
