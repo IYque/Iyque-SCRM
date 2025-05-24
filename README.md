@@ -177,7 +177,7 @@
 ![img.png](img/j-3.jpg)
 
 ## 七、版权说明
-  该项目在遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
+  该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
 
 ## 八、特别鸣谢
    本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
