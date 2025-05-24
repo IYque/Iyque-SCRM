@@ -4,7 +4,7 @@ ai:
   model: deepseek-chat #接入的具体模型，deepseek目前支持deepseek-chat与deepseek-reasoner
   limitToken: 100000  #限制每日token使用上限(输入token+输出token)
   deepseek:
-    apiKey: sk-83673ea3afac4f02b47443ac #对应deepseek的apiKey
+    apiKey: sk-83673ea3afac4f02b4744 #对应deepseek的apiKey
 iyque:
   userName: iyque
   pwd: iyque.cn
@@ -19,7 +19,7 @@ iyque:
     collectionName: iyque_vectors #向量集合名称
     dimension: 1536 #向量维度
     apiUrl: https://api.pandarobot.chat/ #向量模型地址
-    apiKey: sk-4nLONNwyyxRg5S9wA6D278F017Ec420cBeAa6b442 #向量模型key
+    apiKey: sk-4nLONNwyyxRg5S9wA6D278F017Ec420cBeAa6b #向量模型key
     vectorModel: text-embedding-3-small #向量模型,目前暂时只支持text-embedding-3-small
     score: 0.5f #向量查询相似度
 spring:
