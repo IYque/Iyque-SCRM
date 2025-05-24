@@ -15,9 +15,17 @@
 - 官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 开源版部署配置文档: <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs/</a>
 - BUG等问题反馈：<a href="https://gitee.com/iyque/iYqueCode/issues/new" target="_blank">ISSUES</a>
-- 商业版演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
-  ![输入图片说明](pic/contactus.png)
+### 联系
+如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
+- 开源项目技术答疑
+- 获取源雀SCRM完整体验系统；
+- 源雀SCRM商务合作；
+- 源雀SCRM产品交流；
+- 更多咨询或服务...
+
+![输入图片说明](pic/contactus.png)
+  
 ## 一、背景
 
 在过去企业大部分采用SaaS模式的SCRM标准化产品，能满足一定的需求，云部署的模式也能节省企业的成本。尽管目前市场SCRM工具众多，但企业私域建设工具选型仍存在如下核心痛点：
