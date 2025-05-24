@@ -47,6 +47,21 @@ export const navRoutes = [
       },
     ],
   },
+
+  {
+    path: '/marketing',
+    component: Layout,
+    redirect: '/marketing/massMarketing',
+    meta: { title: '营销-私域营销-高效触达私域客户', icon: 'marketing' },
+    children: [
+      {
+        path: 'massMarketing',
+        component: () => import('@/views/massMarketing/index'),
+        meta: { title: '群发营销' },
+      },
+    ],
+  },
+
   {
     path: '/customerService',
     component: Layout,
