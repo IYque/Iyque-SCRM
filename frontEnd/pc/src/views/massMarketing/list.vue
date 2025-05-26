@@ -2,7 +2,7 @@
 import { getList, getDetail, save } from './api'
 
 const props = defineProps({
-  type: { type: String, default: 'single' },
+  type: { type: String, default: location.href.includes('customer') ? 'single' : 'group' },
 })
 
 const sendType = { '1': '立即发送', '2': '定时发送' }
@@ -32,7 +32,6 @@ async function submit({ form, visible, loading }) {
       rctRef.value.getList()
     })
     .finally((err) => {
-      $sdk.msgError(err)
       visible.value = false
       loading.value = false
     })
@@ -40,9 +39,9 @@ async function submit({ form, visible, loading }) {
 
 const dialogRef = ref()
 function goDetail(row) {
-  getDetail(row.id).then((res) => {
-    row = res
-    dialogRef.action(row)
+  getDetail(row.id).then(({ data }) => {
+    row = data
+    dialogRef.value.action(row)
   })
   return
   $router.push({
@@ -57,7 +56,7 @@ function goDetail(row) {
 
 <template>
   <div :_="$store.setBusininessDesc(`<div>通过企业微信群发工具触达客户</div>`)">
-    <RequestChartTable ref="rct" :request="getList" searchBtnType="icon">
+    <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
       <template #query="{ query }">
         <el-form-item label="群发内容" prop="groupMsgName">
           <el-input v-model="query.groupMsgName" placeholder="请输入" clearable />
