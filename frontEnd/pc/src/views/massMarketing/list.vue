@@ -6,16 +6,18 @@ const props = defineProps({
 })
 
 const sendType = { '1': '立即发送', '2': '定时发送' }
+let chatType = location.href.includes('customer') ? 'single' : 'group'
 
 // const form = ref({})
 const addAttachmentRef = ref({})
+const rctRef = ref()
 
 async function submit({ form, visible, loading }) {
   form = JSON.parse(JSON.stringify(form.value))
-  form.chatType = props.type
+  form.chatType = chatType || props.type
   form.periodAnnexLists = []
   let tasks = form.annexLists?.map(async (e, i) => {
-    let contentForm = await addAttachmentRef.value[i].submit()
+    let contentForm = await addAttachmentRef.value.contentFormRef[i].submit()
     if (contentForm) {
       e[e.msgtype] = Object.assign(e[e.msgtype] || {}, contentForm)
       return true
@@ -27,7 +29,7 @@ async function submit({ form, visible, loading }) {
   save(form)
     .then((res) => {
       $sdk.msgSuccess()
-      $refs.rct.getList()
+      rctRef.value.getList()
     })
     .finally((err) => {
       $sdk.msgError(err)
@@ -60,11 +62,11 @@ function goDetail(row) {
         <el-form-item label="群发内容" prop="groupMsgName">
           <el-input v-model="query.groupMsgName" placeholder="请输入" clearable />
         </el-form-item>
-        <el-form-item label="发送类型" prop="sendType">
+        <!-- <el-form-item label="发送类型" prop="sendType">
           <el-select v-model="query.sendType" :popper-append-to-body="false">
             <el-option v-for="(value, key) in sendType" :key="key" :label="value" :value="key" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </template>
 
       <template #operation="{ selectedIds }">
@@ -82,11 +84,7 @@ function goDetail(row) {
             content: [$sdk.ruleRequiredBlur],
             groupMsgName: [$sdk.ruleRequiredBlur],
           }"
-          @confirm="
-            ({ form, visible, loading }) => {
-              submit({ form, visible, loading })
-            }
-          ">
+          @confirm="submit">
           <template #form="{ form }">
             <el-form-item label="群发任务名" prop="groupMsgName">
               <el-input
@@ -189,16 +187,17 @@ function goDetail(row) {
       <template #table="{ data }">
         <el-table-column prop="groupMsgName" label="群发任务名"></el-table-column>
         <el-table-column prop="content" label="群发内容"></el-table-column>
-        <el-table-column prop="sendType" label="发送类型">
+        <!-- <el-table-column prop="sendType" label="发送类型">
           <template #default="{ row }">
             {{ sendType[row.sendType] }}
           </template>
-        </el-table-column>
-        <el-table-column prop="sendTime" label="发送时间"></el-table-column>
+        </el-table-column> -->
+        <!-- <el-table-column prop="sendTime" label="发送时间"></el-table-column> -->
         <el-table-column prop="updateTime" label="最近更新时间"></el-table-column>
         <el-table-column label="操作" width="280" fixed="right">
           <template #default="{ row }">
             <TableOperateBtn type="" @click="goDetail(row)">详情</TableOperateBtn>
+            <!-- <TableOperateBtn type="" @click="$refs.rct.goRoute('detail', row.id)">统计</TableOperateBtn> -->
             <!-- <TableOperateBtn type="" @click="$refs.dialogRefDetail.action(row)">统计</TableOperateBtn> -->
           </template>
         </el-table-column>
