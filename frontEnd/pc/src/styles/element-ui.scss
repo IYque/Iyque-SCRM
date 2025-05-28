@@ -222,7 +222,7 @@
 
 .el-form-item__content {
   display: block;
-  line-height: 30px; // 解决某些情况下行内块顶部不对齐，上下缝隙问题
+  // line-height: 30px; // 解决某些情况下行内块顶部不对齐，上下缝隙问题
 }
 .el-form:not(.el-form--inline) {
   // .el-form-item {

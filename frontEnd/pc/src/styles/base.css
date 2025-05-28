@@ -55,11 +55,11 @@ li {
   list-style: none;
 }
 
-p,
+/* p,
 span {
   line-height: normal;
   white-space: break-spaces;
-}
+} */
 
 button + button,
 svg + svg {
