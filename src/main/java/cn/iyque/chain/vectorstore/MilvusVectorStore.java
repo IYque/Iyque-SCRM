@@ -45,22 +45,48 @@ public class MilvusVectorStore implements IYqueVectorStore {
 
 
 
-    @PostConstruct
-    public void init() {
-         if(StringUtils.isNotEmpty(paramConfig.getVector().getHost())
-         &&StringUtils.isNotEmpty(paramConfig.getVector().getPort())){
-             milvusServiceClient = new MilvusServiceClient(
-                     ConnectParam.newBuilder()
-                             .withHost(paramConfig.getVector().getHost())
-                             .withPort(Integer.parseInt(paramConfig.getVector().getPort()))
-                             .withDatabaseName("default")
-                             .build()
-             );
-         }else{
-             log.error("milvus相关配置不可为空");
-         }
+    public MilvusServiceClient getMilvusClient() {
+        if (milvusServiceClient == null) {
+            synchronized (this) {
+                if (milvusServiceClient == null) {
+                    try {
+                       if(StringUtils.isNotEmpty(paramConfig.getVector().getHost())
+                         &&StringUtils.isNotEmpty(paramConfig.getVector().getPort())){
+                                     milvusServiceClient = new MilvusServiceClient(
+                                             ConnectParam.newBuilder()
+                                                     .withHost(paramConfig.getVector().getHost())
+                                                     .withPort(Integer.parseInt(paramConfig.getVector().getPort()))
+                                                     .withDatabaseName("default")
+                                                     .build()
+                                     );
+                                 }
 
+                    } catch (Exception e) {
+                        log.error("Milvus客户端初始化失败", e);
+                        throw new RuntimeException("Milvus客户端初始化失败");
+                    }
+                }
+            }
+        }
+        return milvusServiceClient;
     }
+
+//    @PostConstruct
+//    public void init() {
+//         if(StringUtils.isNotEmpty(paramConfig.getVector().getHost())
+//         &&StringUtils.isNotEmpty(paramConfig.getVector().getPort())){
+//             milvusServiceClient = new MilvusServiceClient(
+//                     ConnectParam.newBuilder()
+//                             .withHost(paramConfig.getVector().getHost())
+//                             .withPort(Integer.parseInt(paramConfig.getVector().getPort()))
+//                             .withDatabaseName("default")
+//                             .build()
+//             );
+//         }else{
+//             log.error("milvus相关配置不可为空");
+//         }
+//
+//    }
 
     private void createSchema(String kid) {
         FieldType primaryField = FieldType.newBuilder()
@@ -104,12 +130,12 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .addFieldType(fidField)
                 .addFieldType(vectorField)
                 .build();
-        milvusServiceClient.createCollection(createCollectionReq);
+        getMilvusClient().createCollection(createCollectionReq);
 
         // 创建向量的索引
         IndexType INDEX_TYPE = IndexType.IVF_FLAT;
         String INDEX_PARAM = "{\"nlist\":1024}";
-        milvusServiceClient.createIndex(
+        getMilvusClient().createIndex(
                 CreateIndexParam.newBuilder()
                         .withCollectionName(paramConfig.getVector().getCollectionName() + kid)
                         .withFieldName("fv")
@@ -140,7 +166,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
         HasCollectionParam hasCollectionParam = HasCollectionParam.newBuilder()
                 .withCollectionName(fullCollectionName)
                 .build();
-        R<Boolean> booleanR = milvusServiceClient.hasCollection(hasCollectionParam);
+        R<Boolean> booleanR = getMilvusClient().hasCollection(hasCollectionParam);
 
         if (booleanR.getStatus() == R.Status.Success.getCode()) {
             boolean collectionExists = booleanR.getData().booleanValue();
@@ -204,7 +230,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                         .withFieldTypes(fieldTypes)
                         .build();
 
-                R<RpcStatus> collection = milvusServiceClient.createCollection(createCollectionParam);
+                R<RpcStatus> collection = getMilvusClient().createCollection(createCollectionParam);
                 if (collection.getStatus() == R.Status.Success.getCode()) {
                    log.info("集合 " + fullCollectionName + " 创建成功");
 
@@ -216,7 +242,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                             .withMetricType(MetricType.COSINE)
                             .withExtraParam("{\"nlist\":1024}") // 索引参数
                             .build();
-                    R<RpcStatus> indexResponse = milvusServiceClient.createIndex(createIndexParam);
+                    R<RpcStatus> indexResponse = getMilvusClient().createIndex(createIndexParam);
                     if (indexResponse.getStatus() == R.Status.Success.getCode()) {
                        log.info("索引创建成功");
                     } else {
@@ -234,7 +260,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
         }
 
         if (StringUtils.isNotBlank(docId)) {
-            milvusServiceClient.createPartition(
+            getMilvusClient().createPartition(
                     CreatePartitionParam.newBuilder()
                             .withCollectionName(fullCollectionName)
                             .withPartitionName(docId)
@@ -269,7 +295,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .withFields(fields)
                 .build();   System.out.println("=========================");
 
-        R<MutationResult> insert = milvusServiceClient.insert(insertParam);
+        R<MutationResult> insert = getMilvusClient().insert(insertParam);
         if (insert.getStatus() == R.Status.Success.getCode()) {
            log.info("插入成功，插入的行数: " + insert.getData().getInsertCnt());
         } else {
@@ -280,7 +306,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
         LoadCollectionParam loadCollectionParam = LoadCollectionParam.newBuilder()
                 .withCollectionName(fullCollectionName)
                 .build();
-        R<RpcStatus> loadResponse = milvusServiceClient.loadCollection(loadCollectionParam);
+        R<RpcStatus> loadResponse = getMilvusClient().loadCollection(loadCollectionParam);
         if (loadResponse.getStatus() != R.Status.Success.getCode()) {
             log.error("加载集合 " + fullCollectionName + " 到内存时出错：" + loadResponse.getMessage());
         }
@@ -293,7 +319,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
 
     @Override
     public void removeByKid(String kid) {
-        milvusServiceClient.dropCollection(
+        getMilvusClient().dropCollection(
                 DropCollectionParam.newBuilder()
                         .withCollectionName(paramConfig.getVector().getCollectionName() + kid)
                         .build()
@@ -309,7 +335,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .withCollectionName(fullCollectionName)
                 .build();
 
-        R<Boolean> booleanR = milvusServiceClient.hasCollection(hasCollectionParam);
+        R<Boolean> booleanR = getMilvusClient().hasCollection(hasCollectionParam);
         if (booleanR.getStatus() != R.Status.Success.getCode() || !booleanR.getData().booleanValue()) {
            log.error("集合 " + fullCollectionName + " 不存在或检查集合存在性时出错。");
             return new ArrayList<>();
@@ -320,7 +346,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
 
         DescribeIndexParam describeIndexParam = DescribeIndexParam.newBuilder().withCollectionName(fullCollectionName).build();
 
-        R<DescribeIndexResponse> describeIndexResponseR = milvusServiceClient.describeIndex(describeIndexParam);
+        R<DescribeIndexResponse> describeIndexResponseR = getMilvusClient().describeIndex(describeIndexParam);
 
         if (describeIndexResponseR.getStatus() == R.Status.Success.getCode()) {
            log.info("索引信息: " + describeIndexResponseR.getData().getIndexDescriptionsCount());
@@ -347,7 +373,7 @@ public class MilvusVectorStore implements IYqueVectorStore {
                 .withParams(search_param)
                 .build();
         System.out.println("SearchParam: " + searchParam.toString());
-        R<SearchResults> respSearch = milvusServiceClient.search(searchParam);
+        R<SearchResults> respSearch = getMilvusClient().search(searchParam);
         if (respSearch.getStatus() == R.Status.Success.getCode()) {
             SearchResults searchResults = respSearch.getData();
             if (searchResults != null) {
