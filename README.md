@@ -1,4 +1,16 @@
 ![输入图片说明](pic/tab_logo2.png)
+
+<div align="center">
+
+[![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
+[![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
+[![iYQue](https://img.shields.io/badge/iYQue-V1.0.0-brightgreen)](https://gitee.com/iyque/iYqueCode/releases/tag/V20250507)
+[![license](http://img.shields.io/badge/license-Apache%202.0-orange)](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
+
+
+</div>
+
+
 ### 重要链接
 - 官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 开源版部署配置文档: <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs/</a>
@@ -165,7 +177,7 @@
 ![img.png](img/j-3.jpg)
 
 ## 七、版权说明
-  该项目在遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
+  该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
 
 ## 八、特别鸣谢
    本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：

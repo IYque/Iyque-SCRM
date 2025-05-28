@@ -47,6 +47,33 @@ export const navRoutes = [
       },
     ],
   },
+
+  {
+    path: '/marketing',
+    component: Layout,
+    redirect: '/marketing/massMarketing/group',
+    meta: { title: '营销-私域营销-高效触达私域客户', icon: 'marketing' },
+    children: [
+      {
+        path: 'massMarketing',
+        // component: () => import('@/views/massMarketing/index'),
+        meta: { title: '群发营销' },
+        children: [
+          // {
+          //   path: 'customer',
+          //   component: () => import('@/views/massMarketing/list'),
+          //   meta: { title: '群发客户' },
+          // },
+          {
+            path: 'group',
+            component: () => import('@/views/massMarketing/list'),
+            meta: { title: '群发客群' },
+          },
+        ],
+      },
+    ],
+  },
+
   {
     path: '/customerService',
     component: Layout,
