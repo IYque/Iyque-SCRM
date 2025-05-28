@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { getList, getDetail, save } from './api'
 
-const props = defineProps({
-  type: { type: String, default: location.href.includes('customer') ? 'single' : 'group' },
-})
+// const props = defineProps({
+//   type: { type: String, default: location.href.includes('customer') ? 'single' : 'group' },
+// })
 
 const sendType = { '1': '立即发送', '2': '定时发送' }
-let chatType = location.href.includes('customer') ? 'single' : 'group'
+let type = ref(location.href.includes('customer') ? 'single' : 'group')
 
 // const form = ref({})
 const addAttachmentRef = ref({})
@@ -14,7 +14,7 @@ const rctRef = ref()
 
 async function submit({ form, visible, loading }) {
   form = JSON.parse(JSON.stringify(form.value))
-  form.chatType = chatType || props.type
+  form.chatType = type.value
   form.periodAnnexLists = []
   let tasks = form.annexLists?.map(async (e, i) => {
     let contentForm = await addAttachmentRef.value.contentFormRef[i].submit()

@@ -59,11 +59,11 @@ export const navRoutes = [
         // component: () => import('@/views/massMarketing/index'),
         meta: { title: '群发营销' },
         children: [
-          // {
-          //   path: 'customer',
-          //   component: () => import('@/views/massMarketing/list'),
-          //   meta: { title: '群发客户' },
-          // },
+          {
+            path: 'customer',
+            component: () => import('@/views/massMarketing/list'),
+            meta: { title: '群发客户' },
+          },
           {
             path: 'group',
             component: () => import('@/views/massMarketing/list'),
