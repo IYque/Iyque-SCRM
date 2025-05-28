@@ -6,6 +6,7 @@ import cn.iyque.entity.IYqueGroupMsg;
 import cn.iyque.entity.IYqueGroupMsgSub;
 import cn.iyque.entity.IYqueMsgAnnex;
 import cn.iyque.enums.GroupMsgSendStatus;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueChatService;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueMsgAnnexService;
@@ -32,7 +33,7 @@ public class GroupMassSender extends AbstractMassSender{
 
         //如果群发目标群为全部群发,则查询出相关群做设置
         if(iYqueGroupMsg.getScopeType()
-                .equals(new Integer(1))){//全部
+                .equals(new Integer(0))){//全部
             List<IYqueChat> allIYqueChat =
                     SpringUtils.getBean(IYqueChatService.class).findAllIYqueChat();
 
@@ -71,7 +72,7 @@ public class GroupMassSender extends AbstractMassSender{
 
 
     @Override
-    protected void send(IYqueGroupMsg iYqueGroupMsg) {
+    protected void send(IYqueGroupMsg iYqueGroupMsg) throws IYqueException{
 
         List<IYqueGroupMsgSub> groupMsgSubList
                 = iYqueGroupMsg.getGroupMsgSubList();
@@ -142,6 +143,7 @@ public class GroupMassSender extends AbstractMassSender{
                        }catch (Exception e){
 
                              log.error("群发任务调用api失败:"+e.getMessage());
+                             throw new IYqueException(e.getMessage());
 
                        }
 

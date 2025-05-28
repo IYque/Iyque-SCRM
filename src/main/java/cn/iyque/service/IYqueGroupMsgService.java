@@ -2,6 +2,7 @@ package cn.iyque.service;
 
 import cn.iyque.entity.IYqueGroupMsg;
 import cn.iyque.entity.IYqueUser;
+import cn.iyque.exception.IYqueException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,5 +30,5 @@ public interface IYqueGroupMsgService {
      * 群发构建
      * @param iYqueGroupMsg
      */
-    void buildGroupMsg(IYqueGroupMsg iYqueGroupMsg);
+    void buildGroupMsg(IYqueGroupMsg iYqueGroupMsg) throws IYqueException;
 }

@@ -26,15 +26,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Where(clause = "delFlag = 0")
 public class IYqueGroupMsg {
 
     @Id
-    @GeneratedValue(generator = "snowflakeIdGenerator")
-    @GenericGenerator(
-            name = "snowflakeIdGenerator",
-            strategy = "cn.iyque.utils.SnowFlakeUtils"
-    )
+//    @GeneratedValue(generator = "snowflakeIdGenerator")
+//    @GenericGenerator(
+//            name = "snowflakeIdGenerator",
+//            strategy = "cn.iyque.utils.SnowFlakeUtils"
+//    )
     private Long id;
 
 
@@ -44,7 +43,7 @@ public class IYqueGroupMsg {
     //群发类型：single:客户群发 group:客群群发
     private String chatType;
 
-    //群发范围：1:全部 2:部份
+    //群发范围：0:全部 1:部份
     private Integer scopeType;
 
 

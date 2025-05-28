@@ -6,6 +6,7 @@ import cn.iyque.dao.IYqueGroupMsgSubDao;
 import cn.iyque.entity.IYqueGroupMsg;
 import cn.iyque.entity.IYqueGroupMsgSub;
 import cn.iyque.entity.IYqueMsgAnnex;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueMsgAnnexService;
 import cn.iyque.utils.SnowFlakeUtils;
 import cn.iyque.utils.SpringUtils;
@@ -18,16 +19,35 @@ public abstract class AbstractMassSender {
 
 
 
-    public final void executeMassSend(IYqueGroupMsg task) {
-        task.setId(SnowFlakeUtils.nextId());
-        task.setUpdateTime(new Date());
-        task.setCreateTime(new Date());
-        //处理目标发送对象
-        prepareTarget(task);
-        //消息群发
-        send(task);
-        //数据入库
-        saveToDatabase(task);
+    public final void executeMassSend(IYqueGroupMsg task) throws IYqueException{
+
+        SpringUtils.getBean(TransactionTemplate.class).execute(status -> {
+
+            try {
+
+                task.setId(SnowFlakeUtils.nextId());
+                task.setUpdateTime(new Date());
+                task.setCreateTime(new Date());
+                //处理目标发送对象
+                prepareTarget(task);
+                //消息群发
+                send(task);
+                //数据入库
+                saveToDatabase(task);
+                return true;
+            }catch (IYqueException e){
+
+                status.setRollbackOnly();
+                throw e;
+            }
+
+
+
+
+        });
+
+
+
     }
 
 
@@ -44,36 +64,33 @@ public abstract class AbstractMassSender {
      */
     protected void saveToDatabase(IYqueGroupMsg iYqueGroupMsg) {
 
-        SpringUtils.getBean(TransactionTemplate.class).execute(status -> {
-            try {
+        try {
 
-                SpringUtils.getBean(IYqueGroupMsgDao.class).save(iYqueGroupMsg);
-                List<IYqueGroupMsgSub> groupMsgSubList = iYqueGroupMsg.getGroupMsgSubList();
-                if(CollectionUtil.isNotEmpty(groupMsgSubList)){
-                    SpringUtils.getBean(IYqueGroupMsgSubDao.class).saveAll(groupMsgSubList);
-                }
-
-                List<IYqueMsgAnnex> annexLists = iYqueGroupMsg.getAnnexLists();
-                if(CollectionUtil.isNotEmpty(annexLists)){
-                    SpringUtils.getBean(IYqueMsgAnnexService.class).saveAll(annexLists);
-                }
-                return true;
-            }catch (Exception e){
-                status.setRollbackOnly();
-                throw e;
+            SpringUtils.getBean(IYqueGroupMsgDao.class).save(iYqueGroupMsg);
+            List<IYqueGroupMsgSub> groupMsgSubList = iYqueGroupMsg.getGroupMsgSubList();
+            if(CollectionUtil.isNotEmpty(groupMsgSubList)){
+                SpringUtils.getBean(IYqueGroupMsgSubDao.class).saveAll(groupMsgSubList);
             }
 
+            List<IYqueMsgAnnex> annexLists = iYqueGroupMsg.getAnnexLists();
+            if(CollectionUtil.isNotEmpty(annexLists)){
+                annexLists.stream().forEach(k->{
+                    k.setMsgId(iYqueGroupMsg.getId());
+                });
+                SpringUtils.getBean(IYqueMsgAnnexService.class).saveAll(annexLists);
+            }
+        }catch (Exception e){
+            throw e;
+        }
 
-         }
 
-        );
 
 
     }
 
 
     // 抽象方法 - 由子类实现具体发送逻辑
-    protected abstract void send(IYqueGroupMsg iYqueGroupMsg);
+    protected abstract void send(IYqueGroupMsg iYqueGroupMsg)  throws IYqueException;
 
 
 }

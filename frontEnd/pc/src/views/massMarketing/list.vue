@@ -38,8 +38,12 @@ async function submit({ form, visible, loading }) {
 }
 
 const dialogRef = ref()
+const isDetail = computed(() => {
+  return dialogRef.value?.form?.id
+})
 function goDetail(row) {
   getDetail(row.id).then(({ data }) => {
+    data.sendType = data.sendType?.toString()
     row = data
     dialogRef.value.action(row)
   })
@@ -75,7 +79,12 @@ function goDetail(row) {
           ref="dialogRef"
           title="新建任务"
           width="1000"
-          :formProps="{ 'label-width': 'auto' }"
+          :isFooter="!isDetail"
+          :formProps="{
+            'label-width': 'auto',
+            disabled: isDetail,
+            class: isDetail && 'form-detail',
+          }"
           :rules="{
             scopeType: [$sdk.ruleRequiredChange],
             sendType: [$sdk.ruleRequiredChange],
@@ -102,10 +111,17 @@ function goDetail(row) {
               </el-form-item>
               <template v-if="form.scopeType == 1">
                 <el-form-item label="选择客群" prop="scopeType">
-                  <el-button class="mr10" type="primary" @click="$refs.SelectGroupRef.dialogRef.visible = true">
+                  <el-button
+                    class="mr10"
+                    v-if="!isDetail"
+                    type="primary"
+                    @click="$refs.SelectGroupRef.dialogRef.visible = true">
                     选择客群
                   </el-button>
-                  <TagEllipsis :list="form.groupMsgSubList" defaultProps="acceptName"></TagEllipsis>
+                  <TagEllipsis
+                    :list="form.groupMsgSubList"
+                    defaultProps="acceptName"
+                    :emptyText="!!isDetail"></TagEllipsis>
 
                   <SelectGroup
                     ref="SelectGroupRef"
@@ -133,7 +149,7 @@ function goDetail(row) {
               </el-form-item>
               <template v-if="form.scopeType == 1">
                 <el-form-item label="选择客户" prop="scopeType">
-                  <el-button type="primary" @click="$refs.selectHotWordRef.dialogRef.visible = true">
+                  <el-button v-if="!isDetail" type="primary" @click="$refs.selectHotWordRef.dialogRef.visible = true">
                     选择客户
                   </el-button>
                 </el-form-item>
@@ -177,7 +193,7 @@ function goDetail(row) {
                 :autofocus="false" />
             </el-form-item>
             <el-form-item label="群发附件" prop="">
-              <addAttachment ref="addAttachmentRef" :form="form" @remove="remove" />
+              <addAttachment ref="addAttachmentRef" :isDetail="isDetail" :form="form" @remove="remove" />
             </el-form-item>
           </template>
         </BaseDialog>

@@ -1,8 +1,10 @@
 package cn.iyque.controller;
 
 
+import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueGroupMsg;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueGroupMsgService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +63,13 @@ public class IYqueGroupMsgController {
     @PostMapping("/buildGroupMsg")
     public ResponseResult buildGroupMsg(@RequestBody IYqueGroupMsg iYqueGroupMsg){
 
-        yqueGroupMsgService.buildGroupMsg(iYqueGroupMsg);
+        try {
+            yqueGroupMsgService.buildGroupMsg(iYqueGroupMsg);
+        }catch (IYqueException e){
+          log.error(e.getMsg());
+            return new ResponseResult(HttpStatus.ERROR,e.getMsg(),null);
+        }
+
 
         return new ResponseResult();
 

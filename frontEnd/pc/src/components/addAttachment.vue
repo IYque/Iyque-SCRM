@@ -4,6 +4,7 @@ import { dictMsgType } from '@/utils/index'
 const props = defineProps({
   form: { type: Object, default: () => {} },
   max: { type: [String, Number], default: 9 },
+  isDetail: { type: Boolean, default: false },
 })
 
 const bottomRef = ref()
@@ -42,6 +43,7 @@ defineExpose({
 <template>
   <div>
     <el-popover
+      v-if="!isDetail"
       trigger="hover"
       :content="'最多添加' + max + '个'"
       placement="top-start"
@@ -60,11 +62,19 @@ defineExpose({
       </template>
     </el-popover>
     <el-alert
+      v-if="!isDetail"
+      class="mb15"
       title="注: 1.图片:10MB,支持JPG,PNG格式; 2.视频:10MB,支持MP4格式; 3.普通文件:20MB"
       type="error"
       :closable="false"></el-alert>
-    <br />
-    <el-tabs v-if="form.annexLists" ref="tabs" v-model="active" type="card" class="" closable @tab-remove="remove">
+    <el-tabs
+      v-if="form.annexLists?.length"
+      ref="tabs"
+      v-model="active"
+      type="card"
+      class=""
+      closable
+      @tab-remove="remove">
       <el-tab-pane
         v-for="(item, index) in form.annexLists"
         :key="item.msgtype"
@@ -73,6 +83,7 @@ defineExpose({
         <MessageContentForm :type="item.msgtype" ref="contentFormRef" :form="item[item.msgtype]" />
       </el-tab-pane>
     </el-tabs>
+    <div v-else-if="isDetail">暂无附件</div>
     <div ref="bottomRef"></div>
   </div>
 </template>

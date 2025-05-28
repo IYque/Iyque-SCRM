@@ -23,7 +23,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Where(clause = "delFlag = 0")
 public class IYqueGroupMsgSub {
 
     @Id

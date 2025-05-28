@@ -4,6 +4,7 @@ package cn.iyque.service.impl;
 import cn.iyque.dao.IYqueGroupMsgDao;
 import cn.iyque.dao.IYqueGroupMsgSubDao;
 import cn.iyque.entity.IYqueGroupMsg;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.mass.MassSenderFactoryService;
 import cn.iyque.service.IYqueGroupMsgService;
 import cn.iyque.service.IYqueMsgAnnexService;
@@ -82,13 +83,16 @@ public class IYqueGroupMsgServiceImpl implements IYqueGroupMsgService {
     }
 
     @Override
-    public void buildGroupMsg(IYqueGroupMsg iYqueGroupMsg) {
+    public void buildGroupMsg(IYqueGroupMsg iYqueGroupMsg) throws IYqueException{
 
 
-        massSenderFactory.createSender(iYqueGroupMsg.getChatType()).executeMassSend(
-                iYqueGroupMsg
-        );
-
+        try {
+            massSenderFactory.createSender(iYqueGroupMsg.getChatType()).executeMassSend(
+                    iYqueGroupMsg
+            );
+        }catch (IYqueException e){
+            throw e;
+        }
 
 
     }
