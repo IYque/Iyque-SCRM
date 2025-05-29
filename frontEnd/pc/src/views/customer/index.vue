@@ -4,6 +4,8 @@ import { getList } from './api'
 defineProps({
   isSelect: { type: Boolean, default: false },
 })
+
+const customerType = Object.freeze({ 1: '微信客户', 2: '企业客户' })
 </script>
 
 <template>
@@ -15,15 +17,19 @@ defineProps({
         <el-form-item label="客户名称" prop="kfName">
           <el-input v-model="query.kfName" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="客户类型" prop="sendType">
-          <el-select v-model="query.sendType" :popper-append-to-body="false">
-            <el-option v-for="(value, key) in sendType" :key="key" :label="value" :value="key" />
+        <el-form-item label="客户类型" prop="customerType">
+          <el-select v-model="query.customerType" :popper-append-to-body="false">
+            <el-option v-for="(value, key) in customerType" :key="key" :label="value" :value="key" />
           </el-select>
         </el-form-item>
       </template>
 
       <template #table="{ data }">
-        <el-table-column prop="groupMsgName" label="客户"></el-table-column>
+        <el-table-column label="客户" prop="customerName" header-align="center" align="" width="180">
+          <template #default="{ row }">
+            <CustomerInfoCell :data="row" @click="goRoute(row)" />
+          </template>
+        </el-table-column>
         <!-- <el-table-column prop="tagNames" label="客户标签" align="center" width="220">
           <template #default="{ row }">
             <TagEllipsis :list="row.tagNames" emptyText="无标签"></TagEllipsis>
@@ -35,7 +41,7 @@ defineProps({
           </template> -->
         </el-table-column>
         <el-table-column prop="content" label="客户来源"></el-table-column>
-        <el-table-column label="添加时间" prop="sendTime" width="180"></el-table-column>
+        <el-table-column label="添加时间" prop="sendTime" width=""></el-table-column>
         <!-- <el-table-column label="操作" fixed="right" width="130">
           <template #default="{ row }">
             <el-button text @click="showResultList(row)">咨询记录</el-button>

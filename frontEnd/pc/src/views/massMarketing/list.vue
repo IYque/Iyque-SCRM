@@ -161,7 +161,7 @@ function goDetail(row) {
                         (form.groupMsgSubList = selected.map((e) => ({
                           acceptId: e.chatId,
                           acceptName: e.chatName,
-                          acceptType: '2',
+                          acceptType: '1',
                           senderId: e.owner,
                         }))),
                         (visible.value = false),
