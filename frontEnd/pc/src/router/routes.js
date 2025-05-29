@@ -49,6 +49,30 @@ export const navRoutes = [
   },
 
   {
+    path: '/manage',
+    component: Layout,
+    redirect: '/manage/customer',
+    meta: { title: '管理-私域管理-高效维护企业客户/客群', icon: 'system' },
+    children: [
+      {
+        path: 'customer',
+        component: () => import('@/views/customer/index'),
+        meta: { title: '客户列表' },
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/user/index'),
+        meta: { title: '员工列表' },
+      },
+      {
+        path: 'groupChat',
+        component: () => import('@/views/groupChat/index'),
+        meta: { title: '客群列表' },
+      },
+    ],
+  },
+
+  {
     path: '/marketing',
     component: Layout,
     redirect: '/marketing/massMarketing/group',
@@ -227,23 +251,23 @@ export const navRoutes = [
     path: '/config',
     component: Layout,
     redirect: '/config/index',
-    meta: { title: '配置-配置中心-企微&系统配置', icon: 'system' },
+    meta: { title: '配置-配置中心-企微&系统配置', icon: 'config' },
     children: [
       {
         path: 'index',
         component: () => import('@/views/config/index'),
         meta: { title: '系统配置' },
       },
-      {
-        path: 'user',
-        component: () => import('@/views/user/index'),
-        meta: { title: '员工列表' },
-      },
-      {
-        path: 'groupChat',
-        component: () => import('@/views/groupChat/index'),
-        meta: { title: '客群列表' },
-      },
+      // {
+      //   path: 'user',
+      //   component: () => import('@/views/user/index'),
+      //   meta: { title: '员工列表' },
+      // },
+      // {
+      //   path: 'groupChat',
+      //   component: () => import('@/views/groupChat/index'),
+      //   meta: { title: '客群列表' },
+      // },
     ],
   },
 ]

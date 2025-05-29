@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getList, getDetail, save } from './api'
+import SelectCustomer from './SelectCustomer.vue'
 
 // const props = defineProps({
 //   type: { type: String, default: location.href.includes('customer') ? 'single' : 'group' },
@@ -149,9 +150,24 @@ function goDetail(row) {
               </el-form-item>
               <template v-if="form.scopeType == 1">
                 <el-form-item label="选择客户" prop="scopeType">
-                  <el-button v-if="!isDetail" type="primary" @click="$refs.selectHotWordRef.dialogRef.visible = true">
+                  <el-button v-if="!isDetail" type="primary" @click="$refs.SelectCustomerRef.dialogRef.visible = true">
                     选择客户
                   </el-button>
+
+                  <SelectCustomer
+                    ref="SelectCustomerRef"
+                    @confirm="
+                      ({ visible, loading, selected }) => (
+                        (form.groupMsgSubList = selected.map((e) => ({
+                          acceptId: e.chatId,
+                          acceptName: e.chatName,
+                          acceptType: '2',
+                          senderId: e.owner,
+                        }))),
+                        (visible.value = false),
+                        (loading.value = false)
+                      )
+                    "></SelectCustomer>
                 </el-form-item>
               </template>
             </template>
