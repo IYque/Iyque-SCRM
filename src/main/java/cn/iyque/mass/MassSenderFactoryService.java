@@ -11,6 +11,8 @@ public class MassSenderFactoryService {
         switch (chatType) {
             case "group"://客群群发
                 return new GroupMassSender();
+            case "single"://客户群发
+                return new GroupMassSender();
             default:
                 throw new IllegalArgumentException("不支持的群发类型");
         }

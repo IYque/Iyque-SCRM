@@ -1,0 +1,19 @@
+package cn.iyque.enums;
+
+
+import lombok.Getter;
+
+@Getter
+public enum SynchDataRecordType {
+    RECORD_TYPE_SYNCH_CUSTOMER(1,"客户同步");
+    private final Integer code;
+    private final String info;
+
+    SynchDataRecordType(Integer code, String info)
+    {
+        this.code = code;
+        this.info = info;
+    }
+
+
+}

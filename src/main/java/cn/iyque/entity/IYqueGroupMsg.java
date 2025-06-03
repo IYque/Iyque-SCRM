@@ -29,11 +29,6 @@ import java.util.List;
 public class IYqueGroupMsg {
 
     @Id
-//    @GeneratedValue(generator = "snowflakeIdGenerator")
-//    @GenericGenerator(
-//            name = "snowflakeIdGenerator",
-//            strategy = "cn.iyque.utils.SnowFlakeUtils"
-//    )
     private Long id;
 
 

@@ -40,32 +40,9 @@ public class IYqueKnowledgeController {
     private IYqueKnowledgeFragmentService yqueKnowledgeFragmentService;
 
 
-    @Autowired
-    private IYqueVectorStore iYqueVectorStore;
-
-    @Autowired
-    private IYqueEmbeddingService yqueEmbeddingService;
 
 
 
-
-      @GetMapping("/getXXX")
-      public void getXXX(String content,String kid){
-          //向量库检索相关数据
-          List<String> nearest = iYqueVectorStore
-                  .nearest(yqueEmbeddingService.getQueryVector(content,kid),kid);
-          //从数据库获取片段内容
-          if(CollectionUtil.isNotEmpty(nearest)){
-              List<IYqueKnowledgeFragment> fragmentList = yqueKnowledgeFragmentService.findAllByIds(nearest.stream()
-                      .map(Long::parseLong)  // 或使用 s -> Long.parseLong(s)
-                      .collect(Collectors.toList()));
-              System.out.println(fragmentList);
-          }
-
-
-          System.out.println(nearest);
-
-      }
 
 
 

@@ -2,25 +2,34 @@ package cn.iyque.service.impl;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.CodeStateConstant;
-import cn.iyque.dao.IYQueCustomerInfoDao;
-import cn.iyque.dao.IYqueShortLinkDao;
-import cn.iyque.dao.IYqueUserCodeDao;
+import cn.iyque.dao.*;
 import cn.iyque.domain.*;
-import cn.iyque.entity.IYqueShortLink;
-import cn.iyque.entity.IYqueUserCode;
+import cn.iyque.entity.*;
+import cn.iyque.enums.CustomerAddWay;
 import cn.iyque.enums.CustomerStatusType;
+import cn.iyque.enums.SynchDataRecordType;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
 import cn.iyque.strategy.callback.*;
 import cn.iyque.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.bean.external.contact.ExternalContact;
 import me.chanjar.weixin.cp.bean.external.contact.FollowedUser;
+import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactBatchInfo;
 import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -44,6 +53,14 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
     @Autowired
     IYqueShortLinkDao iYqueShortLinkDao;
+
+
+    @Autowired
+    IYqueSynchDataRecordDao iYqueSynchDataRecordDao;
+
+
+    @Autowired
+    IYqueUserDao iYqueUserDao;
 
 
     @Override
@@ -419,6 +436,157 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
         }
 
         return iyQueCustomerInfo;
+    }
+
+    @Override
+    public Page<IYQueCustomerInfo> findAll(IYQueCustomerInfo iyQueCustomerInfo, Pageable pageable) {
+        Specification<IYQueCustomerInfo> spec = Specification.where(null);
+
+        if(StringUtils.isNotEmpty(iyQueCustomerInfo.getCustomerName())){
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("customerName")), "%" + iyQueCustomerInfo.getCustomerName().toLowerCase() + "%"));
+
+        }
+
+        if (iyQueCustomerInfo.getStatus() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("status")), iyQueCustomerInfo.getStatus()));
+        }
+
+
+
+        Page<IYQueCustomerInfo> customerInfos = iyQueCustomerInfoDao.findAll(spec, pageable);
+        List<IYQueCustomerInfo> content = customerInfos.getContent();
+        if(CollectionUtil.isNotEmpty(content)) {
+            content.stream().forEach(k->{
+                List<IYqueUser> iYqueUsers = iYqueUserDao.findByUserId(k.getUserId());
+                if(CollectionUtil.isNotEmpty(iYqueUsers)){
+                    k.setUserName(
+                            iYqueUsers.stream().findFirst().get().getName()
+                    );
+
+                }
+
+            });
+        }
+
+
+
+        return customerInfos;
+    }
+
+
+    @Override
+    @Async
+    public void synchCustomer() {
+        try {
+            List<IYQueCustomerInfo> customerInfos=new ArrayList<>();
+
+            WxCpExternalContactService externalContactService = iYqueConfigService.findWxcpservice()
+                    .getExternalContactService();
+
+            if(null != externalContactService){
+                //获取应用可见范围下，拥有外部联系人功能的成员列表
+                List<String> listFollowers =
+                        externalContactService.listFollowers();
+                if(CollectionUtil.isNotEmpty(listFollowers)){
+                    log.info("外部联系人列表:"+listFollowers);
+                   ListUtil.partition(listFollowers, 100).stream().forEach(kk->{
+
+
+                       try {
+                           String nextCursor="";
+                           IYqueSynchDataRecord iYqueSynchDataRecord = iYqueSynchDataRecordDao.findTopBySynchDataTypeOrderByCreateTimeDesc(SynchDataRecordType
+                                   .RECORD_TYPE_SYNCH_CUSTOMER.getCode());
+
+                           if(null != iYqueSynchDataRecord && StringUtils.isNotEmpty(iYqueSynchDataRecord.getNextCursor())){
+                               nextCursor=iYqueSynchDataRecord.getNextCursor();
+                           }
+
+
+
+                           do {
+
+                               WxCpExternalContactBatchInfo contactDetailBatch = externalContactService
+                                       .getContactDetailBatch(Convert.toStrArray(kk), nextCursor, 100);
+
+                               if(contactDetailBatch.success()){
+                                   List<WxCpExternalContactBatchInfo.ExternalContactInfo> externalContactList = contactDetailBatch.getExternalContactList();
+
+                                   for(WxCpExternalContactBatchInfo.ExternalContactInfo item:externalContactList){
+                                       //跟进人
+                                       FollowedUser followInfo = item.getFollowInfo();
+
+
+                                       //客户基础信息
+                                       ExternalContact externalContact = item.getExternalContact();
+
+                                       customerInfos.add(
+                                               IYQueCustomerInfo.builder().eId(externalContact.getExternalUserId()+"&"+followInfo.getUserId())
+                                                       .customerName(externalContact.getName())
+                                                       .avatar(externalContact.getAvatar())
+                                                       .type(externalContact.getType())
+                                                       .externalUserid(externalContact.getExternalUserId())
+                                                       .addWay(CustomerAddWay.of(new Integer(followInfo.getAddWay())).getVal())
+                                                       .userId(followInfo.getUserId())
+                                                       .state(followInfo.getState())
+                                                       .addTime(new Date(followInfo.getCreateTime() * 1000L))
+                                                       .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
+                                                       .build()
+                                       );
+
+
+
+                                   }
+                                   nextCursor=contactDetailBatch.getNextCursor();
+
+                                   if(StringUtils.isNotEmpty(nextCursor)){
+                                       //最后一次同步下标记录
+                                       iYqueSynchDataRecordDao.save(
+                                               IYqueSynchDataRecord.builder().synchDataType(SynchDataRecordType
+                                                               .RECORD_TYPE_SYNCH_CUSTOMER.getCode())
+                                                       .nextCursor(nextCursor)
+                                                       .createTime(new Date())
+                                                       .build()
+                                       );
+                                   }
+
+
+
+
+                               }
+
+
+                           } while (StringUtils.isNotEmpty(nextCursor));
+
+
+
+
+                       }catch (Exception e){
+                           e.printStackTrace();
+
+                           throw new IYqueException(e.getMessage());
+                       }
+
+                   });
+
+                }
+
+
+                if(CollectionUtil.isNotEmpty(customerInfos)){
+                    ListUtil.partition(customerInfos, 100).stream().forEach(items->{
+
+                        iyQueCustomerInfoDao.saveAllAndFlush(items);
+                    });
+
+                }
+            }
+
+
+
+
+        }catch (Exception e){
+            log.error("客户同步失败:"+e.getMessage());
+        }
+
     }
 
 
