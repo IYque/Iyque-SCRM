@@ -191,7 +191,7 @@ div:focus {
     border-radius: var(--border-radius-big);
     background: var(--bg-white);
     overflow: auto;
-    padding: 20px;
+    padding: var(--Padding);
     scroll-behavior: smooth;
     &:not(:first-child) {
       margin-top: var(--card-margin);

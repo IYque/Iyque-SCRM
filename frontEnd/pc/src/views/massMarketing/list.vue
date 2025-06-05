@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getList, getDetail, save } from './api'
-import SelectCustomer from './SelectCustomer.vue'
+import SelectCustomer from '@/views/customer/SelectCustomer.vue'
 
 // const props = defineProps({
 //   type: { type: String, default: location.href.includes('customer') ? 'single' : 'group' },
@@ -61,7 +61,7 @@ function goDetail(row) {
 
 <template>
   <div :_="$store.setBusininessDesc(`<div>通过企业微信群发工具触达客户</div>`)">
-    <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
+    <RequestChartTable ref="rctRef" :request="getList" :params="{ chatType: type }" searchBtnType="icon">
       <template #query="{ query }">
         <el-form-item label="群发内容" prop="groupMsgName">
           <el-input v-model="query.groupMsgName" placeholder="请输入" clearable />
@@ -150,19 +150,28 @@ function goDetail(row) {
               </el-form-item>
               <template v-if="form.scopeType == 1">
                 <el-form-item label="选择客户" prop="scopeType">
-                  <el-button v-if="!isDetail" type="primary" @click="$refs.SelectCustomerRef.dialogRef.visible = true">
+                  <el-button
+                    class="mr10"
+                    v-if="!isDetail"
+                    type="primary"
+                    @click="$refs.SelectCustomerRef.dialogRef.visible = true">
                     选择客户
                   </el-button>
+
+                  <TagEllipsis
+                    :list="form.groupMsgSubList"
+                    defaultProps="acceptName"
+                    :emptyText="!!isDetail"></TagEllipsis>
 
                   <SelectCustomer
                     ref="SelectCustomerRef"
                     @confirm="
                       ({ visible, loading, selected }) => (
                         (form.groupMsgSubList = selected.map((e) => ({
-                          acceptId: e.chatId,
-                          acceptName: e.chatName,
+                          acceptId: e.externalUserid,
+                          acceptName: e.customerName,
                           acceptType: '1',
-                          senderId: e.owner,
+                          // senderId: e.owner,
                         }))),
                         (visible.value = false),
                         (loading.value = false)

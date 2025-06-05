@@ -13,9 +13,15 @@ defineExpose({
   <BaseDialog
     ref="dialogRef"
     title="选择客户"
+    append-to-body
+    width="900"
     @confirm="({ visible, loading }) => $emit('confirm', { visible, loading, selected })">
     <index isSelect @selection-change="(val) => (selected = val)" />
   </BaseDialog>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep() .g-card {
+  --Padding: 0;
+}
+</style>

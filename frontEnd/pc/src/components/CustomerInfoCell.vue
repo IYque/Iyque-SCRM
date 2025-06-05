@@ -1,6 +1,6 @@
 <!-- 客户 头像、名称、姓名信息组合单元 -->
 <script>
-import profile from '@/assets/image/profile.jpg'
+import profile from '@/assets/icons/svg/user.svg'
 export default defineComponent({
   props: {
     data: { type: Object, default: () => ({}) },
@@ -31,8 +31,8 @@ export default defineComponent({
     <div class="ml10">
       <p class="blod">{{ data.customerName }}</p>
       <el-icon-Avatar :class="['el-icon-Avatar', { 1: 'man', 2: 'woman' }[data.gender]]" />
-      <span :style="{ color: data.customerType === 1 ? '#4bde03' : '#f9a90b' }">
-        {{ { 1: '@微信', 2: '@企业微信' }[data.customerType] }}
+      <span :style="{ color: data.type === 1 ? '#4bde03' : '#f9a90b' }">
+        {{ { 1: '@微信', 2: '@企业微信' }[data.type] }}
       </span>
     </div>
   </div>
