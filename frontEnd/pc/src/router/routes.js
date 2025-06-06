@@ -181,6 +181,11 @@ export const navRoutes = [
             meta: { title: 'AI会话预审' },
           },
           {
+            path: 'sessionSummary',
+            component: () => import('@/views/sessionSummary/index'),
+            meta: { title: 'AI会话总结' },
+          },
+          {
             path: 'intentionCustomer',
             component: () => import('@/views/intentionCustomer/index'),
             meta: { title: 'AI意向客户' },
