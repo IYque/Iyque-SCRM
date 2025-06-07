@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { getList, findGroupAll, summaryKfmsgByAi } from './api'
-import SelectCustomer from '@/views/customer/SelectCustomer.vue'
+import SelectServiceRecord from '@/views/serviceRecord/SelectServiceRecord.vue'
 
 const userList = ref([])
 
-function findGroupAllFn(isFresh) {
+function findGroupAllFn() {
   findGroupAll().then(({ data }) => {
     userList.value = data
   })
@@ -19,34 +19,24 @@ function findGroupAllFn(isFresh) {
   <div :_="$store.setBusininessDesc(`<div></div>`)">
     <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
       <template #query="{ query }">
-        <el-form-item label="客户名称" prop="kfName">
-          <el-input v-model="query.kfName" placeholder="请输入" />
+        <el-form-item label="客户名称" prop="nickname">
+          <el-input v-model="query.nickname" placeholder="请输入" />
         </el-form-item>
       </template>
 
       <template #operation="{ selectedIds }">
-        <el-button type="primary" @click="$refs.dialogRef.action()">圈选客户记录</el-button>
+        <el-button type="primary" @click="$refs.dialogRef.action(), findGroupAllFn()">圈选客户记录</el-button>
 
         <BaseDialog
           ref="dialogRef"
           title="圈选客户记录"
           width="1000"
-          :isFooter="!isDetail"
-          :formProps="{
-            'label-width': 'auto',
-            disabled: isDetail,
-            class: isDetail && 'form-detail',
-          }"
           :rules="{
-            scopeType: [$sdk.ruleRequiredChange],
-            sendType: [$sdk.ruleRequiredChange],
-            complainTime: [$sdk.ruleRequiredChange],
-            content: [$sdk.ruleRequiredBlur],
-            groupMsgName: [$sdk.ruleRequiredBlur],
+            externalUserIds: [{ type: 'array', ...$sdk.ruleRequiredChange }],
           }"
-          @confirm="submit">
+          @confirm="({ form }) => $refs.dialogRef.confirm(summaryKfmsgByAi, $refs.rctRef.getList)">
           <template #form="{ form }">
-            <el-form-item label="选择客户" prop="scopeType">
+            <el-form-item label="选择客户" prop="externalUserIds">
               <el-button
                 class="mr10"
                 v-if="!isDetail"
@@ -55,47 +45,32 @@ function findGroupAllFn(isFresh) {
                 选择客户
               </el-button>
 
-              <TagEllipsis :list="userList" defaultProps="acceptName" :emptyText="!!isDetail"></TagEllipsis>
+              <TagEllipsis :list="userList" defaultProps="nickname"></TagEllipsis>
 
               <div class="g-tip">选择服务记录中的咨询客户</div>
 
-              <SelectCustomer
+              <SelectServiceRecord
                 ref="SelectCustomerRef"
                 @confirm="
                   ({ visible, loading, selected }) => (
-                    (userList = selected.map((e) => ({
-                      acceptId: e.externalUserid,
-                      acceptName: e.customerName,
-                      acceptType: '1',
-                      // senderId: e.owner,
-                    }))),
+                    (userList = selected),
+                    (form.externalUserIds = selected.map((e) => e.externalUserId)),
+                    $refs.dialogRef.formRef.validate(),
+                    // (userList = selected.map((e) => ({
+                    //   externalUserId: e.externalUserid,
+                    //   nickname: e.nickname,
+                    // }))),
                     (visible.value = false),
                     (loading.value = false)
                   )
-                "></SelectCustomer>
-            </el-form-item>
-            <el-form-item label="选择记录时间" prop="complainTime">
-              <el-date-picker
-                v-model="form.complainTime"
-                type="datetime"
-                placeholder="选择日期时间"
-                :picker-options="{
-                  disabledDate(time) {
-                    return time.getTime() < Date.now()
-                  },
-                }"
-                :default-time="['00:00:00', '23:59:59']"
-                format="yyyy-MM-dd HH:mm:ss"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                clearable></el-date-picker>
-              <div class="g-tip">分析时间范围内的所选客户记录</div>
+                "></SelectServiceRecord>
             </el-form-item>
           </template>
         </BaseDialog>
       </template>
 
       <template #table="{ data }">
-        <el-table-column label="客户名称" fixed="left" prop="" min-width="140">
+        <el-table-column label="客户名称" fixed="left" prop="">
           <template #default="{ row }">
             <div class="flex items-center">
               <el-image class="flex-none" :src="row.avatar" style="width: 50px"></el-image>
@@ -106,12 +81,16 @@ function findGroupAllFn(isFresh) {
         <el-table-column label="会话时间段" min-width="100" prop="switchUserName">
           <template #default="{ row }">
             {{ row.startTime }}
-            <br />
+            ~
             {{ row.endTime }}
           </template>
         </el-table-column>
         <el-table-column label="分析时间" prop="createTime" width="180"></el-table-column>
-        <el-table-column prop="summaryContent" label="AI总结"></el-table-column>
+        <el-table-column prop="summaryContent" label="AI总结">
+          <template #default="{ row }">
+            <div class="truncate">{{ row.summaryContent || 'AI总结中，请稍后查看' }}</div>
+          </template>
+        </el-table-column>
         <!-- <el-table-column label="操作" fixed="right" width="130">
           <template #default="{ row }">
             <el-button text @click="showResultList(row)">咨询记录</el-button>

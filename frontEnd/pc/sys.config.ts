@@ -5,6 +5,11 @@ const envs = {
     BASE_URL: '/tools/',
     BASE_API: 'http://127.0.0.1:8085',
   },
+  test: {
+    DOMAIN: 'https://show.iyque.cn',
+    BASE_URL: '/tools/',
+    BASE_API: 'https://show.iyque.cn/iyque',
+  },
   production: {
     DOMAIN: 'https://iyque.cn',
     BASE_URL: '/tools/',

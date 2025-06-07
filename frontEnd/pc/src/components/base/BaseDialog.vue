@@ -59,6 +59,7 @@ defineExpose({
   form,
   action,
   confirm,
+  formRef,
 })
 </script>
 
