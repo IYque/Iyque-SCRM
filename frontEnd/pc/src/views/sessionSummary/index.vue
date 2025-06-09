@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getList, findGroupAll, summaryKfmsgByAi } from './api'
-import SelectServiceRecord from '@/views/serviceRecord/SelectServiceRecord.vue'
+import SelectCustomer from './SelectCustomer.vue'
 
 const userList = ref([])
 
@@ -25,7 +25,7 @@ function findGroupAllFn() {
       </template>
 
       <template #operation="{ selectedIds }">
-        <el-button type="primary" @click="$refs.dialogRef.action(), findGroupAllFn()">圈选客户记录</el-button>
+        <el-button type="primary" @click="$refs.dialogRef.action()">圈选客户记录</el-button>
 
         <BaseDialog
           ref="dialogRef"
@@ -49,7 +49,7 @@ function findGroupAllFn() {
 
               <div class="g-tip">选择服务记录中的咨询客户</div>
 
-              <SelectServiceRecord
+              <SelectCustomer
                 ref="SelectCustomerRef"
                 @confirm="
                   ({ visible, loading, selected }) => (
@@ -63,7 +63,7 @@ function findGroupAllFn() {
                     (visible.value = false),
                     (loading.value = false)
                   )
-                "></SelectServiceRecord>
+                "></SelectCustomer>
             </el-form-item>
           </template>
         </BaseDialog>

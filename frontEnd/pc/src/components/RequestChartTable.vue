@@ -130,7 +130,7 @@ export default defineComponent({
 
       return this.request(query)
         .then((resp) => {
-          let { rows, total, data } = resp
+          let { rows, total, count, data } = resp
           let res = data || rows
           // if (!data) return
           if (this.type == 'table') {
@@ -138,7 +138,7 @@ export default defineComponent({
             this.dealDataFun && this.dealDataFun(res, resp)
             this.response = resp
             this.data = res
-            this.total = +total
+            this.total = +total || +count
           } else {
             // 自定义echarts图表数据处理
             // this.data = data
