@@ -16,7 +16,7 @@ function findGroupAllFn() {
     <strong>基于客户会话内容，AI智能归纳聊天意图</strong>
   </div>
 
-  <div :_="$store.setBusininessDesc(`<div></div>`)">
+  <div :_="$store.setBusininessDesc(``)">
     <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
       <template #query="{ query }">
         <el-form-item label="客户名称" prop="nickname">
