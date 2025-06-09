@@ -86,9 +86,9 @@ function findGroupAllFn() {
           </template>
         </el-table-column>
         <el-table-column label="分析时间" prop="createTime" width="180"></el-table-column>
-        <el-table-column prop="summaryContent" label="AI总结">
+        <el-table-column prop="summaryContent" label="AI总结" >
           <template #default="{ row }">
-            <div class="truncate">{{ row.summaryContent || 'AI总结中，请稍后查看' }}</div>
+            <div class="wrap-text">{{ row.summaryContent}}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="操作" fixed="right" width="130">
@@ -113,5 +113,10 @@ function findGroupAllFn() {
   border-left: 5px solid #fe6c6f;
   margin: 20px 0;
   line-height: 40px;
+}
+
+.wrap-text {
+  white-space: pre-wrap; /* 保留换行符 */
+  word-break: break-word; /* 长单词或URL换行 */
 }
 </style>

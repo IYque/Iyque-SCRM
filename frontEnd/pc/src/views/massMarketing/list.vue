@@ -171,7 +171,7 @@ function goDetail(row) {
                           acceptId: e.externalUserid,
                           acceptName: e.customerName,
                           acceptType: '1',
-                          // senderId: e.owner,
+                          senderId: e.userId,
                         }))),
                         (visible.value = false),
                         (loading.value = false)

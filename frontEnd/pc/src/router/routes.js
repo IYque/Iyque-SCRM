@@ -86,12 +86,12 @@ export const navRoutes = [
           {
             path: 'customer',
             component: () => import('@/views/massMarketing/list'),
-            meta: { title: '群发客户' },
+            meta: { title: '客户群发' },
           },
           {
             path: 'group',
             component: () => import('@/views/massMarketing/list'),
-            meta: { title: '群发客群' },
+            meta: { title: '客群群发' },
           },
         ],
       },

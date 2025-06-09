@@ -451,6 +451,10 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
             spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("status")), iyQueCustomerInfo.getStatus()));
         }
 
+        if (iyQueCustomerInfo.getType() != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("type")), iyQueCustomerInfo.getType()));
+        }
+
 
 
         Page<IYQueCustomerInfo> customerInfos = iyQueCustomerInfoDao.findAll(spec, pageable);
