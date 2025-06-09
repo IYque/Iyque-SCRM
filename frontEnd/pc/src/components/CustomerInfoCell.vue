@@ -1,13 +1,12 @@
 <!-- 客户 头像、名称、姓名信息组合单元 -->
 <script>
-import profile from '@/assets/icons/svg/user.svg'
 export default defineComponent({
   props: {
     data: { type: Object, default: () => ({}) },
   },
   components: {},
   data() {
-    return { profile }
+    return {}
   },
   computed: {},
   watch: {},
@@ -27,7 +26,9 @@ export default defineComponent({
           query: { externalUserid: data.externalUserid, userId: data.addUserId },
         })
     ">
-    <el-image class="avatar" :src="data.avatar || profile" fit="fill"></el-image>
+    <el-image class="avatar" v-if="data.avatar" :src="data.avatar" fit="fill"></el-image>
+    <svg-icon v-else icon="user" class="avatar" />
+
     <div class="ml10">
       <p class="blod">{{ data.customerName }}</p>
       <el-icon-Avatar :class="['el-icon-Avatar', { 1: 'man', 2: 'woman' }[data.gender]]" />
@@ -48,6 +49,7 @@ export default defineComponent({
 .avatar {
   width: 56px;
   height: 56px;
+  color: var(--font-black-9);
   flex: none;
   border-radius: var(--border-radius-big);
 }
