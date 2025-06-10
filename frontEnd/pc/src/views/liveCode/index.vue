@@ -4,12 +4,12 @@ import * as apiLink from './apiLink'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
 
-let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = {}
+let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } = {}
 
 export default {
   data() {
     let isLink = location.href.includes('customerLink')
-    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend } = isLink
+    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } = isLink
       ? apiLink
       : api)
 
@@ -165,6 +165,34 @@ export default {
       const day = date.getDate().toString().padStart(2, '0')
       return `${year}-${month}-${day}`
     },
+
+    // 同步获客外链
+    synchShortLink() {
+      this.$confirm('是否同步企业微信中的获客外链数据？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$store.loading = true
+          synchShortLink()
+            .then((res) => {
+              this.msgSuccess(res.msg || '同步任务已启动，请稍后查看')
+              // 刷新列表
+              this.getList()
+            })
+            .catch((e) => {
+              console.error(e)
+              this.msgError('同步失败，请重试')
+            })
+            .finally(() => {
+              this.$store.loading = false
+            })
+        })
+        .catch(() => {
+          // 用户取消操作
+        })
+    },
   },
 }
 </script>
@@ -183,6 +211,7 @@ export default {
         <div class="g-card">
           <div class="fxbw">
             <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+            <el-button type="success" @click="synchShortLink()">同步外链</el-button>
             <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
           </div>
           <el-table

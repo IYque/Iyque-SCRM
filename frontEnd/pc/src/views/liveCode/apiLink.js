@@ -55,3 +55,9 @@ export const findIYqueUserCodeKvs = () => get(`${serve}/findIYqueUserCodeKvs`)
 export const countTotalTab = (data) => get(`${serve}/countTotalTab`, data)
 
 export const countTrend = (data) => get(`${serve}/countTrend`, data)
+
+/**
+ * 同步获客外链
+ * @returns
+ */
+export const synchShortLink = () => post(`${serve}/synchShortLink`)

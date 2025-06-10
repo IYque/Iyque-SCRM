@@ -24,4 +24,9 @@ public interface IYqueShortLinkService {
     IYqueShortLink findIYqueShortLinkById(Long id);
 
     void batchDelete(Long[] ids);
+
+    /**
+     * 同步获客外链
+     */
+    void synchShortLink();
 }
