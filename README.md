@@ -189,7 +189,7 @@
    本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
 -  <a href="https://gitee.com/ageerle/ruoyi-ai" target="_blank">ruoyi-ai</a>: 参考其知识库相关功能。
 -  <a href="https://github.com/LnYo-Cly/ai4j" target="_blank">ai4j</a>: 引用该组件实现deepseek的接入,向量的计算等。
-
+-  <a href="https://gitee.com/binary/weixin-java-tools" target="_blank">WxJava</a>: 引用该组件实现企微接口的调用。
 ## 九、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
