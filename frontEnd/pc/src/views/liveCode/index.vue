@@ -9,9 +9,8 @@ let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, cou
 export default {
   data() {
     let isLink = location.href.includes('customerLink')
-    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } = isLink
-      ? apiLink
-      : api)
+    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } =
+      isLink ? apiLink : api)
 
     return {
       activeName: 'first',
@@ -210,8 +209,10 @@ export default {
       <el-tab-pane label="外链配置" name="first">
         <div class="g-card">
           <div class="fxbw">
-            <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
-            <el-button type="success" @click="synchShortLink()">同步外链</el-button>
+            <div>
+              <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+              <el-button type="primary" @click="synchShortLink()">同步外链</el-button>
+            </div>
             <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
           </div>
           <el-table
