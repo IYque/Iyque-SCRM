@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 public enum SynchDataRecordType {
-    RECORD_TYPE_SYNCH_CUSTOMER(1,"客户同步");
+    RECORD_TYPE_SYNCH_CUSTOMER(1,"客户同步"),
+    RECORD_TYPE_SYNCH_SHORT_LINK(2,"获客外链同步");
     private final Integer code;
     private final String info;
 

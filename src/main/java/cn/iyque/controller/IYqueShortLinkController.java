@@ -183,6 +183,17 @@ public class IYqueShortLinkController {
     }
 
 
+    /**
+     * 同步获客外链
+     * @return
+     */
+    @PostMapping("/synchShortLink")
+    public ResponseResult synchShortLink(){
+
+        iYqueShortLinkService.synchShortLink();
+
+        return new ResponseResult("获客外链同步中,请稍后查看");
+    }
 
 
 }
