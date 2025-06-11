@@ -23,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Where(clause = "delFlag = 0")
-public class IYqueUserCode {
+public class IYqueUserCode extends BaseEntity{
 
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")

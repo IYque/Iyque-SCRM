@@ -10,9 +10,11 @@ import cn.iyque.domain.IYqueKvalStrVo;
 import cn.iyque.entity.*;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.*;
+import cn.iyque.utils.DateUtils;
 import cn.iyque.utils.SnowFlakeUtils;
 import cn.iyque.dao.IYqueSynchDataRecordDao;
 import cn.iyque.enums.SynchDataRecordType;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
@@ -26,11 +28,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,9 +61,32 @@ public class IYqueShortLinkServiceImpl implements IYqueShortLinkService {
     @Autowired
     private IYqueUserService iYqueUserService;
 
+
     @Override
-    public Page<IYqueShortLink> findAll(Pageable pageable) {
-        return iYqueShortLinkDao.findAll(pageable);
+    public Page<IYqueShortLink> findAll(IYqueShortLink iYqueShortLink, Pageable pageable) {
+        Specification<IYqueShortLink> spec = Specification.where(null);
+
+
+
+        // 按外链名称搜索
+        if (StringUtils.hasText(iYqueShortLink.getCodeName())) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("codeName")), "%" + iYqueShortLink.getCodeName() + "%"));
+        }
+
+        // 按员工名称搜索
+        if (StringUtils.hasText(iYqueShortLink.getUserName())) {
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("userName")), "%" + iYqueShortLink.getUserName() + "%"));
+        }
+
+
+        //按照时间查询
+        if (iYqueShortLink.getStartTime() != null && iYqueShortLink.getEndTime() != null)  {
+            spec = spec.and((root, query, cb) -> cb.between(root.get("createTime"), DateUtils.setTimeToStartOfDay( iYqueShortLink.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueShortLink.getEndTime())));
+        }
+
+
+
+        return iYqueShortLinkDao.findAll(spec, pageable);
     }
 
     @Override

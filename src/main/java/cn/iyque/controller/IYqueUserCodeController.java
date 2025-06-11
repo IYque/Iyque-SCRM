@@ -2,6 +2,7 @@ package cn.iyque.controller;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueAnnexPeriod;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -84,8 +86,13 @@ public class IYqueUserCodeController {
      * @return
      */
     @GetMapping("/findIYqueUserCode")
-    public ResponseResult<IYqueUserCode> findIYqueUserCode(){
-        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(PageRequest.of(TableSupport.buildPageRequest().getPageNum(),  TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueUserCode> findIYqueUserCode(
+            IYqueUserCode iYqueUserCode){
+        Page<IYqueUserCode> iYqueUserCodes = iYqueUserCodeService.findAll(
+                iYqueUserCode,
+                PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
+                        TableSupport.buildPageRequest().getPageSize(),
+                        Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueUserCodes.getContent(),iYqueUserCodes.getTotalElements());
     }
 
@@ -202,6 +209,35 @@ public class IYqueUserCodeController {
         IYQueTrendCount trendCount = iYqueCustomerInfoService.countTrend(queCountQuery,true);
 
         return new ResponseResult<>(trendCount);
+    }
+
+    /**
+     * 同步员工活码（联系我配置）
+     * @return
+     */
+    @PostMapping("/synchUserCode")
+    public ResponseResult synchUserCode(){
+
+        iYqueUserCodeService.synchUserCode();
+
+        return new ResponseResult("员工活码同步中,请稍后查看");
+    }
+
+    /**
+     * 同步指定的员工活码配置
+     * @param configIds 配置ID列表，用逗号分隔
+     * @return
+     */
+    @PostMapping("/synchUserCodeByConfigIds")
+    public ResponseResult synchUserCodeByConfigIds(@RequestParam String configIds){
+        if (StrUtil.isEmpty(configIds)) {
+            return new ResponseResult(HttpStatus.ERROR, "配置ID不能为空", null);
+        }
+
+        List<String> configIdList = Arrays.asList(configIds.split(","));
+        iYqueUserCodeService.synchUserCodeByConfigIds(configIdList);
+
+        return new ResponseResult("指定配置的员工活码同步中,请稍后查看");
     }
 
 

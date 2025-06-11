@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Where(clause = "delFlag = 0")
-public class IYqueShortLink {
+public class IYqueShortLink extends BaseEntity{
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
     @GenericGenerator(

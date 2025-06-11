@@ -3,14 +3,16 @@ import * as api from './api'
 import * as apiLink from './apiLink'
 import { env } from '../../../sys.config'
 import aev from './aev.vue'
+import { getUserList } from '@/api/common'
 
-let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } = {}
+let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink, synchUserCode } = {}
 
 export default {
   data() {
     let isLink = location.href.includes('customerLink')
-    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink } =
-      isLink ? apiLink : api)
+    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink, synchUserCode } = isLink
+      ? apiLink
+      : api)
 
     return {
       activeName: 'first',
@@ -30,6 +32,23 @@ export default {
       series: [],
       tabCount: {},
 
+      // 获客外链搜索条件
+      searchQuery: {
+        codeName: '',
+        userName: '',
+        dateRange: null,
+      },
+
+      // 员工活码搜索条件
+      userCodeSearchQuery: {
+        codeName: '',
+        userName: '',
+        dateRange: null,
+      },
+
+      // 员工列表
+      userList: [],
+
       isLink,
     }
   },
@@ -41,12 +60,45 @@ export default {
     this.initSelect()
     this.selectCount()
   },
-  mounted() {},
+  mounted() {
+    this.getUserListData()
+  },
   methods: {
     getList(page) {
       page && (this.query.page = page)
       this.$store.loading = true
-      getList(this.query)
+
+      // 构建查询参数
+      let queryParams = { ...this.query }
+
+      // 根据当前页面类型添加搜索条件
+      if (this.isLink) {
+        // 获客外链搜索条件
+        if (this.searchQuery.codeName) {
+          queryParams.codeName = this.searchQuery.codeName
+        }
+        if (this.searchQuery.userName) {
+          queryParams.userName = this.searchQuery.userName
+        }
+        if (this.searchQuery.dateRange && this.searchQuery.dateRange.length === 2) {
+          queryParams.startTime = this.formatDate(this.searchQuery.dateRange[0])
+          queryParams.endTime = this.formatDate(this.searchQuery.dateRange[1])
+        }
+      } else {
+        // 员工活码搜索条件
+        if (this.userCodeSearchQuery.codeName) {
+          queryParams.codeName = this.userCodeSearchQuery.codeName
+        }
+        if (this.userCodeSearchQuery.userName) {
+          queryParams.userName = this.userCodeSearchQuery.userName
+        }
+        if (this.userCodeSearchQuery.dateRange && this.userCodeSearchQuery.dateRange.length === 2) {
+          queryParams.startTime = this.formatDate(this.userCodeSearchQuery.dateRange[0])
+          queryParams.endTime = this.formatDate(this.userCodeSearchQuery.dateRange[1])
+        }
+      }
+
+      getList(queryParams)
         .then(({ data, count }) => {
           this.list = data
           this.total = +count
@@ -192,9 +244,100 @@ export default {
           // 用户取消操作
         })
     },
+
+    // 同步员工活码（联系我配置）
+    synchUserCode() {
+      this.$confirm('是否同步企业微信中的员工活码数据？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$store.loading = true
+          synchUserCode()
+            .then((res) => {
+              this.msgSuccess(res.msg || '同步任务已启动，请稍后查看')
+              // 刷新列表
+              this.getList()
+            })
+            .catch((e) => {
+              console.error(e)
+              this.msgError('同步失败，请重试')
+            })
+            .finally(() => {
+              this.$store.loading = false
+            })
+        })
+        .catch(() => {
+          // 用户取消操作
+        })
+    },
+
+    // 获客外链搜索
+    searchList() {
+      this.query.page = 1 // 重置到第一页
+      this.getList()
+    },
+
+    // 重置获客外链搜索
+    resetSearch() {
+      this.searchQuery = {
+        codeName: '',
+        userName: '',
+        dateRange: null,
+      }
+      this.query.page = 1
+      this.getList()
+    },
+
+    // 员工活码搜索
+    searchUserCodeList() {
+      this.query.page = 1 // 重置到第一页
+      this.getList()
+    },
+
+    // 重置员工活码搜索
+    resetUserCodeSearch() {
+      this.userCodeSearchQuery = {
+        codeName: '',
+        userName: '',
+        dateRange: null,
+      }
+      this.query.page = 1
+      this.getList()
+    },
+
+    // 获取员工列表
+    getUserListData() {
+      getUserList().then((res) => {
+        if (res.code == 200) {
+          this.userList = res.data || []
+        }
+      }).catch((e) => {
+        console.error('获取员工列表失败:', e)
+      })
+    },
   },
 }
 </script>
+
+<style scoped>
+.searchForm {
+  background-color: #f5f7fa;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.searchForm .el-form-item {
+  margin-bottom: 10px;
+}
+
+.searchForm .el-form-item__label {
+  font-weight: 500;
+  color: #606266;
+}
+</style>
 <template>
   <div>
     <div class="warning">
@@ -208,6 +351,53 @@ export default {
     <el-tabs v-if="isLink" v-model="activeName">
       <el-tab-pane label="外链配置" name="first">
         <div class="g-card">
+          <!-- 搜索筛选栏 -->
+          <el-form class="searchForm" ref="searchForm" :model="searchQuery" label-width="" inline>
+            <el-form-item label="外链名称:">
+              <el-input
+                v-model="searchQuery.codeName"
+                placeholder="请输入外链名称"
+                clearable
+                style="width: 200px"
+                @keyup.enter="searchList">
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="员工名称:">
+              <el-select
+                v-model="searchQuery.userName"
+                placeholder="请选择员工"
+                clearable
+                filterable
+                style="width: 200px"
+                @change="searchList">
+                <el-option
+                  v-for="item in userList"
+                  :key="item.userId"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="创建时间:">
+              <el-date-picker
+                v-model="searchQuery.dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                style="width: 240px"
+                @change="searchList">
+              </el-date-picker>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" @click="searchList">查询</el-button>
+              <el-button @click="resetSearch">重置</el-button>
+            </el-form-item>
+          </el-form>
+
           <div class="fxbw">
             <div>
               <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
@@ -347,8 +537,58 @@ export default {
     <el-tabs v-if="!isLink" v-model="activeName">
       <el-tab-pane label="员工活码配置" name="first">
         <div class="g-card">
+          <!-- 搜索筛选栏 -->
+          <el-form class="searchForm" ref="userCodeSearchForm" :model="userCodeSearchQuery" label-width="" inline>
+            <el-form-item label="活码名称:">
+              <el-input
+                v-model="userCodeSearchQuery.codeName"
+                placeholder="请输入活码名称"
+                clearable
+                style="width: 200px"
+                @keyup.enter="searchUserCodeList">
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="员工名称:">
+              <el-select
+                v-model="userCodeSearchQuery.userName"
+                placeholder="请选择员工"
+                clearable
+                filterable
+                style="width: 200px"
+                @change="searchUserCodeList">
+                <el-option
+                  v-for="item in userList"
+                  :key="item.userId"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="创建时间:">
+              <el-date-picker
+                v-model="userCodeSearchQuery.dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                style="width: 240px"
+                @change="searchUserCodeList">
+              </el-date-picker>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" @click="searchUserCodeList">查询</el-button>
+              <el-button @click="resetUserCodeSearch">重置</el-button>
+            </el-form-item>
+          </el-form>
+
           <div class="fxbw">
-            <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+            <div>
+              <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
+              <el-button type="primary" @click="synchUserCode()">同步活码</el-button>
+            </div>
             <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
           </div>
           <el-table

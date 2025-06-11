@@ -83,8 +83,13 @@ public class IYqueShortLinkController {
      * @return
      */
     @GetMapping("/findIYqueShortLink")
-    public ResponseResult<IYqueShortLink> findIYqueShortLink(){
-        Page<IYqueShortLink> iYqueShortLinks = iYqueShortLinkService.findAll(PageRequest.of(TableSupport.buildPageRequest().getPageNum(),  TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
+    public ResponseResult<IYqueShortLink> findIYqueShortLink(
+            IYqueShortLink iYqueShortLink){
+        Page<IYqueShortLink> iYqueShortLinks = iYqueShortLinkService.findAll(
+                iYqueShortLink,
+                PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
+                        TableSupport.buildPageRequest().getPageSize(),
+                        Sort.by("updateTime").descending()));
         return new ResponseResult(iYqueShortLinks.getContent(),iYqueShortLinks.getTotalElements());
     }
 

@@ -10,7 +10,7 @@
     <springboot.version>2.7.3</springboot.version>
     <lombok.version>1.18.30</lombok.version>
     <hutool.version>5.8.16</hutool.version>
-    <wxJava.version>4.6.0</wxJava.version>
+    <wxJava.version>4.7.6.B</wxJava.version>
     <srpingboot.maven.version>2.3.3.RELEASE</srpingboot.maven.version>
     <jjwt.version>0.9.1</jjwt.version>
     <zxing.version>3.4.1</zxing.version>

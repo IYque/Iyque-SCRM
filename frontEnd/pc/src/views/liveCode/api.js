@@ -57,3 +57,9 @@ export const findIYqueUserCodeKvs = () => get(`${serve}/findIYqueUserCodeKvs`)
 export const countTotalTab = (data) => get(`${serve}/countTotalTab`, data)
 
 export const countTrend = (data) => get(`${serve}/countTrend`, data)
+
+/**
+ * 同步员工活码（联系我配置）
+ * @returns
+ */
+export const synchUserCode = () => post(`${serve}/synchUserCode`)

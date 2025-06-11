@@ -13,6 +13,10 @@ public interface IYqueUserCodeService {
 
     Page<IYqueUserCode> findAll(Pageable pageable);
 
+
+    Page<IYqueUserCode> findAll(  IYqueUserCode iYqueUserCode, Pageable pageable);
+
+
     void save(IYqueUserCode product) throws Exception;
 
     List<IYqueKvalStrVo> findIYqueUserCodeKvs();
@@ -24,5 +28,17 @@ public interface IYqueUserCodeService {
     void batchDelete(Long[] ids);
 
     void distributeUserCode(Long id) throws Exception;
+
+
+    /**
+     * 同步员工活码（联系我配置）
+     */
+    void synchUserCode();
+
+    /**
+     * 同步指定的员工活码配置
+     * @param configIds 配置ID列表
+     */
+    void synchUserCodeByConfigIds(List<String> configIds);
 
 }

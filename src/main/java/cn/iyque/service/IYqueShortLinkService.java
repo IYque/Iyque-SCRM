@@ -11,7 +11,10 @@ import java.util.List;
 public interface IYqueShortLinkService {
 
 
-    Page<IYqueShortLink> findAll(Pageable pageable);
+
+
+    Page<IYqueShortLink> findAll(IYqueShortLink iYqueShortLink, Pageable pageable);
+
 
     void save(IYqueShortLink shortLink) throws Exception;
 
