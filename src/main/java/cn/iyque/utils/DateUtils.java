@@ -153,5 +153,20 @@ public class DateUtils {
     }
 
 
+    /**
+     * 获取指定时间指定天数之前的日期，如：当前以及当前七天前的日期
+     * @param date
+     * @param days
+     * @return
+     */
+    public static Date getDaysAgo(Date date, int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -days);
+        return calendar.getTime();
+    }
+
+
+
 
 }
