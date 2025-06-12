@@ -87,7 +87,7 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                         iyQueCallbackQuery.setRemarkType(iYqueUserCode.getRemarkType());
                     }
 
-                //获客短链
+                    //获客短链
                 }else if(callBackBaseMsg.getState().startsWith(CodeStateConstant.LINK_CODE_STATE)){
                     IYqueShortLink shortLink = iYqueShortLinkDao.findByCodeState(callBackBaseMsg.getState());
                     if(null != shortLink){
@@ -479,6 +479,16 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
 
     @Override
+    public List<IYQueCustomerInfo> findByExternalUserid(String externalUserid) {
+        return iyQueCustomerInfoDao.findByExternalUserid(externalUserid);
+    }
+
+    @Override
+    public List<IYQueCustomerInfo> findByExternalUseridIn(List<String> externalUserids) {
+        return iyQueCustomerInfoDao.findByExternalUseridIn(externalUserids);
+    }
+
+    @Override
     @Async
     public void synchCustomer() {
         try {
@@ -493,84 +503,84 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                         externalContactService.listFollowers();
                 if(CollectionUtil.isNotEmpty(listFollowers)){
                     log.info("外部联系人列表:"+listFollowers);
-                   ListUtil.partition(listFollowers, 100).stream().forEach(kk->{
+                    ListUtil.partition(listFollowers, 100).stream().forEach(kk->{
 
 
-                       try {
-                           String nextCursor="";
-                           IYqueSynchDataRecord iYqueSynchDataRecord = iYqueSynchDataRecordDao.findTopBySynchDataTypeOrderByCreateTimeDesc(SynchDataRecordType
-                                   .RECORD_TYPE_SYNCH_CUSTOMER.getCode());
+                        try {
+                            String nextCursor="";
+                            IYqueSynchDataRecord iYqueSynchDataRecord = iYqueSynchDataRecordDao.findTopBySynchDataTypeOrderByCreateTimeDesc(SynchDataRecordType
+                                    .RECORD_TYPE_SYNCH_CUSTOMER.getCode());
 
-                           if(null != iYqueSynchDataRecord && StringUtils.isNotEmpty(iYqueSynchDataRecord.getNextCursor())){
-                               nextCursor=iYqueSynchDataRecord.getNextCursor();
-                           }
-
-
-
-                           do {
-
-                               WxCpExternalContactBatchInfo contactDetailBatch = externalContactService
-                                       .getContactDetailBatch(Convert.toStrArray(kk), nextCursor, 100);
-
-                               if(contactDetailBatch.success()){
-                                   List<WxCpExternalContactBatchInfo.ExternalContactInfo> externalContactList = contactDetailBatch.getExternalContactList();
-
-                                   for(WxCpExternalContactBatchInfo.ExternalContactInfo item:externalContactList){
-                                       //跟进人
-                                       FollowedUser followInfo = item.getFollowInfo();
-
-
-                                       //客户基础信息
-                                       ExternalContact externalContact = item.getExternalContact();
-
-                                       customerInfos.add(
-                                               IYQueCustomerInfo.builder().eId(externalContact.getExternalUserId()+"&"+followInfo.getUserId())
-                                                       .customerName(externalContact.getName())
-                                                       .avatar(externalContact.getAvatar())
-                                                       .type(externalContact.getType())
-                                                       .externalUserid(externalContact.getExternalUserId())
-                                                       .addWay(CustomerAddWay.of(new Integer(followInfo.getAddWay())).getVal())
-                                                       .userId(followInfo.getUserId())
-                                                       .state(followInfo.getState())
-                                                       .addTime(new Date(followInfo.getCreateTime() * 1000L))
-                                                       .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
-                                                       .build()
-                                       );
+                            if(null != iYqueSynchDataRecord && StringUtils.isNotEmpty(iYqueSynchDataRecord.getNextCursor())){
+                                nextCursor=iYqueSynchDataRecord.getNextCursor();
+                            }
 
 
 
-                                   }
-                                   nextCursor=contactDetailBatch.getNextCursor();
+                            do {
 
-                                   if(StringUtils.isNotEmpty(nextCursor)){
-                                       //最后一次同步下标记录
-                                       iYqueSynchDataRecordDao.save(
-                                               IYqueSynchDataRecord.builder().synchDataType(SynchDataRecordType
-                                                               .RECORD_TYPE_SYNCH_CUSTOMER.getCode())
-                                                       .nextCursor(nextCursor)
-                                                       .createTime(new Date())
-                                                       .build()
-                                       );
-                                   }
+                                WxCpExternalContactBatchInfo contactDetailBatch = externalContactService
+                                        .getContactDetailBatch(Convert.toStrArray(kk), nextCursor, 100);
+
+                                if(contactDetailBatch.success()){
+                                    List<WxCpExternalContactBatchInfo.ExternalContactInfo> externalContactList = contactDetailBatch.getExternalContactList();
+
+                                    for(WxCpExternalContactBatchInfo.ExternalContactInfo item:externalContactList){
+                                        //跟进人
+                                        FollowedUser followInfo = item.getFollowInfo();
 
 
+                                        //客户基础信息
+                                        ExternalContact externalContact = item.getExternalContact();
+
+                                        customerInfos.add(
+                                                IYQueCustomerInfo.builder().eId(externalContact.getExternalUserId()+"&"+followInfo.getUserId())
+                                                        .customerName(externalContact.getName())
+                                                        .avatar(externalContact.getAvatar())
+                                                        .type(externalContact.getType())
+                                                        .externalUserid(externalContact.getExternalUserId())
+                                                        .addWay(CustomerAddWay.of(new Integer(followInfo.getAddWay())).getVal())
+                                                        .userId(followInfo.getUserId())
+                                                        .state(followInfo.getState())
+                                                        .addTime(new Date(followInfo.getCreateTime() * 1000L))
+                                                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
+                                                        .build()
+                                        );
 
 
-                               }
 
+                                    }
+                                    nextCursor=contactDetailBatch.getNextCursor();
 
-                           } while (StringUtils.isNotEmpty(nextCursor));
+                                    if(StringUtils.isNotEmpty(nextCursor)){
+                                        //最后一次同步下标记录
+                                        iYqueSynchDataRecordDao.save(
+                                                IYqueSynchDataRecord.builder().synchDataType(SynchDataRecordType
+                                                                .RECORD_TYPE_SYNCH_CUSTOMER.getCode())
+                                                        .nextCursor(nextCursor)
+                                                        .createTime(new Date())
+                                                        .build()
+                                        );
+                                    }
 
 
 
 
-                       }catch (Exception e){
-                           e.printStackTrace();
+                                }
 
-                           throw new IYqueException(e.getMessage());
-                       }
 
-                   });
+                            } while (StringUtils.isNotEmpty(nextCursor));
+
+
+
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+
+                            throw new IYqueException(e.getMessage());
+                        }
+
+                    });
 
                 }
 

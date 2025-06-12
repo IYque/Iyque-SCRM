@@ -41,4 +41,10 @@ public interface IYqueUserCodeService {
      */
     void synchUserCodeByConfigIds(List<String> configIds);
 
+    /**
+     * 获取所有员工活码的configId列表
+     * @return 配置ID列表
+     */
+    List<IYqueKvalStrVo> getUserCodeConfigIds();
+
 }

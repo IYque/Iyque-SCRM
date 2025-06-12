@@ -34,4 +34,18 @@ public interface IYqueCustomerInfoService {
      */
     void synchCustomer();
 
+    /**
+     * 根据外部客户ID查找客户信息列表
+     * @param externalUserid 外部客户ID
+     * @return 客户信息列表
+     */
+    List<IYQueCustomerInfo> findByExternalUserid(String externalUserid);
+
+    /**
+     * 批量根据外部客户ID查找客户信息列表
+     * @param externalUserids 外部客户ID列表
+     * @return 客户信息列表
+     */
+    List<IYQueCustomerInfo> findByExternalUseridIn(List<String> externalUserids);
+
 }
