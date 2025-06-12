@@ -5,14 +5,40 @@ import { env } from '../../../sys.config'
 import aev from './aev.vue'
 import { getUserList } from '@/api/common'
 
-let { getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink, synchUserCode, synchUserCodeByConfigIds, synchShortLinkByLinkIds, getShortLinkConfigIds, getUserCodeConfigIds, getCustomerList } = {}
+let {
+  getList,
+  del,
+  distributeUserCode,
+  findIYqueUserCodeKvs,
+  countTotalTab,
+  countTrend,
+  synchShortLink,
+  synchUserCode,
+  synchUserCodeByConfigIds,
+  synchShortLinkByLinkIds,
+  getShortLinkConfigIds,
+  getUserCodeConfigIds,
+  getCustomerList,
+} = {}
 
 export default {
   data() {
     let isLink = location.href.includes('customerLink')
-    let _ = ({ getList, del, distributeUserCode, findIYqueUserCodeKvs, countTotalTab, countTrend, synchShortLink, synchUserCode, synchUserCodeByConfigIds, synchShortLinkByLinkIds, getShortLinkConfigIds, getUserCodeConfigIds, getCustomerList } = isLink
-      ? apiLink
-      : api)
+    let _ = ({
+      getList,
+      del,
+      distributeUserCode,
+      findIYqueUserCodeKvs,
+      countTotalTab,
+      countTrend,
+      synchShortLink,
+      synchUserCode,
+      synchUserCodeByConfigIds,
+      synchShortLinkByLinkIds,
+      getShortLinkConfigIds,
+      getUserCodeConfigIds,
+      getCustomerList,
+    } = isLink ? apiLink : api)
 
     return {
       activeName: 'first',
@@ -75,6 +101,7 @@ export default {
       syncLoading: false,
       configIdOptions: [], // 配置ID选项列表
       manualIds: '', // 手动输入的ID
+      isInput: false, // 是否手动输入ID
 
       isLink,
     }
@@ -288,17 +315,18 @@ export default {
 
     // 处理配置ID选择变化
     handleConfigIdChange(selectedIds) {
-      if (Array.isArray(selectedIds)) {
-        this.syncForm.specificIds = selectedIds.join(',')
-      } else {
-        this.syncForm.specificIds = selectedIds || ''
-      }
-      this.manualIds = '' // 清空手动输入
+      // if (Array.isArray(selectedIds)) {
+      //   this.syncForm.specificIds = selectedIds.join(',')
+      // } else {
+      //   this.syncForm.specificIds = selectedIds || ''
+      // }
+      this.isInput || (this.manualIds = '') // 清空手动输入
     },
 
     // 处理手动输入
     handleManualInput(value) {
-      this.syncForm.specificIds = value
+      this.isInput = true
+      this.syncForm.specificIds = []
       // 清空下拉选择
       this.$nextTick(() => {
         // 这里不能直接清空，因为会触发循环
@@ -308,7 +336,7 @@ export default {
     // 执行同步操作
     performSync() {
       if (this.syncForm.syncType === 'specific') {
-        const ids = this.syncForm.specificIds || this.manualIds
+        const ids = this.syncForm.specificIds + '' || this.manualIds
         if (!ids.trim()) {
           this.msgError('请选择或输入要同步的ID')
           return
@@ -327,7 +355,7 @@ export default {
         }
       } else {
         // 指定同步
-        const ids = (this.syncForm.specificIds || this.manualIds).trim()
+        const ids = (this.syncForm.specificIds + '' || this.manualIds).trim()
         if (this.isLink) {
           syncPromise = synchShortLinkByLinkIds(ids)
         } else {
@@ -387,13 +415,15 @@ export default {
 
     // 获取员工列表
     getUserListData() {
-      getUserList().then((res) => {
-        if (res.code == 200) {
-          this.userList = res.data || []
-        }
-      }).catch((e) => {
-        console.error('获取员工列表失败:', e)
-      })
+      getUserList()
+        .then((res) => {
+          if (res.code == 200) {
+            this.userList = res.data || []
+          }
+        })
+        .catch((e) => {
+          console.error('获取员工列表失败:', e)
+        })
     },
 
     // 查看客户列表
@@ -427,7 +457,8 @@ export default {
       }
 
       // 使用configId作为linkId参数，传递搜索参数
-      apiLink.getCustomerList(this.currentLinkInfo.configId, 100, cursor, searchParams)
+      apiLink
+        .getCustomerList(this.currentLinkInfo.configId, 100, cursor, searchParams)
         .then((res) => {
           if (res.code === 200 && res.data) {
             const data = res.data
@@ -471,9 +502,10 @@ export default {
       if (this.customerPagination.hasPrev && this.customerPagination.prevCursors.length > 0) {
         // 获取上一页的游标
         this.customerPagination.prevCursors.pop() // 移除当前页游标
-        const prevCursor = this.customerPagination.prevCursors.length > 0
-          ? this.customerPagination.prevCursors[this.customerPagination.prevCursors.length - 1]
-          : ''
+        const prevCursor =
+          this.customerPagination.prevCursors.length > 0
+            ? this.customerPagination.prevCursors[this.customerPagination.prevCursors.length - 1]
+            : ''
         this.loadCustomers(prevCursor)
       }
     },
@@ -509,7 +541,7 @@ export default {
       const statusMap = {
         0: '未开口',
         1: '已开口',
-        2: '已删除'
+        2: '已删除',
       }
       return statusMap[status] || '未知'
     },
@@ -517,9 +549,9 @@ export default {
     // 获取会话状态标签类型
     getChatStatusType(status) {
       const typeMap = {
-        0: 'info',     // 未开口 - 灰色
-        1: 'success',  // 已开口 - 绿色
-        2: 'danger'    // 已删除 - 红色
+        0: 'info', // 未开口 - 灰色
+        1: 'success', // 已开口 - 绿色
+        2: 'danger', // 已删除 - 红色
       }
       return typeMap[status] || 'info'
     },
@@ -575,8 +607,7 @@ export default {
                 placeholder="请输入外链名称"
                 clearable
                 style="width: 200px"
-                @keyup.enter="searchList">
-              </el-input>
+                @keyup.enter="searchList"></el-input>
             </el-form-item>
 
             <el-form-item label="员工名称:">
@@ -591,8 +622,7 @@ export default {
                   v-for="item in userList"
                   :key="item.userId"
                   :label="item.name"
-                  :value="item.name">
-                </el-option>
+                  :value="item.name"></el-option>
               </el-select>
             </el-form-item>
 
@@ -604,8 +634,7 @@ export default {
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 style="width: 240px"
-                @change="searchList">
-              </el-date-picker>
+                @change="searchList"></el-date-picker>
             </el-form-item>
 
             <el-form-item>
@@ -764,8 +793,7 @@ export default {
                 placeholder="请输入活码名称"
                 clearable
                 style="width: 200px"
-                @keyup.enter="searchUserCodeList">
-              </el-input>
+                @keyup.enter="searchUserCodeList"></el-input>
             </el-form-item>
 
             <el-form-item label="员工名称:">
@@ -780,8 +808,7 @@ export default {
                   v-for="item in userList"
                   :key="item.userId"
                   :label="item.name"
-                  :value="item.name">
-                </el-option>
+                  :value="item.name"></el-option>
               </el-select>
             </el-form-item>
 
@@ -793,8 +820,7 @@ export default {
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 style="width: 240px"
-                @change="searchUserCodeList">
-              </el-date-picker>
+                @change="searchUserCodeList"></el-date-picker>
             </el-form-item>
 
             <el-form-item>
@@ -807,7 +833,7 @@ export default {
             <div>
               <el-button type="primary" @click=";(form = {}), (dialogVisible = true)">新建</el-button>
               <el-button type="primary" @click="synchUserCode()">同步活码</el-button>
-            </div> 
+            </div>
             <el-button :disabled="!multipleSelection.length" @click="del()" type="danger">批量删除</el-button>
           </div>
           <el-table
@@ -962,10 +988,7 @@ export default {
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item
-          v-if="syncForm.syncType === 'specific'"
-          :label="isLink ? '获客外链ID:' : '配置ID:'"
-          required>
+        <el-form-item v-if="syncForm.syncType === 'specific'" :label="isLink ? '获客外链ID:' : '配置ID:'" required>
           <el-select
             v-model="syncForm.specificIds"
             :placeholder="isLink ? '请选择要同步的获客外链' : '请选择要同步的员工活码'"
@@ -974,12 +997,7 @@ export default {
             clearable
             style="width: 100%"
             @change="handleConfigIdChange">
-            <el-option
-              v-for="item in configIdOptions"
-              :key="item.val"
-              :label="item.key"
-              :value="item.val">
-            </el-option>
+            <el-option v-for="item in configIdOptions" :key="item.val" :label="item.key" :value="item.val"></el-option>
           </el-select>
           <div class="form-tip">
             {{ isLink ? '选择要同步的获客外链，可多选' : '选择要同步的员工活码配置，可多选' }}
@@ -991,8 +1009,8 @@ export default {
             v-model="manualIds"
             :placeholder="isLink ? '手动输入获客外链ID，多个用逗号分隔' : '手动输入员工活码配置ID，多个用逗号分隔'"
             clearable
-            @input="handleManualInput">
-          </el-input>
+            @input="handleManualInput"
+            @blur="isInput = false"></el-input>
           <div class="form-tip">
             {{ isLink ? '手动输入获客外链ID，多个ID用英文逗号分隔' : '手动输入员工活码配置ID，多个ID用英文逗号分隔' }}
           </div>
@@ -1023,8 +1041,7 @@ export default {
               placeholder="请输入客户姓名"
               clearable
               style="width: 200px"
-              @keyup.enter="searchCustomers">
-            </el-input>
+              @keyup.enter="searchCustomers"></el-input>
           </el-form-item>
 
           <el-form-item label="跟进人:">
@@ -1035,12 +1052,7 @@ export default {
               filterable
               style="width: 200px"
               @change="searchCustomers">
-              <el-option
-                v-for="item in userList"
-                :key="item.userId"
-                :label="item.name"
-                :value="item.name">
-              </el-option>
+              <el-option v-for="item in userList" :key="item.userId" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </el-form-item>
 
@@ -1051,8 +1063,7 @@ export default {
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              style="width: 240px">
-            </el-date-picker>
+              style="width: 240px"></el-date-picker>
           </el-form-item>
 
           <el-form-item>
@@ -1062,11 +1073,7 @@ export default {
         </el-form>
 
         <!-- 客户列表表格 -->
-        <el-table
-          :data="customerList"
-          v-loading="customerLoading"
-          tooltip-effect="dark"
-          style="width: 100%">
+        <el-table :data="customerList" v-loading="customerLoading" tooltip-effect="dark" style="width: 100%">
           <el-table-column prop="externalName" label="客户姓名" width="150" show-overflow-tooltip />
           <el-table-column prop="followUserName" label="跟进人" width="120" />
           <el-table-column prop="createTime" label="添加时间" width="180" />
@@ -1080,20 +1087,12 @@ export default {
         </el-table>
 
         <!-- 分页 -->
-        <div class="pagination-container" style="text-align: center; margin-top: 20px;">
-          <el-button
-            :disabled="!customerPagination.hasPrev"
-            @click="loadPrevCustomers"
-            v-loading="customerLoading">
+        <div class="pagination-container" style="text-align: center; margin-top: 20px">
+          <el-button :disabled="!customerPagination.hasPrev" @click="loadPrevCustomers" v-loading="customerLoading">
             上一页
           </el-button>
-          <span style="margin: 0 20px;">
-            共 {{ customerList.length }} 条记录
-          </span>
-          <el-button
-            :disabled="!customerPagination.hasNext"
-            @click="loadNextCustomers"
-            v-loading="customerLoading">
+          <span style="margin: 0 20px">共 {{ customerList.length }} 条记录</span>
+          <el-button :disabled="!customerPagination.hasNext" @click="loadNextCustomers" v-loading="customerLoading">
             下一页
           </el-button>
         </div>
