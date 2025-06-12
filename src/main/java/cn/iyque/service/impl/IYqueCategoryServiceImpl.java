@@ -4,11 +4,15 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueCategoryDao;
+import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.entity.IYqueCategory;
+import cn.iyque.enums.MediaType;
 import cn.iyque.service.IYqueCategoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +29,9 @@ public class IYqueCategoryServiceImpl implements IYqueCategoryService {
     private IYqueCategoryDao iYqueCategoryDao;
 
     @Override
-    public List<IYqueCategory> findAll() {
+    public List<IYqueCategory> findAll(IYqueCategory iYqueCategory) {
+
+        Specification<IYqueCategory> spec = Specification.where(null);
 
 
         List<IYqueCategory> iYqueCategories=ListUtil.toList(IYqueCategory.builder()
@@ -33,7 +39,11 @@ public class IYqueCategoryServiceImpl implements IYqueCategoryService {
                         .name("默认分类")
                 .build());
 
-        List<IYqueCategory> all = iYqueCategoryDao.findAll(Sort.by("createTime").descending());
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("mediaType")), StringUtils.isNotEmpty(iYqueCategory.getMediaType())?iYqueCategory.getMediaType():
+                    MediaType.C.getKey()));
+
+
+        List<IYqueCategory> all = iYqueCategoryDao.findAll(spec,Sort.by("createTime").descending());
 
          if(CollectionUtil.isNotEmpty(all)){
              iYqueCategories.addAll(all);

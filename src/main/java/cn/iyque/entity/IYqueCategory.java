@@ -1,6 +1,7 @@
 package cn.iyque.entity;
 
 
+import cn.iyque.enums.MediaType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -31,9 +32,9 @@ public class IYqueCategory {
 
 
     /**
-     * 分类:7 热词分类
+     * 分类:7 热词分类 4:文本 0:图片 9:图文
      */
-    private String mediaType=new String("7");
+    private String mediaType= MediaType.C.getKey();
 
     /**
      * 分类名称
