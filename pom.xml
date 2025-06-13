@@ -17,6 +17,7 @@
     <ai4j.version>1.2.2</ai4j.version>
     <milvus.version>2.5.6</milvus.version>
     <retrofit2.version>2.9.0</retrofit2.version>
+    <easyexcel.version>4.0.3</easyexcel.version>
   </properties>
 
   <parent>
@@ -132,6 +133,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>easyexcel</artifactId>
+      <version>${easyexcel.version}</version>
     </dependency>
 
   </dependencies>

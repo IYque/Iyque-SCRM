@@ -1,0 +1,44 @@
+package cn.iyque.service;
+
+
+import cn.iyque.domain.IYqueCustomerSeasVo;
+import cn.iyque.entity.IYqueCustomerSeas;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+public interface IYqueCustomerSeasService {
+
+
+    /**
+     * 读取excel，公海数据入库
+     * @param file
+     */
+    void importData(IYqueCustomerSeasVo seasVo, MultipartFile file);
+
+
+
+    /**
+     * 客户公海列表
+     * @param iYqueCustomerSeas
+     * @param pageable
+     * @return
+     */
+    Page<IYqueCustomerSeas> findAll(IYqueCustomerSeas iYqueCustomerSeas, Pageable pageable);
+
+
+
+    /**
+     * 客户公海删除
+     * @param ids
+     */
+    void batchDelete(Long[] ids);
+
+
+    /**
+     * 下发通知
+     * @param ids
+     * @throws Exception
+     */
+    void distribute(Long[] ids) throws Exception;
+}
