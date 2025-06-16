@@ -264,11 +264,11 @@ export const navRoutes = [
         component: () => import('@/views/config/index'),
         meta: { title: '系统配置' },
       },
-      // {
-      //   path: 'user',
-      //   component: () => import('@/views/user/index'),
-      //   meta: { title: '员工列表' },
-      // },
+      {
+        path: 'operateLog',
+        component: () => import('@/views/operateLog/index'),
+        meta: { title: '操作日志' },
+      },
       // {
       //   path: 'groupChat',
       //   component: () => import('@/views/groupChat/index'),
