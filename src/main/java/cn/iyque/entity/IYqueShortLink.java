@@ -60,7 +60,9 @@ public class IYqueShortLink extends BaseEntity{
     //活码地址
     private String codeUrl;
 
+
     //联系方式的配置id
+    @Column(name = "config_id", length = 255)
     private String configId;
 
 

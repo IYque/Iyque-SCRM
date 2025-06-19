@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
  * 客户引流码相关
  */
+@Slf4j
 @RestController
 @RequestMapping("/iyQue")
 public class IYqueUserCodeController {
@@ -240,8 +242,18 @@ public class IYqueUserCodeController {
         return new ResponseResult("指定配置的员工活码同步中,请稍后查看");
     }
 
-
-
-
-
+    /**
+     * 获取所有员工活码的configId列表
+     * @return
+     */
+    @GetMapping("/getUserCodeConfigIds")
+    public ResponseResult getUserCodeConfigIds(){
+        try {
+            List<IYqueKvalStrVo> configIds = iYqueUserCodeService.getUserCodeConfigIds();
+            return new ResponseResult(configIds);
+        } catch (Exception e) {
+            log.error("获取员工活码配置ID列表失败: {}", e.getMessage(), e);
+            return new ResponseResult(HttpStatus.ERROR, "获取配置ID列表失败: " + e.getMessage(), null);
+        }
+    }
 }

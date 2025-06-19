@@ -6,33 +6,36 @@ import cn.hutool.core.util.StrUtil;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.CodeStateConstant;
 import cn.iyque.constant.IYqueContant;
-import cn.iyque.dao.IYqueSynchDataRecordDao;
 import cn.iyque.dao.IYqueUserCodeDao;
 import cn.iyque.domain.*;
 import cn.iyque.entity.*;
-import cn.iyque.enums.SynchDataRecordType;
 import cn.iyque.service.*;
 import cn.iyque.utils.DateUtils;
 import cn.iyque.utils.FileUtils;
 import cn.iyque.utils.SnowFlakeUtils;
+import cn.iyque.enums.SynchDataRecordType;
+import cn.iyque.dao.IYqueSynchDataRecordDao;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.article.NewArticle;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpContactWayResult;
+// import me.chanjar.weixin.cp.bean.external.WxCpContactWayList; // 如果WxJava版本不支持，先注释掉
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,14 +62,11 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
     @Autowired
     private IYqueAnnexPeriodService iYqueAnnexPeriodService;
 
-
     @Autowired
     private IYqueSynchDataRecordDao iYqueSynchDataRecordDao;
 
     @Autowired
     private IYqueUserService iYqueUserService;
-
-
 
     @Override
     public Page<IYqueUserCode> findAll(Pageable pageable) {
@@ -115,13 +115,13 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
             contactWay.setSkipVerify(iYqueUserCode.getSkipVerify());
             contactWay.setState(iYqueUserCode.getCodeState());
             contactWay.setUsers(ListUtil.toList(iYqueUserCode.getUserId().split(",")));
-            contactWay.setIsExclusive(iYqueUserCode.getIsExclusive());
+            contactWay.setExclusive(iYqueUserCode.getIsExclusive() != null ? iYqueUserCode.getIsExclusive() : false);
             wxCpGroupJoinWayInfo.setContactWay(contactWay);
 
             WxCpContactWayResult wxCpContactWayResult = wxcpservice.getExternalContactService().addContactWay(wxCpGroupJoinWayInfo);
             if(null != wxCpContactWayResult
-            && StrUtil.isNotEmpty(wxCpContactWayResult.getQrCode())
-            &&StrUtil.isNotEmpty(wxCpContactWayResult.getConfigId())){
+                    && StrUtil.isNotEmpty(wxCpContactWayResult.getQrCode())
+                    &&StrUtil.isNotEmpty(wxCpContactWayResult.getConfigId())){
                 iYqueUserCode.setCodeUrl(wxCpContactWayResult.getQrCode());
                 iYqueUserCode.setBackupQrUrl(wxCpContactWayResult.getQrCode());
                 //替换自定义logo的二维码
@@ -225,7 +225,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                 contactWay.setConfigId(oldIYqueUserCode.getConfigId());
                 contactWay.setSkipVerify(iYqueUserCode.getSkipVerify());
                 contactWay.setUsers(ListUtil.toList(iYqueUserCode.getUserId().split(",")));
-                contactWay.setIsExclusive(iYqueUserCode.getIsExclusive());
+                contactWay.setExclusive(iYqueUserCode.getIsExclusive() != null ? iYqueUserCode.getIsExclusive() : false);
                 wxCpGroupJoinWayInfo.setContactWay(contactWay);
 
                 WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
@@ -328,7 +328,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
                     iYqueUserCodeDao.saveAndFlush(k);
 
                 }catch (Exception e){
-                   log.error("活码删除失败:"+e.getMessage());
+                    log.error("活码删除失败:"+e.getMessage());
                 }
 
             });
@@ -372,7 +372,7 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
 
             }
         }catch (Exception e){
-           throw e;
+            throw e;
         }
 
 
@@ -818,6 +818,32 @@ public class IYqueUserCodeServiceImpl implements IYqueUserCodeService {
         } catch (Exception e) {
             log.error("指定配置ID的员工活码同步失败: {}", e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<IYqueKvalStrVo> getUserCodeConfigIds() {
+        List<IYqueKvalStrVo> configIds = new ArrayList<>();
+
+        try {
+            // 从数据库获取所有员工活码的configId
+            List<IYqueUserCode> userCodes = iYqueUserCodeDao.findAll();
+
+            for (IYqueUserCode userCode : userCodes) {
+                if (StrUtil.isNotEmpty(userCode.getConfigId()) && StrUtil.isNotEmpty(userCode.getCodeName())) {
+                    configIds.add(IYqueKvalStrVo.builder()
+                            .val(userCode.getConfigId())
+                            .key(userCode.getCodeName() + " (" + userCode.getConfigId() + ")")
+                            .build());
+                }
+            }
+
+            log.info("获取到 {} 个员工活码配置ID", configIds.size());
+
+        } catch (Exception e) {
+            log.error("获取员工活码配置ID列表失败: {}", e.getMessage(), e);
+        }
+
+        return configIds;
     }
 
 }

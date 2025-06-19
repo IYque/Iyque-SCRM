@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface IYqueShortLinkDao extends JpaRepository<IYqueShortLink,Long>, JpaSpecificationExecutor<IYqueShortLink> {
 
     IYqueShortLink findByCodeState(String codeState);
+
+    IYqueShortLink findByConfigId(String configId);
 }
