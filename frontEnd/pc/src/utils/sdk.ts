@@ -2,6 +2,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
 import { dateFormat } from '@/utils/common'
+import { dictMaterialType } from '@/utils/dictionary'
 
 // $sdk 公共方法，挂在到全局 window 和 vue app.config.globalProperties
 export class SDK {
@@ -9,6 +10,7 @@ export class SDK {
   ruleRequiredChange = { required: true, message: '必选项', trigger: 'change' }
 
   request = request
+  dictMaterialType = dictMaterialType
 
   msgSuccess(msg = '操作成功') {
     ElMessage({ showClose: true, message: msg, type: 'success', grouping: true })
