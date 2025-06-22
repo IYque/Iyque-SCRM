@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       save,
+      form: {}, // 表单数据
       // 表单校验
       rules: Object.freeze({
         title: [{ required: true, message: '不能为空', trigger: 'change' }],
