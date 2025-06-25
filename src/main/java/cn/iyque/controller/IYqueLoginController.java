@@ -10,7 +10,10 @@ import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.utils.JwtUtils;
+import cn.iyque.utils.TicketUtils;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
+import me.chanjar.weixin.cp.api.WxCpMediaService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpOauth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -116,6 +119,54 @@ public class IYqueLoginController {
                 sb.toString()
         );
     }
+
+
+    /**
+     * 获取应用的jsapi_ticket
+     *
+     * @param url JS接口页面的完整URL
+     * @return
+     */
+    @GetMapping("/getAgentTicket")
+    public ResponseResult getAgentTicket(String url) {
+
+        try {
+            String ticket = iYqueConfigService.findWxcpservice().getAgentJsapiTicket();
+            return new ResponseResult( TicketUtils.getSignature(ticket,url));
+        }catch (Exception e){
+            log.error("获取应用的jsapi_ticket失败"+e.getMessage());
+            return new ResponseResult(HttpStatus.ERROR,"获取应用的jsapi_ticket失败",null);
+        }
+
+    }
+
+
+    /**
+     * 发送获取素材media_id
+     * @param url
+     * @param type
+     * @param name
+     * @return
+     */
+    @GetMapping("/uploadMediaId")
+    public ResponseResult uploadMediaId(String url, String type, String name){
+
+        try {
+
+            WxMediaUploadResult uploadResult = iYqueConfigService.findWxcpservice().getMediaService()
+                    .upload(type, name + "." + url.substring(url.lastIndexOf(".") + 1, url.length()), url);
+
+            return new ResponseResult(uploadResult);
+        }catch (Exception e){
+             log.error("获取临时素材失败media_id"+e.getMessage());
+            return new ResponseResult(HttpStatus.ERROR,"获取临时素材失败media_id",null);
+        }
+
+    }
+
+
+
+
 
 
 
