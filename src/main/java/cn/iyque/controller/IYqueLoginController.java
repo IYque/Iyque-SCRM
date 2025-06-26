@@ -177,8 +177,10 @@ public class IYqueLoginController {
         IYqueConfig iYqueConfig = iYqueConfigService.findIYqueConfig();
 
         return new ResponseResult(
-                BaseUserInfo.builder().agentId(iYqueConfig.getAgentId())
+                BaseUserInfo.builder()
+                        .agentId(iYqueConfig.getAgentId())
                         .corpId(iYqueConfig.getCorpId())
+                        .build()
         );
 
     }
