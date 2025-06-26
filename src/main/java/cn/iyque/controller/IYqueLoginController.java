@@ -4,6 +4,7 @@ package cn.iyque.controller;
 import cn.iyque.annotation.RateLimit;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.domain.BaseUserInfo;
 import cn.iyque.domain.IYQueAuthInfo;
 import cn.iyque.domain.JwtResponse;
 import cn.iyque.domain.ResponseResult;
@@ -161,6 +162,24 @@ public class IYqueLoginController {
              log.error("获取临时素材失败media_id"+e.getMessage());
             return new ResponseResult(HttpStatus.ERROR,"获取临时素材失败media_id",null);
         }
+
+    }
+
+
+
+    /**
+     * 获取基础信息
+     *
+     * @return 获取基础信息
+     */
+    @GetMapping("/getBaseInfo")
+    public ResponseResult getBaseInfo() {
+        IYqueConfig iYqueConfig = iYqueConfigService.findIYqueConfig();
+
+        return new ResponseResult(
+                BaseUserInfo.builder().agentId(iYqueConfig.getAgentId())
+                        .corpId(iYqueConfig.getCorpId())
+        );
 
     }
 
