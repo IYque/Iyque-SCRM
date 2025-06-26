@@ -81,6 +81,7 @@ export default {
       }
       this.loading = true
       this.finished = false
+      this.error = false
       page && (this.query.pageNum = page)
 
       Object.assign(this.query, this.params)
@@ -137,14 +138,13 @@ export default {
         :finished-text="list?.length ? finishedText : ''"
         v-model:error="error"
         error-text="请求失败，点击重新加载"
-        @load="getList()"
-      >
+        @load="getList()">
         <template v-for="(item, i) in list" :key="i">
           <slot name="item" v-bind="{ item }"></slot>
         </template>
 
         <div>
-          <slot name="list" v-bind="{ list }"> </slot>
+          <slot name="list" v-bind="{ list }"></slot>
         </div>
 
         <slot name="empty" v-if="!error && !loading && !list?.length">
