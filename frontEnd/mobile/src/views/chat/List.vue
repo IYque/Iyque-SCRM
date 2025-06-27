@@ -1,7 +1,10 @@
 <script>
 import useStore from '@/stores/index.js'
+import * as apiCategory from '@/api/category'
 import { getList } from './api'
 import { getMaterialMediaId } from '@/api/common.js'
+import { closeToast, showLoadingToast, showDialog, showToast } from 'vant'
+import { fileUrlBase } from '@/utils/index.js'
 export default {
   components: {},
   props: {
@@ -19,26 +22,37 @@ export default {
         // materialName: '',
         // mediaType: '',
       },
+      groupList: [], // 分组列表
+      groupIndex: 0,
     }
   },
   watch: {},
   computed: {},
   created() {
+    this.getListCategory()
     this.query.msgtype = $sdk.dictMaterialType[this.mediaType]?.msgtype
   },
   mounted() {},
   methods: {
-    search(pageNum, keyword, categoryId) {
+    switchGroup(index, data) {
+      this.groupIndex = index
+      this.query.categoryId = data.id
+      this.search(1)
+    },
+    // 获取当前类型下分组列表
+    getListCategory() {
+      apiCategory.getList(this.mediaType).then((res) => {
+        this.groupList = [{ name: '全部' }]
+        res.data && this.groupList.push(...res.data)
+        this.groupIndex = 0
+      })
+    },
+    search(pageNum, keyword) {
       keyword ? (this.query.title = keyword) : delete this.query.title
-      if (categoryId) {
-        this.query.categoryId = categoryId
-      } else {
-        delete this.query.categoryId
-      }
       this.$refs.prsl.getList(pageNum)
     },
     send(data) {
-      this.$toast.loading({
+      showLoadingToast({
         message: '正在发送...',
         duration: 0,
         forbidClick: true,
@@ -50,8 +64,7 @@ export default {
           mes.msgtype = data.msgtype
           try {
             if (!['single_chat_tools', 'group_chat_tools', 'normal'].includes(entry)) {
-              // _this.$toast.clear()
-              this.$toast('入口错误：' + entry)
+              showToast('入口错误：' + entry)
               return
             }
 
@@ -79,14 +92,14 @@ export default {
                 break
               case '0':
                 let dataMediaId = {
-                  url: data.picUrl,
+                  url: fileUrlBase(data.image?.picUrl),
                   type: msgtype[this.mediaType],
                   name: data.title,
                 }
                 try {
                   let resMaterialId = await getMaterialMediaId(dataMediaId)
                   if (!resMaterialId.data) {
-                    this.$toast('获取素材id失败')
+                    showToast('获取素材id失败')
                     return
                   }
                   mes[msgtype[this.mediaType]] = {
@@ -99,34 +112,34 @@ export default {
               // 图文
               case '9':
                 mes.news = {
-                  link: data.url || ' ', //H5消息页面url 必填
+                  link: data.link?.url || ' ', //H5消息页面url 必填
                   title: data.title || ' ', //H5消息标题
-                  desc: data.desc || ' ', //H5消息摘要
-                  imgUrl: data.picUrl || window.sysConfig.DEFAULT_H5_PIC, //H5消息封面图片URL
+                  desc: data.link?.desc || ' ', //H5消息摘要
+                  imgUrl: fileUrlBase(data.link?.picUrl), //H5消息封面图片URL
                 }
                 break
             }
-            // this.$dialog({ message: 'mes：' + JSON.stringify(mes) })
+            console.log({ message: 'mes：' + JSON.stringify(mes) })
           } catch (err) {
-            this.$dialog({ message: 'err' + JSON.stringify(err) })
+            showDialog({ message: 'err' + JSON.stringify(err) })
           }
           ww.sendChatMessage(mes)
             .then((resSend) => {
               if (resSend.errMsg == 'sendChatMessage:ok') {
                 //发送成功 sdk会自动弹出成功提示，无需再加
-                // this.$toast('发送成功')
+                // showToast('发送成功')
               }
               if ('sendChatMessage:cancel,sendChatMessage:ok'.indexOf(resSend.errMsg) < 0) {
                 //错误处理
-                this.$dialog({ message: '发送失败：' + JSON.stringify(resSend) })
+                showDialog({ message: '发送失败：' + JSON.stringify(resSend) })
               }
             })
             .catch((err) => {})
-          this.$toast.clear()
+          closeToast()
         } else {
-          this.$toast.clear()
+          closeToast()
           //错误处理
-          this.$dialog({ message: '进入失败：' + JSON.stringify(res) })
+          showDialog({ message: '进入失败：' + JSON.stringify(res) })
         }
       })
     },
@@ -135,8 +148,18 @@ export default {
 </script>
 
 <template>
-  <div>
-    <PullRefreshScrollLoadList ref="prsl" :request="getList" :params="query">
+  <div class="flex h-[calc(100vh-110px)] mt10">
+    <div class="item-list">
+      <div
+        class="item"
+        v-for="(group, key) in groupList"
+        :class="{ active: groupIndex == key }"
+        :key="group.id"
+        @click="switchGroup(key, group)">
+        <div class="name">{{ group.name }}</div>
+      </div>
+    </div>
+    <PullRefreshScrollLoadList class="flex-auto" ref="prsl" :request="getList" :params="query">
       <template #list="{ list }">
         <div v-for="(item, index) in list" class="itemList overflow-auto" :key="index">
           <div class="content bfc-o" @click="showPopup(item)">
@@ -165,18 +188,83 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.item-list {
+  width: 30%;
+  background-color: #fff;
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  .item {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    padding-left: 20px;
+    .name {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .dropdown {
+      // display: none;
+      .dot {
+        cursor: pointer;
+        width: 15px;
+        height: 15px;
+        line-height: 15px;
+        font-size: 14px;
+        font-family: JMT-Font, JMT;
+        font-weight: normal;
+        color: rgba(0, 0, 0, 0.6);
+        margin-right: 10px;
+        margin-left: 5px;
+        font-weight: 500;
+        .content-icon {
+          color: rgba(0, 0, 0, 0.6);
+          font-size: 12px;
+          transform: rotate(90deg);
+        }
+      }
+    }
+    &:hover {
+      color: rgba(0, 0, 0, 0.9);
+      background: #f5f8fe;
+      opacity: 0.8;
+      border-radius: 2px;
+      .dropdown {
+        // display: block;
+      }
+    }
+  }
+
+  .active {
+    // border-left: 2px solid #3c88f0;
+    color: rgba(0, 0, 0, 0.9);
+    background: #f5f8fe;
+    border-radius: 2px;
+  }
+}
+
 .icon-style {
   width: 50px;
   height: 50px;
   margin-right: 6px;
 }
 .itemList {
-  width: 90%;
-  margin: 10px;
+  margin: 0 10px;
   background-color: #fff;
-  margin-bottom: 0px;
   padding: 10px;
   border-radius: 4px;
+  & + & {
+    margin-top: 10px;
+  }
 }
 .content {
   .van-image,

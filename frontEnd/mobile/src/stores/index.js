@@ -50,19 +50,9 @@ export default defineStore('app', {
         }
       }
       if (sessionStorage.token && !sessionStorage.corpId) {
-        let dataUser = {}
-        try {
-          dataUser = await getUserInfo()
-        } catch (error) {
-          return Promise.reject()
-        }
-        try {
-          sessionStorage.setItem('corpId', dataUser.corpId) // 企业id
-          sessionStorage.setItem('agentId', dataUser.agentId) // 自建应用agentId
-        } catch (error) {
-          alert(JSON.stringify(error))
-          return Promise.reject()
-        }
+        let { data } = await getUserInfo()
+        sessionStorage.setItem('corpId', data.corpId) // 企业id
+        sessionStorage.setItem('agentId', data.agentId) // 自建应用agentId
       }
     },
   },

@@ -87,13 +87,13 @@ function wxConfig(type) {
                 'openExistedChatWithMsg',
                 'shareToExternalMoments',
               ], //必填
-              getConfigSignature: (url) => {
+              getAgentConfigSignature: (url) => {
                 // 根据 url 生成应用签名，生成方法同上，但需要使用应用的 jsapi_ticket
                 return { timestamp, nonceStr, signature }
               },
               onAgentConfigSuccess: (res) => {
                 // 回调
-                alert('agentId成功:')
+                // alert('agentId成功:')
                 resolve()
               },
               onAgentConfigFail: (res) => {
@@ -103,6 +103,7 @@ function wxConfig(type) {
                 }
                 reject()
               },
+              onAgentConfigComplete: (res) => {},
             })
           }, 20)
         })

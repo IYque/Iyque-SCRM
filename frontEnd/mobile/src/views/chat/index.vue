@@ -1,6 +1,4 @@
 <script>
-import * as apiCategory from '@/api/category'
-import { getList } from './api'
 import List from './List.vue'
 
 import useStore from '@/stores/index.js'
@@ -10,7 +8,6 @@ export default {
   props: {},
   data() {
     return {
-      groupIndex: 0,
       keyword: '',
       active: 0,
       list: [
@@ -21,7 +18,6 @@ export default {
       loading: false,
       finished: false,
       show: false,
-      groupList: [], // 分组列表
       query: {},
       type: '', //分组类型
       // userId: useStore().userId,
@@ -37,39 +33,15 @@ export default {
       return useStore().userId
     },
   },
-  created() {
-    this.getList()
-  },
+  created() {},
   mounted() {},
   methods: {
     search(pageNum) {
-      // this.$refs['list'][this.active].search(pageNum, this.keyword)
-      this.$refs['list' + this.active] &&
-        this.$refs['list' + this.active][0].search(pageNum, this.keyword, this.query.categoryId)
+      this.$refs['list' + this.active]?.[0].search(pageNum, this.keyword)
     },
     reset() {
       this.keyword = ''
-      // delete this.query.categoryId
-      // this.groupIndex = 0
       this.$nextTick(() => this.search(1))
-    },
-    // refreshCollect() {
-    //   this.userId && this.$refs['list'][0].getList(1)
-    // },
-    switchGroup(index, data) {
-      this.groupIndex = index
-      this.query.categoryId = data.id
-      this.search(1)
-    },
-    // 获取当前类型下分组列表
-    getList(item) {
-      this.type = this.list[item?.name || 0].type
-
-      apiCategory.getList(this.type).then((res) => {
-        this.groupList = [{ name: '全部' }]
-        res.data && this.groupList.push(...res.data)
-        this.groupIndex = 0
-      })
     },
   },
 }
@@ -77,46 +49,16 @@ export default {
 
 <template>
   <div>
-    <div>
-      <van-search v-model="keyword" show-action placeholder="请输入关键词，在当前分类分组下搜索" @search="search(1)">
-        <template #action>
-          <span @click="search(1)">搜索</span>
-          <span class="ml5" @click="reset">重置</span>
-        </template>
-      </van-search>
-    </div>
+    <van-search v-model="keyword" show-action placeholder="请输入关键词，在当前分类分组下搜索" @search="search(1)">
+      <template #action>
+        <span @click="search(1)">搜索</span>
+        <span class="ml5" @click="reset">重置</span>
+      </template>
+    </van-search>
     <div class="tabs">
-      <van-tabs v-model="active" @click-tab="getList">
+      <van-tabs v-model:active="active" @click-tab="getList">
         <van-tab :title="item.name" v-for="(item, index) in list" :key="index">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: stretch;
-              width: 100%;
-              height: calc(100vh - 120px);
-            ">
-            <div class="item-list">
-              <div
-                class="item"
-                v-for="(group, key) in groupList"
-                :class="{ active: groupIndex == key }"
-                :key="group.id"
-                @click="switchGroup(key, group)">
-                <div class="name">{{ group.name }}</div>
-              </div>
-            </div>
-            <!-- <List
-            :ref="'list' + index"
-            :sideId="item.id"
-            :mediaType="item.type"
-            @collect="refreshCollect"
-            style="width:75%"
-          ></List> -->
-            <div style="width: 70%; overflow: auto">
-              <List :ref="'list' + index" :sideId="item.id" :mediaType="item.type + ''"></List>
-            </div>
-          </div>
+          <List :ref="'list' + index" :sideId="item.id" :mediaType="item.type + ''"></List>
         </van-tab>
       </van-tabs>
     </div>
@@ -204,70 +146,6 @@ export default {
   }
   .action {
     padding-left: 5px;
-  }
-}
-.item-list {
-  margin-top: 10px;
-  width: 30%;
-  background-color: #fff;
-  padding-top: 15px;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: auto;
-  .item {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.6);
-    height: 40px;
-    line-height: 40px;
-    width: 100%;
-    padding-left: 20px;
-    .name {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .dropdown {
-      // display: none;
-      .dot {
-        cursor: pointer;
-        width: 15px;
-        height: 15px;
-        line-height: 15px;
-        font-size: 14px;
-        font-family: JMT-Font, JMT;
-        font-weight: normal;
-        color: rgba(0, 0, 0, 0.6);
-        margin-right: 10px;
-        margin-left: 5px;
-        font-weight: 500;
-        .content-icon {
-          color: rgba(0, 0, 0, 0.6);
-          font-size: 12px;
-          transform: rotate(90deg);
-        }
-      }
-    }
-    &:hover {
-      color: rgba(0, 0, 0, 0.9);
-      background: #f5f8fe;
-      opacity: 0.8;
-      border-radius: 2px;
-      .dropdown {
-        // display: block;
-      }
-    }
-  }
-
-  .active {
-    // border-left: 2px solid #3c88f0;
-    color: rgba(0, 0, 0, 0.9);
-    background: #f5f8fe;
-    border-radius: 2px;
   }
 }
 </style>
