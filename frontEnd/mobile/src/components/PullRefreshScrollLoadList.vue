@@ -143,9 +143,7 @@ export default {
           <slot name="item" v-bind="{ item }"></slot>
         </template>
 
-        <div>
-          <slot name="list" v-bind="{ list }"></slot>
-        </div>
+        <slot name="list" v-bind="{ list }"></slot>
 
         <slot name="empty" v-if="!error && !loading && !list?.length">
           <Empty />

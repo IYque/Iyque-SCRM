@@ -161,26 +161,28 @@ export default {
     </div>
     <PullRefreshScrollLoadList class="flex-auto" ref="prsl" :request="getList" :params="query">
       <template #list="{ list }">
-        <div v-for="(item, index) in list" class="itemList overflow-auto" :key="index">
-          <div class="content bfc-o" @click="showPopup(item)">
-            <div class="title" v-if="mediaType !== '18'">{{ item.title }}</div>
-            <!-- 文本 -->
-            <p class="text" v-if="mediaType == '4'">{{ item.text?.content }}</p>
-            <!-- 图片 -->
-            <van-image v-if="mediaType == '0' && item.image?.picUrl" width="50" height="50" :src="item.image?.picUrl" />
-            <div class="icon-style" v-if="mediaType == '0' && !item.image?.picUrl">
-              <svg-icon class="icon-style" name="pic"></svg-icon>
-            </div>
-            <!-- 图文 -->
-            <div class="centerStyle" v-if="mediaType == 9">
-              <van-image width="50" height="50" :src="item.link?.picUrl" v-if="item.link?.picUrl" />
-              <div class="icon-style" v-else>
-                <svg-icon class="icon-style" name="imgText"></svg-icon>
+        <div class="mx-[10px]">
+          <div v-for="(item, index) in list" class="itemList overflow-auto" :key="index">
+            <div class="content bfc-o" @click="showPopup(item)">
+              <div class="title" v-if="mediaType !== '18'">{{ item.title }}</div>
+              <!-- 文本 -->
+              <p class="text" v-if="mediaType == '4'">{{ item.text?.content }}</p>
+              <!-- 图片 -->
+              <van-image v-if="mediaType == '0' && item.image?.picUrl" :src="item.image?.picUrl" />
+              <div class="icon-style" v-if="mediaType == '0' && !item.image?.picUrl">
+                <svg-icon class="icon-style" name="pic"></svg-icon>
               </div>
-              <div class="contentStyle">{{ item.link?.desc }}</div>
+              <!-- 图文 -->
+              <div class="centerStyle" v-if="mediaType == 9">
+                <van-image :src="item.link?.picUrl" v-if="item.link?.picUrl" />
+                <div class="icon-style" v-else>
+                  <svg-icon class="icon-style" name="imgText"></svg-icon>
+                </div>
+                <div class="contentStyle">{{ item.link?.desc }}</div>
+              </div>
             </div>
+            <div class="action float-right" @click="send(item)">发送</div>
           </div>
-          <div class="action float-right" @click="send(item)">发送</div>
         </div>
       </template>
     </PullRefreshScrollLoadList>
@@ -189,6 +191,7 @@ export default {
 
 <style lang="scss" scoped>
 .item-list {
+  flex: none;
   width: 30%;
   background-color: #fff;
   padding-top: 15px;
@@ -196,59 +199,28 @@ export default {
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
+  border-radius: 4px;
   .item {
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
     color: rgba(0, 0, 0, 0.6);
     height: 40px;
-    line-height: 40px;
-    width: 100%;
     padding-left: 20px;
     .name {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .dropdown {
-      // display: none;
-      .dot {
-        cursor: pointer;
-        width: 15px;
-        height: 15px;
-        line-height: 15px;
-        font-size: 14px;
-        font-family: JMT-Font, JMT;
-        font-weight: normal;
-        color: rgba(0, 0, 0, 0.6);
-        margin-right: 10px;
-        margin-left: 5px;
-        font-weight: 500;
-        .content-icon {
-          color: rgba(0, 0, 0, 0.6);
-          font-size: 12px;
-          transform: rotate(90deg);
-        }
-      }
-    }
-    &:hover {
-      color: rgba(0, 0, 0, 0.9);
-      background: #f5f8fe;
-      opacity: 0.8;
+    &:hover,
+    &.active {
+      border-left: 2px solid var(--Color);
+      color: var(--Color);
+      background: var(--ColorLight10);
+      // opacity: 0.8;
       border-radius: 2px;
-      .dropdown {
-        // display: block;
-      }
     }
-  }
-
-  .active {
-    // border-left: 2px solid #3c88f0;
-    color: rgba(0, 0, 0, 0.9);
-    background: #f5f8fe;
-    border-radius: 2px;
   }
 }
 
@@ -258,7 +230,6 @@ export default {
   margin-right: 6px;
 }
 .itemList {
-  margin: 0 10px;
   background-color: #fff;
   padding: 10px;
   border-radius: 4px;
@@ -269,6 +240,10 @@ export default {
 .content {
   .van-image,
   .video {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--RadiusSmall, 4px);
+    overflow: auto;
     margin: 0 10px 5px 0;
     border: 1px solid #eee;
   }
@@ -364,7 +339,7 @@ export default {
   width: 50px;
   height: 20px;
   font-size: 12px;
-  background-color: #0079de;
+  background-color: var(--Color);
   border-radius: 10px;
   color: #fff;
   line-height: 20px;
