@@ -4,8 +4,6 @@
 
 [![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
 [![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
-[![iYQue](https://img.shields.io/badge/iYQue-V1.0.0-brightgreen)](https://gitee.com/iyque/iYqueCode/releases/tag/V20250507)
-[![license](http://img.shields.io/badge/license-Apache%202.0-orange)](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
 
 
 </div>
