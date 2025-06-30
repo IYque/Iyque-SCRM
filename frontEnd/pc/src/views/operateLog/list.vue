@@ -1,5 +1,5 @@
 <script setup>
-import { getList, findOperateLogTypes } from './api'
+import { getList, findOperateLogTypes, synchOperateLog } from './api'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -39,6 +39,12 @@ findOperateLogTypesFn()
             start-placeholder="开始日期"
             end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
+      </template>
+
+      <template #operation="{ selectedIds }" v-if="!isSelect">
+        <el-button type="primary" @click="synchOperateLog({ operateType: type }).then(() => $sdk.msgSuccess())">
+          同步
+        </el-button>
       </template>
 
       <template #="{ data }">

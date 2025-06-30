@@ -102,11 +102,13 @@ export default {
     removeGroup(id) {
       this.$confirm('是否确认删除当前分组？删除后该分组下内容将移动到默认分组中，该操作不可撤销，请谨慎操作。')
         .then(() => {
-          this.delObj.ids = []
-          this.delObj.ids.push(id)
-          delAndRemoves(this.delObj).then((res) => {
-            // this.getCodeCategoryListFn()
-            this.getTree(true)
+          api.del(id).then((res) => {
+            if (id == this.activeId) {
+              this.activeId = undefined
+              this.getTree(true)
+            } else {
+              this.getTree()
+            }
           })
         })
         .catch(() => {})
@@ -146,8 +148,8 @@ export default {
             @click="switchGroup(index, group)">
             <div class="name">{{ group.name }}</div>
             <div v-if="group.id != 0 && !isDisabledAction">
-              <IconBtn icon="el-icon-edit" @click="editGroup(group)">编辑</IconBtn>
-              <IconBtn icon="el-icon-delete" @click="removeGroup(group.id)">删除</IconBtn>
+              <IconBtn icon="el-icon-edit" @click.stop="editGroup(group)">编辑</IconBtn>
+              <IconBtn icon="el-icon-delete" @click.stop="removeGroup(group.id)">删除</IconBtn>
             </div>
           </div>
         </div>

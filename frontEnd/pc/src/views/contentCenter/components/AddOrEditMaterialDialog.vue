@@ -166,7 +166,7 @@ export default {
               <div class="g-tip">标题对客户不可见，仅用于查询场景</div>
             </el-form-item>
             <!-- 仅新增时显示 -->
-            <el-form-item label="图片" prop="image.picUrl" v-if="!form.id">
+            <el-form-item label="图片" prop="image.picUrl">
               <Upload v-model:fileUrl="form.image.picUrl" :maxSize="20" :multiple="false" :limit="10">
                 <template #tip><div>支持jpg/jpeg/png格式，图片大小不超过20M，支持最多10张批量上传</div></template>
               </Upload>
