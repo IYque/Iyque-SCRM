@@ -17,6 +17,13 @@ public interface IYqueCustomerSeasService {
     void importData(IYqueCustomerSeasVo seasVo, MultipartFile file);
 
 
+    /**
+     * 修改公海客户状态
+     * @param customerSeas
+     */
+    void updateCustomerSeasState(IYqueCustomerSeas customerSeas);
+
+
 
     /**
      * 客户公海列表

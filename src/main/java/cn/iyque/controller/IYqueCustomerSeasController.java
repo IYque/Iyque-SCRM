@@ -1,8 +1,7 @@
 package cn.iyque.controller;
 
 
-import cn.iyque.constant.HttpStatus;
-import cn.iyque.domain.IYQueCustomerInfo;
+
 import cn.iyque.domain.IYqueCustomerSeasVo;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueCustomerSeas;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import cn.iyque.utils.ServletUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
 
 
@@ -59,6 +57,18 @@ public class IYqueCustomerSeasController {
 
 
     /**
+     * 更新公海客户相关动态
+     * @param customerSeas
+     * @return
+     */
+    @PostMapping("/updateCustomerSeasState")
+    public ResponseResult  updateCustomerSeasState(@RequestBody IYqueCustomerSeas customerSeas){
+        yqueCustomerSeasService.updateCustomerSeasState(customerSeas);
+        return new ResponseResult();
+    }
+
+
+    /**
      * 获取客户公海列表
      * @param customerSeas
      * @return
@@ -71,6 +81,39 @@ public class IYqueCustomerSeasController {
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("createTime").descending()));
         return new ResponseResult(customerInfos.getContent(),customerInfos.getTotalElements());
     }
+
+
+    /**
+     * 通过id批量删除
+     *
+     * @param ids id列表
+     * @return 结果
+     */
+    @DeleteMapping(path = "/batchDelete/{ids}")
+    public ResponseResult batchDelete(@PathVariable("ids") Long[] ids) {
+
+        yqueCustomerSeasService.batchDelete(ids);
+
+        return new ResponseResult();
+    }
+
+
+    /**
+     * 通过id提醒
+     *
+     * @param ids id列表
+     * @return 结果
+     */
+    @PostMapping(path = "/distribute/{ids}")
+    public ResponseResult distribute(@PathVariable("ids") Long[] ids) throws Exception {
+
+        yqueCustomerSeasService.distribute(ids);
+
+        return new ResponseResult();
+    }
+
+
+
 
 
 

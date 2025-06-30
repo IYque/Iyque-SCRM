@@ -23,7 +23,12 @@ public class IYqueParamConfig {
     //是否预审所有数据,fasle默认预审当天0点到此刻的数据，true所有数据
     private Boolean inquiryAll=false;
 
+    //投诉页面
     private String complaintUrl="https://iyque.cn";
+
+
+    //客户公海页面
+    private String customerSeasUrl="https://iyque.cn";
 
 
     //向量数据库相关配置
