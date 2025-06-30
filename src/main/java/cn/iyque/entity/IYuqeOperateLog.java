@@ -31,7 +31,6 @@ public class IYuqeOperateLog extends BaseEntity{
     private String userId;
 
     //操作人名称
-    @Transient
     private String userName;
 
 

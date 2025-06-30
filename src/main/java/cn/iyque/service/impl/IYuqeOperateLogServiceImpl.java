@@ -22,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +62,8 @@ public class IYuqeOperateLogServiceImpl implements IYuqeOperateLogService {
 
             Boolean hasMore=true;
             WxOperLogInfo wxOperLogInfo = WxOperLogInfo.builder()
-                    .startTime(System.currentTimeMillis())
-                    .endTime(DateUtils.getDaysAgo(new Date(), 7).getTime())
+                    .startTime(DateUtils.getDaysAgoInSeconds(new Date(), 7))
+                    .endTime(Instant.now().getEpochSecond())
                     .build();
 
 
@@ -76,6 +78,8 @@ public class IYuqeOperateLogServiceImpl implements IYuqeOperateLogService {
                 wxOperLogInfo.setCursor(
                         iYqueSynchDataRecord.getNextCursor()
                 );
+            }else{//移除指定时间段的数据避免数据重复
+                iYuqeOperateLogDao.deleteByOperateTypeAndCreateTimeBetween(operateType,DateUtils.getDaysAgo(new Date(),7),new Date());
             }
 
 
@@ -88,18 +92,21 @@ public class IYuqeOperateLogServiceImpl implements IYuqeOperateLogService {
                     hasMore=result.isHasMore();
 
                     result.getRecordList().stream().forEach(k->{
+                        List<IYqueUser> iYqueUsers = iYqueUserDao.findByUserId(k.getUserid());
 
-                        operateLogs.add(
-                                IYuqeOperateLog.builder()
-                                        .userId(k.getUserid())
-                                        .operateContent(k.getDetailInfo())
-                                        .operateIp(k.getIp())
-                                        .createTime(new Date(k.getTime() * 1000L))
-                                        .operateType(operateType)
-                                        .operateTypeSub(k.getOperType())
-                                        .build()
-                        );
-
+                        if(CollectionUtil.isNotEmpty(iYqueUsers)){
+                            operateLogs.add(
+                                    IYuqeOperateLog.builder()
+                                            .userId(k.getUserid())
+                                            .userName(iYqueUsers.stream().findFirst().get().getName())
+                                            .operateContent(k.getDetailInfo())
+                                            .operateIp(k.getIp())
+                                            .createTime(new Date(k.getTime() * 1000L))
+                                            .operateType(operateType)
+                                            .operateTypeSub(k.getOperType())
+                                            .build()
+                            );
+                        }
                     });
 
                     if(StringUtils.isNotEmpty(result.getNextCursor())){
@@ -166,21 +173,7 @@ public class IYuqeOperateLogServiceImpl implements IYuqeOperateLogService {
             spec = spec.and((root, query, cb) -> cb.between(root.get("createTime"), DateUtils.setTimeToStartOfDay( iYuqeOperateLog.getStartTime()), DateUtils.setTimeToEndOfDay( iYuqeOperateLog.getEndTime())));
         }
 
-        Page<IYuqeOperateLog> operateLogs = iYuqeOperateLogDao.findAll(spec, pageable);
-        List<IYuqeOperateLog> content = operateLogs.getContent();
-        if(CollectionUtil.isNotEmpty(content)) {
-            content.stream().forEach(k->{
-                List<IYqueUser> iYqueUsers = iYqueUserDao.findByUserId(k.getUserId());
-                if(CollectionUtil.isNotEmpty(iYqueUsers)){
-                    k.setUserName(
-                            iYqueUsers.stream().findFirst().get().getName()
-                    );
 
-                }
-
-            });
-        }
-
-        return operateLogs;
+        return iYuqeOperateLogDao.findAll(spec, pageable);
     }
 }

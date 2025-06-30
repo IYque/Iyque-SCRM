@@ -28,7 +28,8 @@ public class IYqueWxSecurityService {
      */
     public WxOperLogResult getMemberOperLog(WxOperLogInfo info) throws Exception {
         String url =  iYqueConfigService.findWxcpservice().getWxCpConfigStorage().getApiUrl("/cgi-bin/security/member_oper_log/list");
-        return WxOperLogResult.fromJson(iYqueConfigService.findWxcpservice().post(url, info.toJson()));
+        String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
+        return WxOperLogResult.fromJson(post);
     }
 
 
@@ -40,7 +41,8 @@ public class IYqueWxSecurityService {
      */
     public WxOperLogResult getAdminOperLog(WxOperLogInfo info) throws Exception {
         String url =  iYqueConfigService.findWxcpservice().getWxCpConfigStorage().getApiUrl("/cgi-bin/security/admin_oper_log/list");
-        return WxOperLogResult.fromJson(iYqueConfigService.findWxcpservice().post(url, info.toJson()));
+        String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
+        return WxOperLogResult.fromJson(post);
     }
 
 

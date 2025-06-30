@@ -166,6 +166,19 @@ public class DateUtils {
         return calendar.getTime();
     }
 
+    /**
+     * 获取指定时间指定天数之前的日期（返回Unix时间戳，秒）
+     * @param date 基准日期
+     * @param days 天数（如7表示7天前）
+     * @return 时间戳（秒）
+     */
+    public static long getDaysAgoInSeconds(Date date, int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -days);
+        return calendar.getTime().getTime() / 1000; // 转为秒
+    }
+
 
 
 

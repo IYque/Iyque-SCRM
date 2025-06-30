@@ -8,7 +8,10 @@ const props = defineProps({
 
 const categoryList = ref([])
 function findOperateLogTypesFn() {
-  findOperateLogTypes().then(({ data }) => {
+ 
+  findOperateLogTypes({
+ operateType: props.type
+  }).then(({ data }) => {
     categoryList.value = data
   })
 }
@@ -53,7 +56,7 @@ findOperateLogTypesFn()
           <el-table-column label="操作人" prop="userName"></el-table-column>
           <el-table-column label="操作类型" prop="operateTypeSub">
             <template #default="{ row }">
-              {{ categoryList?.find((e) => e.operateTypeSub == row.operateTypeSub)?.value }}
+              {{ categoryList?.find((e) => e.subCode == row.operateTypeSub)?.value }}
             </template>
           </el-table-column>
           <el-table-column label="操作内容" prop="operateContent"></el-table-column>
