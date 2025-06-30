@@ -46,7 +46,7 @@ public class IYqueMaterial {
     /**
      * 分类id
      */
-    private Long categoryId;
+    private String categoryId;
 
 
     /**
@@ -105,18 +105,26 @@ public class IYqueMaterial {
         }
     }
 
-    @PrePersist
-    @PreUpdate
-    public void prePersist() {
+    public void prePersist(IYqueMaterial material) {
         if (this.delFlag == null) {
             this.delFlag = 0;
         }
         if(IYqueMsgAnnex.MsgType.MSG_TEXT.equals(msgtype)){
-            annexContent =  JSONUtil.toJsonStr(text);;
+            if(material.getText() != null){
+                annexContent =  JSONUtil.toJsonStr(material.getText());
+            }
+
+
         }else if (IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE.equals(msgtype)) {
-            annexContent = JSONUtil.toJsonStr(image);
+            if(material.getImage() != null){
+                annexContent = JSONUtil.toJsonStr(material.getImage());
+            }
+
         } else if (IYqueMsgAnnex.MsgType.MSG_TYPE_LINK.equals(msgtype)) {
-            annexContent = JSONUtil.toJsonStr(link);
+            if(null != material.getLink()){
+                annexContent = JSONUtil.toJsonStr(material.getLink());
+            }
+
         }
     }
 }

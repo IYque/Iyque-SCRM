@@ -3,7 +3,6 @@ package cn.iyque.entity;
 
 import cn.iyque.enums.MediaType;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

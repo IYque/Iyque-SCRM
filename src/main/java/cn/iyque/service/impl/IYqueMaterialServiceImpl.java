@@ -10,7 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Arrays;
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -21,7 +24,11 @@ public class IYqueMaterialServiceImpl implements IYqueMaterialService {
 
     @Override
     public void saveOrUpdate(IYqueMaterial material) {
+        material.setUpdateTime(new Date());
+        material.setCreateTime(new Date());
+        material.prePersist(material);
         yqueMaterialDao.saveAndFlush(material);
+
     }
 
     @Override
@@ -33,7 +40,7 @@ public class IYqueMaterialServiceImpl implements IYqueMaterialService {
 
         }
 
-        if (iYqueMaterial.getCategoryId() != null) {
+        if (StringUtils.isNotEmpty(iYqueMaterial.getCategoryId())) {
             spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("categoryId")), iYqueMaterial.getCategoryId()));
         }
 
