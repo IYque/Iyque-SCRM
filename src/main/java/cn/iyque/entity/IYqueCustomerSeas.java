@@ -33,7 +33,7 @@ public class IYqueCustomerSeas {
 
 
     //手机号
-    @ExcelProperty(value = "客户姓名")
+    @ExcelProperty(value = "手机号")
     private String phoneNumber;
 
 
