@@ -10,7 +10,7 @@ public interface IYQueScriptSubDao extends JpaRepository<IYQueScriptSub,Long> , 
 
     void deleteByIdIsNotIn(List<Long> ids);
 
-    void deleteByScriptIdIs(List<Long> ids);
+//    void deleteByScriptIdIs(List<Long> ids);
 
     List<IYQueScriptSub> findByScriptId(Long scriptId);
 }

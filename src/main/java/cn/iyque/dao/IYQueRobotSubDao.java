@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IYQueRobotSubDao extends JpaRepository<IYqueRobotSub,Long> , JpaSpecificationExecutor<IYqueRobotSub> {
 
-    void deleteAllByRobotIdIs(List<Long> robotIds);
+//    void deleteAllByRobotIdIs(List<Long> robotIds);
 }

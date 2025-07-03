@@ -18,7 +18,7 @@ import javax.persistence.*;
 /**
  * 机器人附件
  */
-@Entity(name = "iyque_robot")
+@Entity(name = "iyque_robot_sub")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

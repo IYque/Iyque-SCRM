@@ -56,7 +56,7 @@ public class IYQueScriptServiceImpl implements IYQueScriptService {
     public void batchDelete(Long[] ids) {
         queScriptDao.deleteAllByIdInBatch(Arrays.asList(ids));
 
-        queScriptSubDao.deleteByScriptIdIs(Arrays.asList(ids));
+//        queScriptSubDao.deleteByScriptIdIs(Arrays.asList(ids));
 
     }
 
