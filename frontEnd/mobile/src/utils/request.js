@@ -1,6 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
-import { showConfirmDialog, showDialog } from 'vant'
+import { showConfirmDialog, showDialog, closeToast } from 'vant'
 // sessionStorage.setItem(
 //   'token',
 //   'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX3R5cGUiOiIwMiIsInVzZXJfaWQiOjM0LCJsb2dpbl90eXBlIjoiTGlua1dlQ2hhdEFQSSIsInVzZXJfbmFtZSI6IueOi-eOieabvCIsInVzZXJfa2V5IjoiY2VjYmFmYzItY2VkOC00ZjI5LThiNmQtODMxMDU4MWM2ZTBkIiwiY29ycF9uYW1lIjoi5Luf5b6u56eR5oqAIiwiY29ycF9pZCI6Ind3NjIyZmM4NTJmNzljM2YxMyJ9.M7OykNvW0edCG4lLwJb31acdgrtXtlcbgt8DAQxcCgPukOXGsf03R8YsgwxjX65IdDL8GxHiotu-AxAv1gqydw'
@@ -33,6 +33,7 @@ function requestFactory(getway = '') {
       if (status === 200 && data.code === 200) {
         return data
       } else if (data.code === 401) {
+        closeToast()
         showConfirmDialog({
           title: '提示',
           message: '登录状态已过期，您可以继续留在该页面，或者重新登录',
@@ -52,6 +53,7 @@ function requestFactory(getway = '') {
       //   return new Promise(() => {})
       // }
       else {
+        closeToast()
         if (process.env.NODE_ENV === 'development' || location.href.includes('show.iyque.cn')) {
           showDialog({
             title: '接口提示',
@@ -76,6 +78,7 @@ function requestFactory(getway = '') {
       // }
     },
     (error) => {
+      closeToast()
       if (error.response) {
         addErrorLog(error.response)
       } else {

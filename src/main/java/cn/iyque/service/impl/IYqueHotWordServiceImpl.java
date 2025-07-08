@@ -157,7 +157,7 @@ public class IYqueHotWordServiceImpl implements IYqueHotWordService {
                                     = JSONUtil.toList(cleanJsonString, IYqueAnalysisHotWord.class);
 
                             if(CollectionUtil.isNotEmpty(analysisHotWords)){
-                                List<IYqueCategory> iYqueCategories = categoryService.findAll();
+                                List<IYqueCategory> iYqueCategories = categoryService.findAll(new IYqueCategory());
 
                                 analysisHotWords.stream().forEach(k->{
                                     k.setAcceptType(

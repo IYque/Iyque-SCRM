@@ -1,15 +1,15 @@
 :root {
   /* 主题色hsl*/
-  --H: 345;
-  --S: 82%;
-  --L: 54%;
+  --H: 263;
+  --S: 99%;
+  --L: 66%;
   --LDark: calc(var(--L) - 5%); /* 深主题色 l */
 
   --Hsl: var(--H), var(--S), var(--L); /* 主题色hsl*/
   --HslDark: var(--H), var(--S), var(--LDark); /* 深主题色hsl*/
 
-  --Color: hsl(var(--Hsl)); /* 主题色 hsl(345, 82%, 54%)*/
-  --ColorDark: hsl(var(--HslDark)); /* 深主题色 hsl(345, 54%, 49%) */
+  --Color: hsl(var(--Hsl)); /* 主题色 hsl(263, 99%, 66%)*/
+  --ColorDark: hsl(var(--HslDark)); /* 深主题色 hsl(263, 99%, 60%) */
   --ColorSub: hsl(var(--Hsl)); /* 主题辅色 */
   .--Color {
     color: var(--Color) !important;

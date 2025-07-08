@@ -66,14 +66,14 @@ function wxConfig(type) {
         getAgentTicket(window.location.href.split('#')[0]).then(({ data }) => {
           let { timestamp, nonceStr, signature } = data
           setTimeout(() => {
-            wx.agentConfig({
-              beta: true, // 必须这么写，否则wx.invoke调用形式的jsapi会有问题
-              debug: true,
-              corpid: sessionStorage.corpId, // 必填，企业微信的corpid，必须与当前登录的企业一致
-              agentid: sessionStorage.agentId, // 必填，企业微信的应用id （e.g. 1000247）
-              timestamp, // 必填，生成签名的时间戳
-              nonceStr, // 必填，生成签名的随机串
-              signature, // 必填，签名，见附录-JS-SDK使用权限签名算法
+            ww.register({
+              // beta: true, // 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+              // debug: true,
+              corpId: sessionStorage.corpId, // 必填，企业微信的corpid，必须与当前登录的企业一致
+              agentId: sessionStorage.agentId, // 必填，企业微信的应用id （e.g. 1000247）
+              // timestamp, // 必填，生成签名的时间戳
+              // nonceStr, // 必填，生成签名的随机串
+              // signature, // 必填，签名，见附录-JS-SDK使用权限签名算法
               jsApiList: [
                 'sendChatMessage',
                 'getContext',
@@ -87,18 +87,23 @@ function wxConfig(type) {
                 'openExistedChatWithMsg',
                 'shareToExternalMoments',
               ], //必填
-              success: (res) => {
+              getAgentConfigSignature: (url) => {
+                // 根据 url 生成应用签名，生成方法同上，但需要使用应用的 jsapi_ticket
+                return { timestamp, nonceStr, signature }
+              },
+              onAgentConfigSuccess: (res) => {
                 // 回调
-                // toast('agentId成功:')
+                // alert('agentId成功:')
                 resolve()
               },
-              fail: (res) => {
+              onAgentConfigFail: (res) => {
                 alert('agent config失败:' + JSON.stringify(res))
                 if (res.errMsg.indexOf('function not exist') > -1) {
                   alert('版本过低请升级')
                 }
                 reject()
               },
+              onAgentConfigComplete: (res) => {},
             })
           }, 20)
         })

@@ -290,11 +290,11 @@ export default {
             :preview-src-list="fileListShow.map((e) => e.url)"
             alt="" />
           <div class="action-mask">
-            <el-icon-search class="el-icon-search mr5" @click="showView(index)"></el-icon-search>
+            <el-icon-search class="el-icon-search action-icon mr5" @click="showView(index)"></el-icon-search>
             <!-- <span v-if="action.includes('download')" @click="download(item)">
               <el-icon-download class="el-icon-download"></el-icon-download>
             </span> -->
-            <el-icon-delete class="el-icon-delete mr5" @click="remove(index)"></el-icon-delete>
+            <el-icon-delete class="el-icon-delete action-icon mr5" @click="remove(index)"></el-icon-delete>
           </div>
         </div>
         <!-- </transition-group> -->
@@ -355,8 +355,8 @@ export default {
                 @click.stop />
 
               <div class="action-mask" @click.self.stop>
-                <el-icon-search class="el-icon-search" @click.stop="showView()"></el-icon-search>
-                <el-icon-EditPen class="el-icon-EditPen"></el-icon-EditPen>
+                <el-icon-search class="el-icon-search action-icon" @click.stop="showView()"></el-icon-search>
+                <el-icon-EditPen class="el-icon-EditPen action-icon"></el-icon-EditPen>
                 <!-- <span v-if="action.includes('download')" @click.prevent.stop="download(item)">
               <el-icon-download class="el-icon-download"></el-icon-download>
             </span> -->
@@ -380,7 +380,7 @@ export default {
                 <source :src="fileUrlShow" type="video/mp4" />
               </video>
               <div class="action-mask" style="height: 30%" @click.self.stop>
-                <el-icon-EditPen class="el-icon-EditPen"></el-icon-EditPen>
+                <el-icon-EditPen class="el-icon-EditPen action-icon"></el-icon-EditPen>
               </div>
             </template>
             <template v-else class="al">
@@ -491,8 +491,14 @@ export default {
   opacity: 0;
   font-size: 20px;
   transition: opacity 0.3s;
-  background-color: var(--bg-black-5);
+  background-color: #0009;
   z-index: 1;
+  .action-icon {
+    cursor: pointer;
+    &:hover {
+      color: var(--color);
+    }
+  }
 }
 .upload-item {
   &:hover {

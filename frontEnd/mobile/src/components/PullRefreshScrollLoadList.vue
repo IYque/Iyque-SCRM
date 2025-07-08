@@ -81,6 +81,7 @@ export default {
       }
       this.loading = true
       this.finished = false
+      this.error = false
       page && (this.query.pageNum = page)
 
       Object.assign(this.query, this.params)
@@ -128,7 +129,7 @@ export default {
         </template>
       </van-field>
     </div>
-    <van-pull-refresh v-model="refreshing" success-text="刷新成功" @refresh="getList(1)">
+    <van-pull-refresh class="height100" v-model="refreshing" success-text="刷新成功" @refresh="getList(1)">
       <van-list
         ref="scroll"
         v-model:loading="loading"
@@ -137,15 +138,12 @@ export default {
         :finished-text="list?.length ? finishedText : ''"
         v-model:error="error"
         error-text="请求失败，点击重新加载"
-        @load="getList()"
-      >
+        @load="getList()">
         <template v-for="(item, i) in list" :key="i">
           <slot name="item" v-bind="{ item }"></slot>
         </template>
 
-        <div>
-          <slot name="list" v-bind="{ list }"> </slot>
-        </div>
+        <slot name="list" v-bind="{ list }"></slot>
 
         <slot name="empty" v-if="!error && !loading && !list?.length">
           <Empty />

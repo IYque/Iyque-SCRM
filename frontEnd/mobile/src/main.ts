@@ -1,4 +1,5 @@
 import './config.js'
+import 'normalize.css/normalize.css'
 
 import VConsole from 'vconsole'
 new VConsole()
@@ -12,10 +13,6 @@ document.addEventListener('touchstart', function (e) {
   }
 })
 
-import 'normalize.css/normalize.css'
-import './styles/index.scss'
-import 'tailwindcss/index.css'
-
 import { createApp, defineAsyncComponent } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router'
@@ -23,6 +20,24 @@ import App from './App.vue'
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+
+import Vant, { setToastDefaultOptions, setDialogDefaultOptions, showToast, showDialog } from 'vant'
+import 'vant/lib/index.css'
+app.use(Vant)
+setDialogDefaultOptions({
+  title: '系统提示',
+  width: '68vw',
+  //  confirmButtonColor: color
+})
+setToastDefaultOptions('loading', {
+  message: '加载中...',
+  forbidClick: true,
+  loadingType: 'spinner',
+  duration: 0,
+})
+
+import './styles/index.scss'
+import 'tailwindcss/index.css'
 
 // 全局方法挂载
 import { SDK, $sdk } from './utils/sdk'
@@ -39,21 +54,6 @@ for (const c in components) {
   // console.log(c.match(/\/([^\/]+)\.vue$/)[1])
   app.component(c.match(/\/([^\/]+)\.vue$/)[1], defineAsyncComponent(components[c]))
 }
-
-import Vant, { setToastDefaultOptions, setDialogDefaultOptions, showToast, showDialog } from 'vant'
-import 'vant/lib/index.css'
-app.use(Vant)
-setDialogDefaultOptions({
-  title: '系统提示',
-  width: '68vw',
-  //  confirmButtonColor: color
-})
-setToastDefaultOptions('loading', {
-  message: '加载中...',
-  forbidClick: true,
-  loadingType: 'spinner',
-  duration: 0,
-})
 
 import { useDark } from '@vueuse/core'
 useDark()

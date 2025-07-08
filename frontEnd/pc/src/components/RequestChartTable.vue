@@ -117,6 +117,7 @@ export default defineComponent({
 
       let query = JSON.parse(JSON.stringify(this.query))
       if (query.dateRange) {
+        query.startTime = query.dateRange?.[0]
         query.beginTime = query.dateRange[0]
         query.endTime = query.dateRange[1]
       } else if (!this.isTimeQuery) {

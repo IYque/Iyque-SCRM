@@ -55,7 +55,9 @@ export default {
 
           <div class="msg">
             <!-- 文字 -->
-            <span class="msg-text" v-if="item.text">{{ item.text }}</span>
+            <span class="msg-text" v-if="item.text">
+              {{ typeof item.text === 'string' ? item.text : item.text?.content }}
+            </span>
 
             <!-- 链接 -->
             <slot

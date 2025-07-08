@@ -315,3 +315,8 @@ export function $copyText(txt) {
     }
   }
 }
+
+export function fileUrlBase(url) {
+  if (!url) return ''
+  return url.startsWith('http') ? url : window.sysConfig.BASE_API + '/file/fileView/' + url
+}

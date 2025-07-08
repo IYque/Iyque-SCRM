@@ -99,6 +99,20 @@ export const navRoutes = [
   },
 
   {
+    path: '/content',
+    component: Layout,
+    redirect: '/content/commonMaterial',
+    meta: { title: '内容-内容中心-企业私有知识库', icon: 'content' },
+    children: [
+      {
+        path: 'commonMaterial',
+        component: () => import('@/views/contentCenter/commonMaterial/index'),
+        meta: { title: '普通素材' },
+      },
+    ],
+  },
+
+  {
     path: '/customerService',
     component: Layout,
     redirect: '/customerService/corpCustomerService/customerServiceManage',
@@ -264,11 +278,11 @@ export const navRoutes = [
         component: () => import('@/views/config/index'),
         meta: { title: '系统配置' },
       },
-      // {
-      //   path: 'user',
-      //   component: () => import('@/views/user/index'),
-      //   meta: { title: '员工列表' },
-      // },
+      {
+        path: 'operateLog',
+        component: () => import('@/views/operateLog/index'),
+        meta: { title: '操作日志' },
+      },
       // {
       //   path: 'groupChat',
       //   component: () => import('@/views/groupChat/index'),

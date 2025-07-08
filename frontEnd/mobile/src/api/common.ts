@@ -25,10 +25,10 @@ export function getCosConfig(data) {
   })
 }
 
-// 获取视频第一帧
-export function getVideoPic(params) {
+// 获取临时素材media_id
+export function getMaterialMediaId(params) {
   return request({
-    url: '/file/getVideoFirstImg/',
+    url: '/iYqueSys/uploadMediaId',
     params,
   })
 }
@@ -39,10 +39,9 @@ export function getVideoPic(params) {
  */
 export function getAgentTicket(url) {
   return request({
-    url: service + '/ticket/getAgentTicket',
+    url: '/iYqueSys/getAgentTicket',
     params: {
       url,
-      appType: 1,
     },
   })
 }
@@ -89,7 +88,7 @@ export function login(authCode) {
  */
 export function getUserInfo() {
   return request({
-    url: '/system/user/getInfo',
+    url: '/iYqueSys/getBaseInfo',
   })
 }
 

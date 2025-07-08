@@ -14,7 +14,7 @@ public interface IYqueCategoryService {
      * 获取分类列表
      * @return
      */
-    List<IYqueCategory> findAll();
+    List<IYqueCategory> findAll(IYqueCategory iYqueCategory);
 
 
     /**

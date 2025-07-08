@@ -4,8 +4,6 @@
 
 [![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
 [![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
-[![iYQue](https://img.shields.io/badge/iYQue-V1.0.0-brightgreen)](https://gitee.com/iyque/iYqueCode/releases/tag/V20250507)
-[![license](http://img.shields.io/badge/license-Apache%202.0-orange)](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)
 
 
 </div>
@@ -73,7 +71,7 @@
 
 源雀SCRM基于源码100%开放的策略，积极拥抱开源，目前已推出了一个完全开源、免费使用的源雀SCRM开源版工具，结合DeepSeek等AI大模型，让企业快速拥有更强大、更丰富、更智能的企业微信管理能力。
 
-### 5.1 基础能力
+### 5.1 基础功能
 
 目前源雀SCRM开源版已开源基础引流能力，具体如下：
 
@@ -114,7 +112,14 @@
 **客户列表|员工列表|客群列表**
 - 同步企业员工列表与客户,客群列表方便快速查看。便于后续功能拓展提供基础数据；
 
-### 5.2 AI能力
+**内容**
+- **普通素材**：管理员在PC后台统一管理企业标准素材（文字、图片、图文链接），员工在企业微信移动端快速查找并发送给客户，确保信息一致性与沟通效率;
+
+**操作日志**
+- **成员操作**：查看企微普通成员的操作日志
+- **管理员操作**：查看企微管理员的操作日志
+
+### 5.2 AI功能
 
 目前源雀SCRM开源版结合 DeepSeek、腾讯混元等AI大模型，实现客户会话相关能力智能化，具体如下：
 

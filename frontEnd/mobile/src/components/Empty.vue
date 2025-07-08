@@ -1,7 +1,7 @@
 <template>
   <div class="empty">
     <!-- <img src="@/assets/empty.png" alt="" /> -->
-    <svg-icon class="empty-icon" name="empty"></svg-icon>
+    <svg-icon class="empty-icon" name="no-data"></svg-icon>
     <span>{{ description }}</span>
   </div>
 </template>

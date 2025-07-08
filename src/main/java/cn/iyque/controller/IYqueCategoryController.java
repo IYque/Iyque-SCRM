@@ -41,9 +41,9 @@ public class IYqueCategoryController {
      * @return
      */
     @GetMapping("/findIYqueCategory")
-    public ResponseResult<IYqueCategory> findIYqueCategory(){
+    public ResponseResult<IYqueCategory> findIYqueCategory(IYqueCategory iYqueCategory){
         List<IYqueCategory> iYqueCategories =
-                yqueCategoryService.findAll();
+                yqueCategoryService.findAll(iYqueCategory);
         return new ResponseResult(iYqueCategories);
     }
 

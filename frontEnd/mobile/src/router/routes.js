@@ -15,8 +15,7 @@ export default [
     path: '/',
     name: 'Home',
     component: Home,
-    redirect:
-      process.env.NODE_ENV === 'development' ? '' : '/' + window.location.pathname.split('/').pop(),
+    redirect: process.env.NODE_ENV === 'development' ? '' : '/' + window.location.pathname.split('/').pop(),
     meta: {
       title: '企微助手',
       noAuth: true,
@@ -54,6 +53,17 @@ export default [
       title: '1',
       noAuth: true,
       wxSDKConfigType: 'no',
+    },
+  },
+
+  // 聊天素材
+  {
+    path: '/chat',
+    name: 'chat',
+    component: () => import('../views/chat/index.vue'),
+    meta: {
+      title: '聊天素材',
+      noAuth,
     },
   },
 

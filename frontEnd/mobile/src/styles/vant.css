@@ -63,8 +63,8 @@
   --van-radius-lg: 8px;
   --van-radius-max: 999px; */
 
-  --van-blue: var(--color, #1989fa);
-  --van-green: var(--color, #07c160);
+  --van-blue: var(--Color, #1989fa);
+  --van-green: var(--Color, #07c160);
   --van-button-default-height: 32px;
 
   .van-dialog__content {
