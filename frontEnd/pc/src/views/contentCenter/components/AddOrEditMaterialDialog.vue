@@ -42,15 +42,15 @@ export default {
       form: {}, // 表单数据
       // 表单校验
       rules: Object.freeze({
-        title: [{ required: true, message: '不能为空', trigger: 'change' }],
-        categoryId: [{ required: true, message: '不能为空', trigger: 'change' }],
-        'text.content': [{ required: true, message: '不能为空', trigger: 'blur' }],
-        materialUrl: [{ required: true, message: '不能为空', trigger: 'change' }],
-        'image.picUrl': [{ type: 'array', required: true, message: '不能为空', trigger: 'change' }],
-        digest: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        coverUrl: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        title: [$sdk.ruleRequiredChange],
+        categoryId: [$sdk.ruleRequiredChange],
+        'text.content': [$sdk.ruleRequiredBlur],
+        materialUrl: [$sdk.ruleRequiredChange],
+        'image.picUrl': [{ type: 'array', ...$sdk.ruleRequiredChange }],
+        digest: [$sdk.ruleRequiredBlur],
+        coverUrl: [$sdk.ruleRequiredBlur],
         'link.url': [
-          { required: true, message: '不能为空', trigger: 'blur' },
+          $sdk.ruleRequiredBlur,
           { validator: this.type == 11 ? validateHtml : validateHttp, trigger: 'blur' },
         ],
       }),
@@ -95,10 +95,10 @@ export default {
     action(data = {}, callback) {
       this.$nextTick(() => {
         this.getTree()
-        this.$refs.dialogRef.visible = true
         data.msgtype = $sdk.dictMaterialType[this.type].msgtype
         data[$sdk.dictMaterialType[this.type].msgtype] ??= {}
         this.form = JSON.parse(JSON.stringify(data))
+        this.$refs.dialogRef.action(data)
 
         callback?.()
       })
@@ -141,7 +141,7 @@ export default {
             </el-form-item>
             <el-form-item label="图片" prop="image.picUrl">
               <Upload v-model:fileUrl="form.image.picUrl" :maxSize="20" :multiple="false" :limit="10">
-                <template #tip><div>支持jpg/jpeg/png格式，图片大小不超过20M，支持最多10张批量上传</div></template>
+                <template #tip><div>支持jpg/jpeg/png格式，图片大小不超过20M</div></template>
               </Upload>
             </el-form-item>
           </template>

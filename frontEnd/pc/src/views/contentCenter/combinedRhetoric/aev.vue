@@ -130,7 +130,11 @@ defineExpose({
               :type="type"
               :dynamicTitle="$sdk.dictMaterialType[type]?.name"
               @confirm="
-                talkList.push($refs.dialogRef.form), ($refs.dialogRef.$refs.dialogRef.visible = false)
+                ({ visible, loading }) =>
+                  $refs.dialogRef.$refs.form
+                    .validate()
+                    .then(() => (talkList.push($refs.dialogRef.form), (visible.value = false)))
+                    .finally(() => (loading.value = false))
               "></AddOrEditMaterialDialog>
 
             <el-popover

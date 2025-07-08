@@ -11,7 +11,7 @@ const query = ref({})
 const dialogRef = ref()
 const aevRef = ref()
 function action(data) {
-  dialogRef.value.visible = true
+  dialogRef.value.action(data)
   nextTick(() => (aevRef.value.form = data || { categoryId: query.value.categoryId }))
 }
 </script>
