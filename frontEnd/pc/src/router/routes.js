@@ -109,6 +109,25 @@ export const navRoutes = [
         component: () => import('@/views/contentCenter/commonMaterial/index'),
         meta: { title: '普通素材' },
       },
+      {
+        path: 'combinedRhetoric',
+        redirect: '/content/combinedRhetoric/index',
+        meta: { title: '组合话术' },
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/views/contentCenter/combinedRhetoric/index'),
+            hidden: true,
+            meta: { title: '组合话术', hidden: true },
+          },
+          {
+            path: 'aev',
+            component: () => import('@/views/contentCenter/combinedRhetoric/aev'),
+            hidden: true,
+            meta: { title: '{}组合话术', hidden: true },
+          },
+        ],
+      },
     ],
   },
 

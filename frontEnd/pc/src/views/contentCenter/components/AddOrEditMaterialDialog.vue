@@ -1,8 +1,7 @@
 <!-- 由透传属性，可直接使用 el-dialog 的所有props，
-用法示例：<AddOrEditMaterialDialog v-model="dialogVisible" title="title"/> -->
+用法示例：<AddOrEditMaterialDialog ref="dialogRef" title="title"/> -->
 <script>
 import * as apiCategory from '@/api/category'
-import { save } from '../commonMaterial/api'
 
 const validateHtml = (rule, value, callback) => {
   if (/\.html$/gi.test(value)) {
@@ -32,10 +31,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    // 是否显示分组
+    isGroup: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      save,
       form: {}, // 表单数据
       // 表单校验
       rules: Object.freeze({
@@ -90,13 +93,15 @@ export default {
       })
     },
     action(data = {}, callback) {
-      this.getTree()
-      this.$refs.dialogRef.visible = true
-      data.msgtype = $sdk.dictMaterialType[this.type].msgtype
-      data[$sdk.dictMaterialType[this.type].msgtype] ??= {}
-      this.form = JSON.parse(JSON.stringify(data))
+      this.$nextTick(() => {
+        this.getTree()
+        this.$refs.dialogRef.visible = true
+        data.msgtype = $sdk.dictMaterialType[this.type].msgtype
+        data[$sdk.dictMaterialType[this.type].msgtype] ??= {}
+        this.form = JSON.parse(JSON.stringify(data))
 
-      callback?.()
+        callback?.()
+      })
     },
   },
 }
@@ -104,42 +109,12 @@ export default {
 
 <template>
   <!-- 添加或修改素材对话框 -->
-  <BaseDialog
-    ref="dialogRef"
-    width="1000px"
-    append-to-body
-    @confirm="
-      ({}) =>
-        $refs.dialogRef.confirm(
-          () => save(form),
-          () => $emit('success'),
-        )
-    ">
-    <el-row style="margin-top: 20px">
-      <el-col :span="14">
+  <BaseDialog ref="dialogRef" width="1000px" append-to-body>
+    <div class="flex --Gap">
+      <div class="flex-auto">
         <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-          <el-form-item label="选择分组" prop="categoryId">
+          <el-form-item label="选择分组" prop="categoryId" v-if="isGroup">
             <el-cascader v-model="form.categoryId" :options="treeData[0].children" :props="groupProps"></el-cascader>
-          </el-form-item>
-
-          <el-form-item label="客户标签" v-if="[2, 3, 8, 13, 19].includes(+type)">
-            <TagEllipsis :list="form.tags" limit="4"></TagEllipsis>
-            <div>
-              <el-button type="primary" @click="dialogVisibleSelectTag = true">选择标签</el-button>
-              <!-- 选择标签弹窗 -->
-              <SelectTag
-                v-model:visible="dialogVisibleSelectTag"
-                :selected="form.tags"
-                @success="
-                  (data) => {
-                    form.tags = data.map((d) => ({
-                      tagId: d.tagId,
-                      name: d.name,
-                    }))
-                  }
-                "></SelectTag>
-            </div>
-            <div class="sub-des">素材打开后，该客户将会自动设置以上选择标签</div>
           </el-form-item>
 
           <!-- 文本 -->
@@ -160,12 +135,10 @@ export default {
 
           <!-- 图片 -->
           <template v-else-if="type === '0'">
-            <!-- 仅编辑时显示 -->
             <el-form-item label="图片标题" prop="title">
               <el-input v-model="form.title" placeholder="请输入" :maxlength="50" show-word-limit></el-input>
               <div class="g-tip">标题对客户不可见，仅用于查询场景</div>
             </el-form-item>
-            <!-- 仅新增时显示 -->
             <el-form-item label="图片" prop="image.picUrl">
               <Upload v-model:fileUrl="form.image.picUrl" :maxSize="20" :multiple="false" :limit="10">
                 <template #tip><div>支持jpg/jpeg/png格式，图片大小不超过20M，支持最多10张批量上传</div></template>
@@ -205,11 +178,11 @@ export default {
             </el-form-item>
           </template>
         </el-form>
-      </el-col>
-      <el-col class="ml10" :span="10" v-if="!(type === '0' && form.id)">
+      </div>
+      <div class="ml10" :span="10" v-if="!(type === '0' && form.id)">
         <PhoneChatList :list="[form]" />
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </BaseDialog>
 </template>
 
@@ -225,5 +198,9 @@ export default {
   height: 255px;
   border: 1px solid var(--border-black-9);
   border-radius: var(--border-radius-small);
+}
+:deep() .g-card {
+  padding: 0;
+  border-radius: 0;
 }
 </style>

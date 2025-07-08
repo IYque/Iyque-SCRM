@@ -3,7 +3,7 @@ import * as api from '@/api/category'
 
 export default {
   props: {
-    // 0:图片；4:文本；7：热词分类；9：图文
+    // 0:图片；4:文本；7：热词分类；9：图文；13：组合话术
     type: {
       type: String,
       required: true,
