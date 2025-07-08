@@ -302,11 +302,11 @@ export const navRoutes = [
         component: () => import('@/views/operateLog/index'),
         meta: { title: '操作日志' },
       },
-      // {
-      //   path: 'groupChat',
-      //   component: () => import('@/views/groupChat/index'),
-      //   meta: { title: '客群列表' },
-      // },
+      {
+        path: 'groupRobot',
+        component: () => import('@/views/groupRobot/index'),
+        meta: { title: '群机器人' },
+      },
     ],
   },
 ]
