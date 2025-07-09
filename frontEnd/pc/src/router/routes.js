@@ -45,6 +45,11 @@ export const navRoutes = [
         component: () => import('@/views/groupCode/index'),
         meta: { title: '客群活码' },
       },
+      {
+        path: 'customerSea',
+        component: () => import('@/views/customerSea/index'),
+        meta: { title: '客户公海' },
+      },
     ],
   },
 

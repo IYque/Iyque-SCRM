@@ -9,7 +9,7 @@
   </template>
 </BaseDialog> -->
 <script setup lang="ts">
-import { reactive, ref, useAttrs } from 'vue'
+import { reactive, ref, useAttrs, toRef } from 'vue'
 defineProps({
   idKey: { type: String, default: 'id' },
   dynamicTitle: { type: String, default: '' },
@@ -21,6 +21,10 @@ const $emit = defineEmits(['confirm', 'cancel'])
 
 const visible = ref(false)
 const loading = ref(false)
+const refData = reactive({
+  visible,
+  loading,
+})
 const form = ref({})
 const formRef = ref()
 watch(
@@ -74,22 +78,22 @@ defineExpose({
     destroy-on-close
     v-bind="$attrs">
     <div v-loading="loading">
-      <slot></slot>
+      <slot v-bind="{ form, formRef, refData }"></slot>
 
       <el-form
         v-if="$slots.form"
         ref="formRef"
         class="dialogForm"
         label-width="80px"
+        :rules="rules"
         v-bind="formProps"
-        :model="form"
-        :rules="rules">
-        <slot name="form" v-bind="{ form }"></slot>
+        :model="form">
+        <slot name="form" v-bind="{ form, formRef, refData }"></slot>
       </el-form>
     </div>
 
     <template #footer>
-      <slot name="footer" v-if="isFooter">
+      <slot name="footer" v-bind="{ form, formRef, refData }" v-if="isFooter">
         <el-button @click="$emit('cancel'), (visible = false)">取消</el-button>
         <el-button type="primary" :disabled="loading" v-loading="loading" @click="submit">确定</el-button>
       </slot>
