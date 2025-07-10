@@ -98,10 +98,16 @@ export default {
       isGroup
       :dynamicTitle="$sdk.dictMaterialType[type]?.name"
       @confirm="
-        $refs.dialogRef.$refs.dialogRef.confirm(
-          () => save($refs.dialogRef.form),
-          () => $refs.rctRef.getList(1),
-        )
+        ({ visible, loading }) =>
+          $refs.dialogRef.$refs.form
+            .validate()
+            .then(() =>
+              $refs.dialogRef.$refs.dialogRef.confirm(
+                () => save($refs.dialogRef.form),
+                () => $refs.rctRef.getList(1),
+              ),
+            )
+            .finally(() => (loading.value = false))
       "></AddOrEditMaterialDialog>
   </LeftRightGroupListPage>
 </template>

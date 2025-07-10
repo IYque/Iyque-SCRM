@@ -36,8 +36,8 @@ export default {
     getList(page) {
       this.loading = true
       getList()
-        .then(({ rows, total }) => {
-          this.list = rows
+        .then(({ rows, data, total }) => {
+          this.list = rows || data || []
         })
         .finally(() => {
           this.loading = false

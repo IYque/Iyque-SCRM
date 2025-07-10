@@ -49,8 +49,8 @@ export default {
       this.loading = true
       appMsg
         .getList(this.query)
-        .then(({ rows, total }) => {
-          this.list = rows
+        .then(({ rows, data, total }) => {
+          this.list = rows || data || []
           this.total = +total
         })
         .finally(() => {

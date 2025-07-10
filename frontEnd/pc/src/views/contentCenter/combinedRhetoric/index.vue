@@ -12,7 +12,10 @@ const dialogRef = ref()
 const aevRef = ref()
 function action(data) {
   dialogRef.value.action(data)
-  nextTick(() => (aevRef.value.form = data || { categoryId: query.value.categoryId }))
+  nextTick(() => {
+    aevRef.value.form = data || { categoryId: query.value.categoryId }
+    aevRef.value.talkList = data?.scriptSubs || []
+  })
 }
 </script>
 

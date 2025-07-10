@@ -48,9 +48,9 @@
       </el-table-column>
 
       <el-table-column prop="" label="操作">
-        <template #default="{ row }">
+        <template #default="{ row, $index }">
           <el-button text @click="$emit('edit', row)">编辑</el-button>
-          <el-button text @click="remove(row.delId)" v-if="!isDeatail">移除</el-button>
+          <el-button text @click="remove($index)" v-if="!isDetail">移除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -86,7 +86,7 @@ export default {
       handler(val) {
         this.tableData = JSON.parse(JSON.stringify(val))
         this.tableData.forEach((item, index) => {
-          item.delId = index
+          item._index = index + ''
         })
       },
       immediate: true,
@@ -101,10 +101,8 @@ export default {
   },
 
   methods: {
-    remove(delId) {
-      this.tableData = this.tableData.filter((item) => {
-        return item.delId != delId
-      })
+    remove(index) {
+      this.tableData.splice(index, 1)
       this.$emit('change', this.tableData)
     },
     // 超过num个。。。展示

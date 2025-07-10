@@ -105,7 +105,7 @@ defineExpose({
                 <el-dropdown
                   @command="(e) => ((type = e), $refs.dialogRef.action())"
                   :disabled="talkList?.length > maxlength || talkList?.length === maxlength">
-                  <el-button type="primary" v-show="!(moduleType === 4 && otherType === 3)">
+                  <el-button type="primary">
                     {{ '新建' + fontType }}
                   </el-button>
                   <template #dropdown>
@@ -130,10 +130,13 @@ defineExpose({
               :type="type"
               :dynamicTitle="$sdk.dictMaterialType[type]?.name"
               @confirm="
-                ({ visible, loading }) =>
+                ({ form, visible, loading }) =>
                   $refs.dialogRef.$refs.form
                     .validate()
-                    .then(() => (talkList.push($refs.dialogRef.form), (visible.value = false)))
+                    .then(() => {
+                      form.value._index ? (talkList[form.value._index] = form.value) : talkList.push(form.value)
+                      visible.value = false
+                    })
                     .finally(() => (loading.value = false))
               "></AddOrEditMaterialDialog>
 
@@ -170,8 +173,8 @@ defineExpose({
           :data="talkList"
           @change="talkList = $event"
           @edit="(row) => ((type = $sdk.dictMaterialType[row.msgtype].type), $refs.dialogRef.action(row))"
-          :dargAble="true"
-          :isDetail="isDetail" />
+          :dargAble="true" />
+        <!-- :isDetail="isDetail" -->
       </div>
 
       <!-- <CommonTopRight>
@@ -179,7 +182,7 @@ defineExpose({
         <el-button type="primary" v-loading="$store.loading" :disabled="$store.loading" @click="submit">确定</el-button>
       </CommonTopRight> -->
     </div>
-    <div class="g-card mt0">
+    <div class="g-card flex-none mt0 w-[375px]">
       <PhoneChatList :list="talkList" />
     </div>
   </div>
