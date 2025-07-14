@@ -37,7 +37,7 @@ export default {
       typeDict: {
         text: '文本',
         image: '图片',
-        news: '图文',
+        link: '图文',
         // video: '视频',
         // file: '文件',
       },
@@ -197,7 +197,7 @@ export default {
 
       <!-- 图片 -->
       <el-form-item label="图片" prop="image.picUrl" v-else-if="form.msgType === 'image'">
-        <Upload v-model:fileUrl="form.image.picUrl" :maxSize="2" type="0">
+        <Upload v-model:fileUrl="form.image.picUrl" :maxSize="2" type="image">
           <template #tip><div>支持jpg/jpeg/png格式，图片大小不超过2M</div></template>
         </Upload>
       </el-form-item>
