@@ -24,6 +24,8 @@ export default {
       },
       groupList: [], // 分组列表
       groupIndex: 0,
+      // 判断pc端还是移动端
+      isPC: !navigator.userAgent.includes('Mobile'),
     }
   },
   watch: {},
@@ -53,9 +55,10 @@ export default {
     },
     // 一键发送
     sendOnece(data) {
-      data.scriptSubs.forEach((el) => {
-        this.send(el, data.id)
+      let task = data.scriptSubs.map((el) => {
+        return this.send(el, data.id)
       })
+      Promise.all(task)
     },
     send(data) {
       showLoadingToast({
@@ -63,7 +66,7 @@ export default {
         duration: 0,
         forbidClick: true,
       })
-      ww.getContext().then(async (res) => {
+      return ww.getContext().then(async (res) => {
         if (res.errMsg == 'getContext:ok') {
           let entry = res.entry //返回进入H5页面的入口类型，目前 contact_profile、single_chat_tools、group_chat_tools
           let mes = {}
@@ -88,12 +91,12 @@ export default {
               data.id +
               '&userId=' +
               sessionStorage.getItem('sysId')
-            switch (this.mediaType) {
-              case '4':
+            switch (mes.msgtype) {
+              case 'text':
               default:
                 mes[mes.msgtype] = data[data.msgtype]
                 break
-              case '0':
+              case 'image':
                 let dataMediaId = {
                   url: fileUrlBase(data.image?.picUrl),
                   type: mes.msgtype,
@@ -113,7 +116,7 @@ export default {
                 }
                 break
               // 图文
-              case '9':
+              case 'news':
                 mes.news = {
                   link: data.link?.url || ' ', //H5消息页面url 必填
                   title: data.title || ' ', //H5消息标题
@@ -168,7 +171,7 @@ export default {
           <div class="talkCard" v-for="(talkitem, index1) in list" :key="index1">
             <div class="talkItem">
               <span>{{ talkitem.title }}</span>
-              <div class="actionOnece" @click="sendOnece(talkitem)" v-if="isPC">一键发送</div>
+              <div class="action" @click="sendOnece(talkitem)" v-if="isPC">一键发送</div>
             </div>
             <div v-for="(item, index) in talkitem.scriptSubs" class="itemList overflow-auto" :key="index">
               <div class="content bfc-o" @click="showPopup(item)">
@@ -236,13 +239,15 @@ export default {
 }
 
 .talkCard {
-  background-color: #fff;
+  background-color: var(--BgWhite, #fff);
   padding: 10px;
-  margin: 10px;
   border-radius: 4px;
   .talkItem {
     display: flex;
     justify-content: space-between;
+    & + & {
+      margin-top: 10px;
+    }
   }
 }
 .icon-style {
@@ -251,12 +256,10 @@ export default {
   margin-right: 6px;
 }
 .itemList {
-  background-color: #fff;
+  background-color: var(--BgBlack10, #ddd);
   padding: 10px;
   border-radius: 4px;
-  & + & {
-    margin-top: 10px;
-  }
+  margin-top: 10px;
 }
 .content {
   .van-image,
@@ -357,8 +360,8 @@ export default {
   padding: 40px;
 }
 .action {
-  width: 50px;
   height: 20px;
+  padding: 0 13px;
   font-size: 12px;
   background-color: var(--Color);
   border-radius: 10px;

@@ -51,7 +51,7 @@ export default {
       </template>
     </van-search>
     <div class="tabs">
-      <List ref="list" :sideId="item.id" mediaType="13"></List>
+      <List ref="list" mediaType="13"></List>
     </div>
 
     <!-- <van-dialog
