@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,13 +74,15 @@ public class IYQueRobotServiceImpl implements IYQueRobotService {
     @Transactional(rollbackFor = Exception.class)
     public void sendRobotMsg(IYqueRobot iYqueRobot) throws Exception {
 
-        Optional<IYqueRobot> optional = iyQueRobotDao.findById(iYqueRobot.getId());
+        Optional<IYqueRobot> optional = iyQueRobotDao.findById(iYqueRobot.getRobotId());
         if(optional.isPresent()){
             List<IYqueRobotSub> robotSubList = iYqueRobot.getRobotSubList();
             if(CollectionUtil.isNotEmpty(robotSubList)){
                 IYqueRobotSub iYqueRobotSub = robotSubList.stream().findFirst().get();
-                iYqueRobotSub.setRobotId(iYqueRobot.getId());
+                iYqueRobotSub.setMsgTitle(iYqueRobot.getMsgTitle());
+                iYqueRobotSub.setRobotId(iYqueRobot.getRobotId());
                 iYqueRobotSub.prePersist(iYqueRobotSub);
+                iYqueRobotSub.setSendTime(new Date());
                 iyQueRobotSubDao.saveAll(robotSubList);
 
                 String webHookUrl = optional.get().getWebHookUrl();

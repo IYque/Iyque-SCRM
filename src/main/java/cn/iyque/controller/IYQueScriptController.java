@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 
 /**
  * 组合话术
@@ -36,6 +38,10 @@ public class IYQueScriptController {
     @PostMapping("/saveOrUpdate")
     public ResponseResult saveOrUpdate(@RequestBody IYQueScript iyQueScript) {
         try {
+            iyQueScript.setUpdateTime(new Date());
+            if(iyQueScript.getCreateTime() == null){
+                iyQueScript.setCreateTime(new Date());
+            }
             iyQueScript.setUpdateBy(yqueParamConfig.getUserName());
             iyQueScriptService.addOrUpdate(iyQueScript);
         }catch (Exception e){

@@ -107,8 +107,8 @@ public class RobotMsgDto {
 
         try {
 
-            if(StringUtils.isNotEmpty(iYqueRobotSub.getMsgtype())){
-                if(iYqueRobotSub.getMsgtype().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){//文本
+            if(StringUtils.isNotEmpty(iYqueRobotSub.getMsgType())){
+                if(iYqueRobotSub.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){//文本
 
                     return RobotMsgDto.builder().msgtype(IYqueMsgAnnex.MsgType.MSG_TEXT).text(
                             RobotMsgDto.Text.builder()
@@ -116,11 +116,11 @@ public class RobotMsgDto {
                                     .build()
                     ).build();
 
-                }else if(iYqueRobotSub.getMsgtype().equals(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE)){ //图片
+                }else if(iYqueRobotSub.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE)){ //图片
                     return RobotMsgDto.builder().msgtype(IYqueMsgAnnex.MsgType.MSG_TYPE_IMAGE).image(
                             convertImageToBase64AndMd5(iYqueRobotSub.getImage().getPicUrl())
                     ).build();
-                }else if(iYqueRobotSub.getMsgtype().equals(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK)) { //图文
+                }else if(iYqueRobotSub.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK)) { //图文
                     News build = News.builder().build();
 
                     Articles articles = Articles.builder().build();

@@ -63,6 +63,15 @@ public class IYQueScriptSub {
     @Transient
     private Link link;
 
+
+    @PrePersist
+    @PreUpdate
+    private void setDefaultDelFlag() {
+        if (this.delFlag == null) {
+            this.delFlag = 0;
+        }
+    }
+
     @PostLoad
     public void postLoad() {
         if(IYqueMsgAnnex.MsgType.MSG_TEXT.equals(msgtype)){

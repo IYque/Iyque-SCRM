@@ -48,6 +48,8 @@ public class IYQueScriptServiceImpl implements IYQueScriptService {
                     .map(IYQueScriptSub::getId)
                     .collect(Collectors.toList()));
 
+            queScriptSubDao.saveAll(scriptSubs);
+
         }
     }
 

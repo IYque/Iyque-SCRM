@@ -144,7 +144,7 @@ export default {
     async submit(status) {
       let form = JSON.parse(JSON.stringify(this.form))
       let valid = await this.$refs['form'].validate()
-      valid = await this.$refs['formCon'].validate()
+      // valid = await this.$refs['formCon'].validate()
       if (valid) {
         if (form.scopeType == 2 && !form.toParty.concat(form.toUser).length) {
           this.msgError('发送范围不能为空')

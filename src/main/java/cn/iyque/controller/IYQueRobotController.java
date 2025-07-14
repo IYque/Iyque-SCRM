@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 
 /**
  * 机器人
@@ -37,7 +39,11 @@ public class IYQueRobotController {
     @PostMapping("/saveOrUpdate")
     public ResponseResult saveOrUpdate(@RequestBody IYqueRobot iYqueRobot) {
         try {
+            if(iYqueRobot.getCreateTime()==null){
+                iYqueRobot.setCreateTime(new Date());
+            }
             iYqueRobot.setUpdateBy(yqueParamConfig.getUserName());
+            iYqueRobot.setUpdateTime(new Date());
             queRobotService.addOrUpdate(iYqueRobot);
         }catch (Exception e){
             return new ResponseResult(HttpStatus.ERROR,e.getMessage(),null);
@@ -99,7 +105,7 @@ public class IYQueRobotController {
 
         Page<IYqueRobotSub> iYqueRobotSubs = queRobotService.findRobotSubAll(robotId,
                 PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
-                        TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
+                        TableSupport.buildPageRequest().getPageSize(), Sort.by("sendTime").descending()));
 
         return new ResponseResult(iYqueRobotSubs.getContent(),iYqueRobotSubs.getTotalElements());
 
