@@ -98,6 +98,8 @@ public class IYqueMsgAnnex {
         public final static String MSG_TYPE_IMAGE="image";
         //图文链接
         public final  static String MSG_TYPE_LINK="link";
+        //图文卡片链接(机器人消息)
+        public final  static String MSG_TYPE_NEWS="news";
         //小程序
         public final static String MSG_TYPE_MINIPROGRAM="miniprogram";
         //视频

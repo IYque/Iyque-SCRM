@@ -1,5 +1,5 @@
 <script>
-import { getList, del } from '../commonMaterial/api'
+import { getList, del, save } from '../commonMaterial/api'
 import AddOrEditMaterialDialog from './AddOrEditMaterialDialog'
 
 export default {
@@ -18,11 +18,13 @@ export default {
       type: [Array, String],
       default: '',
     },
+    isSelect: { type: Boolean, default: false },
   },
   data() {
     return {
       getList,
       del,
+      save,
       // 查询条件
       query: {},
     }
@@ -80,7 +82,7 @@ export default {
             <span>{{ row.updateTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" v-if="!isSelect" fixed="right">
           <template #default="{ row }">
             <TableOperateBtn type="edit" @click="edit(row)">编辑</TableOperateBtn>
             <TableOperateBtn type="delete" @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>
@@ -93,8 +95,20 @@ export default {
     <AddOrEditMaterialDialog
       ref="dialogRef"
       :type="type"
+      isGroup
       :dynamicTitle="$sdk.dictMaterialType[type]?.name"
-      @success="$refs.rctRef.getList(1)"></AddOrEditMaterialDialog>
+      @confirm="
+        ({ visible, loading }) =>
+          $refs.dialogRef.$refs.form
+            .validate()
+            .then(() =>
+              $refs.dialogRef.$refs.dialogRef.confirm(
+                () => save($refs.dialogRef.form),
+                () => $refs.rctRef.getList(1),
+              ),
+            )
+            .finally(() => (loading.value = false))
+      "></AddOrEditMaterialDialog>
   </LeftRightGroupListPage>
 </template>
 

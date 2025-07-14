@@ -8,4 +8,5 @@ public class Image {
     //图片地址
     private String picUrl;
 
+
 }

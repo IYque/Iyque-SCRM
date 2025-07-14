@@ -66,6 +66,16 @@ export default [
       noAuth,
     },
   },
+  // 组合话术
+  {
+    path: '/combinedRhetoric',
+    name: 'combinedRhetoric',
+    component: () => import('../views/combinedRhetoric/index.vue'),
+    meta: {
+      title: '组合话术',
+      noAuth,
+    },
+  },
 
   // 解决授权重定向返回问题
   { path: '/:path(.*)*', redirect: '/', hidden: true },

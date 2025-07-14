@@ -1,8 +1,11 @@
 // 素材类型
 export const dictMaterialType = Object.freeze({
-  0: { name: '图片', msgtype: 'image' },
-  9: { name: '图文', msgtype: 'link' },
-  4: { name: '文本', msgtype: 'text' },
+  0: { name: '图片', msgtype: 'image', type: '0' },
+  image: { name: '图片', msgtype: 'image', type: '0' },
+  9: { name: '图文', msgtype: 'link', type: '9' },
+  link: { name: '图文', msgtype: 'link', type: '9' },
+  4: { name: '文本', msgtype: 'text', type: '4' },
+  text: { name: '文本', msgtype: 'text', type: '4' },
 })
 
 export const errorCode = {

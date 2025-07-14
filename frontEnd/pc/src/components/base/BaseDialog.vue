@@ -74,7 +74,7 @@ defineExpose({
     destroy-on-close
     v-bind="$attrs">
     <div v-loading="loading">
-      <slot></slot>
+      <slot v-bind="{ form }"></slot>
 
       <el-form
         v-if="$slots.form"
