@@ -69,6 +69,7 @@ function findOperateLogTypesFn() {
             <template #default="{ form }">
               <el-form-item label="选择员工" prop="users">
                 <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
+                <div class="g-tip">公海客户平均分配给选择的员工</div>
               </el-form-item>
             </template>
           </ImportDialog>
