@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
+      <version>1.18.30</version>
     </dependency>
 
 
@@ -53,13 +53,13 @@
     <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-all</artifactId>
-      <version>${hutool.version}</version>
+      <version>5.8.21</version>
     </dependency>
 
     <dependency>
       <groupId>com.github.binarywang</groupId>
       <artifactId>weixin-java-cp</artifactId>
-      <version>${wxJava.version}</version>
+      <version>4.7.6-20250609.111953</version>
     </dependency>
 
     <dependency>
@@ -71,14 +71,14 @@
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
-      <version>${jjwt.version}</version>
+      <version>0.9.1</version>
     </dependency>
 
 
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
-      <version>${zxing.version}</version>
+      <version>3.4.1</version>
     </dependency>
 
 
@@ -86,7 +86,7 @@
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>javase</artifactId>
-      <version>${zxing.version}</version>
+      <version>3.4.1</version>
     </dependency>
 
 
@@ -95,7 +95,7 @@
     <dependency>
       <groupId>io.github.lnyo-cly</groupId>
       <artifactId>ai4j-spring-boot-starter</artifactId>
-      <version>${ai4j.version}</version>
+      <version>1.2.2</version>
     </dependency>
 
 
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>io.milvus</groupId>
       <artifactId>milvus-sdk-java</artifactId>
-      <version>${milvus.version}</version>
+      <version>2.5.9</version>
     </dependency>
 
 
@@ -117,7 +117,7 @@
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>adapter-rxjava2</artifactId>
-      <version>${retrofit2.version}</version>
+      <version>3.0.0</version>
     </dependency>
 
 
