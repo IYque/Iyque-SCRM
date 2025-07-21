@@ -114,6 +114,25 @@ export const navRoutes = [
         component: () => import('@/views/contentCenter/commonMaterial/index'),
         meta: { title: '普通素材' },
       },
+      {
+        path: 'combinedRhetoric',
+        redirect: '/content/combinedRhetoric/index',
+        meta: { title: '组合话术' },
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/views/contentCenter/combinedRhetoric/index'),
+            hidden: true,
+            meta: { title: '组合话术', hidden: true },
+          },
+          {
+            path: 'aev',
+            component: () => import('@/views/contentCenter/combinedRhetoric/aev'),
+            hidden: true,
+            meta: { title: '{}组合话术', hidden: true },
+          },
+        ],
+      },
     ],
   },
 
@@ -288,11 +307,11 @@ export const navRoutes = [
         component: () => import('@/views/operateLog/index'),
         meta: { title: '操作日志' },
       },
-      // {
-      //   path: 'groupChat',
-      //   component: () => import('@/views/groupChat/index'),
-      //   meta: { title: '客群列表' },
-      // },
+      {
+        path: 'groupRobot',
+        component: () => import('@/views/groupRobot/index'),
+        meta: { title: '群机器人' },
+      },
     ],
   },
 ]

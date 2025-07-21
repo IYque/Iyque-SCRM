@@ -1,11 +1,8 @@
 package cn.iyque.dao;
 
-import cn.iyque.entity.IYqueCategory;
+import cn.iyque.entity.IYqueRobot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-
-public interface IYqueCategoryDao extends JpaRepository<IYqueCategory,Long>, JpaSpecificationExecutor<IYqueCategory> {
-
-
+public interface IYQueRobotDao extends JpaRepository<IYqueRobot,Long> , JpaSpecificationExecutor<IYqueRobot> {
 }

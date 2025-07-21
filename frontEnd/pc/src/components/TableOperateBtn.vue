@@ -41,6 +41,10 @@ defineProps({
   },
   disabled: {
     type: Boolean,
+    default: false,
+  },
+  disabledTip: {
+    type: Boolean,
     default: true,
   },
 })
@@ -55,10 +59,11 @@ const attrs = useAttrs()
       effect="dark"
       :content="$slots.default?.()[0].children || dict[type]?.content || $attrs.content"
       placement="top"
-      :disabled="disabled"
+      :disabled="disabledTip"
       v-bind="Object.assign({}, $attrs, { class: '', style: '' })">
       <el-button
         text
+        :disabled="disabled"
         :icon="icon || dict[type]?.icon"
         :title="$slots.default?.()[0].children || dict[type].content || $attrs.content">
         {{ $slots.default?.()[0].children }}

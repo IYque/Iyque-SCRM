@@ -44,7 +44,7 @@ export default {
   max-width: 375px;
   min-width: 320px;
   height: 720px;
-  border: 12px solid var(--border-black-10);
+  border: 10px solid var(--border-black-10);
   border-radius: 40px;
   box-sizing: content-box;
   overflow: hidden;
