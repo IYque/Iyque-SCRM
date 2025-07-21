@@ -65,10 +65,28 @@
 
   --van-blue: var(--Color, #1989fa);
   --van-green: var(--Color, #07c160);
+  --van-tab-active-text-color: var(--Color, #1989fa);
   --van-button-default-height: 32px;
 
   .van-dialog__content {
     max-height: 60vh;
     overflow: auto;
+  }
+}
+
+/* van-tabs 自适应滚动加载下拉刷新 */
+.van-tabs.van-tabs--line {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .van-tabs__wrap {
+    flex: none;
+  }
+  .van-tabs__content {
+    flex: 1;
+    overflow: auto;
+  }
+  .van-tab__panel {
+    height: 100%;
   }
 }

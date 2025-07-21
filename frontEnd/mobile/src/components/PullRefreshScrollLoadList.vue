@@ -90,12 +90,14 @@ export default {
 
       this.request(this.query)
         .then((resp) => {
-          let { rows, total = 0, data } = resp
+          let { rows, data, total, count } = resp
           rows ??= data || []
+          total ??= count || 0
+          resp.total = total
           if (this.query.pageNum == 1) {
             this.list = []
           }
-          this.dealDataFun && this.dealDataFun(rows, resp)
+          this.dealDataFun?.({ rows, total, resp })
 
           this.list.push(...rows)
           this.loading = false

@@ -304,7 +304,7 @@ export function $copyText(txt) {
       const input = document.createElement('input')
       input.style.cssText = 'opacity: 0;'
       input.type = 'text'
-      input.value = text // 修改文本框的内容
+      input.value = txt // 修改文本框的内容
       document.body.appendChild(input)
       input.select() // 选中文本
       document.execCommand('copy') // 执行浏览器复制命令

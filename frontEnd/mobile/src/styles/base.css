@@ -6,7 +6,6 @@
 *:after {
   box-sizing: border-box;
   scroll-behavior: inherit;
-  border: 0 solid transparent;
 }
 body,
 h1,

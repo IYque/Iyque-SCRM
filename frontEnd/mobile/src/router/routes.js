@@ -72,7 +72,7 @@ export default [
     name: 'combinedRhetoric',
     component: () => import('../views/combinedRhetoric/index.vue'),
     meta: {
-      title: '待办',
+      title: '组合话术',
       noAuth,
     },
   },

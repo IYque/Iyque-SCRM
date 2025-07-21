@@ -11,27 +11,23 @@ defineProps({
 </script>
 
 <template>
-  <div class="pad10 bg-(--BgBlack9) h100">
-    <PullRefreshScrollLoadList
-      ref="loadList"
-      :request="getList"
-      :params="{ currentState: $props.type }"
-      :dealDataFun="(data, { total }) => $emit('updateNum', total)"
-      :isQuery="false"
-      :disabled="false">
-      <template v-slot="{ item }">
-        <div class="flex justify-between border-b border-(--BorderBlack10)">
-          <div class="w-[30%] flex-none">
-            {{ item.phoneNumber }}
-          </div>
-          <div class="">
-            {{ item.customerName }}
-          </div>
-          <div class="--Color" @click="($copyText(item.phoneNumber), ww.navigateToAddCustomer())">复制</div>
+  <PullRefreshScrollLoadList
+    ref="loadList"
+    :request="getList"
+    :params="{ currentState: $props.type }"
+    :dealDataFun="({ total }) => $emit('change', total)">
+    <template #item="{ item }">
+      <div class="h-[60px] bgWhite pad20 flex justify-between items-center border-t border-(--BorderBlack10)">
+        <div class="w-[40%] flex-none truncate">
+          {{ item.phoneNumber || '-' }}
         </div>
-      </template>
-    </PullRefreshScrollLoadList>
-  </div>
+        <div class="flex-auto truncate">
+          {{ item.customerName || '-' }}
+        </div>
+        <div class="--Color" @click="($copyText(item.phoneNumber), ww.navigateToAddCustomer())">复制</div>
+      </div>
+    </template>
+  </PullRefreshScrollLoadList>
 </template>
 
 <style lang="less" scoped></style>

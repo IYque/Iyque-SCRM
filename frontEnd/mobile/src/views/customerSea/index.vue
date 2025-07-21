@@ -10,12 +10,8 @@ const num = ref({})
 
 <template>
   <van-tabs>
-    <van-tab
-      :title="`${item}(${num[index] || 0})`"
-      v-for="(item, index) in status"
-      :key="index"
-      @updateNum="(num) => (num[index] = num)">
-      <List ref="list" :type="index"></List>
+    <van-tab :title="`${item}(${num[index] || 0})`" v-for="(item, index) in status" :key="index">
+      <List ref="list" :type="index" @change="(v) => (num[index] = v)"></List>
     </van-tab>
   </van-tabs>
 </template>
