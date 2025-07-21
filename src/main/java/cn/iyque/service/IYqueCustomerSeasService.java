@@ -3,9 +3,12 @@ package cn.iyque.service;
 
 import cn.iyque.domain.IYqueCustomerSeasVo;
 import cn.iyque.entity.IYqueCustomerSeas;
+import cn.iyque.entity.IYqueUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface IYqueCustomerSeasService {
 
@@ -14,7 +17,7 @@ public interface IYqueCustomerSeasService {
      * 读取excel，公海数据入库
      * @param file
      */
-    void importData(IYqueCustomerSeasVo seasVo, MultipartFile file);
+    void importData(List<IYqueUser> allocateUsers, MultipartFile file);
 
 
     /**

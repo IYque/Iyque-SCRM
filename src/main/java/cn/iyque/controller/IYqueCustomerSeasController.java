@@ -2,21 +2,25 @@ package cn.iyque.controller;
 
 
 
+import cn.hutool.json.JSONUtil;
 import cn.iyque.domain.IYqueCustomerSeasVo;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueCustomerSeas;
+import cn.iyque.entity.IYqueUser;
 import cn.iyque.service.IYqueCustomerSeasService;
 import cn.iyque.utils.IYqueExcelUtils;
 import cn.iyque.utils.TableSupport;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import cn.iyque.utils.ServletUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 /**
@@ -49,9 +53,13 @@ public class IYqueCustomerSeasController {
      * @param file
      * @return
      */
-    @PostMapping("/importData")
-    public ResponseResult importData(IYqueCustomerSeasVo seasVo, MultipartFile file) {
-        yqueCustomerSeasService.importData(seasVo,file);
+    @PostMapping(value ="/importData",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseResult importData(@RequestPart("allocateUsers") String allocateUsers, @RequestPart("file") MultipartFile file) {
+
+        if(StringUtils.isNotEmpty(allocateUsers)){
+            yqueCustomerSeasService.importData( JSONUtil.toList(allocateUsers,IYqueUser.class),file);
+        }
+
         return new ResponseResult();
     }
 

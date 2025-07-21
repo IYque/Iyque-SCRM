@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -48,11 +49,10 @@ public class IYqueCustomerSeasServiceImpl implements IYqueCustomerSeasService {
 
 
     @Override
-    public void importData(IYqueCustomerSeasVo seasVo, MultipartFile file) {
+    public void importData(List<IYqueUser> allocateUsers, MultipartFile file) {
 
         try {
             EasyExcel.read(file.getInputStream(), IYqueCustomerSeas.class, new PageReadListener<IYqueCustomerSeas>(dataList -> {
-                List<IYqueUser> allocateUsers = seasVo.getAllocateUsers();
 
                 //公海客户平均分配给相关员工
                 if(CollectionUtil.isNotEmpty(allocateUsers)){
@@ -65,6 +65,8 @@ public class IYqueCustomerSeasServiceImpl implements IYqueCustomerSeasService {
                         int employeeIndex = i % totalEmployees;
                         dataList.get(i).setAllocateUserId(allocateUsers.get(employeeIndex).getUserId());
                         dataList.get(i).setAllocateUserName(allocateUsers.get(employeeIndex).getName());
+                        dataList.get(i).setCreateTime(new Date());
+                        dataList.get(i).setCurrentState(0);
                     });
 
                     iYqueCustomerSeasDao.saveAll(dataList);

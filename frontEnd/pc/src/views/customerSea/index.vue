@@ -57,7 +57,7 @@ function findOperateLogTypesFn() {
             @confirm="
               ({ form, loading, visible }) =>
                 api
-                  .importData({ allocateUsers: form.value.users.map((e) => ({ userId: e.id })), file: form.value.file })
+                  .importData({ allocateUsers: form.value.users.map((e) => ({ userId: e.id,name: e.name })), file: form.value.file })
                   .then(() => {
                     $refs.rctRef?.getList(1)
                     visible.value = false

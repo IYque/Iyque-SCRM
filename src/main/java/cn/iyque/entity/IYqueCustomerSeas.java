@@ -14,7 +14,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "iyque_config")
+@Entity(name = "iyque_customer_seas")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -69,6 +69,7 @@ public class IYqueCustomerSeas {
 
     //创建时间，即当前匹次模版导入时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @ExcelIgnore
     private Date createTime;
 
 
