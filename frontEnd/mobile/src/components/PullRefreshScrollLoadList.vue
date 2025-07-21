@@ -130,7 +130,7 @@ export default {
         </template>
       </van-field>
     </div>
-    <van-pull-refresh class="height100" v-model="refreshing" success-text="刷新成功" @refresh="getList(1)">
+    <van-pull-refresh class="h100" v-model="refreshing" success-text="刷新成功" @refresh="getList(1)">
       <van-list
         ref="scroll"
         v-model:loading="loading"

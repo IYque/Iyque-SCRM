@@ -57,7 +57,10 @@ function findOperateLogTypesFn() {
             @confirm="
               ({ form, loading, visible }) =>
                 api
-                  .importData({ allocateUsers: form.value.users.map((e) => ({ userId: e.id,name: e.name })), file: form.value.file })
+                  .importData({
+                    allocateUsers: form.value.users.map((e) => ({ userId: e.id, name: e.name })),
+                    file: form.value.file,
+                  })
                   .then(() => {
                     $refs.rctRef?.getList(1)
                     visible.value = false
@@ -103,8 +106,10 @@ function findOperateLogTypesFn() {
           <el-table-column label="导入时间" prop="createTime"></el-table-column>
           <el-table-column label="操作" fixed="right">
             <template #default="{ row }">
-              <TableOperateBtn type="edit" @click="edit(row)">编辑</TableOperateBtn>
-              <TableOperateBtn type="delete" @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>
+              <TableOperateBtn @click="$refs.rctRef?.apiConfirm(api.distribute, row.id, '是否确认提醒?')">
+                提醒
+              </TableOperateBtn>
+              <TableOperateBtn @click="$refs.rctRef.apiConfirm(api.del, row.id)">删除</TableOperateBtn>
             </template>
           </el-table-column>
         </el-table>

@@ -46,7 +46,7 @@ export const importData = (data) => {
   formdata.append('allocateUsers', JSON.stringify(data.allocateUsers))
   formdata.append('file', data.file)
 
-  post(`${service}/importData`, formdata)
+  return post(`${service}/importData`, formdata)
 }
 
 // 公海下载模版

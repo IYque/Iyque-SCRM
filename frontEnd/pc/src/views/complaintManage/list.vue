@@ -55,7 +55,7 @@ onMounted(async () => {
             () => $refs.dialogRef.confirm(() => setIYQueComplaintTip(form.users?.map((e) => ({ userId: e.userId }))))
           ">
           <template #form="{}">
-            <el-form-item prop="users" class="width100" label="投诉处理人">
+            <el-form-item prop="users" class="w100" label="投诉处理人">
               <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
 
               <div class="g-tip">

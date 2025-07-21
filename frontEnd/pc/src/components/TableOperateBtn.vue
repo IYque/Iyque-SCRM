@@ -29,7 +29,7 @@ defineProps({
   },
   type: {
     type: String,
-    default: keys.edit,
+    // default: keys.edit,
     validator(value) {
       // 这个值必须匹配下列字符串中的一个
       return Object.keys(dict).includes(value)

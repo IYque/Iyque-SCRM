@@ -476,10 +476,10 @@ svg {
   overflow: auto !important;
 }
 
-.height100 {
+.h100 {
   height: 100% !important;
 }
-.width100 {
+.w100 {
   width: 100% !important;
 }
 .vh100 {

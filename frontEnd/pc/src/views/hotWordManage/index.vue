@@ -80,7 +80,7 @@ function delCategory(item) {
           :rules="{ name: [$sdk.ruleRequiredBlur] }"
           @confirm="({ form }) => $refs.dialogRef.confirm(apiCategory.save, getCategoryList)">
           <template #form="{ form }">
-            <el-form-item prop="name" class="width100" label="分类名称" show-word-limit maxlength="10">
+            <el-form-item prop="name" class="w100" label="分类名称" show-word-limit maxlength="10">
               <el-input v-model="form.name" placeholder="请输入" clearable />
               <div class="g-tip">分类名称不允许重复</div>
             </el-form-item>
