@@ -89,12 +89,13 @@ export default {
       this.dealQueryFun && this.dealQueryFun(this.query)
 
       this.request(this.query)
-        .then(({ rows, data, total = 0 }) => {
+        .then((resp) => {
+          let { rows, total = 0, data } = resp
           rows ??= data || []
           if (this.query.pageNum == 1) {
             this.list = []
           }
-          this.dealDataFun && this.dealDataFun(rows)
+          this.dealDataFun && this.dealDataFun(rows, resp)
 
           this.list.push(...rows)
           this.loading = false

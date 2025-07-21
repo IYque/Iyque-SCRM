@@ -72,7 +72,18 @@ export default [
     name: 'combinedRhetoric',
     component: () => import('../views/combinedRhetoric/index.vue'),
     meta: {
-      title: '组合话术',
+      title: '待办',
+      noAuth,
+    },
+  },
+
+  // 客户公海待办
+  {
+    path: '/customerSea',
+    name: 'customerSea',
+    component: () => import('../views/customerSea/index.vue'),
+    meta: {
+      title: '待办',
       noAuth,
     },
   },
