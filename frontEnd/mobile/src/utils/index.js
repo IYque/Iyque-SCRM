@@ -289,7 +289,7 @@ export function $delConfirm(remove, callback) {
 }
 
 // 复制文字
-export function $copyText(txt) {
+export function copyText(txt) {
   if (!txt) {
     this.msgError('内容为空')
     return

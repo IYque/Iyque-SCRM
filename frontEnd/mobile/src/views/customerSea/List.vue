@@ -24,7 +24,7 @@ defineProps({
         <div class="flex-auto truncate">
           {{ item.customerName || '-' }}
         </div>
-        <div class="--Color" @click="($copyText(item.phoneNumber), ww.navigateToAddCustomer())">复制</div>
+        <div class="--Color" @click="($sdk.copyText(item.phoneNumber), ww.navigateToAddCustomer())">复制</div>
       </div>
     </template>
   </PullRefreshScrollLoadList>
