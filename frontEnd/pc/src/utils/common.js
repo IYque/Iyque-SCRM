@@ -104,7 +104,7 @@ export function selectDictLabels(datas, value, separator) {
  * @param {*} type 文件类型 enum: excel,zip,image
  * @param {*} callback 成功回调
  */
-export function downloadBlob(blob, downloadName, type = 'image', callback) {
+export function downloadBlob(blob, downloadName, type, callback) {
   if (!blob || !downloadName) {
     this?.msgError?.('文件或文件名不存在，请联系系统管理员')
     throw '文件或文件名不存在，请联系系统管理员'
@@ -125,7 +125,7 @@ export function downloadBlob(blob, downloadName, type = 'image', callback) {
     URL.revokeObjectURL(url) // 释放内存
     callback && callback()
     this?.msgSuccess?.('正在下载，请稍后至浏览器下载栏查看')
-  } else if (/^(http|data:image)/.test(blob) && type === 'image') {
+  } else if (/^(http|data:image)/.test(blob)) {
     let image = new Image()
     image.setAttribute('crossOrigin', 'anonymous')
     image.src = blob

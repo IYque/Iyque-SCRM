@@ -41,7 +41,13 @@ export const del = (ids) => _del(`${service}/batchDelete/${ids}`)
     "file": {}
 }
  */
-export const importData = (data) => post(`${service}/importData`, data)
+export const importData = (data) => {
+  const formdata = new FormData()
+  formdata.append('allocateUsers', JSON.stringify(data.allocateUsers))
+  formdata.append('file', data.file)
+
+  post(`${service}/importData`, formdata)
+}
 
 // 公海下载模版
 export const getExport = (data) => get(`${service}/export`, data, { responseType: 'blob' })
