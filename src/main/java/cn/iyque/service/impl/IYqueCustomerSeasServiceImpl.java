@@ -2,14 +2,20 @@ package cn.iyque.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.iyque.config.IYqueParamConfig;
+import cn.iyque.constant.IYqueContant;
 import cn.iyque.dao.IYqueCustomerSeasDao;
 import cn.iyque.domain.IYqueCustomerSeasVo;
+import cn.iyque.entity.IYQueComplaintTip;
 import cn.iyque.entity.IYqueConfig;
 import cn.iyque.entity.IYqueCustomerSeas;
 import cn.iyque.entity.IYqueUser;
+import cn.iyque.enums.ComplaintContent;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerSeasService;
+import cn.iyque.utils.DateUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +29,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -71,6 +75,12 @@ public class IYqueCustomerSeasServiceImpl implements IYqueCustomerSeasService {
 
                     iYqueCustomerSeasDao.saveAll(dataList);
 
+                    //公海通知
+                    ThreadUtil.execute(()->{
+                        distribute(dataList.stream()
+                                .map(IYqueCustomerSeas::getId) // 假设 getId() 返回 Long
+                                .toArray(Long[]::new));
+                    });
 
 
                 }
@@ -128,46 +138,47 @@ public class IYqueCustomerSeasServiceImpl implements IYqueCustomerSeasService {
     }
 
     @Override
-    public void distribute(Long[] ids) throws Exception {
-        Arrays.stream(ids).forEach(k->{
-            Optional<IYqueCustomerSeas> optional = iYqueCustomerSeasDao.findById(k);
-
-           if(optional.isPresent()){
-               IYqueCustomerSeas iYqueCustomerSeas = optional.get();
-
-               try {
-
-                   IYqueConfig iYqueConfig = iYqueConfigService.findIYqueConfig();
-
-                   if(null != iYqueConfig){
-                       WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
-
-                       wxcpservice.getMessageService().send(WxCpMessage.TEXT()
-                               .toUser(iYqueCustomerSeas.getAllocateUserId())
-                               .agentId(new Integer(iYqueConfig.getAgentId()))
-                               .content("管理员张三给你分配了3个客户还未添加，快去复制电话号码添加客户吧。\n<a href=\""
-                                       + yqueParamConfig.getCustomerSeasUrl() + "\">点击查看详情</a>")
-                               .build());
-                   }
+    public void distribute(Long[] ids) throws IYqueException {
+        List<IYqueCustomerSeas> iYqueCustomerSeas = iYqueCustomerSeasDao.findAllById(Arrays.asList(ids));
 
 
+        if(CollectionUtil.isNotEmpty(iYqueCustomerSeas)){
+         iYqueCustomerSeas.stream()
+                    .collect(Collectors.groupingBy(IYqueCustomerSeas::getAllocateUserId)).forEach((k,v)->{
+
+                     try {
+
+                         IYqueConfig iYqueConfig = iYqueConfigService.findIYqueConfig();
+
+                         if(null != iYqueConfig){
+                             WxCpService wxcpservice = iYqueConfigService.findWxcpservice();
 
 
-               }catch (Exception e){
-                   log.error("提醒通知异常:"+e.getMessage());
-
-               }
+                             wxcpservice.getMessageService().send(
+                                     WxCpMessage.TEXTCARD()
+                                             .toUser(k)
+                                             .agentId(new Integer(iYqueConfig.getAgentId()))
+                                             .title("客户线索")
+                                             .description( String.format(IYqueContant.customerSeaTpl, DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS),v.size()+"个"))
+                                             .url(yqueParamConfig.getCustomerSeasUrl())
+                                             .btnTxt("点击查看详情").build()
+                             );
+                         }
 
 
 
 
+                     }catch (Exception e){
+                         log.error("提醒通知异常:"+e.getMessage());
+                         throw  new IYqueException(("提醒通知异常:"+e.getMessage()));
 
-           }
+                     }
 
 
+                    });
+        }
 
 
-        });
 
 
     }

@@ -24,12 +24,11 @@ public class IYqueContant {
     public static final String complaintTipTpl= "<div class=\"gray\">%s</div> <div class=\"normal\">投诉类型:%s，联系方式:%s </div><div class=\"highlight\">有客户投诉，建议核实情况，尽快处理。</div>";
 
 
-    public static void main(String[] args) {
+    //客户线索
+    public static final String customerSeaTpl= "<div class=\"gray\">%s</div> <div class=\"normal\">线索数量:%s </div> <div class=\"highlight\">有新的客户线索，建议核实情况，尽快处理。</div>";
 
-        System.out.println(
-                String.format(complaintTipTpl,new Date(),"诈骗","18158873850")
-        );
-    }
+
+
 
 
 }

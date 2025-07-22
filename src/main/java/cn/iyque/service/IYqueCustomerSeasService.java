@@ -4,6 +4,7 @@ package cn.iyque.service;
 import cn.iyque.domain.IYqueCustomerSeasVo;
 import cn.iyque.entity.IYqueCustomerSeas;
 import cn.iyque.entity.IYqueUser;
+import cn.iyque.exception.IYqueException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,5 +51,5 @@ public interface IYqueCustomerSeasService {
      * @param ids
      * @throws Exception
      */
-    void distribute(Long[] ids) throws Exception;
+    void distribute(Long[] ids) throws IYqueException;
 }

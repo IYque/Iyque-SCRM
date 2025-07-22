@@ -3,10 +3,12 @@ package cn.iyque.controller;
 
 
 import cn.hutool.json.JSONUtil;
+import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.IYqueCustomerSeasVo;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueCustomerSeas;
 import cn.iyque.entity.IYqueUser;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueCustomerSeasService;
 import cn.iyque.utils.IYqueExcelUtils;
 import cn.iyque.utils.TableSupport;
@@ -112,10 +114,16 @@ public class IYqueCustomerSeasController {
      * @param ids id列表
      * @return 结果
      */
-    @PostMapping(path = "/distribute/{ids}")
-    public ResponseResult distribute(@PathVariable("ids") Long[] ids) throws Exception {
+    @GetMapping(path = "/distribute/{ids}")
+    public ResponseResult distribute(@PathVariable("ids") Long[] ids){
 
-        yqueCustomerSeasService.distribute(ids);
+        try {
+            yqueCustomerSeasService.distribute(ids);
+        }catch (IYqueException e){
+
+            return new ResponseResult(HttpStatus.ERROR,e.getMsg(),null);
+        }
+
 
         return new ResponseResult();
     }
