@@ -12,6 +12,12 @@ document.addEventListener('touchstart', function (e) {
     style.display = style.display == 'none' ? 'block' : 'none'
   }
 })
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'F12') {
+    let style = document.getElementById('__vconsole').style
+    style.display = style.display == 'none' ? 'block' : 'none'
+  }
+})
 
 import { createApp, defineAsyncComponent } from 'vue'
 import { createPinia } from 'pinia'

@@ -11,7 +11,7 @@ defineProps({
 
 function add(item) {
   if (!item.phoneNumber) {
-    return $sdk.msgError('客户手机号码为空')
+    return $sdk.msgError('客户手机号不能为空')
   }
   $sdk.copyText(item.phoneNumber)
   // 跳转到添加客户页面

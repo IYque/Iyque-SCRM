@@ -92,27 +92,25 @@ function findOperateLogTypesFn() {
         </div>
       </template>
 
-      <template #="{ data }">
-        <el-table class="align-center" :data="data">
-          <el-table-column label="电话号码" prop="phoneNumber"></el-table-column>
-          <el-table-column label="客户备注" prop="customerName"></el-table-column>
-          <el-table-column label="分配员工" prop="allocateUserName"></el-table-column>
-          <el-table-column label="当前状态" prop="operateTypeSub">
-            <template #default="{ row }">
-              {{ categoryList[row.currentState] }}
-              <!-- {{ categoryList?.find((e) => e.subCode == row.operateTypeSub)?.value }} -->
-            </template>
-          </el-table-column>
-          <el-table-column label="导入时间" prop="createTime"></el-table-column>
-          <el-table-column label="操作" fixed="right">
-            <template #default="{ row }">
-              <TableOperateBtn @click="$refs.rctRef?.apiConfirm(api.distribute, row.id, '是否确认提醒?')">
-                提醒
-              </TableOperateBtn>
-              <TableOperateBtn @click="$refs.rctRef.apiConfirm(api.del, row.id)">删除</TableOperateBtn>
-            </template>
-          </el-table-column>
-        </el-table>
+      <template #table="{ data }">
+        <el-table-column label="电话号码" prop="phoneNumber"></el-table-column>
+        <el-table-column label="客户备注" prop="customerName"></el-table-column>
+        <el-table-column label="分配员工" prop="allocateUserName"></el-table-column>
+        <el-table-column label="当前状态" prop="operateTypeSub">
+          <template #default="{ row }">
+            {{ categoryList[row.currentState] }}
+            <!-- {{ categoryList?.find((e) => e.subCode == row.operateTypeSub)?.value }} -->
+          </template>
+        </el-table-column>
+        <el-table-column label="导入时间" prop="createTime"></el-table-column>
+        <el-table-column label="操作" fixed="right">
+          <template #default="{ row }">
+            <TableOperateBtn @click="$refs.rctRef?.apiConfirm(api.distribute, row.id, '是否确认提醒?')">
+              提醒
+            </TableOperateBtn>
+            <TableOperateBtn @click="$refs.rctRef.apiConfirm(api.del, row.id)">删除</TableOperateBtn>
+          </template>
+        </el-table-column>
       </template>
     </RequestChartTable>
   </div>
