@@ -16,6 +16,7 @@ import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerSeasService;
 import cn.iyque.utils.DateUtils;
+import cn.iyque.utils.SecurityUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import lombok.extern.slf4j.Slf4j;
@@ -125,8 +126,13 @@ public class IYqueCustomerSeasServiceImpl implements IYqueCustomerSeasService {
         }
 
 
-        if (StringUtils.isNotEmpty(iYqueCustomerSeas.getAllocateUserId())) {
-            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("allocateUserId")), iYqueCustomerSeas.getAllocateUserId()));
+        if (StringUtils.isEmpty(iYqueCustomerSeas.getAllocateUserId())) {
+            log.error("获取客户公海列表:"+ SecurityUtils.getCurrentUserName());
+            if(!SecurityUtils.getCurrentUserName().equals(yqueParamConfig.getUserName())){
+                spec = spec.and((root, query, cb) -> cb.equal(root.get("allocateUserId"), SecurityUtils.getCurrentUserName()));
+            }
+        }else{
+
         }
 
         return iYqueCustomerSeasDao.findAll(spec,pageable);

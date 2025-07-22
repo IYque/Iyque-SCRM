@@ -11,7 +11,9 @@ import cn.iyque.entity.IYqueUser;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueCustomerSeasService;
 import cn.iyque.utils.IYqueExcelUtils;
+import cn.iyque.utils.SecurityUtils;
 import cn.iyque.utils.TableSupport;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/seas")
+@Slf4j
 public class IYqueCustomerSeasController {
 
 
@@ -85,6 +88,8 @@ public class IYqueCustomerSeasController {
      */
     @GetMapping("/findAll")
     public ResponseResult<IYqueCustomerSeas> findAll(IYqueCustomerSeas customerSeas){
+
+
 
         Page<IYqueCustomerSeas> customerInfos = yqueCustomerSeasService.findAll(customerSeas,
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
