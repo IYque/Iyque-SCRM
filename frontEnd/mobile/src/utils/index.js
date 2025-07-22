@@ -289,13 +289,13 @@ export function $delConfirm(remove, callback) {
 }
 
 // 复制文字
-export function copyText(txt) {
+export async function copyText(txt) {
   if (!txt) {
     this.msgError('内容为空')
-    return
+    return Promise.reject()
   }
   if (navigator.clipboard) {
-    navigator.clipboard
+    return navigator.clipboard
       .writeText(txt)
       .then(() => this.msgSuccess('复制成功'))
       .catch(() => this.msgError('复制失败'))
@@ -310,8 +310,10 @@ export function copyText(txt) {
       document.execCommand('copy') // 执行浏览器复制命令
       this.msgSuccess('复制成功')
       input.remove()
+      return Promise.resolve()
     } catch (error) {
       this.msgError('复制失败')
+      return Promise.reject()
     }
   }
 }
