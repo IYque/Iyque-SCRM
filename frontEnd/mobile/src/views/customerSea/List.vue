@@ -8,6 +8,15 @@ defineProps({
     default: '0', // 当前状态(0:待添加；1:待通过;2:已通过)
   },
 })
+
+function add(item) {
+  if (!item.phoneNumber) {
+    return $sdk.msgError('客户手机号码为空')
+  }
+  $sdk.copyText(item.phoneNumber)
+  // 跳转到添加客户页面
+  ww.navigateToAddCustomer()
+}
 </script>
 
 <template>
@@ -24,7 +33,7 @@ defineProps({
         <div class="flex-auto truncate">
           {{ item.customerName || '-' }}
         </div>
-        <div class="--Color" @click="($sdk.copyText(item.phoneNumber), ww.navigateToAddCustomer())">复制</div>
+        <div class="--Color" @click="add(item)">复制</div>
       </div>
     </template>
   </PullRefreshScrollLoadList>
