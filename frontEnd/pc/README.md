@@ -23,7 +23,7 @@
     │   ├── config.js              # 全局配置文件
     │   ├── main.ts                # 入口文件 加载组件 初始化等
     ├── babel.config.js            # babel-loader 配置
-    ├── sys.config.ts                    # 环境变量配置
+    ├── sys.config.ts                    # 系统环境配置
     ├── index.html                 # html模板
     ├── jsconfig.json              # jsconfig 配置 快捷路径等
     ├── package.json               # package.json
