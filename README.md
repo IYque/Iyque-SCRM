@@ -11,7 +11,7 @@
 
 
 ### 重要链接
-- 官网及开源部署文档:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
+-  官网及开源部署文档:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 【商业版】功能清单:  <a href="https://iyque.cn" target="_blank">https://iyuanque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
