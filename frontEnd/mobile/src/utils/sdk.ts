@@ -24,8 +24,12 @@ export class SDK {
   }
 
   loading(message = '加载中...') {
-    showToast({ message, type: 'loading', loadingType: 'spinner' })
+    showToast({ message, type: 'loading', loadingType: 'spinner', duration: 0 })
   }
+  closeMsg() {
+    closeToast()
+  }
+
   confirm(message = '是否确认删除?', title = '提示', options) {
     return showDialog({ title, message, showCancelButton: true, ...options })
   }

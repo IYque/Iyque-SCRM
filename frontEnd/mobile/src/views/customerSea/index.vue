@@ -6,12 +6,16 @@ const status = ref({
   2: '已添加',
 })
 const num = ref({})
+const listRef = ref()
+async function refresh() {
+  await listRef.value[1].loadListRef.getList(1)
+}
 </script>
 
 <template>
-  <van-tabs>
+  <van-tabs :lazy-render="false">
     <van-tab :title="`${item}(${num[index] || 0})`" v-for="(item, index) in status" :key="index">
-      <List ref="list" :type="index" @change="(v) => (num[index] = v)"></List>
+      <List ref="listRef" :type="index" @change="(v) => (num[index] = v)" @refresh="refresh"></List>
     </van-tab>
   </van-tabs>
 </template>

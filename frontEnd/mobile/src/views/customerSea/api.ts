@@ -17,14 +17,8 @@ export const distribute = (id) => get(`${service}/distribute/${id}`)
 
 /** 添加更新
  * @param {Object} data
-{
-    "id": "string",
-    "categoryId": "string",
-    "hotWord": "string",
-    "nearHotWord": "string"
-}
  */
-export const save = (data) => post(`${service}/saveOrUpdate`, data)
+export const save = (data) => post(`${service}/updateCustomerSeasState`, data)
 
 /** 删除
  * @param {*} ids
