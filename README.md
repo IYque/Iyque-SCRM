@@ -2,8 +2,6 @@
 
 <div align="center">
 
-[![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
-[![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
 
 
 </div>
@@ -11,7 +9,6 @@
 
 ### 重要链接
 - 官网及开源部署文档:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
-- BUG等问题反馈：<a href="https://gitee.com/iyque/iYqueCode/issues/new" target="_blank">ISSUES</a>
 - 【商业版】功能清单:  <a href="https://iyque.cn" target="_blank">https://iyuanque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
@@ -184,13 +181,13 @@
 ![img.png](img/j-3.jpg)
 
 ## 七、版权说明
-该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0](https://gitee.com/iyque/iYqueCode/blob/master/LICENSE)协议的前提下,可自行二开与商用
+该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0]协议的前提下,可自行二开与商用
 
 ## 八、特别鸣谢
 本项目在开发过程中，使用或参考了以下优秀的开源项目/组件，特此表示感谢：
--  <a href="https://gitee.com/ageerle/ruoyi-ai" target="_blank">ruoyi-ai</a>: 参考其知识库相关功能。
--  <a href="https://github.com/LnYo-Cly/ai4j" target="_blank">ai4j</a>: 引用该组件实现deepseek的接入,向量的计算等。
--  <a href="https://gitee.com/binary/weixin-java-tools" target="_blank">WxJava</a>: 引用该组件实现企微接口的调用。
+-  ruoyi-ai: 参考其知识库相关功能。
+-  ai4j: 引用该组件实现deepseek的接入,向量的计算等。
+-  WxJava: 引用该组件实现企微接口的调用。
 ## 九、联系
 
 如有包括但不限于以下需求，可随时通过源雀官方企微联系我们：
