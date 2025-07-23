@@ -14,6 +14,7 @@
 -  官网及开源部署文档:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 - 【商业版】功能清单:  <a href="https://iyque.cn" target="_blank">https://iyuanque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
+（注:开源版暂不提供演示,代码已完全开源可自行部署）
 
   ![输入图片说明](pic/contactus.png)
 ## 一、背景
