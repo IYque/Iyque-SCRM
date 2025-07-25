@@ -14,6 +14,7 @@
 
 -  官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 -  开源部署文档:  <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs</a>
+- 【商业版】功能清单: <a href="https://iyuanque.cn/archives/sy" target="_blank">https://iyuanque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
   ![输入图片说明](pic/contactus.png)
@@ -22,9 +23,10 @@
 
 
 #### 开源版与商业版区别
- 商业版是一套完整基于企微完整的SCRM解决方案,开源版主要是一些基于企微开放API的小工具
-- 【商业版】功能清单: <a href="https://iyuanque.cn/archives/sy" target="_blank">https://iyuanque.cn/archives/sy</a>
-- 【开源版】功能清单: <a href="https://iyuanque.cn/archives/ky" target="_blank">https://iyuanque.cn/archives/ky</a>
+【商业版】是基于企微生态打造的全链路SCRM解决方案，不仅整合了全域获客、客户精细管理、精准销售转化、数据洞察等核心功能模块，还提供专属部署、定制开发、技术支持等企业级服务，能深度适配企业从获客到留存的全业务流程，满足规模化运营需求；
+
+【开源版】则以企微开放API为基础，聚焦轻量化实用小工具，功能更偏向碎片化辅助，解决局部效率问题，无配套系统性深度服务支撑。
+
 ## 一、背景
 
 在过去企业大部分采用SaaS模式的SCRM标准化产品，能满足一定的需求，云部署的模式也能节省企业的成本。尽管目前市场SCRM工具众多，但企业私域建设工具选型仍存在如下核心痛点：
