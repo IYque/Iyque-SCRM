@@ -47,6 +47,22 @@ public class IYqueAgent {
     private String name;
 
 
+    /**
+     * logo
+     */
+    private String logoUrl;
+
+
+    /**
+     *  企业应用可见范围（部门）
+     */
+    private String allowPartyName;
+
+
+    /** 企业应用可见范围（人员） */
+    private String allowUserinfoName;
+
+
 
 
     /**
@@ -88,6 +104,9 @@ public class IYqueAgent {
 
     @Transient
     private String msgTitle;
+
+
+
 
 
     @PrePersist

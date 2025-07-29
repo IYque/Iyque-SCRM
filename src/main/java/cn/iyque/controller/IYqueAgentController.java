@@ -54,6 +54,19 @@ public class IYqueAgentController {
 
 
     /**
+     * 同步应用信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/synchAgent/{id}")
+    public ResponseResult synchAgent(@PathVariable Long id){
+
+        return new ResponseResult();
+
+    }
+
+
+    /**
      * 应用列表
      * @return
      */
@@ -96,13 +109,13 @@ public class IYqueAgentController {
 
     /**
      * 获取历史消息列表
-     * @param agentId
+     * @param id
      * @return
      */
-    @GetMapping("/findAgentSubAll/{agentId}")
-    public ResponseResult<IYqueAgentSub> findAgentSubAll(@PathVariable Long agentId){
+    @GetMapping("/findAgentSubAll/{id}")
+    public ResponseResult<IYqueAgentSub> findAgentSubAll(@PathVariable Long id){
 
-        Page<IYqueAgentSub> iYqueAgentSubs = iYqueAgentService.findAgentSubAll(agentId,
+        Page<IYqueAgentSub> iYqueAgentSubs = iYqueAgentService.findAgentSubAll(id,
                 PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("sendTime").descending()));
 

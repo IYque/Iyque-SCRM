@@ -12,7 +12,6 @@ import cn.iyque.utils.SpringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.cp.bean.article.NewArticle;
@@ -21,8 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Slf4j
 public class AgentMsgDto {
 
