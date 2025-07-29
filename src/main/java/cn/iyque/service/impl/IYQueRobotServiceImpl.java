@@ -48,10 +48,8 @@ public class IYQueRobotServiceImpl implements IYQueRobotService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void batchDelete(Long[] ids) {
         iyQueRobotDao.deleteAllByIdInBatch(Arrays.asList(ids));
-//        iyQueRobotSubDao.deleteAllByRobotIdIs(Arrays.asList(ids));
     }
 
     @Override
