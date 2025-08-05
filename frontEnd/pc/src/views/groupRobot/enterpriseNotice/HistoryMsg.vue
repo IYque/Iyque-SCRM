@@ -53,25 +53,16 @@ export default {
       this.loading = true
       appMsg
         .getList(this.query)
-        .then(({ rows, total }) => {
-          this.list = rows
-          this.total = +total
+        .then(({ data, count }) => {
+          this.list = data
+          this.total = +count
         })
         .finally(() => {
           this.loading = false
         })
     },
     edit(data, type) {
-      this.loading = true
-      this.form = Object.assign({}, data || {})
-      appMsg
-        .getDetail(data.id)
-        .then((res) => {
-          this.$emit('edit', res.data, type)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      this.$emit('edit', data, type)
     },
     // 删除和撤销
     removke(id, action, tip) {
@@ -100,11 +91,11 @@ export default {
 
 <template>
   <div>
-    <el-select class="mb10 mr10" v-model="query.status" placeholder="">
+    <!-- <el-select class="mb10 mr10" v-model="query.status" placeholder="">
       <el-option v-for="(value, key) in status" :key="key" :label="value" :value="key"></el-option>
     </el-select>
     <el-button type="primary" @click="getList(1)">查询</el-button>
-    <el-button @click="resetQuery">重置</el-button>
+    <el-button @click="resetQuery">重置</el-button> -->
 
     <el-table v-loading="loading" :data="list">
       <el-table-column label="消息标题" align="center" prop="msgTitle" />
@@ -119,8 +110,8 @@ export default {
         <template #default="{ row }">
           <el-button text @click="edit(row, 'detail')">详情</el-button>
           <el-button v-if="['0', '1'].includes(row.status + '')" text @click="edit(row, 'edit')">编辑</el-button>
-          <el-button v-if="row.status == 2" text @click="removke(row.id, 'revoke', '撤回')">撤回</el-button>
-          <el-button v-else @click="removke(row.id, 'remove', '删除')" text>删除</el-button>
+          <!-- <el-button v-if="row.status == 2" text @click="removke(row.id, 'revoke', '撤回')">撤回</el-button>
+          <el-button v-else @click="removke(row.id, 'remove', '删除')" text>删除</el-button> -->
           <!-- v-hasPermi="['customerManage:tag:remove']" -->
         </template>
       </el-table-column>
