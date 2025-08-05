@@ -4,15 +4,18 @@ package cn.iyque.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.dao.IYqueAgentDao;
 import cn.iyque.dao.IYqueAgentSubDao;
+import cn.iyque.dao.IYqueUserDao;
 import cn.iyque.domain.AgentMsgDto;
-import cn.iyque.entity.IYqueAgent;
-import cn.iyque.entity.IYqueAgentSub;
-import cn.iyque.entity.IYqueRobot;
-import cn.iyque.entity.IYqueRobotSub;
+import cn.iyque.entity.*;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAgentService;
 import cn.iyque.service.IYqueConfigService;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.cp.api.WxCpAgentService;
 import me.chanjar.weixin.cp.api.WxCpService;
+import me.chanjar.weixin.cp.bean.WxCpAgent;
+import me.chanjar.weixin.cp.bean.WxCpDepart;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpMessageSendResult;
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -41,6 +42,11 @@ public class IYqueAgentServiceImpl implements IYqueAgentService {
     @Autowired
     IYqueConfigService iYqueConfigService;
 
+    @Autowired
+    IYqueUserDao iYqueUserDao;
+
+
+
     @Override
     public void addOrUpdate(IYqueAgent iYqueAgent) {
         iYqueAgentDao.saveAndFlush(iYqueAgent);
@@ -54,6 +60,91 @@ public class IYqueAgentServiceImpl implements IYqueAgentService {
     @Override
     public Page<IYqueAgent> findAll(Pageable pageable) {
         return iYqueAgentDao.findAll(pageable);
+    }
+
+    @Override
+    public void synchAgent(Long id) {
+
+        try {
+            Optional<IYqueAgent> optional = iYqueAgentDao.findById(id);
+
+            if(optional.isPresent()){
+                WxCpService wxcpservice = iYqueConfigService
+                        .findWxcpservice();
+                IYqueAgent iYqueAgent = optional.get();
+
+                WxCpAgent wxCpAgent = wxcpservice
+                        .getAgentService().get(iYqueAgent.getAgentId());
+                if(null != wxCpAgent){
+                    iYqueAgent.setName(
+                            wxCpAgent.getName()
+                    );
+
+                    iYqueAgent.setLogoUrl(
+                            wxCpAgent.getSquareLogoUrl()
+                    );
+
+                    //可见范围人员
+                    List<WxCpAgent.User> users = wxCpAgent.getAllowUserInfos().getUsers();
+
+                    if(CollectionUtil.isNotEmpty(users)){
+                        List<IYqueUser> iYqueUsers = iYqueUserDao.findByUserIds(users.stream().map(WxCpAgent.User::getUserId).
+                                collect(Collectors.toList()));
+                        if(CollectionUtil.isNotEmpty(iYqueUsers)) {
+                            iYqueAgent.setAllowUserinfoName(
+                                    iYqueUsers.stream()
+                                            .map(IYqueUser::getName)
+                                            .collect(Collectors.joining(", "))
+                            );
+                        }
+                    }else{
+                        iYqueAgent.setAllowUserinfoName(null);
+                    }
+
+                    //可见范围部门
+                    List<Long> partyIds = wxCpAgent.getAllowParties().getPartyIds();
+
+                    if(CollectionUtil.isNotEmpty(partyIds)){
+                        List<WxCpDepart> wxCpDeparts=new ArrayList<>();
+                        partyIds.stream().forEach(k->{
+                            try {
+                                WxCpDepart wxCpDepart = wxcpservice.getDepartmentService().get(k);
+
+                                if(null != wxCpDepart){
+                                    wxCpDeparts.add(wxCpDepart);
+                                }
+
+                            } catch (WxErrorException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+                        if(CollectionUtil.isNotEmpty(wxCpDeparts)){
+                            iYqueAgent.setAllowPartyName(
+                                    wxCpDeparts.stream()
+                                            .map(WxCpDepart::getName)
+                                            .collect(Collectors.joining(", "))
+                            );
+                        }
+                    }
+                }else{
+
+                    iYqueAgent.setAllowPartyName(null);
+
+                }
+
+
+                iYqueAgentDao.saveAndFlush(iYqueAgent);
+
+            }
+        }catch (Exception e){
+            log.error("应用信息同步错误："+e.getMessage());
+            throw new IYqueException(e.getMessage());
+        }
+
+
+
+
     }
 
     @Override

@@ -4,6 +4,7 @@ import cn.iyque.entity.IYqueAgent;
 import cn.iyque.entity.IYqueAgentSub;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface IYqueAgentService {
 
@@ -28,6 +29,13 @@ public interface IYqueAgentService {
      * @return
      */
     Page<IYqueAgent> findAll(Pageable pageable);
+
+
+    /**
+     * 应用信息同步
+     * @param id
+     */
+    void synchAgent(Long id);
 
 
 

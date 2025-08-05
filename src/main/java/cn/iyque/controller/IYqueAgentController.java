@@ -6,6 +6,7 @@ import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueAgent;
 import cn.iyque.entity.IYqueAgentSub;
+import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAgentService;
 import cn.iyque.utils.TableSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,11 @@ public class IYqueAgentController {
      */
     @GetMapping("/synchAgent/{id}")
     public ResponseResult synchAgent(@PathVariable Long id){
+        try {
+            iYqueAgentService.synchAgent(id);
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.ERROR,e.getMsg(),null);
+        }
 
         return new ResponseResult();
 
