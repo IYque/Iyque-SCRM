@@ -53,7 +53,7 @@ function requestFactory(getway = '') {
       console.log('err: ' + error)
       let { message: msg, config } = error
       Message({
-        message: `${msg}:${config.url}`,
+        message: `${msg}:${config?.url}`,
         type: 'error',
         duration: 5 * 1000,
       })

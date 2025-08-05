@@ -144,8 +144,14 @@ export default {
     async submit(status) {
       let form = JSON.parse(JSON.stringify(this.form))
       let valid = await this.$refs['form'].validate()
-      // valid = await this.$refs['formCon'].validate()
+      valid = await this.$refs['formCon'].validate()
       if (valid) {
+        form.users?.forEach((item) => {
+          if (item.userId) {
+            form.toUserName.push(item.name)
+            form.toUser.push(item.userId)
+          }
+        })
         if (form.scopeType == 2 && !form.toParty.concat(form.toUser).length) {
           this.msgError('发送范围不能为空')
         } else if (form.sendType == 2 && new Date(form.sendTime).getTime() <= Date.now()) {
@@ -172,11 +178,74 @@ export default {
 <template>
   <div style="margin: 0 20px" :class="disabled && 'detail-form'">
     <!-- 应用消息 -->
-    <el-form class="" ref="form" :model="form" :rules="rules" :disabled="disabled" label-width="100px">
+    <el-form
+      class="mb20"
+      v-if="form.agentId"
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :disabled="disabled"
+      label-width="100px">
+      <div class="">
+        <div class="title">
+          <span>消息设置</span>
+          <!-- <span style="font-size: 12px; margin-left: 10px">
+            将通过应用
+            <span class="theme">【{{ form.agentName }}】</span>
+            发送消息
+          </span> -->
+        </div>
+
+        <el-form-item label="消息标题" prop="msgTitle">
+          <el-input v-model="form.msgTitle" placeholder="请输入标题" maxlength="30" show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item label="发送范围" prop="scopeType">
+          <el-radio-group v-model="form.scopeType" class="mr20">
+            <el-radio :label="1">全部</el-radio>
+            <el-radio :label="2">自定义</el-radio>
+          </el-radio-group>
+          <template v-if="form.scopeType == 2">
+            <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
+          </template>
+        </el-form-item>
+        <!-- <el-form-item label="发送类型" prop="sendType">
+          <el-radio-group v-model="form.sendType">
+            <el-radio :label="1">立即发送</el-radio>
+            <el-radio :label="2">定时发送</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="发送时间" v-if="form.sendType == 2" v-model="form.sendType" prop="sendTime">
+          <el-date-picker
+            v-model="form.sendTime"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="选择日期时间"
+            v-bind="{
+              disabledDate(time) {
+                let date = new Date()
+                return time.getTime() < date.setDate(date.getDate() - 1)
+              },
+            }"></el-date-picker>
+        </el-form-item> -->
+      </div>
+    </el-form>
+
+    <div class="title">消息内容</div>
+    <!-- 机器人消息标题 -->
+    <el-form
+      class=""
+      v-if="form.robotId"
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :disabled="disabled"
+      label-width="100px">
       <el-form-item label="消息标题" prop="msgTitle">
         <el-input v-model="form.msgTitle" placeholder="请输入标题" maxlength="30" show-word-limit></el-input>
       </el-form-item>
+    </el-form>
 
+    <el-form class="" ref="formCon" :model="form" :rules="rules" :disabled="disabled" label-width="100px">
       <el-form-item label="内容类型" prop="msgType">
         <el-radio-group v-model="form.msgType">
           <el-radio v-for="(item, label, index) in typeDict" :key="index" :label="label">
@@ -251,18 +320,6 @@ export default {
       <el-button @click="$emit('submit')">取 消</el-button>
       <el-button type="primary" @click="submit(1)">确 定</el-button>
     </div>
-
-    <!-- 选择发起员工弹窗 -->
-    <SelectUser
-      v-if="dialogVisible"
-      v-model:visible="dialogVisible"
-      append-to-body
-      title="选择成员"
-      :isOnlyLeaf="false"
-      :isSigleSelect="false"
-      :destroy-on-close="false"
-      :defaultValues="form.toParty.concat(form.toUser)"
-      @success="selectedUser"></SelectUser>
   </div>
 </template>
 

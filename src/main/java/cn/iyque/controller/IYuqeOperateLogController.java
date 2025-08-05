@@ -1,7 +1,6 @@
 package cn.iyque.controller;
 
 
-import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYuqeOperateLog;
 import cn.iyque.enums.OperateLogType;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 

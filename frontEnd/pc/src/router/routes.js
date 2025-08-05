@@ -312,6 +312,11 @@ export const navRoutes = [
         component: () => import('@/views/groupRobot/index'),
         meta: { title: '群机器人' },
       },
+      {
+        path: 'enterpriseNotice',
+        component: () => import('@/views/groupRobot/enterpriseNotice/index'),
+        meta: { title: '企业公告' },
+      },
     ],
   },
 ]

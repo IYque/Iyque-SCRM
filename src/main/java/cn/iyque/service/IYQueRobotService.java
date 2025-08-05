@@ -46,4 +46,6 @@ public interface IYQueRobotService {
      * @param iYqueRobot
      */
     void  sendRobotMsg(IYqueRobot iYqueRobot) throws Exception;
+
+
 }
