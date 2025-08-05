@@ -123,20 +123,16 @@ export default {
     // 发送消息确认按钮
     submitSendMsg(form) {
       if (form) {
-        form.iYqueAgentSub = [form]
-        ;(form.id ? appMsg.update : appMsg.add)(form)
-          .then(() => {
-            this.msgSuccess('操作成功')
-            this.dialogVisibleSendMsg = false
-            if (this.dialogVisibleHistoryMsg) {
-              this.$refs.historyMsg.getList()
-            }
-            // this.getList()
-            // this.getList(!this.form.id && 1)
-          })
-          .catch(() => {
-            this.dialogVisibleSendMsg = false
-          })
+        form.iYqueAgentSub = [Object.assign({}, form)]
+        appMsg.add(form).then(() => {
+          this.msgSuccess('操作成功')
+          this.dialogVisibleSendMsg = false
+          if (this.dialogVisibleHistoryMsg) {
+            this.$refs.historyMsg.getList()
+          }
+          // this.getList()
+          // this.getList(!this.form.id && 1)
+        })
       } else {
         this.dialogVisibleSendMsg = false
       }

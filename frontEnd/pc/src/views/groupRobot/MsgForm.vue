@@ -146,6 +146,12 @@ export default {
       let valid = await this.$refs['form'].validate()
       valid = await this.$refs['formCon'].validate()
       if (valid) {
+        form.users?.forEach((item) => {
+          if (item.userId) {
+            form.toUserName.push(item.name)
+            form.toUser.push(item.userId)
+          }
+        })
         if (form.scopeType == 2 && !form.toParty.concat(form.toUser).length) {
           this.msgError('发送范围不能为空')
         } else if (form.sendType == 2 && new Date(form.sendTime).getTime() <= Date.now()) {
@@ -199,13 +205,10 @@ export default {
             <el-radio :label="2">自定义</el-radio>
           </el-radio-group>
           <template v-if="form.scopeType == 2">
-            <el-button v-if="!disabled" class="mr10" text @click="dialogVisible = true">选择范围</el-button>
-            <TagEllipsis
-              v-if="form.toPartyName.concat(form.toUserName).length"
-              :list="form.toPartyName.concat(form.toUserName)" />
+            <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
           </template>
         </el-form-item>
-        <el-form-item label="发送类型" prop="sendType">
+        <!-- <el-form-item label="发送类型" prop="sendType">
           <el-radio-group v-model="form.sendType">
             <el-radio :label="1">立即发送</el-radio>
             <el-radio :label="2">定时发送</el-radio>
@@ -223,7 +226,7 @@ export default {
                 return time.getTime() < date.setDate(date.getDate() - 1)
               },
             }"></el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
       </div>
     </el-form>
 
@@ -317,18 +320,6 @@ export default {
       <el-button @click="$emit('submit')">取 消</el-button>
       <el-button type="primary" @click="submit(1)">确 定</el-button>
     </div>
-
-    <!-- 选择发起员工弹窗 -->
-    <SelectUser
-      v-if="dialogVisible"
-      v-model:visible="dialogVisible"
-      append-to-body
-      title="选择成员"
-      :isOnlyLeaf="false"
-      :isSigleSelect="false"
-      :destroy-on-close="false"
-      :defaultValues="form.toParty.concat(form.toUser)"
-      @success="selectedUser"></SelectUser>
   </div>
 </template>
 
