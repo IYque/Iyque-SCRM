@@ -123,7 +123,7 @@ export default {
     // 发送消息确认按钮
     submitSendMsg(form) {
       if (form) {
-        form.iYqueAgentSub = [Object.assign({}, form)]
+        form.agentSub = [Object.assign({}, form)]
         appMsg.add(form).then(() => {
           this.msgSuccess('操作成功')
           this.dialogVisibleSendMsg = false

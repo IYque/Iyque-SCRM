@@ -148,24 +148,28 @@ public class IYqueAgentServiceImpl implements IYqueAgentService {
     }
 
     @Override
-    public Page<IYqueAgentSub> findAgentSubAll(Long agentId, Pageable pageable) {
+    public Page<IYqueAgentSub> findAgentSubAll(Integer agentId, Pageable pageable) {
         Specification<IYqueAgentSub> spec = Specification.where(null);
 
+
         if (agentId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("agentId")), agentId));
+            IYqueAgent agent = iYqueAgentDao.findByAgentId(agentId);
+            if(null != agent){
+                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("agentId")), agent.getId()));
+            }
         }
         return iYqueAgentSubDao.findAll(spec,pageable);
     }
 
     @Override
     public void sendAgentMsg(IYqueAgent iYqueAgent) throws Exception {
-        Optional<IYqueAgent> optional = iYqueAgentDao.findById(iYqueAgent.getId());
-        if(optional.isPresent()){
-            List<IYqueAgentSub> iYqueAgentSubs = iYqueAgent.getIYqueAgentSub();
+        IYqueAgent agent = iYqueAgentDao.findByAgentId(iYqueAgent.getAgentId());
+        if(null != agent){
+            List<IYqueAgentSub> iYqueAgentSubs = iYqueAgent.getAgentSub();
             if(CollectionUtil.isNotEmpty(iYqueAgentSubs)){
                 IYqueAgentSub iYqueAgentSub = iYqueAgentSubs.stream().findFirst().get();
                 iYqueAgentSub.setMsgTitle(iYqueAgent.getMsgTitle());
-                iYqueAgentSub.setAgentId(iYqueAgent.getId());
+                iYqueAgentSub.setAgentId(agent.getId());
                 iYqueAgentSub.setStatus(3);
                 iYqueAgentSub.prePersist(iYqueAgentSub);
                 iYqueAgentSub.setSendTime(new Date());
@@ -173,12 +177,12 @@ public class IYqueAgentServiceImpl implements IYqueAgentService {
                 WxCpMessage wxCpMessage = AgentMsgDto.buildAgentMsg(iYqueAgentSub);
                 if(null != wxCpMessage){
                     //全部成员
-                    if(new Integer(0).equals(iYqueAgentSub.getScopeType())){
+                    if(new Integer(1).equals(iYqueAgentSub.getScopeType())){
                         wxCpMessage.setToUser("@all");
                     }else{
-                        if(StringUtils.isNotEmpty(iYqueAgentSub.getToUserIds())){
+                        if(CollectionUtil.isNotEmpty(iYqueAgentSub.getToUser())){
                             wxCpMessage.setToUser(
-                                    String.join("|", iYqueAgentSub.getToUserIds().split(","))
+                                    String.join(", ", iYqueAgentSub.getToUser())
                             );
                         }
                     }

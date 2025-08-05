@@ -45,7 +45,7 @@ public interface IYqueAgentService {
      * @param pageable
      * @return
      */
-    Page<IYqueAgentSub> findAgentSubAll(Long agentId, Pageable pageable);
+    Page<IYqueAgentSub> findAgentSubAll(Integer agentId, Pageable pageable);
 
 
     /**

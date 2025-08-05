@@ -96,7 +96,7 @@ public class IYqueAgent {
      * 消息附件
      */
     @Transient
-    private List<IYqueAgentSub> iYqueAgentSub;
+    private List<IYqueAgentSub> agentSub;
 
 
 

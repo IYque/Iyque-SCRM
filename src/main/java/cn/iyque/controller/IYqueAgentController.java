@@ -119,7 +119,7 @@ public class IYqueAgentController {
      * @return
      */
     @GetMapping("/findAgentSubAll/{id}")
-    public ResponseResult<IYqueAgentSub> findAgentSubAll(@PathVariable Long id){
+    public ResponseResult<IYqueAgentSub> findAgentSubAll(@PathVariable Integer id){
 
         Page<IYqueAgentSub> iYqueAgentSubs = iYqueAgentService.findAgentSubAll(id,
                 PageRequest.of(TableSupport.buildPageRequest().getPageNum(),

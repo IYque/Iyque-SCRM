@@ -101,6 +101,10 @@ public class IYqueAgentSub {
     @Transient
     private Link link;
 
+
+    @Transient
+    private List<String> toUser;
+
     @PostLoad
     public void postLoad() {
         if(IYqueMsgAnnex.MsgType.MSG_TEXT.equals(msgType)){
