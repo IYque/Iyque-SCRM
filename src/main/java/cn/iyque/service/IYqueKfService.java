@@ -27,11 +27,17 @@ public interface IYqueKfService {
     void handleKfMsg( IYqueCallBackBaseMsg callBackBaseMsg) throws Exception;
 
 
+
+
+
     /**
      * 新建或更新客服
      * @param iYqueKf
      */
     void saveOrUpdateKf(IYqueKf iYqueKf) throws IYqueException;
+
+
+
 
 
     /**

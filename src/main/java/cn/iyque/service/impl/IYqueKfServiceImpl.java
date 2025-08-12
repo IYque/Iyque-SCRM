@@ -102,6 +102,10 @@ public class IYqueKfServiceImpl implements IYqueKfService {
             spec = spec.and((root, query, cb) -> cb.like(root.get("kfName"), "%" + iYqueKf.getKfName() + "%"));
         }
 
+        if(iYqueKf.getKfType() != null){
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("kfType"), iYqueKf.getKfType()));
+        }
+
 
         return   kfDao.findAll(spec, pageable);
     }
@@ -168,141 +172,22 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
 
-                                    //获取发送欢迎语
-                                    List<WxCpKfMsgListResp.WxCpKfMsgItem> weclomeEntitys = msgList.stream().filter(item -> StringUtils.isEmpty(item.getExternalUserId()))
-                                            .collect(Collectors.toList());
-                                    if(CollectionUtil.isNotEmpty(weclomeEntitys)){
-
-                                        weclomeEntitys.stream().forEach(kk->{
-                                            WxCpKfEventMsg event = kk.getEvent();
-                                            if(null != event && StringUtils.isNotEmpty(event.getWelcomeCode())){
+                                    if(new Integer(2).equals(iyqueKf.getKfType())){ //排班客服逻辑
 
 
-                                                WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
-                                                sendRequest.setCode(event.getWelcomeCode());
-                                                sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
-                                                WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
-                                                textMsg.setContent(iyqueKf.getWelcomeMsg());
-                                                sendRequest.setText(textMsg);
-                                                //发送转接欢迎语
-                                                try {
-                                                    iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
-                                                } catch (Exception e) {
-                                                    throw new RuntimeException(e);
-                                                }
-
-                                            }
+                                           this.handleShiftKf(iyqueKf,callBackBaseMsg);
 
 
-                                        });
+                                    }else if(new Integer(1).equals(iyqueKf.getKfType())){//基础客服逻辑
+
+
+
+
+                                           this.handleAiBaseKf(msgList,iyqueKf,callBackBaseMsg,kfService);
 
                                     }
 
 
-
-
-                                    //非欢迎语处理逻辑
-                                    List<WxCpKfMsgListResp.WxCpKfMsgItem> noWeclomeEntitys = msgList.stream().filter(item -> StringUtils.isNotEmpty(item.getExternalUserId()))
-                                            .collect(Collectors.toList());
-
-
-
-                                    if(CollectionUtil.isNotEmpty(noWeclomeEntitys)){
-                                        Map<String, List<WxCpKfMsgListResp.WxCpKfMsgItem>> listMap = noWeclomeEntitys.stream()
-                                                .collect(Collectors.groupingBy(WxCpKfMsgListResp.WxCpKfMsgItem::getExternalUserId));
-                                        for (String k : listMap.keySet()) {
-
-
-                                            //是否人工
-                                            boolean isArtificial=false;
-
-
-                                            //判断消息类型
-                                            WxCpKfMsgListResp.WxCpKfMsgItem lastItem
-                                                    =  listMap.get(k).get( listMap.get(k).size() - 1);
-
-
-
-
-
-                                            //获取会话状态,如果为人工则，不进行下一步操作
-                                            WxCpKfServiceStateResp serviceState = iYqueConfigService.findWxcpservice().getKfService()
-                                                    .getServiceState(callBackBaseMsg.getOpenKfId(), k);
-
-                                            if(serviceState.success()&&KfServiceState.KF_SERVICE_STATE_RGJD.getState().equals(serviceState.getServiceState())){
-                                                isArtificial=true;
-                                            }
-
-                                            //客户会话信息入库
-                                            yqueKfMsgService.saveIYqueKfMsg(iyqueKf,lastItem,isArtificial);
-
-                                            if(!isArtificial){
-                                                //非人工操作
-                                                try {
-                                                    //文本类型
-                                                    if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
-
-                                                        if(StringUtils.isNotEmpty(iyqueKf.getKid())){
-
-                                                            //检索相似数据片段
-                                                            List<IYqueKnowledgeFragment> nearest = yqueKnowledgeFragmentService
-                                                                    .nearest(lastItem.getText().getContent(), iyqueKf.getKid());
-
-                                                            if(CollUtil.isNotEmpty(nearest)){
-
-                                                                String prompt = String.format(aiKftpl,lastItem.getText().getContent(), nearest.stream()
-                                                                        .map(s -> "— " + s)
-                                                                        .collect(Collectors.joining(System.lineSeparator())));
-                                                                log.info("客服自动会话提示词:"+prompt);
-
-
-                                                                this.sendAiKfMsg(kfService,prompt
-                                                                        ,k, callBackBaseMsg.getOpenKfId(),true);
-
-
-                                                            }else{//为空则，按照客服设定的规则响应
-
-
-                                                                switch (iyqueKf.getSwitchType()){
-                                                                    case 1://文字
-                                                                        this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,iyqueKf.getSwitchText(),k, callBackBaseMsg.getOpenKfId());
-                                                                        break;
-                                                                    case 2://转人工回复
-                                                                        this.kfTransferPersonnel(callBackBaseMsg.getOpenKfId(),  lastItem.getExternalUserId(),iyqueKf.getSwitchUserIds(),iyqueKf.getSwitchUserNames());
-                                                                        break;
-                                                                    case 3: //发布外部联系人二维码
-                                                                        this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK,kfService,iyqueKf.getSwichQrUrl(),k, callBackBaseMsg.getOpenKfId());
-                                                                        break;
-                                                                    case 4: //ai大模型直接回复
-                                                                        this.sendAiKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
-                                                                        break;
-                                                                }
-
-
-
-                                                            }
-
-
-                                                        }
-
-
-                                                        log.info("文本类型客户消息:"+lastItem.getText().getContent());
-                                                        //非文本类型基于提示
-                                                    }else {
-                                                        this.sendAiKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
-
-                                                        log.info("其他类型文本消息:"+lastItem);
-                                                    }
-                                                }catch (Exception e){
-
-                                                    log.error("消息发送失败:"+e.getMessage());
-
-                                                }
-                                            }
-
-
-                                        }
-                                    }
 
 
 
@@ -326,6 +211,189 @@ public class IYqueKfServiceImpl implements IYqueKfService {
             log.error("回复客户相关信息失败:"+e.getMessage());
         }
     }
+
+    private void handleAiBaseKf(List<WxCpKfMsgListResp.WxCpKfMsgItem> msgList,IYqueKf iyqueKf,IYqueCallBackBaseMsg callBackBaseMsg,   WxCpKfService kfService) throws Exception {
+
+
+        //获取发送欢迎语
+        List<WxCpKfMsgListResp.WxCpKfMsgItem> weclomeEntitys = msgList.stream().filter(item -> StringUtils.isEmpty(item.getExternalUserId()))
+                .collect(Collectors.toList());
+        if(CollectionUtil.isNotEmpty(weclomeEntitys)){
+
+            weclomeEntitys.stream().forEach(kk->{
+                WxCpKfEventMsg event = kk.getEvent();
+                if(null != event && StringUtils.isNotEmpty(event.getWelcomeCode())){
+
+
+                    WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+                    sendRequest.setCode(event.getWelcomeCode());
+                    sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+                    WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+                    textMsg.setContent(iyqueKf.getWelcomeMsg());
+                    sendRequest.setText(textMsg);
+                    //发送转接欢迎语
+                    try {
+                        iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+
+
+            });
+
+        }
+
+
+
+
+        //非欢迎语处理逻辑
+        List<WxCpKfMsgListResp.WxCpKfMsgItem> noWeclomeEntitys = msgList.stream().filter(item -> StringUtils.isNotEmpty(item.getExternalUserId()))
+                .collect(Collectors.toList());
+
+
+
+        if(CollectionUtil.isNotEmpty(noWeclomeEntitys)){
+            Map<String, List<WxCpKfMsgListResp.WxCpKfMsgItem>> listMap = noWeclomeEntitys.stream()
+                    .collect(Collectors.groupingBy(WxCpKfMsgListResp.WxCpKfMsgItem::getExternalUserId));
+            for (String k : listMap.keySet()) {
+
+
+                //是否人工
+                boolean isArtificial=false;
+
+
+                //判断消息类型
+                WxCpKfMsgListResp.WxCpKfMsgItem lastItem
+                        =  listMap.get(k).get( listMap.get(k).size() - 1);
+
+
+
+
+
+                //获取会话状态,如果为人工则，不进行下一步操作
+                WxCpKfServiceStateResp serviceState = iYqueConfigService.findWxcpservice().getKfService()
+                        .getServiceState(callBackBaseMsg.getOpenKfId(), k);
+
+                if(serviceState.success()&&KfServiceState.KF_SERVICE_STATE_RGJD.getState().equals(serviceState.getServiceState())){
+                    isArtificial=true;
+                }
+
+                //客户会话信息入库
+                yqueKfMsgService.saveIYqueKfMsg(iyqueKf,lastItem,isArtificial);
+
+                if(!isArtificial){
+                    //非人工操作
+                    try {
+                        //文本类型
+                        if(lastItem.getMsgType().equals(IYqueMsgAnnex.MsgType.MSG_TEXT)){
+
+                            if(StringUtils.isNotEmpty(iyqueKf.getKid())){
+
+                                //检索相似数据片段
+                                List<IYqueKnowledgeFragment> nearest = yqueKnowledgeFragmentService
+                                        .nearest(lastItem.getText().getContent(), iyqueKf.getKid());
+
+                                if(CollUtil.isNotEmpty(nearest)){
+
+                                    String prompt = String.format(aiKftpl,lastItem.getText().getContent(), nearest.stream()
+                                            .map(s -> "— " + s)
+                                            .collect(Collectors.joining(System.lineSeparator())));
+                                    log.info("客服自动会话提示词:"+prompt);
+
+
+                                    this.sendAiKfMsg(kfService,prompt
+                                            ,k, callBackBaseMsg.getOpenKfId(),true);
+
+
+                                }else{//为空则，按照客服设定的规则响应
+
+
+                                    switch (iyqueKf.getSwitchType()){
+                                        case 1://文字
+                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TEXT,kfService,iyqueKf.getSwitchText(),k, callBackBaseMsg.getOpenKfId());
+                                            break;
+                                        case 2://转人工回复
+                                            this.kfTransferPersonnel(callBackBaseMsg.getOpenKfId(),  lastItem.getExternalUserId(),iyqueKf.getSwitchUserIds(),iyqueKf.getSwitchUserNames());
+                                            break;
+                                        case 3: //发布外部联系人二维码
+                                            this.sendKfMsg(IYqueMsgAnnex.MsgType.MSG_TYPE_LINK,kfService,iyqueKf.getSwichQrUrl(),k, callBackBaseMsg.getOpenKfId());
+                                            break;
+                                        case 4: //ai大模型直接回复
+                                            this.sendAiKfMsg(kfService,lastItem.getText().getContent(),k, callBackBaseMsg.getOpenKfId(),true);
+                                            break;
+                                    }
+
+
+
+                                }
+
+
+                            }
+
+
+                            log.info("文本类型客户消息:"+lastItem.getText().getContent());
+                            //非文本类型基于提示
+                        }else {
+                            this.sendAiKfMsg(kfService,"不支持当前类型消息,请发送文字消息。",k, callBackBaseMsg.getOpenKfId(),false);
+
+                            log.info("其他类型文本消息:"+lastItem);
+                        }
+                    }catch (Exception e){
+
+                        log.error("消息发送失败:"+e.getMessage());
+
+                    }
+                }
+
+
+            }
+        }
+
+    }
+
+
+
+    private void handleShiftKf(IYqueKf iyqueKf,IYqueCallBackBaseMsg callBackBaseMsg) throws Exception {
+
+
+        if(StringUtils.isNotEmpty(iyqueKf.getWorkCycle())
+                &&IYqueKf.isInWorkingTime(iyqueKf)){ //在工作时间内，发送工作接待语同时转接人工
+
+            List<String> userIdList = Arrays.stream( iyqueKf.getSwitchUserIds().split(","))
+                    .collect(Collectors.toList());
+            WxCpKfServiceStateTransResp transResp
+                    = iYqueConfigService.findWxcpservice().getKfService().transServiceState(iyqueKf.getOpenKfid(), callBackBaseMsg.getExternalUserID(),
+                    KfServiceState.KF_SERVICE_STATE_RGJD.getState(),  IYqueKf.getRandomSwitchUserId(iyqueKf));
+
+            if(transResp.success()){
+                if(StringUtils.isNotEmpty(transResp.getMsgCode())){
+                    WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+                    sendRequest.setCode(transResp.getMsgCode());
+                    sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+                    WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+                    textMsg.setContent(iyqueKf.getWelcomeMsg());
+                    sendRequest.setText(textMsg);
+
+                    //发送转接欢迎语
+                    iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
+
+                }
+            }
+
+        }else{ //不在工作时间内，发送非接待工作语提示
+            WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+            WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+            textMsg.setContent(iyqueKf.getOorWelcome());
+            sendRequest.setText(textMsg);
+            iYqueConfigService.findWxcpservice().getKfService().sendMsg(sendRequest);
+        }
+
+
+    }
+
 
     @Override
     public void saveOrUpdateKf(IYqueKf iYqueKf) {
@@ -360,10 +428,20 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
                   //添加接待人员
-                 if(iYqueKf.getSwitchType().equals(new Integer(2))&&StringUtils.isNotEmpty(iYqueKf.getSwitchUserIds())){
-                     iYqueConfigService.findWxcpservice().getKfService().addServicer(wxCpKfAccountAddResp.getOpenKfid(),
-                            Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
-                 }
+                if(iYqueKf.getKfType().equals(1)){
+                    if(iYqueKf.getSwitchType().equals(new Integer(2))&&StringUtils.isNotEmpty(iYqueKf.getSwitchUserIds())){
+                        iYqueConfigService.findWxcpservice().getKfService().addServicer(wxCpKfAccountAddResp.getOpenKfid(),
+                                Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
+                    }
+                }else{
+                    if(iYqueKf.getKfType().equals(2)){
+                        if(StringUtils.isNotEmpty(iYqueKf.getSwitchUserIds())){
+                            iYqueConfigService.findWxcpservice().getKfService().addServicer(wxCpKfAccountAddResp.getOpenKfid(),
+                                    Arrays.asList(iYqueKf.getSwitchUserIds().split(",")));
+                        }
+                    }
+                }
+
 
                 //获取客服链接
                 WxCpKfAccountLink accountLink=new WxCpKfAccountLink();
@@ -397,7 +475,6 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
 
-
                 //保证接待人员最终一致性
                 if(iYqueKf.getSwitchType().equals(new Integer(2))&&StringUtils.isNotEmpty(iYqueKf.getSwitchUserIds())){
                     //删除接待人员
@@ -424,6 +501,8 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
     }
+
+
 
     @Override
     public void batchDelete(List<Long> ids) {

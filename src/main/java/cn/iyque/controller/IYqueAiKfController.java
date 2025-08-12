@@ -23,12 +23,12 @@ import java.util.List;
 
 
 /**
- * 客服相关
+ * ai客服相关(基础客服)
  */
 @RequestMapping("/kf")
 @Slf4j
 @RestController
-public class IYqueKfController {
+public class IYqueAiKfController {
 
 
     @Autowired
@@ -48,7 +48,7 @@ public class IYqueKfController {
      */
     @GetMapping("/findAll")
     public ResponseResult<IYqueKf> findAll(IYqueKf iYqueKf){
-
+        iYqueKf.setKfType(1);
         Page<IYqueKf> iYqueKfs = yqueKfService.findAll(iYqueKf,
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("updateTime").descending()));
@@ -65,6 +65,7 @@ public class IYqueKfController {
     public ResponseResult saveOrUpdateKf(@RequestBody IYqueKf iYqueKf) {
 
         try {
+            iYqueKf.setKfType(1);
             yqueKfService.saveOrUpdateKf(iYqueKf);
         }catch (IYqueException e){
             return new ResponseResult(HttpStatus.ERROR,e.getMsg(),null);
