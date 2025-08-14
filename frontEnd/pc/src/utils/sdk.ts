@@ -7,7 +7,7 @@ import { dictMaterialType } from '@/utils/dictionary'
 // $sdk 公共方法，挂在到全局 window 和 vue app.config.globalProperties
 export class SDK {
   ruleRequiredBlur = { required: true, message: '必填项', trigger: 'blur' }
-  ruleRequiredChange = { required: true, message: '必选项', trigger: 'change' }
+  ruleRequiredChange = { required: true, message: '必填项', trigger: 'change' }
 
   request = request
   dictMaterialType = dictMaterialType

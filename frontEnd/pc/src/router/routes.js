@@ -149,7 +149,12 @@ export const navRoutes = [
           {
             path: 'customerServiceManage',
             component: () => import('@/views/customerServiceManage/list'),
-            meta: { title: '客服管理' },
+            meta: { title: '基础客服' },
+          },
+          {
+            path: 'customerServiceManageScheduled',
+            component: () => import('@/views/customerServiceManageScheduled/list'),
+            meta: { title: '排班客服' },
           },
           {
             path: 'KBM',
