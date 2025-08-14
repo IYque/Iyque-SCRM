@@ -107,7 +107,7 @@ export default {
 
 <template>
   <!-- 添加或修改素材对话框 -->
-  <BaseDialog ref="dialogRef" width="1000px" append-to-body>
+  <BaDialog ref="dialogRef" width="1000px" append-to-body>
     <template #="{ form }">
       <div class="flex --Gap">
         <div class="flex-auto">
@@ -183,7 +183,7 @@ export default {
         </div>
       </div>
     </template>
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <style lang="scss" scoped>

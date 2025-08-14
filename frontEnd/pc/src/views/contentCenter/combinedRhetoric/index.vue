@@ -42,7 +42,7 @@ function action(data) {
         <div class="mid-action mb0">
           <el-button type="primary" @click="action()">新建组合话术</el-button>
 
-          <BaseDialog
+          <BaDialog
             ref="dialogRef"
             width="1000px"
             dynamicTitle="组合话术"
@@ -61,7 +61,7 @@ function action(data) {
               }
             ">
             <aev ref="aevRef" />
-          </BaseDialog>
+          </BaDialog>
 
           <el-button type="primary" plain :disabled="!selectedIds?.length" @click="$refs.rctRef?.apiConfirm(del)">
             删除

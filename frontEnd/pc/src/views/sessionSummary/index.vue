@@ -27,7 +27,7 @@ function findGroupAllFn() {
       <template #operation="{ selectedIds }">
         <el-button type="primary" @click="$refs.dialogRef.action()">圈选客户记录</el-button>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           title="圈选客户记录"
           width="1000"
@@ -66,7 +66,7 @@ function findGroupAllFn() {
                 "></SelectCustomer>
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </template>
 
       <template #table="{ data }">
@@ -86,9 +86,9 @@ function findGroupAllFn() {
           </template>
         </el-table-column>
         <el-table-column label="分析时间" prop="createTime" width="180"></el-table-column>
-        <el-table-column prop="summaryContent" label="AI总结" >
+        <el-table-column prop="summaryContent" label="AI总结">
           <template #default="{ row }">
-            <div class="wrap-text">{{ row.summaryContent}}</div>
+            <div class="wrap-text">{{ row.summaryContent }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="操作" fixed="right" width="130">
@@ -99,9 +99,9 @@ function findGroupAllFn() {
       </template>
     </RequestChartTable>
 
-    <!-- <BaseDialog ref="dialogRefDetail" title="咨询记录" width="500">
+    <!-- <BaDialog ref="dialogRefDetail" title="咨询记录" width="500">
       <PhoneChatList />
-    </BaseDialog> -->
+    </BaDialog> -->
   </div>
 </template>
 

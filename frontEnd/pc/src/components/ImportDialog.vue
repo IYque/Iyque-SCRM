@@ -4,7 +4,7 @@
     由透传属性，可直接使用 el-dialog 的所有props，
     用法示例：<ImportDialog v-model="dialogVisible" title="title"/>
   -->
-  <BaseDialog ref="dialogRef" width="600px">
+  <BaDialog ref="dialogRef" width="600px">
     <!-- 无效 :formProps="{
       ...$attrs.formProps,
       rules: {
@@ -32,7 +32,7 @@
       <slot v-bind="{ form, refData }"></slot>
       <!-- </el-form> -->
     </template>
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <script>

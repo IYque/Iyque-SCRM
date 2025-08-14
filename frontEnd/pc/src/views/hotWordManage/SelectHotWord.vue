@@ -10,12 +10,12 @@ defineExpose({
 </script>
 
 <template>
-  <BaseDialog
+  <BaDialog
     ref="dialogRef"
     title="选择热词"
     @confirm="({ visible, loading }) => $emit('confirm', { visible, loading, selected })">
     <index isSelect @selection-change="(val) => (selected = val)" />
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <style lang="scss" scoped></style>

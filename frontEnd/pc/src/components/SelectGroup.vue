@@ -23,7 +23,7 @@ defineExpose({
 </script>
 
 <template>
-  <BaseDialog
+  <BaDialog
     ref="dialogRef"
     width="900"
     :title="title"
@@ -44,7 +44,7 @@ defineExpose({
         <el-table-column label="群创建时间" prop="createTime" />
       </template>
     </RequestChartTable>
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <style lang="scss" scoped></style>

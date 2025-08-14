@@ -61,9 +61,9 @@ import { getList } from './api'
       </template>
     </RequestChartTable>
 
-    <!-- <BaseDialog ref="dialogRefDetail" title="咨询记录" width="500">
+    <!-- <BaDialog ref="dialogRefDetail" title="咨询记录" width="500">
       <PhoneChatList />
-    </BaseDialog> -->
+    </BaDialog> -->
   </div>
 </template>
 

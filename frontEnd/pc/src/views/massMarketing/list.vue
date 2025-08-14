@@ -76,7 +76,7 @@ function goDetail(row) {
       <template #operation="{ selectedIds }">
         <el-button type="primary" @click="$refs.dialogRef.action()">新建任务</el-button>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           title="新建任务"
           width="1000"
@@ -221,7 +221,7 @@ function goDetail(row) {
               <addAttachment ref="addAttachmentRef" :isDetail="isDetail" :form="form" @remove="remove" />
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </template>
 
       <template #table="{ data }">

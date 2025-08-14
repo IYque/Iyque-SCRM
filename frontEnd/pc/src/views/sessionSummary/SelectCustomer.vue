@@ -23,7 +23,7 @@ defineExpose({
 </script>
 
 <template>
-  <BaseDialog
+  <BaDialog
     ref="dialogRef"
     width="900"
     append-to-body
@@ -46,7 +46,7 @@ defineExpose({
         </el-table-column>
       </template>
     </RequestChartTable>
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <style lang="scss" scoped></style>

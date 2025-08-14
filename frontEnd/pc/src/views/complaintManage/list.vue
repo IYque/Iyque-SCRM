@@ -45,7 +45,7 @@ onMounted(async () => {
       <template #operation="{ selectedIds }">
         <el-button type="primary" @click="$refs.dialogRef.action()">通知配置</el-button>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           title="通知配置"
           width="500"
@@ -66,7 +66,7 @@ onMounted(async () => {
               </div>
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </template>
 
       <template #table="{ data }">
@@ -89,7 +89,7 @@ onMounted(async () => {
       </template>
     </RequestChartTable>
 
-    <BaseDialog
+    <BaDialog
       ref="dialogRefDetail"
       title="详情"
       width="500"
@@ -178,7 +178,7 @@ onMounted(async () => {
           </el-form-item>
         </div>
       </template>
-    </BaseDialog>
+    </BaDialog>
   </div>
 </template>
 

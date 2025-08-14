@@ -17,7 +17,7 @@
           </el-button>
         </div>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           dynamicTitle="客服"
           width="630"
@@ -105,7 +105,7 @@
               </div>
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </template>
 
       <template #table="{ data }">

@@ -23,7 +23,7 @@ defineExpose({
 </script>
 
 <template>
-  <BaseDialog
+  <BaDialog
     ref="dialogRef"
     :title="title"
     @confirm="({ visible, loading }) => $emit('confirm', { visible, loading, selected })">
@@ -54,7 +54,7 @@ defineExpose({
         <el-table-column label="更新时间" prop="updateTime" />
       </template>
     </RequestChartTable>
-  </BaseDialog>
+  </BaDialog>
 </template>
 
 <style lang="scss" scoped></style>

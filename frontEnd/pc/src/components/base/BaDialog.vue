@@ -1,4 +1,4 @@
-<!-- <BaseDialog ref="BaseDialogRef" title="重命名" width="500" @confirm="allocateCustomerFn">
+<!-- <BaDialog ref="BaDialogRef" title="重命名" width="500" @confirm="allocateCustomerFn">
   <template #form="{ form }">
     <RemoteSelect
       :request="getUserList"
@@ -7,7 +7,7 @@
       label="顾问选择"
       :defaultProps="{ id: 'userId', name: 'realName' }"></RemoteSelect>
   </template>
-</BaseDialog> -->
+</BaDialog> -->
 <script setup lang="ts">
 import { reactive, ref, useAttrs, toRef } from 'vue'
 defineProps({
@@ -44,7 +44,7 @@ const slots = useSlots()
 async function submit() {
   slots.form && (await formRef.value.validate())
   loading.value = true
-  $emit('confirm', { form, visible, loading })
+  $emit('confirm', { form, visible, loading, confirm })
 }
 function confirm(add, callback, update, idKey = 'id') {
   loading.value = true
@@ -69,25 +69,25 @@ defineExpose({
 
 <template>
   <el-dialog
-    class="BaseDialog"
+    class="BaDialog"
     :title="dynamicTitle && (form[idKey] ? '编辑' : '新增') + dynamicTitle"
     v-model="visible"
     align-center
     draggable
-    :close-on-click-modal="false"
+    close-on-click-modal
     destroy-on-close
     v-bind="$attrs">
-    <div v-loading="loading">
+    <div class="h100" v-loading="loading">
       <slot v-bind="{ form, formRef, refData }"></slot>
 
       <el-form
         v-if="$slots.form"
         ref="formRef"
         class="dialogForm"
-        label-width="80px"
-        :rules="rules"
+        label-width="auto"
         v-bind="formProps"
-        :model="form">
+        :model="form"
+        :rules="rules">
         <slot name="form" v-bind="{ form, formRef, refData }"></slot>
       </el-form>
     </div>

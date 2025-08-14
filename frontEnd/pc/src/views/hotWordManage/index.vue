@@ -72,7 +72,7 @@ function delCategory(item) {
             </div>
           </div>
         </el-scrollbar>
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           dynamicTitle="分类"
           width="500"
@@ -85,7 +85,7 @@ function delCategory(item) {
               <div class="g-tip">分类名称不允许重复</div>
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </div>
 
       <div class="right">
@@ -135,7 +135,7 @@ function delCategory(item) {
           </template>
         </RequestChartTable>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogHotWordRef"
           dynamicTitle="热词"
           width="500"
@@ -157,7 +157,7 @@ function delCategory(item) {
               <div class="g-tip">多个相近词时用英文逗号隔开</div>
             </el-form-item>
           </template>
-        </BaseDialog>
+        </BaDialog>
       </div>
     </div>
   </div>

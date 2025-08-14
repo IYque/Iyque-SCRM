@@ -99,7 +99,15 @@ export default defineComponent({
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    params: {
+      handler(newVal) {
+        this.query = { pageNum: 1, pageSize: 10, ...newVal }
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   created() {
     this.isCreateRequest && !this.isTimeQuery && this.getList()
   },
@@ -110,8 +118,6 @@ export default defineComponent({
       if (this.type == 'table') {
         page && (this.query.pageNum = page)
       }
-
-      Object.assign(this.query, this.params)
 
       this.dealQueryFun && this.dealQueryFun(this.query)
 
@@ -251,15 +257,17 @@ export default defineComponent({
 
     <div :class="$slots.query && 'g-card'">
       <!-- 卡片标题 -->
-      <div class="g-card-title justify-between" v-if="title">
-        {{ title }}
-        <!-- 快捷时间查询 -->
-        <TimeButtonGroup
-          style="display: inline-flex"
-          v-if="isTimeQuery"
-          isDiy
-          @search="(data) => (Object.assign(query, data), getList(1))"></TimeButtonGroup>
-      </div>
+      <slot name="title" v-bind="{ query }">
+        <div class="g-card-title justify-between" v-if="title">
+          {{ title }}
+          <!-- 快捷时间查询 -->
+          <TimeButtonGroup
+            style="display: inline-flex"
+            v-if="isTimeQuery"
+            isDiy
+            @search="(data) => (Object.assign(query, data), getList(1))"></TimeButtonGroup>
+        </div>
+      </slot>
 
       <!-- 查询框和操作栏 -->
       <div
@@ -275,11 +283,11 @@ export default defineComponent({
         </el-form>
 
         <!-- 操作slot -->
-        <slot name="operation" v-bind="{ selectedIds, response }"></slot>
+        <slot name="operation" v-bind="{ selectedIds, response, getList, apiConfirm, goRoute }"></slot>
 
         <el-button
           v-if="requestExport"
-          class="export fr"
+          class="export float-right"
           type="primary"
           @click="$exportData(requestExport.bind(null, query), exportFileName)">
           导出 Excel
@@ -310,15 +318,17 @@ export default defineComponent({
             type="selection"
             width="50"
             :selectable="() => !(isSigleSelect && selectedIds?.length)"></el-table-column>
-          <slot name="table"></slot>
+          <slot name="table" v-bind="{ query, getList, apiConfirm, goRoute }"></slot>
         </el-table>
 
-        <pagination
-          style="margin-bottom: -20px"
-          :total="total"
-          v-model:page="query.pageNum"
-          v-model:limit="query.pageSize"
-          @pagination="getList()" />
+        <slot name="pagination" v-bind="{ total, query, getList }">
+          <pagination
+            style="margin-bottom: -20px"
+            :total="total"
+            v-model:page="query.pageNum"
+            v-model:limit="query.pageSize"
+            @pagination="getList()" />
+        </slot>
       </template>
     </div>
   </div>

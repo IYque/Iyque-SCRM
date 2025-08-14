@@ -47,7 +47,7 @@ function _upload() {
           </el-button> -->
         </div>
 
-        <BaseDialog
+        <BaDialog
           ref="dialogRef"
           dynamicTitle="知识库"
           width="500"
@@ -110,14 +110,12 @@ function _upload() {
             </el-form-item> -->
             <el-form-item prop="description" label="知识库描述">
               <el-input
-                 type="textarea"
+                type="textarea"
                 v-model="form.description"
                 maxlength="200"
                 placeholder="请输入"
                 show-word-limit
                 clearable></el-input>
-
-            
             </el-form-item>
             <!-- <el-form-item prop="hotWord" label="是否公开">
               <el-radio-group v-model="form.isActive">
@@ -129,7 +127,7 @@ function _upload() {
               </el-radio-group>
             </el-form-item> -->
           </template>
-        </BaseDialog>
+        </BaDialog>
       </template>
 
       <template #table="{ data }">
@@ -153,7 +151,7 @@ function _upload() {
       </template>
     </RequestChartTable>
 
-    <BaseDialog ref="dialogRefFile" title="知识库附件" width="1000" :isFooter="false">
+    <BaDialog ref="dialogRefFile" title="知识库附件" width="1000" :isFooter="false">
       <RequestChartTable ref="rctRefFile" class="pad0" :request="getListDetail" :params="{ kid }" searchBtnType="icon">
         <template #operation="{ query }">
           <el-upload :http-request="_upload" :limit="1" :before-upload="(val) => (file = val)">
@@ -182,8 +180,6 @@ function _upload() {
           <el-table-column label="文档编号" prop="id"></el-table-column>
           <el-table-column label="文档名称" prop="docName"></el-table-column>
           <el-table-column label="文档类型" prop="docType">
-           
-
             <!-- <template #default="{ row }">
               {{ row.userName ? row.userName : '-' }}
             </template> -->
@@ -199,20 +195,18 @@ function _upload() {
           </el-table-column>
         </template>
       </RequestChartTable>
-    </BaseDialog>
+    </BaDialog>
 
-    <BaseDialog ref="dialogRefFragments" title="知识片段" width="1000" :isFooter="false">
+    <BaDialog ref="dialogRefFragments" title="知识片段" width="1000" :isFooter="false">
       <RequestChartTable ref="rct" :request="getListFragment" :params="{ docId }" searchBtnType="icon">
         <template #table="{ data }">
           <el-table-column label="片段编号" prop="id"></el-table-column>
           <el-table-column label="片段内容" prop="content">
-           
             <!-- <template #default="{ row }"></template> -->
           </el-table-column>
-         
         </template>
       </RequestChartTable>
-    </BaseDialog>
+    </BaDialog>
   </div>
 </template>
 
