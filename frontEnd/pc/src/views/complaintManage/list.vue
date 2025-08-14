@@ -56,7 +56,7 @@ onMounted(async () => {
           ">
           <template #form="{}">
             <el-form-item prop="users" class="w100" label="投诉处理人">
-              <SelectStaff v-model="form.users" title="选择员工"></SelectStaff>
+              <SelectStaff v-model="form.users"></SelectStaff>
 
               <div class="g-tip">
                 当前投诉通知员工为:

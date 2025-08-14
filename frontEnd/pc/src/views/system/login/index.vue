@@ -75,12 +75,12 @@
                   <span v-else>登 录 中...</span>
                 </el-button>
               </el-form-item>
-              <a :href="threeLoginInfo.threeLoginUrl" v-if="threeLoginInfo.startThreeLogin">
+              <!-- <a :href="threeLoginInfo.threeLoginUrl" v-if="threeLoginInfo.startThreeLogin">
                 <el-button class="w-[100%] blod" type="primary" @click="">
                   <svg-icon icon="gitee" class="text-[25px] mr5" />
                   使用 Gitee 账号 Star 一下，直接免密登录
                 </el-button>
-              </a>
+              </a> -->
             </template>
           </el-form>
         </div>
