@@ -100,7 +100,6 @@ public class IYcallbackController {
                     iYqueKfService.handleKfMsg(callBackBaseMsg);
                 }
 
-
                 //会话回调时间
                 if(WxCpConsts.EventType.MSGAUDIT_NOTIFY.equals(callBackBaseMsg.getEvent())){
                     iWeMsgAuditService.synchMsg();

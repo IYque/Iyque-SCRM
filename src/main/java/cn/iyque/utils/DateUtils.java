@@ -2,9 +2,7 @@ package cn.iyque.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -178,6 +176,30 @@ public class DateUtils {
         calendar.add(Calendar.DAY_OF_MONTH, -days);
         return calendar.getTime().getTime() / 1000; // 转为秒
     }
+
+
+    /**
+     * 传入如00:00  HH:mm类型的时间，拼接当天的时间返回
+     * @param timeStr
+     * @return
+     */
+    public static Date hsToDate(String timeStr){
+
+        // 当前日期
+        LocalDate today = LocalDate.now();
+
+        // 解析为LocalTime
+        LocalTime time = LocalTime.parse(timeStr);
+        // 拼接为LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.of(today, time);
+        // 转换为Date类型
+
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+
+    }
+
+
 
 
 

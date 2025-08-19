@@ -175,7 +175,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                     if(new Integer(2).equals(iyqueKf.getKfType())){ //排班客服逻辑
 
 
-                                           this.handleShiftKf(iyqueKf,callBackBaseMsg);
+                                           this.handleShiftKf(wxCpKfMsgListResp,iyqueKf,callBackBaseMsg);
 
 
                                     }else if(new Integer(1).equals(iyqueKf.getKfType())){//基础客服逻辑
@@ -355,41 +355,39 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
 
 
-    private void handleShiftKf(IYqueKf iyqueKf,IYqueCallBackBaseMsg callBackBaseMsg) throws Exception {
+    private void handleShiftKf( WxCpKfMsgListResp wxCpKfMsgListResp,IYqueKf iyqueKf,IYqueCallBackBaseMsg callBackBaseMsg) throws Exception {
 
 
-        if(StringUtils.isNotEmpty(iyqueKf.getWorkCycle())
-                &&IYqueKf.isInWorkingTime(iyqueKf)){ //在工作时间内，发送工作接待语同时转接人工
+        //发送欢迎语
+        wxCpKfMsgListResp.getMsgList().stream().forEach(kk->{
+            WxCpKfEventMsg event = kk.getEvent();
+            if(null != event && StringUtils.isNotEmpty(event.getWelcomeCode())){
 
-            List<String> userIdList = Arrays.stream( iyqueKf.getSwitchUserIds().split(","))
-                    .collect(Collectors.toList());
-            WxCpKfServiceStateTransResp transResp
-                    = iYqueConfigService.findWxcpservice().getKfService().transServiceState(iyqueKf.getOpenKfid(), callBackBaseMsg.getExternalUserID(),
-                    KfServiceState.KF_SERVICE_STATE_RGJD.getState(),  IYqueKf.getRandomSwitchUserId(iyqueKf));
+                String receptionDesk=null;
 
-            if(transResp.success()){
-                if(StringUtils.isNotEmpty(transResp.getMsgCode())){
-                    WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
-                    sendRequest.setCode(transResp.getMsgCode());
-                    sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
-                    WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
-                    textMsg.setContent(iyqueKf.getWelcomeMsg());
-                    sendRequest.setText(textMsg);
+                if(StringUtils.isNotEmpty(iyqueKf.getWorkCycle())
+                        &&IYqueKf.isInWorkingTime(iyqueKf)){
 
-                    //发送转接欢迎语
+                    receptionDesk=iyqueKf.getWelcomeMsg();
+                }
+
+                WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
+                sendRequest.setCode(event.getMsgCode());
+                sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
+                WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
+                textMsg.setContent(StringUtils.isNotEmpty(receptionDesk)?receptionDesk:iyqueKf.getOorWelcome());
+                sendRequest.setText(textMsg);
+
+                //发送转接欢迎语
+                try {
                     iYqueConfigService.findWxcpservice().getKfService().sendMsgOnEvent(sendRequest);
-
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
 
-        }else{ //不在工作时间内，发送非接待工作语提示
-            WxCpKfMsgSendRequest sendRequest=new WxCpKfMsgSendRequest();
-            sendRequest.setMsgType(IYqueMsgAnnex.MsgType.MSG_TEXT);
-            WxCpKfTextMsg textMsg=new WxCpKfTextMsg();
-            textMsg.setContent(iyqueKf.getOorWelcome());
-            sendRequest.setText(textMsg);
-            iYqueConfigService.findWxcpservice().getKfService().sendMsg(sendRequest);
-        }
+        });
+
 
 
     }

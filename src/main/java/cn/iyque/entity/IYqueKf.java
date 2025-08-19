@@ -1,6 +1,7 @@
 package cn.iyque.entity;
 
 
+import cn.iyque.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -126,6 +127,7 @@ public class IYqueKf {
 
 
 
+
     /**
      * 检查当前时间是否在客服工作时间内
      * @param iYqueKf 客服欢迎语配置
@@ -138,8 +140,9 @@ public class IYqueKf {
         }
 
         // 2. 检查当前时间是否在时间范围内
-        return isCurrentTimeInRange(iYqueKf.getBeginTime(), iYqueKf.getEndTime());
+        return  new Date().after(DateUtils.hsToDate(iYqueKf.getBeginTime()))&&new Date().before(DateUtils.hsToDate(iYqueKf.getEndTime()));
     }
+
 
     /**
      * 检查当前星期是否在工作周期内
