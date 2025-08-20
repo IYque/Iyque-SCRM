@@ -1,8 +1,6 @@
 <script>
 import List from './List.vue'
 
-import useStore from '@/stores/index.js'
-
 export default {
   components: { List },
   props: {},
@@ -15,24 +13,10 @@ export default {
         { type: '0', name: '图片', sort: 2 },
         { type: '9', name: '图文', sort: 3 },
       ],
-      loading: false,
-      finished: false,
-      show: false,
-      query: {},
-      type: '', //分组类型
-      // userId: useStore().userId,
     }
   },
-  watch: {
-    userId() {
-      this.getList()
-    },
-  },
-  computed: {
-    userId() {
-      return useStore().userId
-    },
-  },
+  watch: {},
+  computed: {},
   created() {},
   mounted() {},
   methods: {
@@ -56,66 +40,12 @@ export default {
       </template>
     </van-search>
     <div class="tabs">
-      <van-tabs v-model:active="active" @click-tab="getList">
+      <van-tabs v-model:active="active">
         <van-tab :title="item.name" v-for="(item, index) in list" :key="index">
           <List :ref="'list' + index" :sideId="item.id" :mediaType="item.type + ''"></List>
         </van-tab>
       </van-tabs>
     </div>
-
-    <!-- <van-dialog
-      v-model="show"
-      :title="`添加&quot;我的&quot;${radio}`"
-      show-cancel-button
-    >
-      <van-form @submit="onSubmit">
-        <van-field name="radio" label="添加类型">
-          <template #input>
-            <van-radio-group v-model="radio" direction="horizontal">
-              <van-radio name="1">文本</van-radio>
-              <van-radio name="2">分类</van-radio>
-            </van-radio-group>
-          </template>
-        </van-field>
-        <van-field
-          v-model="username"
-          name="分类名称"
-          label="分类名称"
-          placeholder="分类名称"
-          :rules="[{ required: true, message: '请填写分类名称' }]"
-        />
-        <template>
-          <van-field
-            readonly
-            clickable
-            name="picker"
-            :value="value"
-            label="文本分类"
-            placeholder="点击选择文本分类"
-            @click="showPicker = true"
-          />
-          <van-popup v-model="showPicker" position="bottom">
-            <van-picker
-              show-toolbar
-              :columns="columns"
-              @confirm="onConfirm"
-              @cancel="showPicker = false"
-            />
-          </van-popup>
-
-          <van-field
-            v-model="message"
-            rows="5"
-            autosize
-            label="文本信息"
-            type="textarea"
-            maxlength="150"
-            placeholder="请输入文本信息"
-            show-word-limit
-          />
-        </template>
-      </van-form>
-    </van-dialog> -->
   </div>
 </template>
 

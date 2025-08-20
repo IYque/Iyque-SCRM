@@ -7,6 +7,7 @@ function saveFn(form) {
   return save(form)
 }
 function action(form, dialogRef) {
+  form = JSON.parse(JSON.stringify(form))
   form.switchUserIds = form.switchUserIds.split(',')
   form.switchUserNames = form.switchUserNames.split(',')
   form.users = []
