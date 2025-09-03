@@ -1,6 +1,5 @@
 package cn.iyque.service;
 
-import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.entity.IYuqeOperateLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,8 @@
 package cn.iyque.wxjava.service;
 
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.wxjava.bean.WxFileSecurityInfo;
+import cn.iyque.wxjava.bean.WxFileSecurityResult;
 import cn.iyque.wxjava.bean.WxOperLogInfo;
 import cn.iyque.wxjava.bean.WxOperLogResult;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,24 @@ public class IYqueWxSecurityService {
         String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
         return WxOperLogResult.fromJson(post);
     }
+
+
+    /**
+     * 文件防泄漏记录
+     * @param info
+     * @return
+     * @throws Exception
+     */
+    public WxFileSecurityResult getFileOperRecord(WxFileSecurityInfo info) throws Exception{
+
+        String url =  iYqueConfigService.findWxcpservice().getWxCpConfigStorage().getApiUrl("/cgi-bin/security/get_file_oper_record");
+        String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
+        return WxFileSecurityResult.fromJson(post);
+
+    }
+
+
+
 
 
 }
