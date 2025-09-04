@@ -43,6 +43,18 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
     private IYqueFileSecurityDao iYqueFileSecurityDao;
 
     @Override
+    public void initData() {
+        IYqueFileSecurity fileSecurity=new IYqueFileSecurity();
+        fileSecurity.setOperateTime(new Date());
+        fileSecurity.setUserName("张三");
+        fileSecurity.setUserType(1);
+        fileSecurity.setOperateType(101);
+        fileSecurity.setOpreateSource(401);
+        fileSecurity.setOperateFileInfo("通过zhangsan的链接下载了1234567890.jpg");
+        iYqueFileSecurityDao.save(fileSecurity);
+    }
+
+    @Override
     public void synchInfo(BaseEntity baseEntity) {
 
         try {
@@ -132,6 +144,8 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
 
         //按照时间查询
         if (iYqueFileSecurity.getStartTime() != null && iYqueFileSecurity.getEndTime() != null)  {
+
+
             spec = spec.and((root, query, cb) -> cb.between(root.get("operateTime"), DateUtils.setTimeToStartOfDay( iYqueFileSecurity.getStartTime()), DateUtils.setTimeToEndOfDay( iYqueFileSecurity.getEndTime())));
         }
 

@@ -1,6 +1,11 @@
 package cn.iyque.enums;
 
 
+import cn.iyque.domain.SubType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 企业微信文件操作来源
  */
@@ -107,4 +112,24 @@ public enum FileSecuritySource {
             }
             throw new IllegalArgumentException("无效的操作来源编码: " + code);
         }
+
+
+        /**
+         * 将枚举FileSecurityOperation转换为List<SubType>
+         * @return 包含所有枚举值的SubType列表
+         */
+        public static List<SubType> getSubTypeListFromEnum() {
+                List<SubType> subTypeList = new ArrayList<>();
+                // 遍历枚举常量数组
+                for (FileSecuritySource source : FileSecuritySource.values()) {
+                        // 将枚举的code和description映射到SubType的subCode和value
+                        SubType subType = SubType.builder()
+                                .subCode(source.getCode())
+                                .value(source.getDescription())
+                                .build();
+                        subTypeList.add(subType);
+                }
+                return subTypeList;
+        }
+
 }

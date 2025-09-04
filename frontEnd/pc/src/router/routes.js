@@ -322,6 +322,11 @@ export const navRoutes = [
         component: () => import('@/views/groupRobot/enterpriseNotice/index'),
         meta: { title: '企业公告' },
       },
+       {
+        path: 'fileSecurity',
+        component: () => import('@/views/fileSecurity/index'),
+        meta: { title: '文件安全' },
+      },
     ],
   },
 ]

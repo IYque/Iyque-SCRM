@@ -1,5 +1,12 @@
 package cn.iyque.enums;
 
+import cn.iyque.domain.SubType;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 企微文件操作类型
  */
@@ -65,4 +72,25 @@ public enum FileSecurityOperation {
             }
             throw new IllegalArgumentException("未知的操作代码: " + code);
         }
+
+
+    /**
+     * 将枚举FileSecurityOperation转换为List<SubType>
+     * @return 包含所有枚举值的SubType列表
+     */
+    public static List<SubType> getSubTypeListFromEnum() {
+        List<SubType> subTypeList = new ArrayList<>();
+        // 遍历枚举常量数组
+        for (FileSecurityOperation operation : FileSecurityOperation.values()) {
+            // 将枚举的code和description映射到SubType的subCode和value
+            SubType subType = SubType.builder()
+                    .subCode(operation.getCode())
+                    .value(operation.getDescription())
+                    .build();
+            subTypeList.add(subType);
+        }
+        return subTypeList;
+    }
+
+
 }
