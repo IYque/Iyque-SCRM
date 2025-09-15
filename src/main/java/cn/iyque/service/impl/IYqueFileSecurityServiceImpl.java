@@ -39,8 +39,7 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
     private IYqueUserDao iYqueUserDao;
 
 
-    @Autowired
-    private IYqueFileSecurityDao iYqueFileSecurityDao;
+
 
     @Override
     public void initData() {
@@ -51,7 +50,7 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
         fileSecurity.setOperateType(101);
         fileSecurity.setOpreateSource(401);
         fileSecurity.setOperateFileInfo("通过zhangsan的链接下载了1234567890.jpg");
-        iYqueFileSecurityDao.save(fileSecurity);
+        fileSecurityDao.save(fileSecurity);
     }
 
     @Override
@@ -150,6 +149,6 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
         }
 
 
-        return iYqueFileSecurityDao.findAll(spec, pageable);
+        return fileSecurityDao.findAll(spec, pageable);
     }
 }

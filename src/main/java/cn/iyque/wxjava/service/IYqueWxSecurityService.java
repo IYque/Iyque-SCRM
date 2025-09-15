@@ -1,10 +1,7 @@
 package cn.iyque.wxjava.service;
 
 import cn.iyque.service.IYqueConfigService;
-import cn.iyque.wxjava.bean.WxFileSecurityInfo;
-import cn.iyque.wxjava.bean.WxFileSecurityResult;
-import cn.iyque.wxjava.bean.WxOperLogInfo;
-import cn.iyque.wxjava.bean.WxOperLogResult;
+import cn.iyque.wxjava.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +57,20 @@ public class IYqueWxSecurityService {
         String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
         return WxFileSecurityResult.fromJson(post);
 
+    }
+
+
+    /**
+     * 截屏/录屏管理
+     * @param info
+     * @return
+     * @throws Exception
+     */
+    public WxScreenshotResult getScreenOperRecord(WxScreenshotInfo info)  throws Exception{
+
+        String url =  iYqueConfigService.findWxcpservice().getWxCpConfigStorage().getApiUrl("/cgi-bin/security/get_screen_oper_record");
+        String post = iYqueConfigService.findWxcpservice().post(url, info.toJson());
+        return WxScreenshotResult.fromJson(post);
     }
 
 
