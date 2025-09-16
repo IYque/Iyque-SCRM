@@ -327,6 +327,11 @@ export const navRoutes = [
         component: () => import('@/views/fileSecurity/index'),
         meta: { title: '文件安全' },
       },
+       {
+        path: 'screenShot',
+        component: () => import('@/views/screenShot/index'),
+        meta: { title: '截屏安全' },
+      }
     ],
   },
 ]

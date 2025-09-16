@@ -43,6 +43,7 @@ public class IYqueScreenshotServiceImpl implements IYqueScreenshotService {
     private IYqueScreenshotDao iYqueScreenshotDao;
 
 
+
     @Override
     public void synchInfo(BaseEntity baseEntity) {
 

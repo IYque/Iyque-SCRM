@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface IYqueFileSecurityService {
 
 
-    void initData();
+
 
     /**
      * 数据同步

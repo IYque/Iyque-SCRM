@@ -42,18 +42,6 @@ public class IYqueFileSecurityServiceImpl implements IYqueFileSecurityService {
 
 
     @Override
-    public void initData() {
-        IYqueFileSecurity fileSecurity=new IYqueFileSecurity();
-        fileSecurity.setOperateTime(new Date());
-        fileSecurity.setUserName("张三");
-        fileSecurity.setUserType(1);
-        fileSecurity.setOperateType(101);
-        fileSecurity.setOpreateSource(401);
-        fileSecurity.setOperateFileInfo("通过zhangsan的链接下载了1234567890.jpg");
-        fileSecurityDao.save(fileSecurity);
-    }
-
-    @Override
     public void synchInfo(BaseEntity baseEntity) {
 
         try {

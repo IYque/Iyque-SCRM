@@ -64,6 +64,7 @@ public class IYqueScreenshotController {
     @GetMapping("/findAll")
     public ResponseResult<IYqueScreenshot> findAll(IYqueScreenshot screenshot){
 
+
         Page<IYqueScreenshot> screenshots = yqueScreenshotService.findAll(screenshot,
                 PageRequest.of( TableSupport.buildPageRequest().getPageNum(),
                         TableSupport.buildPageRequest().getPageSize(), Sort.by("operateTime").descending()));

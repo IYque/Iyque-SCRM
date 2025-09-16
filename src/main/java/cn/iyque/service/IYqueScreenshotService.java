@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface IYqueScreenshotService {
 
+
+
     /**
      * 数据同步
      */
