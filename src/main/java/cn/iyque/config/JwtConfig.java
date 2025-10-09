@@ -20,7 +20,7 @@ public class JwtConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/iYqueSys/login","/iycallback/handle/**","/file/fileView/**","/iYqueComplaint/findComplaint"
                 ,"/iYqueComplaint/addComplaint","/iYqueSys/weComRedirect","/file/openUpload","/iYqueSys/weComLogin","/iYqueSys/threeLogin/findThreeLoginInfo","/iYqueSys/threeLogin/giteeLogin/**","/iYqueSys/threeLogin/giteeLoginRedirectUri",
-                        "/iYqueSys/getAgentTicket","/iYqueSys/uploadMediaId");
+                        "/iYqueSys/getAgentTicket","/iYqueSys/uploadMediaId","/h5Market/findWeH5MarketById/**");
     }
 
 

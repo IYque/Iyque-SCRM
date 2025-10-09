@@ -30,6 +30,9 @@ public class IYqueParamConfig {
     //客户公海页面
     private String customerSeasUrl="https://iyque.cn";
 
+    //h5营销链接地址
+    private String h5MarketUrl;
+
 
     //向量数据库相关配置
     private VectorStoreParam vector;
