@@ -75,8 +75,7 @@ defineExpose({
     align-center
     draggable
     close-on-click-modal
-    destroy-on-close
-    v-bind="$attrs">
+    destroy-on-close>
     <div class="h100" v-loading="loading">
       <slot v-bind="{ form, formRef, refData }"></slot>
 

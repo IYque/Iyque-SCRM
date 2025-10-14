@@ -308,7 +308,8 @@ export default defineComponent({
 
       <!-- 表格 -->
       <template v-else-if="type == 'table'">
-        <slot :data="data"></slot>
+        <slot v-bind="{ data, query, getList, apiConfirm, goRoute }"></slot>
+        <BaEmpty v-if="$slots.default && !data?.length"></BaEmpty>
 
         <el-table
           v-if="$slots.table"

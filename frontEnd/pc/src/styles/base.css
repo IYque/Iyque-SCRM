@@ -6,9 +6,8 @@
 *:after {
   box-sizing: border-box;
   scroll-behavior: inherit;
-  border: 0 solid transparent;
 }
-body,
+/* body,
 h1,
 h2,
 h3,
@@ -35,7 +34,7 @@ th,
 td {
   margin: 0;
   padding: 0;
-}
+} */
 
 body {
   height: 100vh;
@@ -61,9 +60,9 @@ span {
   white-space: break-spaces;
 } */
 
-button + button,
-svg + svg {
-  margin-left: 10px;
+/* svg + svg  */
+button + button {
+  margin-left: 12px;
 }
 
 svg {
@@ -83,10 +82,12 @@ svg {
 .relative {
   position: relative !important;
 }
+.floatL,
 .floatLeft {
   float: left;
   position: relative;
 }
+.floatR,
 .floatRight {
   float: right;
   position: relative;
@@ -136,9 +137,13 @@ svg {
   display: flex !important;
   align-items: flex-start !important;
 }
-.flexCenter {
+.flexItemsCenter {
   display: flex !important;
   align-items: center !important;
+}
+.flexJustifyCenter {
+  display: flex !important;
+  justify-content: center !important;
 }
 .flexBetween {
   display: flex !important;
@@ -158,34 +163,46 @@ svg {
   align-items: center;
   justify-content: space-between;
 }
+.flexCenterCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.flexGap10 {
+/* .flexGap10 {
   display: flex;
   flex-wrap: wrap;
   align-content: baseline;
   gap: 10px;
-}
+} */
 .grid {
   display: grid;
 }
 .gap5 {
+  display: flex;
   gap: 5px !important;
 }
+.gap10 {
+  display: flex;
+  gap: 10px !important;
+}
 .gap15 {
+  display: flex;
   gap: 15px !important;
 }
 .gap20 {
+  display: flex;
   gap: 20px !important;
 }
 
 /* align */
-.alignLeft {
+.textLeft {
   text-align: left !important;
 }
-.alignCenter {
+.textCenter {
   text-align: center !important;
 }
-.alignRight {
+.textRight {
   text-align: right !important;
 }
 
@@ -229,7 +246,7 @@ svg {
   padding-left: 5px !important;
 }
 .pad5 {
-  padding: 5px !important;
+  padding: 5px;
 }
 
 /* padding 10px series */
@@ -246,7 +263,24 @@ svg {
   padding-left: 10px !important;
 }
 .pad10 {
-  padding: 10px !important;
+  padding: 10px;
+}
+
+/* padding 15px series */
+.pt15 {
+  padding-top: 15px !important;
+}
+.pr15 {
+  padding-right: 15px !important;
+}
+.pb15 {
+  padding-bottom: 15px !important;
+}
+.pl15 {
+  padding-left: 15px !important;
+}
+.pad15 {
+  padding: 15px;
 }
 
 /* padding 20px series */
@@ -263,7 +297,7 @@ svg {
   padding-left: 20px !important;
 }
 .pad20 {
-  padding: 20px !important;
+  padding: 20px;
 }
 
 .mt0 {
@@ -277,6 +311,9 @@ svg {
 }
 .ml0 {
   margin-left: 0 !important;
+}
+.mar0 {
+  margin: 0;
 }
 
 /* margin 5px series */
@@ -293,7 +330,7 @@ svg {
   margin-left: 5px !important;
 }
 .mar5 {
-  margin: 5px !important;
+  margin: 5px;
 }
 
 /* margin 10px series */
@@ -310,7 +347,7 @@ svg {
   margin-left: 10px !important;
 }
 .mar10 {
-  margin: 10px !important;
+  margin: 10px;
 }
 
 /* margin 15px series */
@@ -327,7 +364,7 @@ svg {
   margin-left: 15px !important;
 }
 .mar15 {
-  margin: 15px !important;
+  margin: 15px;
 }
 
 /* margin 20px series */
@@ -344,7 +381,7 @@ svg {
   margin-left: 20px !important;
 }
 .mar20 {
-  margin: 20px !important;
+  margin: 20px;
 }
 
 .font0 {
@@ -388,13 +425,26 @@ svg {
   z-index: 99999 !important;
 }
 
+.weight5 {
+  font-weight: 500 !important;
+}
+.weight6 {
+  font-weight: 600 !important;
+}
+.weight7,
+.bold {
+  font-weight: 700 !important;
+}
+.weight8 {
+  font-weight: 800 !important;
+}
+.weight9 {
+  font-weight: 900 !important;
+}
+
 /* . */
 .pointer {
   cursor: pointer !important;
-}
-
-.bold {
-  font-weight: bold !important;
 }
 
 .block {
@@ -500,6 +550,7 @@ svg {
   position: sticky;
   height: var(--pad);
   background: var(--bg);
+  z-index: 1;
 }
 .stickyPadding::before {
   top: 0;

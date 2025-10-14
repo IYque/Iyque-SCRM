@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getList } from '@/views/liveCode/api.js'
+import { getList } from '@/views/groupCode/api.js'
 
 defineProps({
   // 是否单选
@@ -33,23 +33,12 @@ defineExpose({
       searchBtnType="icon"
       @selectionChange="(val) => (selected = isSigleSelect ? val?.[0] : val)">
       <template #table="{}">
-        <el-table-column label="活码名称" prop="codeName" show-overflow-tooltip />
-        <el-table-column label="活码地址" prop="codeUrl">
-          <!-- <template #default="{ row }">
-								<el-image :src="row.codeUrl" style="width: 100px"></el-image>
-							</template> -->
-        </el-table-column>
-        <el-table-column label="使用员工">
+        <el-table-column label="活码名称" prop="chatCodeName" show-overflow-tooltip />
+        <el-table-column label="活码地址" prop="chatCodeUrl">
           <template #default="{ row }">
-            <TagEllipsis :list="row.userName"></TagEllipsis>
+            <BaImage :src="row.chatCodeUrl" style="width: 100px"></BaImage>
           </template>
         </el-table-column>
-        <el-table-column label="标签">
-          <template #default="{ row }">
-            <TagEllipsis :list="row.tagName"></TagEllipsis>
-          </template>
-        </el-table-column>
-
         <el-table-column label="更新时间" prop="updateTime" />
       </template>
     </RequestChartTable>

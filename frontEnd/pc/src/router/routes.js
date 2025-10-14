@@ -100,6 +100,28 @@ export const navRoutes = [
           },
         ],
       },
+      {
+        path: 'H5Marketing',
+        meta: { title: 'H5营销' },
+        redirect: '/marketing/H5Marketing/list',
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/views/H5Marketing/list'),
+            meta: { title: '列表', hidden: true },
+          },
+          {
+            path: 'aev',
+            component: () => import('@/views/H5Marketing/aev'),
+            meta: { title: '{新建}', hidden: true },
+          },
+          {
+            path: 'detail',
+            component: () => import('@/views/H5Marketing/aev'),
+            meta: { title: '详情', hidden: true },
+          },
+        ],
+      },
     ],
   },
 
@@ -322,16 +344,16 @@ export const navRoutes = [
         component: () => import('@/views/groupRobot/enterpriseNotice/index'),
         meta: { title: '企业公告' },
       },
-       {
+      {
         path: 'fileSecurity',
         component: () => import('@/views/fileSecurity/index'),
         meta: { title: '文件安全' },
       },
-       {
+      {
         path: 'screenShot',
         component: () => import('@/views/screenShot/index'),
         meta: { title: '截屏安全' },
-      }
+      },
     ],
   },
 ]

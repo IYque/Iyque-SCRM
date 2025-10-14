@@ -186,7 +186,7 @@ export default {
 <template>
   <div v-if="xData?.length && series?.length" ref="chart" class="chart-line chart" key="1"></div>
   <div v-else class="chart-line chart" key="2">
-    <div class="cc"><elEmpty /></div>
+    <div class="centerCenter"><BaEmpty /></div>
   </div>
 </template>
 

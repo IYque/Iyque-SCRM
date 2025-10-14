@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.meta?.hidden">
     <app-link v-if="isLeafMeu(item)" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
       <el-menu-item style="justify-content: center" v-if="onlyOneChild.meta" :index="resolvePath(onlyOneChild.path)">
         <div class="menu-title" :style="{ padding: `0px ${15 * level}px` }">{{ onlyOneChild.meta.title }}</div>
@@ -67,7 +67,7 @@ export default {
       }
 
       const showingChildren = children.filter((item) => {
-        if (item.hidden) {
+        if (item.meta?.hidden) {
           return false
         } else {
           // Temp set(will be used if only has one showing child)

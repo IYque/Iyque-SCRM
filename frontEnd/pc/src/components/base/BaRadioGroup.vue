@@ -6,13 +6,20 @@
 <script>
 import { defineComponent } from 'vue'
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     options: { type: [Array, Object], default: () => [] },
+    // 是否纵向排列
+    isCol: { type: Boolean, default: false },
   },
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    isFormItem() {
+      return this.$attrs.label || this.$attrs.prop
+    },
+  },
   watch: {},
   created() {},
   mounted() {},
@@ -21,17 +28,27 @@ export default defineComponent({
 </script>
 
 <template>
-  <component :is="$attrs.label || $attrs.prop ? 'BaFormItem' : 'div'" class="inline-block">
+  <component :is="isFormItem ? 'BaFormItem' : 'div'" v-bind="isFormItem && $attrs">
     <template #[item] v-for="(item, index) of Object.keys($slots).filter((e) => !['default'].includes(e))" :key="index">
       <slot :name="item"></slot>
     </template>
-    <el-radio-group class="BaRadioGroup" v-bind="Object.assign({}, $attrs, { style: '', class: '', id: '' })">
-      <el-radio v-for="(item, index) in options" :key="index" :value="item.value ?? index">
-        {{ item.label ?? item }}
-      </el-radio>
+    <el-radio-group
+      class="BaRadioGroup gap-[30px]"
+      :class="[isCol && 'flexCol !items-start --Gap']"
+      v-bind="isFormItem ? Object.assign({}, $attrs, { style: '', class: '', id: '' }) : $attrs">
+      <div v-for="(item, index) in options" :key="index">
+        <el-radio :value="item?.value ?? +index">
+          {{ item?.label ?? item }}
+        </el-radio>
+        <div class="g-tip mt0">{{ item.desc }}</div>
+      </div>
     </el-radio-group>
     <slot></slot>
   </component>
 </template>
 
-<style scoped></style>
+<style scoped>
+.el-radio {
+  margin-right: 0;
+}
+</style>

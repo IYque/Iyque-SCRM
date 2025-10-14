@@ -193,7 +193,7 @@ div:focus {
     overflow: auto;
     padding: var(--Padding);
     scroll-behavior: smooth;
-    &:not(:first-child) {
+    &:not(.flex > *, .grid > *):not(:first-child) {
       margin-top: var(--card-margin);
     }
     // 卡片标题

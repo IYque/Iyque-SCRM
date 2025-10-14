@@ -1,20 +1,23 @@
 <template>
   <div
     :_="$store.setBusininessDesc(`<div>微信客服支持企业在微信内、外各场景中接入，由用户发起咨询，企业进行回复</div>`)">
-    <RequestChartTable ref="rctRef" :request="getList" searchBtnType="icon">
+    <RequestChartTable
+      ref="rctRef"
+      :isSigleSelect
+      :request="getList"
+      searchBtnType="icon"
+      @selectionChange="(val) => $emit('selectionChange', isSigleSelect ? val?.[0] : val)">
       <template #query="{ query }">
         <el-form-item label="客服名称" prop="kfName">
           <el-input v-model="query.kfName" placeholder="请输入" clearable />
         </el-form-item>
       </template>
 
-      <template #operation="{ selectedIds }">
+      <template #operation="{ apiConfirm }" v-if="!isSelect">
         <div class="mid-action mb0">
           <el-button type="primary" @click="$refs.dialogRef.action()">新建客服</el-button>
 
-          <el-button type="primary" plain :disabled="!selectedIds?.length" @click="$refs.rctRef?.apiConfirm(del)">
-            批量删除
-          </el-button>
+          <el-button type="primary" plain @click="apiConfirm(del)">批量删除</el-button>
         </div>
 
         <BaDialog
@@ -121,7 +124,7 @@
         <el-table-column prop="kfUrl" label="客服链接"></el-table-column>
         <!-- <el-table-column prop="handleUserName" label="接待员工"></el-table-column> -->
         <el-table-column prop="updateTime" label="最近更新时间"></el-table-column>
-        <el-table-column label="操作" width="280" fixed="right">
+        <el-table-column v-if="!isSelect" label="操作" width="280" fixed="right">
           <template #default="{ row }">
             <TableOperateBtn type="" @click="$refs.dialogRef.action(row)">编辑</TableOperateBtn>
             <TableOperateBtn type="" @click="$sdk.downloadBlob(row.kfQrUrl, row.kfName + '.png', 'image')">
@@ -137,6 +140,12 @@
 <script setup>
 import { getList, save, del } from './api'
 import * as knowApi from '../KBM/api'
+
+defineProps({
+  isSelect: { type: Boolean, default: false },
+  isSigleSelect: { type: Boolean, default: false },
+})
+
 const knowledges = ref([]) // 知识库列表
 // 获取指标数据
 ;(function getKnowledgeAll() {

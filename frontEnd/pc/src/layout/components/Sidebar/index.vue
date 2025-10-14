@@ -68,7 +68,7 @@ export default {
       return false
     },
     topMenus() {
-      return navRoutes.filter((e) => !e.hidden)
+      return navRoutes.filter((e) => !e.meta?.hidden)
     },
   },
   data() {
