@@ -25,3 +25,17 @@ export const save = (data) => post(`${service}/addOrUpdate`, data)
  * @param {*} ids
  */
 export const del = (ids) => _del(`${service}/${ids}`)
+
+// 头部tab
+export const getStatistic = (data) => get(`${service}/findH5MarketTab`, data)
+
+// 数据统计-折线图
+export const getDataTrend = (data) => get(`${service}/findH5MarketTrend`, data)
+
+/** 数据统计-表格
+ * @param {*} data
+ */
+export const getDataDetail = (data) => get(`${service}/findH5MarketTable`, data)
+
+//  数据统计-表格(导出)
+export const getDataDetailExpor = (data) => get(`${service}/export`, data, { responseType: 'blob' })

@@ -23,6 +23,10 @@ let dict = {
 import { useSlots, useAttrs } from 'vue'
 
 defineProps({
+  isText: {
+    type: Boolean,
+    default: false,
+  },
   icon: {
     type: String,
     default: '',
@@ -64,9 +68,11 @@ const attrs = useAttrs()
       <el-button
         text
         :disabled="disabled"
-        :icon="icon || dict[type]?.icon"
+        :icon="isText ? '' : icon || dict[type]?.icon"
         :title="$slots.default?.()[0].children || dict[type].content || $attrs.content">
-        {{ $slots.default?.()[0].children }}
+        <template #default v-if="isText">
+          {{ $slots.default?.()[0].children || dict[type].content || $props.content }}
+        </template>
       </el-button>
     </el-tooltip>
   </div>

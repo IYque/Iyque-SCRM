@@ -11,27 +11,32 @@ const share = ref({})
         <BaInput label="H5名称" prop="name" v-model="query.name"></BaInput>
       </template>
 
-      <template #operation="{ goRoute, apiConfirm }">
+      <!-- <template #operation="{ goRoute, apiConfirm }">
         <CommonTopRight>
           <el-button type="primary" @click="goRoute()">新建H5</el-button>
         </CommonTopRight>
-        <!-- <el-button type="primary" plain @click="apiConfirm(api.del)">删除</el-button> -->
-      </template>
+        <el-button type="primary" plain @click="apiConfirm(api.del)">删除</el-button>
+      </template> -->
 
       <template #default="{ data, apiConfirm, goRoute }">
-        <div class="flexWrap --Gap">
-          <div class="g-card" v-for="(row, index) in data" :key="index">
-            <BaImage class="size-[50px] --RadiusSmall" :src="row.backgroundUrl" fit="fill" :lazy="true"></BaImage>
+        <CommonTopRight>
+          <el-button type="primary" @click="goRoute()">新建H5</el-button>
+        </CommonTopRight>
+        <div class="flex flexWrap --Gap">
+          <div class="g-card --BorderBlack9 pad0 --RadiusSmall" v-for="(row, index) in data" :key="index">
+            <BaImage class="size-[350px] --RadiusSmall" :src="row.backgroundUrl" fit="fill" :lazy="true"></BaImage>
             <div class="pad15">
-              <div class="g-card-title truncate">{{ row.name }}</div>
-              <div class="g-tip mt15 mb15">
-                <span class="mr10">{{ row.updateBy }}</span>
+              <div class="g-card-title mb15 truncate">{{ row.name }}</div>
+              <div class="g-tip mt10 mb15">
+                <span class="mr10">{{ row.updateBy || row.createBy }}</span>
                 {{ row.updateTime }}
               </div>
               <div class="flex justify-between">
                 <TableOperateBtn isText type="detail" @click="goRoute('detail', { id: row.id })"></TableOperateBtn>
                 <TableOperateBtn isText type="edit" @click="goRoute('aev', { id: row.id })"></TableOperateBtn>
-                <TableOperateBtn isText @click="$refs.shareDialogRef.visible = true">分享</TableOperateBtn>
+                <TableOperateBtn isText @click=";(share = row), ($refs.shareDialogRef.visible = true)">
+                  分享
+                </TableOperateBtn>
                 <TableOperateBtn isText type="delete" @click="apiConfirm(api.del, row.id)"></TableOperateBtn>
               </div>
             </div>

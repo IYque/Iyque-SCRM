@@ -88,6 +88,18 @@ export default [
     },
   },
 
+  // H5营销
+  {
+    path: '/H5Marketing',
+    name: 'H5Marketing',
+    component: () => import('../views/H5Marketing/index.vue'),
+    meta: {
+      title: 'H5营销',
+      noAuth: true,
+      wxSDKConfigType: 'no',
+    },
+  },
+
   // 解决授权重定向返回问题
   { path: '/:path(.*)*', redirect: '/', hidden: true },
 ]

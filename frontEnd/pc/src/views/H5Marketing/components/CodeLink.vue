@@ -14,7 +14,7 @@ const props = defineProps({
       <div class="desc">适用于微信内部生态、线上或线下海报等场景，不适用于微信外部等公域平台</div>
     </div>
     <div class="ac">
-      <el-image :src="data.h5QrUrl" style="width: 160px"></el-image>
+      <BaImage :src="data.h5QrUrl" style="width: 160px"></BaImage>
       <el-button text @click="downloadBlob(data.h5QrUrl, data.name + '.png', 'image')">下载</el-button>
     </div>
   </div>

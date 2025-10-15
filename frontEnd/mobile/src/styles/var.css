@@ -224,6 +224,55 @@
   --BorderBlack10: hsl(0, 0%, 95%);
   --BorderBlack11: hsl(0, 0%, 97%);
 
+  .--BorderWhite {
+    border-width: 1px;
+    border-color: var(--BorderWhite);
+  }
+  .--BorderBlack {
+    border-width: 1px;
+    border-color: var(--BorderBlack);
+  }
+  .--BorderBlack2 {
+    border-width: 1px;
+    border-color: var(--BorderBlack2);
+  }
+  .--BorderBlack3 {
+    border-width: 1px;
+    border-color: var(--BorderBlack3);
+  }
+  .--BorderBlack4 {
+    border-width: 1px;
+    border-color: var(--BorderBlack4);
+  }
+  .--BorderBlack5 {
+    border-width: 1px;
+    border-color: var(--BorderBlack5);
+  }
+  .--BorderBlack6 {
+    border-width: 1px;
+    border-color: var(--BorderBlack6);
+  }
+  .--BorderBlack7 {
+    border-width: 1px;
+    border-color: var(--BorderBlack7);
+  }
+  .--BorderBlack8 {
+    border-width: 1px;
+    border-color: var(--BorderBlack8);
+  }
+  .--BorderBlack9 {
+    border-width: 1px;
+    border-color: var(--BorderBlack9);
+  }
+  .--BorderBlack10 {
+    border-width: 1px;
+    border-color: var(--BorderBlack10);
+  }
+  .--BorderBlack11 {
+    border-width: 1px;
+    border-color: var(--BorderBlack11);
+  }
+
   /* ------ 通用背景白色 ------ */
   --BgWhite: #fff;
 
@@ -242,6 +291,49 @@
   --BgBlack9: hsl(0, 0%, 90%);
   --BgBlack10: hsl(0, 0%, 95%);
   --BgBlack11: hsl(0, 0%, 97%);
+
+  .--BgWhite {
+    background: var(--BgWhite);
+  }
+  .--BgBlack {
+    background: var(--BgBlack);
+  }
+  .--BgBlack1-1 {
+    background: var(--BgBlack1-1);
+  }
+  .--BgBlack1-2 {
+    background: var(--BgBlack1-2);
+  }
+  .--BgBlack2 {
+    background: var(--BgBlack2);
+  }
+  .--BgBlack3 {
+    background: var(--BgBlack3);
+  }
+  .--BgBlack4 {
+    background: var(--BgBlack4);
+  }
+  .--BgBlack5 {
+    background: var(--BgBlack5);
+  }
+  .--BgBlack6 {
+    background: var(--BgBlack6);
+  }
+  .--BgBlack7 {
+    background: var(--BgBlack7);
+  }
+  .--BgBlack8 {
+    background: var(--BgBlack8);
+  }
+  .--BgBlack9 {
+    background: var(--BgBlack9);
+  }
+  .--BgBlack10 {
+    background: var(--BgBlack10);
+  }
+  .--BgBlack11 {
+    background: var(--BgBlack11);
+  }
 }
 
 /* 暗黑模式 */
