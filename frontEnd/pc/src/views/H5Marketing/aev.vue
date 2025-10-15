@@ -31,7 +31,6 @@ const controlType = {
   3: { label: '链接控件', desc: '通过跳转链接实现营销' },
 }
 
-const disabled = ref(false)
 const info = ref({
   type: 1,
 })
@@ -48,11 +47,17 @@ const info = ref({
     })
 })()
 
-function remove(formControlRef) {
+function clearFields() {
+  ;['controlUrl', 'controlSubType', 'title', 'titleSub', 'guideTip'].forEach((e) => {
+    info.value[e] = undefined
+  })
+}
+
+function remove() {
   $sdk.confirm().then(() => {
     info.value.controlType = undefined
     activeControl.value = 'img'
-    formControlRef.formRef.resetFields()
+    clearFields()
   })
 }
 async function submit(submitFn, formControlRef) {
@@ -124,7 +129,7 @@ async function submit(submitFn, formControlRef) {
                     class="card w-[280px] g-card --RadiusSmall mt0 --BgBlack10 border --BorderBlack9 pointer"
                     :class="form.type == index && 'active'"
                     v-if="!isDetail || form.type == index"
-                    @click="disabled || (index != 5 && (form.type = index))">
+                    @click="index != 5 && (form.type = index)">
                     <div class="g-card-title">{{ item.label }}</div>
                     <div class="g-tip">{{ item.desc }}</div>
                   </div>
@@ -142,10 +147,7 @@ async function submit(submitFn, formControlRef) {
                     class="card g-card --RadiusSmall mt0 --BgBlack10 --BorderBlack9 pointer"
                     :class="form.controlType == index && 'active'"
                     v-if="!isDetail || form.controlType == index"
-                    @click="
-                      disabled ||
-                        ((form.controlType = activeControl = +index), $refs.formControlRef.formRef.resetFields())
-                    ">
+                    @click="form.controlType == +index || clearFields(), (form.controlType = activeControl = +index)">
                     <div class="g-card-title">{{ item.label }}</div>
                     <div class="g-tip">{{ item.desc }}</div>
                   </div>
@@ -181,7 +183,7 @@ async function submit(submitFn, formControlRef) {
                   <el-iconCircleCloseFilled
                     class="font18 absolute top-[-9px] right-[-9px] --Color pointer"
                     v-if="[3, 1].includes(activeControl)"
-                    @click="remove($refs.formControlRef)" />
+                    @click="remove()" />
                   <div class="truncate weight5">{{ form.title || '主标题' }}</div>
                   <div class="truncate mt15 mb-[18px]">{{ form.titleSub || '副标题' }}</div>
                   <div class="bgWhite text-center text-[red] weight5 pad15 --RadiusSmall">点击立即咨询 →</div>
@@ -196,7 +198,7 @@ async function submit(submitFn, formControlRef) {
                   <el-iconCircleCloseFilled
                     class="font18 absolute top-[-9px] right-[-9px] --Color pointer"
                     v-if="[2].includes(activeControl)"
-                    @click="remove($refs.formControlRef)" />
+                    @click="remove()" />
                   <div class="mr10 flex items-center gap10">
                     <BaImage class="size-[80px] flex-none" :src="form.controlUrl" alt="" />
                     <div>
@@ -220,12 +222,13 @@ async function submit(submitFn, formControlRef) {
                   <template #default="{ form, isDetail, formRef }">
                     <div v-if="activeControl == 1">
                       <BaFormItem label="选择客服" prop="controlUrl" required>
-                        <div
-                          class="mr10 inline-flex items-center gap10 --RadiusSmall border --BorderBlack11"
+                        <div v-if="form.controlUrl" class="truncate">{{ form.controlUrl }}</div>
+                        <!-- <div
+                          class="mr10 !inline-flex items-center gap10 --RadiusSmall border --BorderBlack11 px-[10px] py-[5px]"
                           v-if="form.controlUrl">
                           <img class="size-[50px] flex-none" :src="form._kfHeadImg" alt="" />
                           <div class="truncate">{{ form._kfName }}</div>
-                        </div>
+                        </div> -->
                         <el-button
                           class="!align-bottom"
                           type="primary"
@@ -237,11 +240,7 @@ async function submit(submitFn, formControlRef) {
                           ref="SelectCustomerServiceRef"
                           isSigleSelect
                           @confirm="
-                            ({ selected }) => (
-                              (form._kfName = selected.kfName),
-                              (form._kfHeadImg = selected.kfPicUrl),
-                              (form.controlUrl = selected.kfUrl)
-                            )
+                            ({ selected }) => ((form.controlUrl = selected.kfUrl), formRef.validateField('controlUrl'))
                           "></SelectCustomerService>
                       </BaFormItem>
                     </div>
