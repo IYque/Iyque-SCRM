@@ -47,10 +47,11 @@ const info = ref({
     })
 })()
 
-function clearFields(form) {
+function clearFields(form, formControlRef) {
   ;['controlUrl', 'controlSubType', 'title', 'titleSub', 'guideTip'].forEach((e) => {
     form[e] = undefined
   })
+  setTimeout(() => formControlRef?.formRef.clearValidate())
 }
 
 function remove() {
@@ -148,7 +149,8 @@ async function submit(submitFn, formControlRef) {
                     :class="form.controlType == index && 'active'"
                     v-if="!isDetail || form.controlType == index"
                     @click="
-                      form.controlType == +index || clearFields(form), (form.controlType = activeControl = +index)
+                      form.controlType == +index || clearFields(form, $refs.formControlRef),
+                        (form.controlType = activeControl = +index)
                     ">
                     <div class="g-card-title">{{ item.label }}</div>
                     <div class="g-tip">{{ item.desc }}</div>
