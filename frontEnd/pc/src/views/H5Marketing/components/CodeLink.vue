@@ -28,21 +28,6 @@ const props = defineProps({
       <el-button class="ml10" @click="$copyText(data.h5Url)" text>复制</el-button>
     </div>
   </div>
-  <div class="g-card">
-    <div class="g-card-title">
-      <span class="fxnone">公域短链</span>
-      <div class="desc">
-        适用于微信外部等公域平台，如需使用需提前在系统配置中配置公域短链小程序
-        <el-button text @click="$router.push({ name: 'enterpriseWechatConfig', query: { index: 7 } })">
-          去配置
-        </el-button>
-      </div>
-    </div>
-    <div class="flex">
-      <el-input v-model="data.qrShortLink" disabled></el-input>
-      <el-button class="ml10" @click="$copyText(data.qrShortLink)" text>复制</el-button>
-    </div>
-  </div>
 </template>
 
 <style lang="scss" scoped></style>
