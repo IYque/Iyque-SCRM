@@ -103,6 +103,12 @@ public class IYqueH5Market {
 
 
     /**
+     * 创建人
+     */
+    private String createBy;
+
+
+    /**
      * 状态:0 正常 1 删除
      */
     private Integer delFlag;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -36,6 +37,13 @@ public class IYqueH5MarketServiceImpl implements IYqueH5MarketService {
 
         iYqueH5Market.setId(null == iYqueH5Market.getId()? SnowFlakeUtils.nextId(): iYqueH5Market.getId());
         iYqueH5Market.setH5Url(iYqueParamConfig.getH5MarketUrl());
+        iYqueH5Market.setCreateBy(iYqueParamConfig.getUserName());
+        if(null == iYqueH5Market.getId()){
+            iYqueH5Market.setCreateTime(new Date());
+            iYqueH5Market.setUpdateTime(new Date());
+        }else{
+            iYqueH5Market.setUpdateTime(new Date());
+        }
         String qrCodeUrl = FileUtils.generateQRCode(iYqueH5Market.getH5Url());
         if(StrUtil.isNotEmpty(qrCodeUrl)){
             iYqueH5Market.setH5QrUrl(qrCodeUrl);
