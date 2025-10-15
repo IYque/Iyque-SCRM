@@ -47,9 +47,9 @@ const info = ref({
     })
 })()
 
-function clearFields() {
+function clearFields(form) {
   ;['controlUrl', 'controlSubType', 'title', 'titleSub', 'guideTip'].forEach((e) => {
-    info.value[e] = undefined
+    form[e] = undefined
   })
 }
 
@@ -57,7 +57,7 @@ function remove() {
   $sdk.confirm().then(() => {
     info.value.controlType = undefined
     activeControl.value = 'img'
-    clearFields()
+    clearFields(info.value)
   })
 }
 async function submit(submitFn, formControlRef) {
@@ -147,7 +147,9 @@ async function submit(submitFn, formControlRef) {
                     class="card g-card --RadiusSmall mt0 --BgBlack10 --BorderBlack9 pointer"
                     :class="form.controlType == index && 'active'"
                     v-if="!isDetail || form.controlType == index"
-                    @click="form.controlType == +index || clearFields(), (form.controlType = activeControl = +index)">
+                    @click="
+                      form.controlType == +index || clearFields(form), (form.controlType = activeControl = +index)
+                    ">
                     <div class="g-card-title">{{ item.label }}</div>
                     <div class="g-tip">{{ item.desc }}</div>
                   </div>
