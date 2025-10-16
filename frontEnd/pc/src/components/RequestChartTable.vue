@@ -318,7 +318,9 @@ export default defineComponent({
           <el-table-column
             type="selection"
             width="50"
-            :selectable="() => !(isSigleSelect && selectedIds?.length)"></el-table-column>
+            :selectable="
+              (row) => selectedIds.includes(row[dataKey]) || !(isSigleSelect && selectedIds?.length)
+            "></el-table-column>
           <slot name="table" v-bind="{ query, getList, apiConfirm, goRoute }"></slot>
         </el-table>
 
