@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class IYqueH5MarketServiceImpl implements IYqueH5MarketService {
     public IYqueH5Market addOrUpdate(IYqueH5Market iYqueH5Market) throws Exception {
 
         iYqueH5Market.setId(null == iYqueH5Market.getId()? SnowFlakeUtils.nextId(): iYqueH5Market.getId());
-        iYqueH5Market.setH5Url(iYqueParamConfig.getH5MarketUrl());
+        iYqueH5Market.setH5Url(MessageFormat.format(iYqueParamConfig.getH5MarketUrl(),iYqueH5Market.getId().toString()));
         iYqueH5Market.setCreateBy(iYqueParamConfig.getUserName());
         if(null == iYqueH5Market.getId()){
             iYqueH5Market.setCreateTime(new Date());

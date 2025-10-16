@@ -14,7 +14,7 @@ iyque:
   inquiryAll: true
   complaintUrl: http://iyque.cn/openmobile/customerComplaint #投诉页面
   customerSeasUrl: https://iyque.cn/openmobile/customerSeas #客户公海页面
-  h5MarketUrl: https://iyque.cn
+  h5MarketUrl: https://iyque.cn/openmobile/H5Marketing?id={0} #h5营销页面
   vector:
     host: 127.0.0.1  #Milvus地址
     port: 19530 #Milvus端口,api通信端口,非web访问端口.

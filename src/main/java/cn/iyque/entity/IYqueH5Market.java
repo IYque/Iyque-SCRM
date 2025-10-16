@@ -19,11 +19,6 @@ import java.util.Date;
 public class IYqueH5Market {
 
     @Id
-    @GeneratedValue(generator = "snowflakeIdGenerator")
-    @GenericGenerator(
-            name = "snowflakeIdGenerator",
-            strategy = "cn.iyque.utils.SnowFlakeUtils"
-    )
     private Long id;
 
     /**
