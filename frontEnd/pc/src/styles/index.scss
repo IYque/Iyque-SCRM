@@ -14,6 +14,9 @@ embed,
 object {
   display: inline-block;
 }
+.container {
+  all: initial;
+}
 
 ::-webkit-scrollbar {
   /*滚动条整体样式*/

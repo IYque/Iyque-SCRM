@@ -1,4 +1,5 @@
-:root {
+:root,
+[class~='noDark'] {
   /* 主题色hsl*/
   --H: 263;
   --S: 99%;
@@ -45,18 +46,23 @@
   --RadiusCircle: 50%;
   .--Radius {
     border-radius: var(--Radius) !important;
+    overflow: hidden; /* 圆角溢出隐藏 */
   }
   .--RadiusSmall {
     border-radius: var(--RadiusSmall) !important;
+    overflow: hidden;
   }
   .--RadiusBig {
     border-radius: var(--RadiusBig) !important;
+    overflow: hidden;
   }
   .--RadiusRound {
     border-radius: var(--RadiusRound) !important;
+    overflow: hidden;
   }
   .--RadiusCircle {
     border-radius: var(--RadiusCircle) !important;
+    overflow: hidden;
   }
 
   --Gap: 16px; /* 外间距 */

@@ -68,6 +68,9 @@ function requestFactory(getway = '') {
   service.delt = (url, params, config = {}) => {
     return service.delete(url, { params, ...config })
   }
+  service.del = (url, params, config = {}) => {
+    return service.delete(url, { params, ...config })
+  }
 
   return service
 }

@@ -38,36 +38,51 @@
   }
 
   /* ------ 距离大小 ------ */
-  --Radius: 6px; /* 常规圆角 */
-  --RadiusSmall: 3px; /* 小圆角 */
+  --Radius: 10px; /* 常规圆角 */
+  --RadiusSmall: 6px; /* 小圆角 */
   --RadiusBig: calc(var(--Radius) * 2); /* 大圆角 */
   --RadiusRound: 100px;
   --RadiusCircle: 50%;
   .--Radius {
     border-radius: var(--Radius) !important;
+    overflow: hidden; /* 圆角溢出隐藏 */
   }
   .--RadiusSmall {
     border-radius: var(--RadiusSmall) !important;
+    overflow: hidden;
   }
   .--RadiusBig {
     border-radius: var(--RadiusBig) !important;
+    overflow: hidden;
   }
   .--RadiusRound {
     border-radius: var(--RadiusRound) !important;
+    overflow: hidden;
   }
   .--RadiusCircle {
     border-radius: var(--RadiusCircle) !important;
+    overflow: hidden;
   }
 
-  --Gap: 16px; /* 外间距 */
+  --Gap: 10px; /* 外间距 */
   .--Gap {
     gap: var(--Gap);
   }
+
   --FormGap: 16px; /* 外间距 */
   .--FormGap {
     gap: var(--FormGap);
   }
-  --Margin: 16px; /* 外间距 */
+  --FormPadX: 16px; /* 左右间距 */
+  .--FormPadX {
+    padding-inline: var(--FormPadX);
+  }
+  --FormPadY: 10px; /* 上下间距 */
+  .--FormPadY {
+    padding-block: var(--Gap);
+  }
+
+  --Margin: var(--Gap); /* 外间距 */
   .--Margin {
     margin: var(--Margin);
   }
@@ -84,7 +99,7 @@
     margin-right: var(--Margin) !important;
   }
 
-  --Padding: 20px; /* 内间距 */
+  --Padding: 10px; /* 内间距 */
   .--Padding {
     padding: var(--Padding);
   }
@@ -101,14 +116,22 @@
     padding-right: var(--Padding) !important;
   }
 
-  /* 顶部导航条高度 */
-  --TopNavHeght: 60px;
-  .--TopNavHeght {
-    height: var(--TopNavHeght);
+  /* 页面统一边距 */
+  --PagePad: var(--Gap);
+  .--PagePad {
+    padding: var(--PagePad);
   }
-  --SideBarWidth: 200px;
-  .--SideBarWidth {
-    width: var(--SideBarWidth);
+  .--PagePadX {
+    padding-inline: var(--PagePad);
+  }
+  .--PagePadY {
+    padding-block: var(--PagePad);
+  }
+
+  /* 页面统一背景 */
+  --PageBg: var(--BgBlack9);
+  .--PageBg {
+    background: var(--PageBg);
   }
 
   /* ------ 主题色 递浅色阶 ------  */
@@ -168,14 +191,14 @@
 
   /* 通用字体黑灰色阶  */
   --FontBlack: #1d2129;
-  --FontBlack2: hsl(0, 0%, 20%);
-  --FontBlack3: hsl(0, 0%, 30%);
-  --FontBlack4: hsl(0, 0%, 40%);
-  --FontBlack5: hsl(0, 0%, 50%);
-  --FontBlack6: hsl(0, 0%, 60%);
-  --FontBlack7: hsl(0, 0%, 70%);
-  --FontBlack8: hsl(0, 0%, 80%);
-  --FontBlack9: hsl(0, 0%, 90%);
+  --FontBlack2: hsl(0, 0%, 20%); /* #333*/
+  --FontBlack3: hsl(0, 0%, 30%); /* #444*/
+  --FontBlack4: hsl(0, 0%, 40%); /* #666 */
+  --FontBlack5: hsl(0, 0%, 50%); /* #808080 #777*/
+  --FontBlack6: hsl(0, 0%, 60%); /* #999*/
+  --FontBlack7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
+  --FontBlack8: hsl(0, 0%, 80%); /* #ccc #ddd*/
+  --FontBlack9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
 
   .--FontWhite {
     color: var(--FontWhite);
@@ -213,63 +236,51 @@
 
   /* 通用边框黑灰色阶  */
   --BorderBlack: #1d2129;
-  --BorderBlack2: hsl(0, 0%, 20%);
-  --BorderBlack3: hsl(0, 0%, 30%);
-  --BorderBlack4: hsl(0, 0%, 40%);
-  --BorderBlack5: hsl(0, 0%, 50%);
-  --BorderBlack6: hsl(0, 0%, 60%);
-  --BorderBlack7: hsl(0, 0%, 70%);
-  --BorderBlack8: hsl(0, 0%, 80%);
-  --BorderBlack9: hsl(0, 0%, 90%);
-  --BorderBlack10: hsl(0, 0%, 95%);
-  --BorderBlack11: hsl(0, 0%, 97%);
+  --BorderBlack2: hsl(0, 0%, 20%); /* #333*/
+  --BorderBlack3: hsl(0, 0%, 30%); /* #444*/
+  --BorderBlack4: hsl(0, 0%, 40%); /* #666 */
+  --BorderBlack5: hsl(0, 0%, 50%); /* #808080 #777*/
+  --BorderBlack6: hsl(0, 0%, 60%); /* #999*/
+  --BorderBlack7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
+  --BorderBlack8: hsl(0, 0%, 80%); /* #ccc #ddd*/
+  --BorderBlack9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
+  --BorderBlack10: hsl(0, 0%, 95%); /* #f2f2f2 */
+  --BorderBlack11: hsl(0, 0%, 97%); /* #f7f7f7 #f8f8f8 #f5f8fe #f5f7fb #fafafa #edf2f9*/
 
   .--BorderWhite {
-    border-width: 1px;
     border-color: var(--BorderWhite);
   }
   .--BorderBlack {
-    border-width: 1px;
     border-color: var(--BorderBlack);
   }
   .--BorderBlack2 {
-    border-width: 1px;
     border-color: var(--BorderBlack2);
   }
   .--BorderBlack3 {
-    border-width: 1px;
     border-color: var(--BorderBlack3);
   }
   .--BorderBlack4 {
-    border-width: 1px;
     border-color: var(--BorderBlack4);
   }
   .--BorderBlack5 {
-    border-width: 1px;
     border-color: var(--BorderBlack5);
   }
   .--BorderBlack6 {
-    border-width: 1px;
     border-color: var(--BorderBlack6);
   }
   .--BorderBlack7 {
-    border-width: 1px;
     border-color: var(--BorderBlack7);
   }
   .--BorderBlack8 {
-    border-width: 1px;
     border-color: var(--BorderBlack8);
   }
   .--BorderBlack9 {
-    border-width: 1px;
     border-color: var(--BorderBlack9);
   }
   .--BorderBlack10 {
-    border-width: 1px;
     border-color: var(--BorderBlack10);
   }
   .--BorderBlack11 {
-    border-width: 1px;
     border-color: var(--BorderBlack11);
   }
 
@@ -278,19 +289,19 @@
 
   /* 通用背景黑灰色阶 */
   --BgBlack: #000;
-  --BgBlack1-1: hsl(0, 0%, 5%);
-  --BgBlack1-2: hsl(0, 0%, 3%);
-  --BgBlack1: hsl(0, 0%, 10%);
-  --BgBlack2: hsl(0, 0%, 20%);
-  --BgBlack3: hsl(0, 0%, 30%);
-  --BgBlack4: hsl(0, 0%, 40%);
-  --BgBlack5: hsl(0, 0%, 50%);
-  --BgBlack6: hsl(0, 0%, 60%);
-  --BgBlack7: hsl(0, 0%, 70%);
-  --BgBlack8: hsl(0, 0%, 80%);
-  --BgBlack9: hsl(0, 0%, 90%);
-  --BgBlack10: hsl(0, 0%, 95%);
-  --BgBlack11: hsl(0, 0%, 97%);
+  --BgBlack1-1: hsl(0, 0%, 5%); /* #080808*/
+  --BgBlack1-2: hsl(0, 0%, 3%); /* #0d0d0d*/
+  --BgBlack1: hsl(0, 0%, 10%); /* #1a1a1a*/
+  --BgBlack2: hsl(0, 0%, 20%); /* #333*/
+  --BgBlack3: hsl(0, 0%, 30%); /* #444*/
+  --BgBlack4: hsl(0, 0%, 40%); /* #666 */
+  --BgBlack5: hsl(0, 0%, 50%); /* #808080 #777*/
+  --BgBlack6: hsl(0, 0%, 60%); /* #999*/
+  --BgBlack7: hsl(0, 0%, 70%); /* #b3b3b3 #bbb #aaa*/
+  --BgBlack8: hsl(0, 0%, 80%); /* #ccc #ddd*/
+  --BgBlack9: hsl(0, 0%, 90%); /* #e6e6e6 #eee*/
+  --BgBlack10: hsl(0, 0%, 95%); /* #f2f2f2 */
+  --BgBlack11: hsl(0, 0%, 97%); /* #f7f7f7 #f8f8f8 #f5f8fe #f5f7fb #fafafa #edf2f9*/
 
   .--BgWhite {
     background: var(--BgWhite);

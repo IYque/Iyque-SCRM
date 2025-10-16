@@ -19,23 +19,23 @@ const $route = useRoute()
 
     <!-- 客服控件,链接控件 -->
     <div
-      class="absolute bottom-[20px] w-[90%] mx-[5%] g-card --BorderBlack9 --RadiusSmall --BgBlack10 !overflow-visible"
+      class="h5Card fixed bottom-[20px] w-[90%] mx-[5%] g-card --BorderBlack9 --RadiusSmall --BgBlack9 !overflow-visible"
       v-if="[3, 1].includes(form.controlType)">
-      <div class="truncate weight5">{{ form.title }}</div>
-      <div class="truncate mt15 mb-[18px]">{{ form.titleSub }}</div>
+      <div class="truncate weight5 font16">{{ form.title }}</div>
+      <div class="truncate my-[15px]">{{ form.titleSub }}</div>
       <a :href="form.controlUrl">
-        <div class="bgWhite text-center text-[red] weight5 pad15 --RadiusSmall">点击立即咨询 →</div>
+        <div class="bgWhite text-center text-[red] weight5 pad10 --RadiusSmall">{{ form.guideTip }}</div>
       </a>
     </div>
 
     <!-- 活码控件 -->
     <div
-      class="absolute bottom-[20px] w-[90%] mx-[5%] g-card --BorderBlack9 --RadiusSmall --BgBlack10 !overflow-visible"
+      class="h5Card fixed bottom-[20px] w-[90%] mx-[5%] g-card --BorderBlack9 --RadiusSmall --BgBlack9 !overflow-visible"
       v-if="form.controlType == 2">
       <div class="mr10 flex items-center gap10">
-        <BaImage class="size-[80px] flex-none" :src="form.controlUrl" alt="" />
+        <BaImage class="size-[76px] pad5 bgWhite flex-none --RadiusSmall" :src="form.controlUrl" alt="" />
         <div>
-          <div class="truncate weight5">{{ form.title }}</div>
+          <div class="truncate weight5 font16">{{ form.title }}</div>
           <div class="truncate mt15">{{ form.titleSub }}</div>
         </div>
       </div>
@@ -43,4 +43,8 @@ const $route = useRoute()
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.h5Card {
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+</style>

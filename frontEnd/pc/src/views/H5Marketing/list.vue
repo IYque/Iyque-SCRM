@@ -24,7 +24,11 @@ const share = ref({})
         </CommonTopRight>
         <div class="flex flexWrap --Gap">
           <div class="g-card --BorderBlack9 pad0 --RadiusSmall" v-for="(row, index) in data" :key="index">
-            <BaImage class="size-[350px] --RadiusSmall" :src="row.backgroundUrl" fit="fill" :lazy="true"></BaImage>
+            <BaImage
+              class="size-[350px] --RadiusSmall --BorderBlack11"
+              :src="row.backgroundUrl"
+              fit="cover"
+              :lazy="true"></BaImage>
             <div class="pad15">
               <div class="g-card-title mb15 truncate">{{ row.name }}</div>
               <div class="g-tip mt10 mb15">
