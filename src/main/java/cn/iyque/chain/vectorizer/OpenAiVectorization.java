@@ -1,14 +1,12 @@
 package cn.iyque.chain.vectorizer;
 
 
-import cn.iyque.config.IYqueParamConfig;
+import ai.z.openapi.service.embedding.EmbeddingResponse;
 import cn.iyque.service.IYqueAiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +23,6 @@ public class OpenAiVectorization implements Vectorization{
     private IYqueAiService yqueAiService;
 
 
-    @Autowired
-    private IYqueParamConfig yqueParamConfig;
-
-
 
 
 
@@ -37,8 +31,7 @@ public class OpenAiVectorization implements Vectorization{
         List<List<Float>> vectorList;
 
 
-        Embedding embedding = buildEmbedding(chunkList);
-        EmbeddingResponse embeddings =yqueAiService.embedding(embedding);
+        EmbeddingResponse embeddings =yqueAiService.embedding(chunkList);
 
         // 处理 OpenAI 返回的嵌入数据
         vectorList = processOpenAiEmbeddings(embeddings);
@@ -46,16 +39,7 @@ public class OpenAiVectorization implements Vectorization{
         return vectorList;
     }
 
-    /**
-     * 构建 Embedding 对象
-     */
-    private Embedding buildEmbedding(List<String> chunkList) {
 
-        return Embedding.builder()
-                .input(chunkList)
-                .model(yqueParamConfig.getVector().getVectorModel())
-                .build();
-    }
 
     /**
      * 处理 OpenAI 返回的嵌入数据
@@ -63,23 +47,17 @@ public class OpenAiVectorization implements Vectorization{
     private List<List<Float>> processOpenAiEmbeddings(EmbeddingResponse embeddings) {
         List<List<Float>> vectorList = new ArrayList<>();
 
-        embeddings.getData().forEach(data -> {
-            List<Float> vector = data.getEmbedding();
-            vectorList.add(vector);
+        embeddings.getData().getData().forEach(data->{
+            List<Float> collect = data.getEmbedding().stream()
+                    .map(Double::floatValue)
+                    .collect(Collectors.toList());
+            vectorList.add(collect);
         });
 
         return vectorList;
     }
 
 
-//    /**
-//     * 将 BigDecimal 转换为 Double 列表
-//     */
-//    private List<Double> convertToDoubleList(List<Float> vector) {
-//        return vector.stream()
-//                .map(Float::doubleValue)
-//                .collect(Collectors.toList());
-//    }
 
 
 

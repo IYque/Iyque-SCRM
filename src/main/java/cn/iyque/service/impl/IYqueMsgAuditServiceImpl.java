@@ -68,7 +68,7 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
             "分析要求：\n" +
             "1.逐条分析聊天内容，判断是否存在违规行为。\n" +
             "2.如果存在违规行为，需明确违规类型，并在 `msg` 字段中描述具体违规行为。\n" +
-            "3.最终输出结果必须严格为以下格式结构化输出之一,不可包含其他内容：\n" +
+            "3.最终输出结果必须严格为以下格式结构化输出之一着条返回员工与客户是否违规,不可包含其他内容：\n" +
             "- 存在违规行为：[{\"warning\":true, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"具体违规行为描述\"}]\n" +
             "- 不存在违规行为：[{\"warning\":false, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"未发现违规行为\"}]";
 
@@ -83,7 +83,7 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
             "分析要求：\n" +
             "1.逐条分析聊天内容，判断是否存在意向客户。\n" +
             "2.如果存在意向客户，需明确意向客户类型，其中`warning`为true表示为意向客户,false为非意向客户 并在 `msg` 字段中描述具体意向行为。\n" +
-            "3.最终输出结果必须严格为以下格式结构化输出之一,不可包含其他内容：\n" +
+            "3.最终输出结果必须严格为以下格式结构化输出之一着条返回员工与客户是否违规,不可包含其他内容：\n" +
             "- 存在意向客户行为：[{\"warning\":true, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"具体意向行为描述\"}]\n" +
             "- 不存在意向客户行为：[{\"warning\":false, \"employeeName\":\"具体员工名称\", \"employeeId\":\"具体员工id\", \"customerName\":\"具体客户名称\", \"customerId\":\"具体客户id\", \"msg\":\"未发现意向行为\"}]";
 
@@ -331,19 +331,14 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
 
                 log.info("当前聊天内容分析提示词:"+prompt);
 
-                String result = aiService.aiHandleCommonContent(prompt);
+                String result = aiService.aiHandleCommonContentToJson(prompt);
 
                 log.info("大模型输出原生结果:"+result);
 
                 if(StringUtils.isNotEmpty(result)){
-                    // 清理字符串：去除 ```json 和换行符
-                    String cleanJsonString = result
-                            .replace("```json", "")
-                            .replace("```", "")
-                            .trim();
-                    if(StringUtils.isNotEmpty(cleanJsonString)){
+
                         List<IYqueAiAnalysisMsgAudit> msgAuditResults
-                                = JSONUtil.toList(cleanJsonString, IYqueAiAnalysisMsgAudit.class);
+                                = JSONUtil.toList(result, IYqueAiAnalysisMsgAudit.class);
 
 
                         if(CollectionUtil.isNotEmpty(msgAuditResults)){
@@ -360,7 +355,6 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
 
                         }
                     }
-                }
             }
 
 
@@ -389,19 +383,13 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
 
                 log.info("当前聊天内容分析提示词:"+prompt);
 
-                String result = aiService.aiHandleCommonContent(prompt);
+                String result = aiService.aiHandleCommonContentToJson(prompt);
 
                 log.info("大模型输出原生结果:"+result);
 
                 if(StringUtils.isNotEmpty(result)){
-                    // 清理字符串：去除 ```json 和换行符
-                    String cleanJsonString = result
-                            .replace("```json", "")
-                            .replace("```", "")
-                            .trim();
-                    if(StringUtils.isNotEmpty(cleanJsonString)){
                         List<IYqueAiAnalysisMsgAudit> msgAuditResults
-                                = JSONUtil.toList(cleanJsonString, IYqueAiAnalysisMsgAudit.class);
+                                = JSONUtil.toList(result, IYqueAiAnalysisMsgAudit.class);
 
                         if(CollectionUtil.isNotEmpty(msgAuditResults)){
                             msgAuditResults.stream().forEach(k->{
@@ -416,7 +404,6 @@ public class IYqueMsgAuditServiceImpl implements IYqueMsgAuditService {
                             yqueAiAnalysisMsgAuditDao.saveAll(msgAuditResults);
 
                         }
-                    }
                 }
 
             }

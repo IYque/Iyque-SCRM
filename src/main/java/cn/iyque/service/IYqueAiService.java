@@ -1,8 +1,7 @@
 package cn.iyque.service;
 
+import ai.z.openapi.service.embedding.EmbeddingResponse;
 import cn.iyque.exception.IYqueException;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
 
 import java.util.List;
 
@@ -17,14 +16,23 @@ public interface IYqueAiService {
 
 
 
+    /**
+     * 调用ai同步处理通用内容 (单条会话),响应json格式
+     * @param content
+     * @return
+     */
+    String aiHandleCommonContentToJson(String content) throws IYqueException;
+
+
+
 
 
 
     /**
      * 向量值计算
-     * @param embedding
+     * @param text
      * @return
      */
-    EmbeddingResponse embedding(Embedding embedding);
+    EmbeddingResponse embedding(List<String> text);
 
 }

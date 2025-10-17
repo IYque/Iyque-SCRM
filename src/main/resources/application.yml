@@ -1,10 +1,10 @@
 server:
   port: 8085
 ai:
-  model: deepseek-chat #接入的具体模型，deepseek目前支持deepseek-chat与deepseek-reasoner
+  model: GLM-4.6 #接入的智普文本模型，GLM-4.6，GLM-4.5，GLM-4
   limitToken: 100000  #限制每日token使用上限(输入token+输出token)
-  deepseek:
-    apiKey: sk-83673ea3afac4f02b4744 #对应deepseek的apiKey
+  zhipu:
+    apiKey: aac7e6c624284d609a1b9d7dd2b0903b.9GYXLQVp1R
 iyque:
   userName: iyque
   pwd: iyque.cn
@@ -20,9 +20,7 @@ iyque:
     port: 19530 #Milvus端口,api通信端口,非web访问端口.
     collectionName: iyque_vectors #向量集合名称
     dimension: 1536 #向量维度
-    apiUrl: https://api.pandarobot.chat/ #向量模型地址
-    apiKey: sk-4nLONNwyyxRg5S9wA6D278F017Ec420cBeAa6b #向量模型key
-    vectorModel: text-embedding-3-small #向量模型,目前暂时只支持text-embedding-3-small
+    vectorModel: embedding-3 #向量模型,支持智普的 embedding-3，与embedding-2
     score: 0.5f #向量查询相似度
 spring:
   h2:

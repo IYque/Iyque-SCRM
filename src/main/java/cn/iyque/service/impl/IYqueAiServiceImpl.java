@@ -1,38 +1,24 @@
 package cn.iyque.service.impl;
 
+import ai.z.openapi.ZhipuAiClient;
+import ai.z.openapi.service.embedding.EmbeddingCreateParams;
+import ai.z.openapi.service.embedding.EmbeddingResponse;
+import ai.z.openapi.service.model.*;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.entity.IYqueAiTokenRecord;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueAiTokenRecordService;
-import io.github.lnyocly.ai4j.config.OpenAiConfig;
-import io.github.lnyocly.ai4j.interceptor.ErrorInterceptor;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletionResponse;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatMessage;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.Choice;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.Embedding;
-import io.github.lnyocly.ai4j.platform.openai.embedding.entity.EmbeddingResponse;
-import io.github.lnyocly.ai4j.platform.openai.usage.Usage;
-import io.github.lnyocly.ai4j.service.Configuration;
-import io.github.lnyocly.ai4j.service.IChatService;
-import io.github.lnyocly.ai4j.service.PlatformType;
-import io.github.lnyocly.ai4j.service.factor.AiService;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -44,16 +30,13 @@ public class IYqueAiServiceImpl implements IYqueAiService {
     @Value("${ai.limitToken}")
     private long limitToken;
 
-    @Value("${ai.deepseek.apiKey}")
+    @Value("${ai.zhipu.apiKey}")
     private String apiKey;
 
 
     @Autowired
     private IYqueParamConfig yqueParamConfig;
 
-
-    @Autowired
-    private AiService aiService;
 
     @Autowired
     private IYqueAiTokenRecordService aiTokenRecordService;
@@ -77,37 +60,53 @@ public class IYqueAiServiceImpl implements IYqueAiService {
             //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
             if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
 
-                // 获取chat服务实例
-                IChatService chatService = aiService.getChatService(PlatformType.DEEPSEEK);
-
-                // 构建请求参数
-                ChatCompletion chatCompletion = ChatCompletion.builder()
-                        .model(model)
-                        .message(ChatMessage.withUser(content))
+                ZhipuAiClient client = ZhipuAiClient.builder()
+                        .apiKey(apiKey)
                         .build();
 
-                ChatCompletionResponse response = chatService.chatCompletion(chatCompletion);
-                List<Choice> choices = response.getChoices();
-                if(CollectionUtil.isNotEmpty(choices)){
-                    resContent.append(
-                            choices.stream().findFirst().get().getMessage().getContent()
-                                    .getText()
-                    );
-                }
+                // 创建聊天完成请求
+                ChatCompletionCreateParams request = ChatCompletionCreateParams.builder()
+                        .model(model)
+                        .messages(Arrays.asList(
+                                ChatMessage.builder()
+                                        .role(ChatMessageRole.SYSTEM.value())
+                                        .content("你是一个聊天会话助手。")
+                                        .build(),
+                                ChatMessage.builder()
+                                        .role(ChatMessageRole.USER.value())
+                                        .content(content)
+                                        .build()
+                        ))
+                        .thinking(ChatThinking.builder().type("enabled").build())
+                        .temperature(1.0f)
+                        .build();
 
-                Usage usage = response.getUsage();
-                if(null != usage){
+                // 发送请求
+                ChatCompletionResponse response = client.chat().createChatCompletion(request);
 
-                    aiTokenRecordService.save(
-                            IYqueAiTokenRecord.builder()
-                                    .completionTokens(usage.getCompletionTokens())
-                                    .promptTokens(usage.getPromptTokens())
-                                    .totalTokens(usage.getTotalTokens())
-                                    .createTime(new Date())
-                                    .aiResId(response.getId())
-                                    .model(response.getModel())
-                                    .build()
-                    );
+                // 获取回复
+                if (response.isSuccess()) {
+                    Object reply = response.getData().getChoices().get(0).getMessage().getContent();
+                    resContent.append(reply);
+
+
+                    Usage usage = response.getData().getUsage();
+
+                    if (null != usage) {
+                        aiTokenRecordService.save(
+                                IYqueAiTokenRecord.builder()
+                                        .completionTokens(usage.getCompletionTokens())
+                                        .promptTokens(usage.getPromptTokens())
+                                        .totalTokens(usage.getTotalTokens())
+                                        .createTime(new Date())
+                                        .aiResId(response.getData().getId())
+                                        .model(response.getData().getModel())
+                                        .build()
+                        );
+
+                    } else {
+                        log.error("AI响应错误: " + response.getMsg());
+                    }
 
                 }
 
@@ -127,18 +126,103 @@ public class IYqueAiServiceImpl implements IYqueAiService {
     }
 
     @Override
-    public EmbeddingResponse embedding(Embedding embedding) {
+    public String aiHandleCommonContentToJson(String content) throws IYqueException {
+        StringBuilder resContent=new StringBuilder();
 
         try {
 
-           return aiService.getEmbeddingService(PlatformType.OPENAI)
-                    .embedding(yqueParamConfig.getVector().getApiUrl(),yqueParamConfig.getVector().getApiKey(),embedding);
+            if(StringUtils.isEmpty(apiKey)){
+                throw new IYqueException("请配置apiKey");
+            }
+
+            //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
+            if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
+
+                ZhipuAiClient client = ZhipuAiClient.builder()
+                        .apiKey(apiKey)
+                        .build();
+
+                // 创建聊天完成请求
+                ChatCompletionCreateParams request = ChatCompletionCreateParams.builder()
+                        .model(model)
+                        .messages(Arrays.asList(
+                                ChatMessage.builder()
+                                        .role(ChatMessageRole.SYSTEM.value())
+                                        .content("你是一个数据分析助手。请严格只返回JSON格式数据，不要包含任何额外的文本、说明或解释。返回的JSON必须能够被标准解析器直接解析。")
+                                        .build(),
+                                ChatMessage.builder()
+                                        .role(ChatMessageRole.USER.value())
+                                        .content(content)
+                                        .build()
+                        ))
+                        .responseFormat(ResponseFormat.builder().type("json_object").build())
+                        .thinking(ChatThinking.builder().type("enabled").build())
+                        .temperature(0.3f)
+                        .build();
+
+                // 发送请求
+                ChatCompletionResponse response = client.chat().createChatCompletion(request);
+
+                // 获取回复
+                if (response.isSuccess()) {
+                    Object reply = response.getData().getChoices().get(0).getMessage().getContent();
+
+                    resContent.append(reply);
+
+
+                    Usage usage = response.getData().getUsage();
+
+                    if (null != usage) {
+                        aiTokenRecordService.save(
+                                IYqueAiTokenRecord.builder()
+                                        .completionTokens(usage.getCompletionTokens())
+                                        .promptTokens(usage.getPromptTokens())
+                                        .totalTokens(usage.getTotalTokens())
+                                        .createTime(new Date())
+                                        .aiResId(response.getData().getId())
+                                        .model(response.getData().getModel())
+                                        .build()
+                        );
+                    } else {
+                        log.error("AI响应错误: " + response.getMsg());
+                    }
+
+                }
+
+            }else{
+                throw new IYqueException("今日ai,token资源已耗尽");
+            }
+
+
+        }catch (Exception e){
+            log.error("ai处理问题异常:"+e.getMessage());
+            throw new IYqueException("ai处理问题异常:"+e.getMessage());
+
+        }
+
+
+        return resContent.toString();
+    }
+
+    @Override
+    public EmbeddingResponse embedding(List<String> text) {
+
+        try {
+            return ZhipuAiClient.builder()
+                    .apiKey(apiKey)
+                    .build()
+                    .embeddings().createEmbeddings(EmbeddingCreateParams.builder()
+                    .model(yqueParamConfig.getVector().getVectorModel())
+                    .input(text)
+                    .dimensions(yqueParamConfig.getVector().getDimension())
+                    .build());
         }catch (Exception e){
             log.error("向量计算异常:"+e.getMessage());
         }
 
         return null;
     }
+
 
 
 
