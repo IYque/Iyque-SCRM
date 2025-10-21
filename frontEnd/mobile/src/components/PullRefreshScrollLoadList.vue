@@ -76,7 +76,7 @@ export default {
   mounted() {},
   methods: {
     getList(page) {
-      if (this.disabled) {
+      if (this.query.pageNum != 1 && this.disabled) {
         return
       }
       this.loading = true
@@ -103,7 +103,7 @@ export default {
           this.loading = false
           this.refreshing = false
           // 数据全部加载完成
-          if (this.list.length >= +total) {
+          if (this.query.pageNum * this.query.pageSize >= +total) {
             if (this.list.length == 0) {
               this.query.pageNum = 1
             }

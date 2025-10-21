@@ -15,7 +15,7 @@ const $route = useRoute()
 <template>
   <div class="H5Marketing relative">
     <!-- H5底图 -->
-    <img class="size-[100%] --RadiusSmall --BorderBlack11" :src="form.backgroundUrl" fit="fill" />
+    <BaImage class="--RadiusSmall --BorderBlack11" :src="form.backgroundUrl" fit="cover" />
 
     <!-- 客服控件,链接控件 -->
     <div
