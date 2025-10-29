@@ -3,10 +3,13 @@ package cn.iyque.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.dao.IYqueH5MarketDao;
+import cn.iyque.dao.IYqueH5MarketRecordDao;
 import cn.iyque.entity.IYqueH5Market;
+import cn.iyque.entity.IYqueH5MarketRecord;
 import cn.iyque.entity.IYqueUserCode;
 import cn.iyque.service.IYqueH5MarketService;
 import cn.iyque.utils.FileUtils;
+import cn.iyque.utils.IpUtils;
 import cn.iyque.utils.SnowFlakeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,9 @@ public class IYqueH5MarketServiceImpl implements IYqueH5MarketService {
 
     @Autowired
     private IYqueH5MarketDao iYqueH5MarketDao;
+
+    @Autowired
+    private IYqueH5MarketRecordDao iYqueH5MarketRecordDao;
 
 
     @Override
@@ -80,6 +86,12 @@ public class IYqueH5MarketServiceImpl implements IYqueH5MarketService {
 
         if(optional.isPresent()){
             iYqueH5Market=optional.get();
+
+            iYqueH5MarketRecordDao.save(IYqueH5MarketRecord.builder()
+                    .h5MarketId(id)
+                    .viewIp(IpUtils.getHostIp())
+                    .createTime(new Date())
+                    .build());
         }
         return iYqueH5Market;
     }

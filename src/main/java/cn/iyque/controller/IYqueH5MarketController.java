@@ -2,8 +2,11 @@ package cn.iyque.controller;
 
 
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.domain.H5MarketRecordCountDto;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueH5Market;
+import cn.iyque.entity.IYqueH5MarketRecord;
+import cn.iyque.service.IYqueH5MarketRecordService;
 import cn.iyque.service.IYqueH5MarketService;
 import cn.iyque.utils.TableSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * H5营销
@@ -21,6 +26,9 @@ public class IYqueH5MarketController {
 
     @Autowired
     private IYqueH5MarketService yqueH5MarketService;
+
+    @Autowired
+    private IYqueH5MarketRecordService yqueH5MarketRecordService;
 
     /**
      * 新增或更新
@@ -81,6 +89,48 @@ public class IYqueH5MarketController {
 
         return new ResponseResult();
     }
+
+
+
+    /**
+     * 数据统计-头部tab
+     * @param h5MarketRecord
+     * @return
+     */
+    @GetMapping("/findH5MarketTab")
+    public ResponseResult  findH5MarketTab(IYqueH5MarketRecord h5MarketRecord){
+
+        H5MarketRecordCountDto h5MarketTab = yqueH5MarketRecordService.findH5MarketTab(h5MarketRecord.getH5MarketId());
+
+        return new ResponseResult(h5MarketTab);
+    }
+
+
+    /**
+     * 数据统计-折线图
+     * @param h5MarketRecord
+     * @return
+     */
+    @GetMapping("/findH5MarketTrend")
+    public ResponseResult findH5MarketTrend(IYqueH5MarketRecord h5MarketRecord){
+        List<H5MarketRecordCountDto> h5MarketTable = yqueH5MarketRecordService.findH5MarketTrend(h5MarketRecord.getStartTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId());
+
+        return new ResponseResult(h5MarketTable);
+    }
+
+    /**
+     * 数据统计-表格
+     * @param h5MarketRecord
+     * @return
+     */
+    @GetMapping("/findH5MarketTable")
+    public ResponseResult findH5MarketTable(IYqueH5MarketRecord h5MarketRecord){
+        Page<H5MarketRecordCountDto> dailyStats = yqueH5MarketRecordService.findDailyStats(h5MarketRecord.getStartTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId(), PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
+                TableSupport.buildPageRequest().getPageSize()));
+
+        return new ResponseResult(dailyStats.getContent(),dailyStats.getTotalElements());
+    }
+
 
 
 }
