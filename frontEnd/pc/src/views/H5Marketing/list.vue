@@ -11,6 +11,10 @@ const share = ref({})
         <BaInput label="H5名称" prop="name" v-model="query.name"></BaInput>
       </template>
 
+      <template #operate="{ goRoute, apiConfirm }">
+        <el-button type="primary" @click="goRoute()">新建H5</el-button>
+      </template>
+
       <!-- <template #operation="{ goRoute, apiConfirm }">
         <CommonTopRight>
           <el-button type="primary" @click="goRoute()">新建H5</el-button>
@@ -19,9 +23,6 @@ const share = ref({})
       </template> -->
 
       <template #default="{ data, apiConfirm, goRoute }">
-        <CommonTopRight>
-          <el-button type="primary" @click="goRoute()">新建H5</el-button>
-        </CommonTopRight>
         <div class="flex flexWrap --Gap">
           <div class="g-card --BorderBlack9 pad0 --RadiusSmall" v-for="(row, index) in data" :key="index">
             <BaImage

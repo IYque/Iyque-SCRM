@@ -249,6 +249,10 @@ export default defineComponent({
 
 <template>
   <div class="RequestChartTable" :class="$slots.query || 'g-card'" v-loading="loading">
+    <CommonTopRight>
+      <slot name="operate" v-bind="{ selectedIds, response, getList, apiConfirm, goRoute, download }"></slot>
+    </CommonTopRight>
+
     <!-- 顶部查询框 -->
     <el-form v-if="$slots.query" :model="query" ref="queryForm" inline class="searchForm">
       <slot name="query" v-bind="{ query }"></slot>
@@ -270,9 +274,7 @@ export default defineComponent({
       </slot>
 
       <!-- 查询框和操作栏 -->
-      <div
-        class="RequestChartTable-operation"
-        v-if="requestExport || isTimeQuery || $slots.queryMiddle || $slots.operation">
+      <div class="RequestChartTable-operation" v-if="requestExport || $slots.queryMiddle || $slots.operation">
         <el-form v-if="$slots.queryMiddle" :model="query" ref="queryFormMiddle" inline class="query-wrap">
           <slot name="queryMiddle" v-bind="{ query }"></slot>
           <SearchResetButton

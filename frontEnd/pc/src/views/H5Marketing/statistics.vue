@@ -1,43 +1,30 @@
 <template>
   <div>
-    <!-- <ElButton class="--MarginB" type="primary" plain @click="api.sync(query)">同步</ElButton> -->
-
-    <CardGroupIndex :data="cardData" />
+    <CardGroup :data="cardData" />
 
     <RequestChartTable
-      title="员工执行明细"
-      :isSelection="false"
-      searchBtnType="icon"
-      :request="api.getDataDetailUser"
+      isTimeQuery
+      title="数据趋势"
       :params="query"
-      :requestExport="api.getDataDetailExportUser"
-      :exportFileName="`客${typeText}SOP员工执行明细导出.xls`">
-      <template #queryMiddle="{ query }">
-        <BaInput label="员工名称" prop="userName" v-model="query.userName"></BaInput>
-      </template>
-      <template #table>
-        <el-table-column label="员工" prop="userName" />
-        <el-table-column label="任务总数" prop="totalTaskNumber" />
-        <el-table-column label="已完成任务数" prop="yzxTaskNumber" />
-        <el-table-column label="未完成任务数" prop="wzxTaskNumber" />
-        <el-table-column label="任务完成率" prop="executeRate" />
-      </template>
-    </RequestChartTable>
+      :request="api.getDataTrend"
+      type="lineChart"
+      :legend="['H5访问数', 'H5访问人数']"
+      :dealDataFun="dealDataTrend"></RequestChartTable>
 
     <RequestChartTable
-      title="任务完成明细"
+      isTimeQuery
+      title="数据报表"
       :isSelection="false"
       searchBtnType="icon"
-      :request="api.getDataDetailTask"
       :params="query"
-      :requestExport="api.getDataDetailExportTask"
-      :exportFileName="`客${typeText}SOP任务完成明细导出.xls`">
+      :request="api.getDataDetail"
+      exportFileName="H5营销数据报表.xls">
       <template #table>
-        <el-table-column label="任务" prop="taskName" />
-        <el-table-column :label="`执行客${typeText}总数`" prop="totalTargetNumber" />
-        <el-table-column :label="`已执行客${typeText}数`" prop="yzxTargetNumber" />
-        <el-table-column :label="`未执行客${typeText}数`" prop="wzxTargetNumber" />
-        <el-table-column :label="`客${typeText}执行率`" prop="executeRate" />
+        <el-table-column label="日期" prop="date" />
+        <el-table-column label="H5访问总数" prop="viewTotalNumber" />
+        <el-table-column label="H5访问总人数" prop="viewTotalPeopleNumber" />
+        <el-table-column label="今日H5访问数" prop="tdViewTotalNumber" />
+        <el-table-column label="今日H5访问人数" prop="tdViewTotalPeopleNumber" />
       </template>
     </RequestChartTable>
   </div>
@@ -47,11 +34,8 @@
 import * as api from './api'
 const $route = useRoute()
 
-const taskType = useRoute().path.includes('customerSop') ? 1 : 2
-const typeText = taskType == 1 ? '户' : '群'
-
 let query = {
-  sopId: $route.query.id,
+  h5MarketId: $route.query.id,
 }
 
 let cardData = ref([])
@@ -59,33 +43,40 @@ let cardData = ref([])
   api.getStatistic(query).then(({ data }) => {
     cardData.value = [
       {
-        title: '执行总员工数',
-        tips: '当前SOP执行涉及的全部员工量',
-        value: data.totalExecuteNumber,
+        title: 'H5访问总数',
+        tips: '访问当前H5页面的总PV数(不去重)',
+        value: data.viewTotalNumber,
       },
       {
-        title: `执行总客${typeText}数`,
-        tips: `当前SOP执行涉及的全部客${typeText}量`,
-        value: data.totalTargetNumber,
+        title: 'H5访问总人数',
+        tips: '访问当前H5页面的总UV数(去重)',
+        value: data.viewTotalPeopleNumber,
       },
       {
-        title: '执行总任务数',
-        tips: '当前SOP执行涉及的全部任务量',
-        value: data.totalTaskNumber,
+        title: '今日H5访问数',
+        tips: '今日访问当前H5页面的PV数(不去重)',
+        value: data.tdViewTotalNumber,
       },
       {
-        title: '执行任务完成数',
-        tips: '当前SOP执行涉及任务的完成量',
-        value: data.yzxTaskNumber,
-      },
-      {
-        title: '执行任务完成率',
-        tips: '当前SOP执行涉及任务的完成率',
-        value: data.executeRate,
+        title: '今日H5访问人数',
+        tips: '今日访问当前H5页面的UV数(去重)',
+        value: data.tdViewTotalPeopleNumber,
       },
     ]
   })
 })()
+
+function dealDataTrend(data, series, xData) {
+  xData.length = 0
+  series.length = 0
+  let _data = [[], []]
+  data.forEach((element) => {
+    xData.push(element.date)
+    _data[0].push(element.tdViewTotalNumber)
+    _data[1].push(element.tdViewTotalPeopleNumber)
+  })
+  series.push(..._data)
+}
 </script>
 
 <style lang="scss" scoped></style>

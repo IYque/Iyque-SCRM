@@ -117,7 +117,7 @@ export const navRoutes = [
           },
           {
             path: 'detail',
-            component: () => import('@/views/H5Marketing/aev'),
+            component: () => import('@/views/H5Marketing/detail'),
             meta: { title: '详情', hidden: true },
           },
         ],
