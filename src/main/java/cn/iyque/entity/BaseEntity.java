@@ -9,6 +9,11 @@ import java.util.Date;
 @Data
 public class BaseEntity {
 
+
+    @Transient
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date beginTime;
+
     @Transient
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startTime;

@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class H5MarketRecordCountDto {
     /**
      *  日期
@@ -35,4 +33,15 @@ public class H5MarketRecordCountDto {
      * 今日h5访问总人数
      */
     private long tdViewTotalPeopleNumber;
+
+    public H5MarketRecordCountDto() {
+    }
+
+    public H5MarketRecordCountDto(String date, long viewTotalNumber, long viewTotalPeopleNumber, long tdViewTotalNumber, long tdViewTotalPeopleNumber) {
+        this.date = date;
+        this.viewTotalNumber = viewTotalNumber;
+        this.viewTotalPeopleNumber = viewTotalPeopleNumber;
+        this.tdViewTotalNumber = tdViewTotalNumber;
+        this.tdViewTotalPeopleNumber = tdViewTotalPeopleNumber;
+    }
 }

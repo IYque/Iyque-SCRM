@@ -1,8 +1,8 @@
 package cn.iyque.service;
 
 import cn.iyque.domain.H5MarketRecordCountDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.Date;
 import java.util.List;
@@ -23,10 +23,11 @@ public interface IYqueH5MarketRecordService {
      * @param startDate
      * @param endDate
      * @param h5MarketId
+     * @param page
      * @return
      */
-    Page<H5MarketRecordCountDto> findDailyStats(Date startDate,
-                                                Date endDate, Long h5MarketId, Pageable pageable);
+    IPage<H5MarketRecordCountDto> findDailyStats(Date startDate,
+                                                 Date endDate, Long h5MarketId, Page<H5MarketRecordCountDto> page);
 
 
     /**

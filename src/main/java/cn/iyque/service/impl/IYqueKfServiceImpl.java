@@ -135,7 +135,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
                                     = kfMsgDao.findTopByOpenKfidOrderByPullTimeDesc(callBackBaseMsg.getOpenKfId());
 
                             if(null != kfMsg){
-                                dataCursor.append(kfMsg.getCursor());
+                                dataCursor.append(kfMsg.getMessageCursor());
                             }
 
                             //获取客服消息
@@ -145,7 +145,7 @@ public class IYqueKfServiceImpl implements IYqueKfService {
 
                             if(null != wxCpKfMsgListResp){
                                 kfMsg=IYqueKfMsg.builder()
-                                        .cursor(wxCpKfMsgListResp.getNextCursor())
+                                        .messageCursor(wxCpKfMsgListResp.getNextCursor())
                                         .openKfid(callBackBaseMsg.getOpenKfId())
                                         .pullTime(new Date())
                                         .build();

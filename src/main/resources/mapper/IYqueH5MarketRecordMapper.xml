@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iyque.mapper.IYqueH5MarketRecordMapper">
+
+    <select id="findH5MarketRecordCount" resultType="cn.iyque.domain.H5MarketRecordCountDto">
+        SELECT
+        sd.DATE AS date,
+        (
+        SELECT
+        count( viewIp)
+        FROM
+        iyque_h5_market_record
+        WHERE DATE ( createTime ) &lt;= sd.DATE
+        <if test="h5MarketId != null">
+            AND h5MarketId=#{h5MarketId}
+        </if>
+        AND delFlag=0
+        ) AS viewTotalNumber,
+        (
+        SELECT
+        count(DISTINCT viewIp)
+        FROM
+        iyque_h5_market_record
+        WHERE DATE ( createTime )  &lt;= sd.DATE
+        <if test="h5MarketId != null">
+            AND h5MarketId=#{h5MarketId}
+        </if>
+        AND delFlag=0
+        ) AS viewTotalPeopleNumber,
+        (
+        SELECT
+        count(viewIp)
+        FROM
+        iyque_h5_market_record
+        WHERE DATE ( createTime )= sd.DATE
+        <if test="h5MarketId != null">
+            AND h5MarketId=#{h5MarketId}
+        </if>
+        AND delFlag=0
+        ) AS tdViewTotalNumber,
+        (
+        SELECT
+        count(DISTINCT viewIp)
+        FROM
+        iyque_h5_market_record
+        WHERE DATE ( createTime )= sd.DATE
+        <if test="h5MarketId != null">
+            AND h5MarketId=#{h5MarketId}
+        </if>
+        AND delFlag=0
+        ) AS tdViewTotalPeopleNumber
+        FROM
+        sys_dim_date sd
+        <where>
+            <if test="beginTime != null and beginTime !='' and endTime !=''  and endTime !=null">
+                DATE_FORMAT( sd.DATE, '%Y-%m-%d' ) BETWEEN #{beginTime} and #{endTime}
+            </if>
+        </where>
+        ORDER BY sd.DATE ASC
+    </select>
+
+
+</mapper>

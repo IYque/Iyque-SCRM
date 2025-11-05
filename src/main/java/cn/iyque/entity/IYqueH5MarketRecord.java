@@ -1,6 +1,7 @@
 package cn.iyque.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "iyque_h5_market_record")
+@TableName("iyque_h5_market_record")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

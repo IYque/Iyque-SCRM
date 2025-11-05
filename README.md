@@ -179,7 +179,7 @@
 
 ### 5.3 架构
 
-后端：采用springboot+jpa+h2架构，项目内置h2数据库，开箱即可使用；
+后端：采用springboot+jpa+mybatis-plus+mysql架构，项目内置mysql数据库，开箱即可使用；
 
 前端：采用vue3+vite+pinia+element-plus；
 

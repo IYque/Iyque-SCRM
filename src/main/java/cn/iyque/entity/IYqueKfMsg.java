@@ -31,7 +31,7 @@ public class IYqueKfMsg {
     private Long id;
 
     //上一次调用时返回的next_cursor，第一次拉取可以不填。若不填，从3天内最早的消息开始返回
-    private String cursor;
+    private String messageCursor;
 
 
     //指定拉取某个客服账号的消息

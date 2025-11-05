@@ -23,21 +23,15 @@ iyque:
     vectorModel: embedding-3 #向量模型,支持智普的 embedding-3，与embedding-2
     score: 0.5f #向量查询相似度
 spring:
-  h2:
-    console:
-      path: /h2  #h2嵌入式数据库控制台，可以通过浏览器访问
-      enabled: true
-      settings:
-        web-allow-others: true
   datasource:
-    url: jdbc:h2:file:./data/mydb;
-    #  url: jdbc:h2:tcp://localhost/./data/mydb
-    username: sa
-    password: 123456
+    url: jdbc:mysql://127.0.0.1:10179/scrm_ky?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     generate-ddl: true
@@ -57,3 +51,11 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.yourproject.entity # 替换为你的实体类所在包
+  configuration:
+    map-underscore-to-camel-case: true # 自动将下划线字段名映射为驼峰属性名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 输出MyBatis-Plus的SQL日志

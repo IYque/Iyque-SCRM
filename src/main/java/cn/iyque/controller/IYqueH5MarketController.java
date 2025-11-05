@@ -9,6 +9,7 @@ import cn.iyque.entity.IYqueH5MarketRecord;
 import cn.iyque.service.IYqueH5MarketRecordService;
 import cn.iyque.service.IYqueH5MarketService;
 import cn.iyque.utils.TableSupport;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -113,7 +114,7 @@ public class IYqueH5MarketController {
      */
     @GetMapping("/findH5MarketTrend")
     public ResponseResult findH5MarketTrend(IYqueH5MarketRecord h5MarketRecord){
-        List<H5MarketRecordCountDto> h5MarketTable = yqueH5MarketRecordService.findH5MarketTrend(h5MarketRecord.getStartTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId());
+        List<H5MarketRecordCountDto> h5MarketTable = yqueH5MarketRecordService.findH5MarketTrend(h5MarketRecord.getBeginTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId());
 
         return new ResponseResult(h5MarketTable);
     }
@@ -125,10 +126,13 @@ public class IYqueH5MarketController {
      */
     @GetMapping("/findH5MarketTable")
     public ResponseResult findH5MarketTable(IYqueH5MarketRecord h5MarketRecord){
-        Page<H5MarketRecordCountDto> dailyStats = yqueH5MarketRecordService.findDailyStats(h5MarketRecord.getStartTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId(), PageRequest.of(TableSupport.buildPageRequest().getPageNum(),
-                TableSupport.buildPageRequest().getPageSize()));
 
-        return new ResponseResult(dailyStats.getContent(),dailyStats.getTotalElements());
+        IPage<H5MarketRecordCountDto> iPage = yqueH5MarketRecordService.findDailyStats(h5MarketRecord.getBeginTime(), h5MarketRecord.getEndTime(), h5MarketRecord.getH5MarketId(), new com.baomidou.mybatisplus.extension.plugins.pagination.Page<H5MarketRecordCountDto>(
+                TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()
+
+        ));
+
+        return new ResponseResult(iPage.getRecords(),iPage.getTotal());
     }
 
 
