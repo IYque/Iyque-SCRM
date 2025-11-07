@@ -47,11 +47,7 @@ function _upload() {
           </el-button> -->
         </div>
 
-        <BaDialog
-          ref="dialogRef"
-          dynamicTitle="知识库"
-          width="500"
-          :formProps="{ 'label-width': '100px' }"
+        <BaDialog ref="dialogRef" dynamicTitle="知识库" width="500" :formProps="{ 'label-width': '100px' }"
           :rules="{ users: { required: true, message: '必选项', trigger: 'change' } }"
           @confirm="() => $refs.dialogRef.confirm(save, $refs.rctRef.getList)">
           <template #form="{ form }">
@@ -109,12 +105,7 @@ function _upload() {
               </el-select>
             </el-form-item> -->
             <el-form-item prop="description" label="知识库描述">
-              <el-input
-                type="textarea"
-                v-model="form.description"
-                maxlength="200"
-                placeholder="请输入"
-                show-word-limit
+              <el-input type="textarea" v-model="form.description" maxlength="200" placeholder="请输入" show-word-limit
                 clearable></el-input>
             </el-form-item>
             <!-- <el-form-item prop="hotWord" label="是否公开">
@@ -142,8 +133,8 @@ function _upload() {
 
         <el-table-column label="操作" fixed="right" width="130">
           <template #default="{ row }">
-            <TableOperateBtn type="" @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>
-            <TableOperateBtn type="" @click=";($refs.dialogRefFile.visible = true), (kid = row.id)">
+            <TableOperateBtn isText @click="$refs.rctRef.apiConfirm(del, row.id)">删除</TableOperateBtn>
+            <TableOperateBtn isText @click="; ($refs.dialogRefFile.visible = true), (kid = row.id)">
               附件
             </TableOperateBtn>
           </template>
@@ -172,7 +163,7 @@ function _upload() {
             <template #tip>
               <div class="el-upload__tip">jpg/png files with a size less than 500KB.</div>
             </template>
-          </el-upload> -->
+    </el-upload> -->
           <!-- <Upload v-model:fileUrl="form.coverUrl" v-model:imgSize="form.memorySize" type="0">文件上传</Upload> -->
         </template>
 
@@ -188,7 +179,7 @@ function _upload() {
           <el-table-column label="操作" fixed="right" width="130">
             <template #default="{ row }">
               <TableOperateBtn type="" @click="$refs.rctRefFile.apiConfirm(delAttach, row.id)">删除</TableOperateBtn>
-              <TableOperateBtn type="" @click=";($refs.dialogRefFragments.visible = true), (docId = row.id)">
+              <TableOperateBtn type="" @click="; ($refs.dialogRefFragments.visible = true), (docId = row.id)">
                 知识片段
               </TableOperateBtn>
             </template>
