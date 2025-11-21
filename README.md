@@ -14,6 +14,7 @@
 
 -  官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 -  开源部署文档:  <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs</a>
+-  企微密钥生成工具集:  <a href="https://tools.iyuanque.cn" target="_blank">https://tools.iyuanque.cn</a>
 - 【商业版】功能清单: <a href="https://iyuanque.cn/archives/sy" target="_blank">https://iyuanque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
