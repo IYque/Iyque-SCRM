@@ -4,14 +4,18 @@ package cn.iyque.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.ResponseResult;
-import cn.iyque.service.impl.IYqueTagServiceImpl;
-import me.chanjar.weixin.cp.bean.WxCpTag;
+import cn.iyque.entity.IYqueTag;
+import cn.iyque.entity.IYqueTagGroup;
+import cn.iyque.exception.IYqueException;
+import cn.iyque.service.IYqueTagGroupService;
+import cn.iyque.service.IYqueTagService;
+import cn.iyque.utils.TableSupport;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalTagGroupInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +25,19 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/iYqueTag")
-public class IYqueTagController {
+public class IYqueTagController{
+
+
 
 
 
 
     @Autowired
-    private IYqueTagServiceImpl iYqueWxCptTagService;
+    private IYqueTagGroupService iYqueTagGroupService;
+
+
+    @Autowired
+    private IYqueTagService yqueTagService;
 
 
     /**
@@ -37,16 +47,110 @@ public class IYqueTagController {
     @GetMapping("/findIYqueTag")
     public ResponseResult findIYqueTag(){
         List<WxCpUserExternalTagGroupInfo.Tag> wxCpTags=new ArrayList<>();
-        try {
-            List<WxCpUserExternalTagGroupInfo.Tag> wxCpTagList = iYqueWxCptTagService.listAll();
-            if(CollectionUtil.isNotEmpty(wxCpTagList)){
-                wxCpTags.addAll(wxCpTagList);
-            }
-        }catch (Exception e){
-            return new ResponseResult(HttpStatus.WE_ERROR,e.getMessage(),null);
+
+        List<IYqueTag> iYqueTagList = yqueTagService.list(new LambdaQueryWrapper<>());
+        if(CollectionUtil.isNotEmpty(iYqueTagList)){
+
+            iYqueTagList.stream().forEach(item->{
+
+                WxCpUserExternalTagGroupInfo.Tag tag=new WxCpUserExternalTagGroupInfo.Tag();
+                tag.setName(item.getName());
+                tag.setId(item.getTagId());
+                wxCpTags.add(tag);
+            });
+
         }
 
 
         return new ResponseResult(wxCpTags);
     }
+
+
+    /**
+     * 同步标签
+     * @return
+     */
+    @PostMapping("/synchTags")
+    public ResponseResult synchTags(){
+        try {
+            iYqueTagGroupService.synchIYqueTag();
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMsg(),null);
+        }
+        return new ResponseResult("标签同步中,请稍后刷新查看");
+    }
+
+
+    /**
+     * 删除标签组
+     * @param ids
+     * @return
+     */
+    @DeleteMapping("/{ids}")
+    public ResponseResult remove(@PathVariable String[] ids)
+    {
+
+        try {
+            iYqueTagGroupService.removeGroupTags(ids);
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMsg(),null);
+        }
+        return new ResponseResult();
+    }
+
+
+    /**
+     * 新增标签组
+     */
+    @PostMapping
+    public ResponseResult addTagGroup(@RequestBody IYqueTagGroup iYqueTagGroup)
+    {
+
+
+        try {
+            iYqueTagGroupService.addTagGroup(iYqueTagGroup);
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMsg(),null);
+        }
+        return new ResponseResult();
+
+
+    }
+
+    /**
+     * 修改标签组
+     */
+    @PutMapping
+    public ResponseResult updateTagGroup(@RequestBody IYqueTagGroup iYqueTagGroup)
+    {
+
+
+        try {
+            iYqueTagGroupService.updateTagGroup(iYqueTagGroup);
+        }catch (IYqueException e){
+            return new ResponseResult(HttpStatus.WE_ERROR,e.getMsg(),null);
+        }
+        return new ResponseResult();
+
+    }
+
+    /**
+     * 标签列表
+     * @param yqueTagGroup
+     * @return
+     */
+    @GetMapping("/findIYqueTagGroups")
+    public ResponseResult findIYqueTagGroups(IYqueTagGroup yqueTagGroup){
+
+
+
+        PageHelper.startPage(TableSupport.buildPageMybaitsRequest().getPageNum(), TableSupport.buildPageMybaitsRequest().getPageSize());
+        List<IYqueTagGroup> list = iYqueTagGroupService.findIYqueTagGroups(yqueTagGroup.getGroupName());
+
+
+        return new ResponseResult(list,new PageInfo(list).getTotal());
+    }
+
+
+
 }

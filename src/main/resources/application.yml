@@ -24,7 +24,7 @@ iyque:
     score: 0.5f #向量查询相似度
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:10179/scrm_ky?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/scrm_ky?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
@@ -57,5 +57,10 @@ mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   type-aliases-package: com.yourproject.entity # 替换为你的实体类所在包
   configuration:
-    map-underscore-to-camel-case: true # 自动将下划线字段名映射为驼峰属性名
+    map-underscore-to-camel-case: false # 自动将下划线字段名映射为驼峰属性名
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 输出MyBatis-Plus的SQL日志
+
+# application.yml
+logging:
+  level:
+    cn.iyque.mapper: DEBUG  # 替换为您Mapper接口所在的包名

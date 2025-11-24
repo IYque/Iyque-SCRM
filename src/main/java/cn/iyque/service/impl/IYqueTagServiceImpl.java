@@ -1,10 +1,13 @@
 package cn.iyque.service.impl;
 
+import cn.iyque.entity.IYqueTag;
+import cn.iyque.mapper.IYqueTagMapper;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueTagService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import me.chanjar.weixin.common.error.WxErrorException;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.util.json.GsonParser;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalTagGroupInfo;
@@ -16,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class IYqueTagServiceImpl implements IYqueTagService {
+@Slf4j
+public class IYqueTagServiceImpl extends ServiceImpl<IYqueTagMapper, IYqueTag> implements IYqueTagService {
 
 
     @Autowired
