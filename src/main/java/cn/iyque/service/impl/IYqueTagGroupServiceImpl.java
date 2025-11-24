@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
+import cn.iyque.constant.IYqueConstant;
 import cn.iyque.entity.IYqueTag;
 import cn.iyque.entity.IYqueTagGroup;
 import cn.iyque.exception.IYqueException;
@@ -72,6 +73,7 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                                     .orderNumber(k.getOrder())
                                     .groupTagType(1)
                                     .groupName(k.getGroupName())
+                                    .delFlag(IYqueConstant.commonState)
                                     .build();
 
                             List<WxCpUserExternalTagGroupList.TagGroup.Tag>
@@ -84,6 +86,7 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                                                     .orderNumber(kk.getOrder())
                                                     .tagType(1)
                                                     .name(kk.getName())
+                                                    .delFlag(IYqueConstant.commonState)
                                                     .build()
                                     );
                                 });
@@ -123,7 +126,7 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                     if(CollectionUtil.isNotEmpty(iYqueTags)){
                         tagList.stream().forEach(tag->{
 
-                            Optional<IYqueTag> tagOptional = tagList.stream()
+                            Optional<IYqueTag> tagOptional = iYqueTags.stream()
                                     .filter(item -> item.getTagId().equals(tag.getTagId()) && item.getGroupId().equals(tag.getGroupId()))
                                     .findAny();
                             if(tagOptional.isPresent()){
@@ -159,13 +162,13 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
     public void addTagGroup(IYqueTagGroup tagGroup) {
         try {
 
-            if(StringUtils.isNotEmpty(tagGroup.getGroupName())&&CollectionUtil.isNotEmpty(tagGroup.getTagList())){
+            if(StringUtils.isNotEmpty(tagGroup.getGroupName())&&CollectionUtil.isNotEmpty(tagGroup.getWeTags())){
                 WxCpUserExternalTagGroupInfo groupInfo=new WxCpUserExternalTagGroupInfo();
                 WxCpUserExternalTagGroupInfo.TagGroup wxTagGroup=new WxCpUserExternalTagGroupInfo.TagGroup();
                 wxTagGroup.setGroupName(tagGroup.getGroupName());
 
                 List<WxCpUserExternalTagGroupInfo.Tag> tags=new ArrayList<>();
-                tagGroup.getTagList().stream().forEach(item->{
+                tagGroup.getWeTags().stream().forEach(item->{
                     WxCpUserExternalTagGroupInfo.Tag wxTag=new WxCpUserExternalTagGroupInfo.Tag();
                     wxTag.setName(item.getName());
                     tags.add(wxTag);
@@ -177,9 +180,14 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                 WxCpUserExternalTagGroupInfo wxGroupInfo = yqueConfigService.findWxcpservice().
                         getExternalContactService().addCorpTag(groupInfo);
                 if(wxGroupInfo.success()){
+                    tagGroup.setGroupTagType(1);
+                    tagGroup.setOrderNumber(0L);
                     tagGroup.setGroupId(wxGroupInfo.getTagGroup().getGroupId());
+                    tagGroup.setDelFlag(IYqueConstant.commonState);
                     if(this.save(tagGroup)) {
-                        tagGroup.getTagList().stream().forEach(item -> {
+                        tagGroup.getWeTags().stream().forEach(item -> {
+                            item.setDelFlag(IYqueConstant.commonState);
+                            item.setOrderNumber(0L);
                             item.setTagType(1);
                             item.setGroupId(tagGroup.getGroupId());
                             Optional<WxCpUserExternalTagGroupInfo.Tag> optionalTag =
@@ -189,7 +197,7 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                                 item.setTagId(optionalTag.get().getId());
                             }
                         });
-                        yqueTagService.saveOrUpdateBatch(tagGroup.getTagList());
+                        yqueTagService.saveOrUpdateBatch(tagGroup.getWeTags());
                     }
                 }
             }
@@ -234,7 +242,7 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                     }
 
 
-                    List<IYqueTag> tagList = tagGroup.getTagList();
+                    List<IYqueTag> tagList = tagGroup.getWeTags();
                     if(CollectionUtil.isNotEmpty(tagList)){
 
                         //处理标签同名的名表(比如web端当前标签组下，A标签删除了，然后又添加了A标签。)
@@ -246,16 +254,21 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
 
                         if(CollectionUtil.isNotEmpty(yTagIds)){
                             //移除需要删除的标签
-                            if(yqueTagService.remove(new LambdaQueryWrapper<IYqueTag>()
-                                    .in(IYqueTag::getTagId,yTagIds))){
+                            List<IYqueTag> removeIYqueTags = yqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
+                                    .eq(IYqueTag::getGroupId, tagGroup.getGroupId())
+                                    .notIn(IYqueTag::getTagId, yTagIds.stream().map(IYqueTag::getTagId).collect(Collectors.toList())));
+                            if(CollectionUtil.isNotEmpty(removeIYqueTags)){
+                               if(yqueTagService.removeByIds(removeIYqueTags.stream().map(IYqueTag::getId).collect(Collectors.toList()))){
+                                   WxCpBaseResp wxCpBaseResp = wxcpservice.getExternalContactService().delCorpTag(removeIYqueTags.stream()
+                                           .map(IYqueTag::getTagId)
+                                           .toArray(String[]::new), null);
+                                   if(!wxCpBaseResp.success()){
+                                       throw new IYqueException("编辑标签时,处理删除的标签失败:"+wxCpBaseResp.getErrmsg());
+                                   }
+                               }
 
-                                WxCpBaseResp wxCpBaseResp = wxcpservice.getExternalContactService().delCorpTag(tagList.stream()
-                                        .map(IYqueTag::getTagId)
-                                        .toArray(String[]::new), ArrayUtil.append(new String[]{}, tagGroup.getGroupId()));
-                                if(!wxCpBaseResp.success()){
-                                   throw new IYqueException("编辑标签时,处理删除的标签失败:"+wxCpBaseResp.getErrmsg());
-                                }
                             }
+
                         }
 
 
@@ -285,6 +298,19 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
                             WxCpUserExternalTagGroupInfo wxCpUserExternalTagGroupInfo = wxcpservice.getExternalContactService().addCorpTag(tagGroupInfo);
                             if(!wxCpUserExternalTagGroupInfo.success()){
                                 throw new IYqueException("编辑标签处理标签新增失败:"+wxCpUserExternalTagGroupInfo.getErrmsg());
+                            }else{
+                                List<IYqueTag> addNewTagsDb=new ArrayList<>();
+                                wxCpUserExternalTagGroupInfo.getTagGroup().getTag().stream().forEach(k->{
+                                    addNewTagsDb.add(IYqueTag.builder()
+                                                    .delFlag(IYqueConstant.commonState)
+                                                    .tagId(k.getId())
+                                                    .name(k.getName())
+                                                    .orderNumber(k.getOrder())
+                                                    .groupId(tagGroup.getGroupId())
+                                                    .tagType(1)
+                                            .build());
+                                });
+                                yqueTagService.saveOrUpdateBatch(addNewTagsDb);
 
                             }
 
@@ -303,6 +329,8 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
 
         } catch (Exception e) {
 
+            log.error(e.getMessage());
+            throw new IYqueException("编辑标签时,处理删除的标签失败:"+e.getMessage());
 
         }
 
@@ -314,16 +342,16 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
 
         if(CollectionUtil.isNotEmpty(iYqueTags)){
 
-            List<IYqueTag> addTags = iYqueTags.stream()
+            List<IYqueTag> addWeTags = iYqueTags.stream()
                     .filter(item -> StringUtils.isEmpty(item.getTagId()))
                     .collect(Collectors.toList());
 
-            if(CollectionUtil.isNotEmpty(addTags)){
+            if(CollectionUtil.isNotEmpty(addWeTags)){
                 List<IYqueTag> weTagList = yqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
-                        .in(IYqueTag::getName, addTags.stream().map(IYqueTag::getName).collect(Collectors.toList()))
+                        .in(IYqueTag::getName, addWeTags.stream().map(IYqueTag::getName).collect(Collectors.toList()))
                         .eq(IYqueTag::getGroupId, tagGroup.getGroupId()));
                 if(CollectionUtil.isNotEmpty(weTagList)){
-                    addTags.stream().forEach(item->{
+                    addWeTags.stream().forEach(item->{
 
                         Optional<IYqueTag> optional = weTagList.stream().filter(k -> k.getName().equals(item.getName())).findAny();
                         if(optional.isPresent()){
@@ -345,18 +373,18 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
     }
 
     @Override
-    public IPage<IYqueTagGroup> findIYqueTagGroups(Page<IYqueTagGroup> page,String groupTagName) {
-        Page<IYqueTagGroup> iYqueTagGroupPage = this.baseMapper.selectPage(page, new LambdaQueryWrapper<IYqueTagGroup>()
+     public List<IYqueTagGroup> findIYqueTagGroups(String groupTagName) {
+        List<IYqueTagGroup> iYqueTagGroupPage = this.baseMapper.selectList( new LambdaQueryWrapper<IYqueTagGroup>()
                 .like(StringUtils.isNotEmpty(groupTagName),IYqueTagGroup::getGroupName, groupTagName)
                 .orderByAsc(IYqueTagGroup::getOrderNumber));
-        if(CollectionUtil.isNotEmpty(iYqueTagGroupPage.getRecords())){
+        if(CollectionUtil.isNotEmpty(iYqueTagGroupPage)){
 
             List<IYqueTag> iYqueTags = yqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
-                    .in(IYqueTag::getGroupId, iYqueTagGroupPage.getRecords().stream()
+                    .in(IYqueTag::getGroupId, iYqueTagGroupPage.stream()
                             .map(IYqueTagGroup::getGroupId).collect(Collectors.toList())));
             if(CollectionUtil.isNotEmpty(iYqueTags)){
-                iYqueTagGroupPage.getRecords().stream().forEach(kk->{
-                    kk.setTagList(
+                iYqueTagGroupPage.stream().forEach(kk->{
+                    kk.setWeTags(
                             iYqueTags.stream().filter(item->item.getGroupId().equals(kk.getGroupId())).sorted(Comparator.comparing(IYqueTag::getOrderNumber)).collect(Collectors.toList())
                     );
                 });

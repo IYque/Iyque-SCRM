@@ -23,7 +23,7 @@ public class TableSupport {
 
 
     /**
-     * 封装分页对象
+     * 封装分页对象(jpa)
      */
     public static PageDomain getPageDomain()
     {
@@ -33,6 +33,24 @@ public class TableSupport {
         Integer parameterToInt = ServletUtils.getParameterToInt(PAGE_SIZE);
         pageDomain.setPageSize(parameterToInt == null?10:ServletUtils.getParameterToInt(PAGE_SIZE));
         return pageDomain;
+    }
+
+    /**
+     * 封装分页对象(为了mybatis-plus)
+     */
+    public static PageDomain getPageDomainMybatis()
+    {
+        PageDomain pageDomain = new PageDomain();
+        Integer pageNum = ServletUtils.getParameterToInt(PAGE_NUM);
+        pageDomain.setPageNum(pageNum);
+        Integer parameterToInt = ServletUtils.getParameterToInt(PAGE_SIZE);
+        pageDomain.setPageSize(parameterToInt == null?10:ServletUtils.getParameterToInt(PAGE_SIZE));
+        return pageDomain;
+    }
+
+    public static PageDomain buildPageMybaitsRequest()
+    {
+        return getPageDomainMybatis();
     }
 
     public static PageDomain buildPageRequest()

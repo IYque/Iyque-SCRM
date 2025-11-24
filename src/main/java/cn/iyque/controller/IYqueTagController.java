@@ -11,7 +11,8 @@ import cn.iyque.service.IYqueTagGroupService;
 import cn.iyque.service.IYqueTagService;
 import cn.iyque.utils.TableSupport;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import me.chanjar.weixin.cp.bean.external.WxCpUserExternalTagGroupInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/iYqueTag")
-public class IYqueTagController {
+public class IYqueTagController{
 
 
 
@@ -69,7 +70,7 @@ public class IYqueTagController {
      * 同步标签
      * @return
      */
-    @GetMapping("/synchTags")
+    @PostMapping("/synchTags")
     public ResponseResult synchTags(){
         try {
             iYqueTagGroupService.synchIYqueTag();
@@ -141,11 +142,13 @@ public class IYqueTagController {
     @GetMapping("/findIYqueTagGroups")
     public ResponseResult findIYqueTagGroups(IYqueTagGroup yqueTagGroup){
 
-        IPage<IYqueTagGroup> iPage = iYqueTagGroupService.findIYqueTagGroups(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<IYqueTagGroup>(
-                TableSupport.buildPageRequest().getPageNum(), TableSupport.buildPageRequest().getPageSize()
-        ),yqueTagGroup.getGroupName());
 
-        return new ResponseResult(iPage.getRecords(),iPage.getTotal());
+
+        PageHelper.startPage(TableSupport.buildPageMybaitsRequest().getPageNum(), TableSupport.buildPageMybaitsRequest().getPageSize());
+        List<IYqueTagGroup> list = iYqueTagGroupService.findIYqueTagGroups(yqueTagGroup.getGroupName());
+
+
+        return new ResponseResult(list,new PageInfo(list).getTotal());
     }
 
 

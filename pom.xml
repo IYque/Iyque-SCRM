@@ -20,6 +20,7 @@
     <easyexcel.version>4.0.3</easyexcel.version>
       <zai.version>0.0.6</zai.version>
       <mysql.version>8.0.33</mysql.version>
+      <pagehelper.boot.version>1.4.2</pagehelper.boot.version>
   </properties>
 
   <parent>
@@ -160,7 +161,14 @@
       <dependency>
           <groupId>com.baomidou</groupId>
           <artifactId>mybatis-plus-boot-starter</artifactId>
-          <version>3.5.4</version> <!-- 请使用与您Spring Boot版本兼容的最新版 -->
+          <version>3.4.0</version> <!-- 请使用与您Spring Boot版本兼容的最新版 -->
+      </dependency>
+
+      <!-- pagehelper 分页插件 -->
+      <dependency>
+          <groupId>com.github.pagehelper</groupId>
+          <artifactId>pagehelper-spring-boot-starter</artifactId>
+          <version>${pagehelper.boot.version}</version>
       </dependency>
 
 

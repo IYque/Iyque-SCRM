@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 public interface IYqueTagGroupService extends IService<IYqueTagGroup> {
 
     /**
@@ -31,11 +33,10 @@ public interface IYqueTagGroupService extends IService<IYqueTagGroup> {
 
 
     /**
-     * 分页获取标签组
-     * @param page
+     * 获取标签组
      * @return
      */
-    IPage<IYqueTagGroup> findIYqueTagGroups(Page<IYqueTagGroup> page,String groupTagName);
+    List<IYqueTagGroup> findIYqueTagGroups(String groupTagName);
 
 
 

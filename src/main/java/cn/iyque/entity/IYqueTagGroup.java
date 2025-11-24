@@ -55,7 +55,7 @@ public class IYqueTagGroup extends BaseEntity{
 
 
     @TableField(exist = false)
-    private List<IYqueTag> tagList;
+    private List<IYqueTag> weTags;
 
 
 }
