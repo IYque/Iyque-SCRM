@@ -33,6 +33,9 @@ function requestFactory(getway = '') {
       // 未设置状态码则默认成功状态
       const code = res.data.code || 200
       if ([200, 301].includes(code)) {
+        if ([301].includes(code)) {
+          $sdk.msgError(res.data?.msg)
+        }
         return res.data
       } else if (code === 401) {
         MessageBox.confirm('登录状态已过期，请重新登录', '系统提示', {
