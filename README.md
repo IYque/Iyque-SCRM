@@ -198,7 +198,7 @@
 ![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 ## 七、获奖荣耀
-![输入图片说明](pic/ry.jpg)
+<a href="https://iyuanque.cn/#awards" target="_blank">获奖荣耀</a>
 
 ## 八、版权说明
   该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0]协议的前提下,可自行二开与商用
