@@ -8,8 +8,9 @@ const serve = '/iYqueTag'
  */
 export const getList = (data) => {
   // 添加标签分组类型(1:客户企业标签;2:客群标签)
-  return get(`${serve}/findIYqueTagGroups`, { ...data, groupTagType: 1 })
+  return get(`${serve}/findIYqueTagGroups`, { ...data, groupTagType: 2 })
 }
+
 // 详情
 export const getDetail = (id) => get(`${serve}/getKeyWordGroupBaseInfo/${id}`)
 
@@ -23,14 +24,11 @@ export const del = (ids) => delt(`${serve}/${ids}`)
  */
 export const add = (data) => {
   // 添加标签分组类型(1:客户企业标签;2:客群标签)
-  return post(`${serve}`, { ...data, groupTagType: 1 })
+  return post(`${serve}`, { ...data, groupTagType: 2 })
 }
 
 // 修改
 export function update(data) {
   // 添加标签分组类型(1:客户企业标签;2:客群标签)
-  return put(`${serve}`, { ...data, groupTagType: 1 })
+  return put(`${serve}`, { ...data, groupTagType: 2 })
 }
-
-// 同步
-export const sync = (data) => post(`${serve}/synchTags`, data)

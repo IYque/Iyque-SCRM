@@ -1,5 +1,6 @@
 package cn.iyque.service;
 
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.entity.IYqueChat;
 import cn.iyque.entity.IYqueChatCode;
 import cn.iyque.entity.IYqueUser;
@@ -39,4 +40,11 @@ public interface IYqueChatService {
      * @return
      */
     IYqueChat findOrSaveChat(String chatId);
+
+
+    /**
+     * 客群打标签
+     * @param iyQueGroupDto
+     */
+    void makeTag(IYQueGroupDto iyQueGroupDto);
 }

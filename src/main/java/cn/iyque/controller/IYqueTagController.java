@@ -3,6 +3,8 @@ package cn.iyque.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.domain.IYQueCustomerDto;
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueTag;
 import cn.iyque.entity.IYqueTagGroup;
@@ -41,14 +43,15 @@ public class IYqueTagController{
 
 
     /**
-     * 获取标签
+     * 获取标签(客户标签)
      * @return
      */
     @GetMapping("/findIYqueTag")
-    public ResponseResult findIYqueTag(){
+    public ResponseResult findIYqueTag(Integer groupTagType){
         List<WxCpUserExternalTagGroupInfo.Tag> wxCpTags=new ArrayList<>();
 
-        List<IYqueTag> iYqueTagList = yqueTagService.list(new LambdaQueryWrapper<>());
+        List<IYqueTag> iYqueTagList = yqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
+                .eq(IYqueTag::getTagType,null ==groupTagType?1:groupTagType));
         if(CollectionUtil.isNotEmpty(iYqueTagList)){
 
             iYqueTagList.stream().forEach(item->{
@@ -126,7 +129,12 @@ public class IYqueTagController{
 
 
         try {
-            iYqueTagGroupService.updateTagGroup(iYqueTagGroup);
+            if(new Integer(2).equals(iYqueTagGroup.getGroupTagType())){//客群标签
+                iYqueTagGroupService.updateCustomerGroupTagGroup(iYqueTagGroup);
+            }else{//客户标签
+                iYqueTagGroupService.updateTagGroup(iYqueTagGroup);
+            }
+
         }catch (IYqueException e){
             return new ResponseResult(HttpStatus.WE_ERROR,e.getMsg(),null);
         }
@@ -145,11 +153,15 @@ public class IYqueTagController{
 
 
         PageHelper.startPage(TableSupport.buildPageMybaitsRequest().getPageNum(), TableSupport.buildPageMybaitsRequest().getPageSize());
-        List<IYqueTagGroup> list = iYqueTagGroupService.findIYqueTagGroups(yqueTagGroup.getGroupName());
+        List<IYqueTagGroup> list = iYqueTagGroupService.findIYqueTagGroups(yqueTagGroup);
 
 
         return new ResponseResult(list,new PageInfo(list).getTotal());
     }
+
+
+
+
 
 
 

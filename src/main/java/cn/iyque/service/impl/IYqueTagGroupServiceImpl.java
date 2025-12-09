@@ -5,6 +5,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
 import cn.iyque.constant.IYqueConstant;
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.entity.IYqueTag;
 import cn.iyque.entity.IYqueTagGroup;
 import cn.iyque.exception.IYqueException;
@@ -12,6 +13,7 @@ import cn.iyque.mapper.IYqueTagGroupMapper;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueTagGroupService;
 import cn.iyque.service.IYqueTagService;
+import cn.iyque.utils.SnowFlakeUtils;
 import cn.iyque.utils.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -163,43 +165,71 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
         try {
 
             if(StringUtils.isNotEmpty(tagGroup.getGroupName())&&CollectionUtil.isNotEmpty(tagGroup.getWeTags())){
-                WxCpUserExternalTagGroupInfo groupInfo=new WxCpUserExternalTagGroupInfo();
-                WxCpUserExternalTagGroupInfo.TagGroup wxTagGroup=new WxCpUserExternalTagGroupInfo.TagGroup();
-                wxTagGroup.setGroupName(tagGroup.getGroupName());
-
-                List<WxCpUserExternalTagGroupInfo.Tag> tags=new ArrayList<>();
-                tagGroup.getWeTags().stream().forEach(item->{
-                    WxCpUserExternalTagGroupInfo.Tag wxTag=new WxCpUserExternalTagGroupInfo.Tag();
-                    wxTag.setName(item.getName());
-                    tags.add(wxTag);
-                });
-                wxTagGroup.setTag(tags);
-                groupInfo.setTagGroup(wxTagGroup);
 
 
-                WxCpUserExternalTagGroupInfo wxGroupInfo = yqueConfigService.findWxcpservice().
-                        getExternalContactService().addCorpTag(groupInfo);
-                if(wxGroupInfo.success()){
-                    tagGroup.setGroupTagType(1);
+
+                if(new Integer(2).equals(tagGroup.getGroupTagType())){ //客群标签(无需同步企业微信)
+                    tagGroup.setGroupTagType(2);
                     tagGroup.setOrderNumber(0L);
-                    tagGroup.setGroupId(wxGroupInfo.getTagGroup().getGroupId());
+                    tagGroup.setGroupId(SnowFlakeUtils.nextId().toString());
                     tagGroup.setDelFlag(IYqueConstant.commonState);
+
                     if(this.save(tagGroup)) {
                         tagGroup.getWeTags().stream().forEach(item -> {
                             item.setDelFlag(IYqueConstant.commonState);
                             item.setOrderNumber(0L);
-                            item.setTagType(1);
+                            item.setTagType(2);
                             item.setGroupId(tagGroup.getGroupId());
-                            Optional<WxCpUserExternalTagGroupInfo.Tag> optionalTag =
-                                    wxGroupInfo.getTagGroup().getTag().stream()
-                                            .filter(kk -> kk.getName().equals(item.getName())).findAny();
-                            if (optionalTag.isPresent()) {
-                                item.setTagId(optionalTag.get().getId());
-                            }
+                            item.setTagId(SnowFlakeUtils.nextId().toString());
                         });
                         yqueTagService.saveOrUpdateBatch(tagGroup.getWeTags());
                     }
+
+                }else{ //客户标签(同步企业微信标签)
+
+                    WxCpUserExternalTagGroupInfo groupInfo=new WxCpUserExternalTagGroupInfo();
+                    WxCpUserExternalTagGroupInfo.TagGroup wxTagGroup=new WxCpUserExternalTagGroupInfo.TagGroup();
+                    wxTagGroup.setGroupName(tagGroup.getGroupName());
+
+                    List<WxCpUserExternalTagGroupInfo.Tag> tags=new ArrayList<>();
+                    tagGroup.getWeTags().stream().forEach(item->{
+                        WxCpUserExternalTagGroupInfo.Tag wxTag=new WxCpUserExternalTagGroupInfo.Tag();
+                        wxTag.setName(item.getName());
+                        tags.add(wxTag);
+                    });
+                    wxTagGroup.setTag(tags);
+                    groupInfo.setTagGroup(wxTagGroup);
+
+
+                    WxCpUserExternalTagGroupInfo wxGroupInfo = yqueConfigService.findWxcpservice().
+                            getExternalContactService().addCorpTag(groupInfo);
+                    if(wxGroupInfo.success()){
+                        tagGroup.setGroupTagType(1);
+                        tagGroup.setOrderNumber(0L);
+                        tagGroup.setGroupId(wxGroupInfo.getTagGroup().getGroupId());
+                        tagGroup.setDelFlag(IYqueConstant.commonState);
+                        if(this.save(tagGroup)) {
+                            tagGroup.getWeTags().stream().forEach(item -> {
+                                item.setDelFlag(IYqueConstant.commonState);
+                                item.setOrderNumber(0L);
+                                item.setTagType(1);
+                                item.setGroupId(tagGroup.getGroupId());
+                                Optional<WxCpUserExternalTagGroupInfo.Tag> optionalTag =
+                                        wxGroupInfo.getTagGroup().getTag().stream()
+                                                .filter(kk -> kk.getName().equals(item.getName())).findAny();
+                                if (optionalTag.isPresent()) {
+                                    item.setTagId(optionalTag.get().getId());
+                                }
+                            });
+                            yqueTagService.saveOrUpdateBatch(tagGroup.getWeTags());
+                        }
+                    }
+
+
+
+
                 }
+
             }
 
 
@@ -337,6 +367,90 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
 
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCustomerGroupTagGroup(IYqueTagGroup tagGroup) {
+
+
+        try {
+
+
+                IYqueTagGroup oldTagGroup = this.getById(tagGroup.getId());
+
+                if (null != oldTagGroup) {
+
+                    //标签名不同则更新企业微信端
+                    if (!oldTagGroup.getGroupName().equals(tagGroup.getGroupName())) {
+                        oldTagGroup.setGroupName(tagGroup.getGroupName());
+                        //更新标签组名称
+                        this.updateById(oldTagGroup);
+
+                    }
+
+                    if (this.updateById(oldTagGroup)) {
+                        List<IYqueTag> tagList = tagGroup.getWeTags();
+
+                        if (CollectionUtil.isNotEmpty(tagList)) {
+                            //处理标签同名的名表(比如web端当前标签组下，A标签删除了，然后又添加了A标签。)
+                            List<IYqueTag> newWeTags = handleSameTagName(tagGroup, tagList);
+
+                            List<IYqueTag> yTagIds = newWeTags.stream().filter(item -> StringUtils.isNotEmpty(item.getTagId())).
+                                    collect(Collectors.toList());
+                            log.info("处理的标签:" + JSONUtil.toJsonStr(yTagIds));
+
+                            if (CollectionUtil.isNotEmpty(yTagIds)) {
+                                //移除需要删除的标签
+                                List<IYqueTag> removeIYqueTags = yqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
+                                        .eq(IYqueTag::getGroupId, tagGroup.getGroupId())
+                                        .notIn(IYqueTag::getTagId, yTagIds.stream().map(IYqueTag::getTagId).collect(Collectors.toList())));
+                                if (CollectionUtil.isNotEmpty(removeIYqueTags)) {
+                                    yqueTagService.removeByIds(removeIYqueTags.stream().map(IYqueTag::getId).collect(Collectors.toList()));
+                                }
+
+                            }
+
+                            List<IYqueTag> addNewTags = newWeTags.stream()
+                                    .filter(item -> StringUtils.isEmpty(item.getTagId()))
+                                    .collect(Collectors.toList());
+
+                            //新增的标签
+                            if (CollectionUtil.isNotEmpty(addNewTags)) {
+                                addNewTags.stream().forEach(item -> {
+
+                                    item.setTagType(2);
+                                    item.setDelFlag(IYqueConstant.commonState);
+                                    item.setOrderNumber(0L);
+                                    item.setGroupId(tagGroup.getGroupId());
+
+                                    if (StringUtils.isEmpty(item.getTagId())) {
+                                        item.setTagId(SnowFlakeUtils.nextId().toString());
+                                    }
+
+
+                                });
+
+                                yqueTagService.saveOrUpdateBatch(addNewTags);
+
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+
+
+        } catch (Exception e) {
+
+            log.error(e.getMessage());
+            throw new IYqueException("编辑标签时,处理删除的标签失败:"+e.getMessage());
+
+        }
+
+    }
+
     //处理标签同名的名表(比如web端当前标签组下，A标签删除了，然后又添加了A标签。)
     private List<IYqueTag> handleSameTagName(IYqueTagGroup tagGroup,List<IYqueTag> iYqueTags){
 
@@ -373,9 +487,10 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
     }
 
     @Override
-     public List<IYqueTagGroup> findIYqueTagGroups(String groupTagName) {
+     public List<IYqueTagGroup> findIYqueTagGroups(IYqueTagGroup yqueTagGroup) {
         List<IYqueTagGroup> iYqueTagGroupPage = this.baseMapper.selectList( new LambdaQueryWrapper<IYqueTagGroup>()
-                .like(StringUtils.isNotEmpty(groupTagName),IYqueTagGroup::getGroupName, groupTagName)
+                        .eq(yqueTagGroup.getGroupTagType() !=null,IYqueTagGroup::getGroupTagType,yqueTagGroup.getGroupTagType())
+                .like(StringUtils.isNotEmpty(yqueTagGroup.getGroupName()),IYqueTagGroup::getGroupName, yqueTagGroup.getGroupName())
                 .orderByAsc(IYqueTagGroup::getOrderNumber));
         if(CollectionUtil.isNotEmpty(iYqueTagGroupPage)){
 
@@ -398,20 +513,40 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
     public void removeGroupTags(String[] groupIds) {
 
         try {
-            //删除标签组
-            if(this.remove(new LambdaQueryWrapper<IYqueTagGroup>()
-                    .in(IYqueTagGroup::getGroupId, ListUtil.toList(groupIds)))
-                    &&yqueTagService.remove(new LambdaQueryWrapper<IYqueTag>()
-                    .in(IYqueTag::getGroupId,ListUtil.toList(groupIds)))){
 
-                WxCpBaseResp wxCpBaseResp = yqueConfigService
-                        .findWxcpservice()
-                        .getExternalContactService().delCorpTag(null, groupIds);
+            List<IYqueTagGroup> iYqueTagGroups = this.list(new LambdaQueryWrapper<IYqueTagGroup>().in(IYqueTagGroup::getGroupId, ListUtil.toList(groupIds)));
 
-                if(!wxCpBaseResp.success()){
-                    throw new IYqueException("标签组删除失败:"+wxCpBaseResp.getErrmsg());
+            if(CollectionUtil.isNotEmpty(iYqueTagGroups)){
+                //删除标签组
+                if(this.remove(new LambdaQueryWrapper<IYqueTagGroup>()
+                        .in(IYqueTagGroup::getGroupId, ListUtil.toList(groupIds)))
+                        &&yqueTagService.remove(new LambdaQueryWrapper<IYqueTag>()
+                        .in(IYqueTag::getGroupId,ListUtil.toList(groupIds)))){
+
+                    iYqueTagGroups.stream().forEach(item->{
+
+                        if(item.getGroupTagType().equals(new Integer(1))){//客户标签则同步企业微信做删除
+
+                            WxCpBaseResp wxCpBaseResp = null;
+                            try {
+                                wxCpBaseResp = yqueConfigService
+                                        .findWxcpservice()
+                                        .getExternalContactService().delCorpTag(null, groupIds);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            if(!wxCpBaseResp.success()){
+                                throw new IYqueException("标签组删除失败:"+wxCpBaseResp.getErrmsg());
+                            }
+                        }
+
+                    });
+
                 }
             }
+
+
         }catch (Exception e){
             log.error("标签组删除失败:"+e.getMessage());
             throw new IYqueException(e.getMessage());
@@ -419,4 +554,6 @@ public class IYqueTagGroupServiceImpl extends ServiceImpl<IYqueTagGroupMapper, I
 
 
     }
+
+
 }

@@ -42,7 +42,7 @@ public class IYqueTagGroup extends BaseEntity{
 
 
     /**
-     * 标签分组类型(1:客户企业标签)
+     * 标签分组类型(1:客户企业标签;2:客群标签)
      */
     private Integer groupTagType;
 

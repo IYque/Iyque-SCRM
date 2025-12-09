@@ -4,6 +4,7 @@ import cn.iyque.domain.*;
 import cn.iyque.entity.IYqueKfMsgSub;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -47,5 +48,12 @@ public interface IYqueCustomerInfoService {
      * @return 客户信息列表
      */
     List<IYQueCustomerInfo> findByExternalUseridIn(List<String> externalUserids);
+
+
+    /**
+     * 客户打标签
+     * @param customerDto
+     */
+    void makeTag(IYQueCustomerDto customerDto);
 
 }

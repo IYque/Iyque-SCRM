@@ -3,10 +3,14 @@ package cn.iyque.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.dao.IYqueChatDao;
 import cn.iyque.dao.IYqueUserDao;
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.entity.IYqueChat;
+import cn.iyque.entity.IYqueTag;
 import cn.iyque.entity.IYqueUser;
 import cn.iyque.service.IYqueChatService;
 import cn.iyque.service.IYqueConfigService;
+import cn.iyque.service.IYqueTagService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpUser;
@@ -21,9 +25,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +41,10 @@ public class IYqueChatServiceImpl implements IYqueChatService {
 
     @Autowired
     private IYqueConfigService iYqueConfigService;
+
+
+    @Autowired
+    private IYqueTagService iYqueTagService;
 
     @Override
     public Page<IYqueChat> findAll(String name, Pageable pageable) {
@@ -72,6 +78,27 @@ public class IYqueChatServiceImpl implements IYqueChatService {
                 }
 
 
+                if(StringUtils.isNotEmpty(k.getTagIds())){
+                    List<IYqueTag> iYqueTags = iYqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
+                            .in(IYqueTag::getTagId,
+                                    Arrays.stream(k.getTagIds().split(","))
+                                            .map(String::trim)
+                                            .filter(id -> !id.isEmpty())
+                                            .collect(Collectors.toList())
+
+                            ));
+                    if(CollectionUtil.isNotEmpty(iYqueTags)){
+                        k.setTagNames(
+                                iYqueTags.stream()
+                                        .map(IYqueTag::getName)
+                                        .filter(Objects::nonNull)
+                                        .map(String::trim)
+                                        .filter(ename -> !ename.isEmpty())
+                                        .collect(Collectors.joining(","))
+                        );
+                    }
+
+                }
 
             });
         }
@@ -146,6 +173,19 @@ public class IYqueChatServiceImpl implements IYqueChatService {
 
 
         return iYqueChats.stream().findFirst().get();
+
+    }
+
+    @Override
+    public void makeTag(IYQueGroupDto iyQueGroupDto) {
+
+        List<IYqueChat> iYqueChats = iYqueChatDao.findIYqueChatByChatId(iyQueGroupDto.getChatId());
+        if(CollectionUtil.isNotEmpty(iYqueChats)){
+            IYqueChat iYqueChat = iYqueChats.stream().findFirst().get();
+            iYqueChat.setTagIds(String.join(",", iyQueGroupDto.getTagIds()));
+            iYqueChatDao.saveAndFlush(iYqueChat);
+
+        }
 
     }
 

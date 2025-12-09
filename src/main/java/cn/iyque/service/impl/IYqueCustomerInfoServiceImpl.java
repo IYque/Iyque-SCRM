@@ -15,8 +15,10 @@ import cn.iyque.enums.SynchDataRecordType;
 import cn.iyque.exception.IYqueException;
 import cn.iyque.service.IYqueConfigService;
 import cn.iyque.service.IYqueCustomerInfoService;
+import cn.iyque.service.IYqueTagService;
 import cn.iyque.strategy.callback.*;
 import cn.iyque.utils.DateUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.cp.api.WxCpExternalContactService;
 import me.chanjar.weixin.cp.bean.external.contact.ExternalContact;
@@ -61,6 +63,9 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
     @Autowired
     IYqueUserDao iYqueUserDao;
+
+    @Autowired
+    IYqueTagService iYqueTagService;
 
 
     @Override
@@ -469,6 +474,30 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
 
                 }
 
+                if(StringUtils.isNotEmpty(k.getTagIds())){
+                    List<IYqueTag> iYqueTags = iYqueTagService.list(new LambdaQueryWrapper<IYqueTag>()
+                            .in(IYqueTag::getTagId,
+                                    Arrays.stream(k.getTagIds().split(","))
+                                            .map(String::trim)
+                                            .filter(id -> !id.isEmpty())
+                                            .collect(Collectors.toList())
+
+                                    ));
+                    if(CollectionUtil.isNotEmpty(iYqueTags)){
+                        k.setTagNames(
+                                iYqueTags.stream()
+                                        .map(IYqueTag::getName)
+                                        .filter(Objects::nonNull)
+                                        .map(String::trim)
+                                        .filter(name -> !name.isEmpty())
+                                        .collect(Collectors.joining(","))
+                        );
+                    }
+
+                }
+
+
+
             });
         }
 
@@ -486,6 +515,21 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
     @Override
     public List<IYQueCustomerInfo> findByExternalUseridIn(List<String> externalUserids) {
         return iyQueCustomerInfoDao.findByExternalUseridIn(externalUserids);
+    }
+
+    @Override
+    public void makeTag(IYQueCustomerDto customerDto) {
+
+        IYQueCustomerInfo customerInfo = iyQueCustomerInfoDao.findByExternalUseridAndUserId(customerDto.getExternalUserid()
+                , customerDto.getUserId());
+
+
+        if(null != customerDto){
+            customerInfo.setTagIds( String.join(",", customerDto.getTagIds()));
+            iyQueCustomerInfoDao.saveAndFlush(customerInfo);
+        }
+
+
     }
 
     @Override

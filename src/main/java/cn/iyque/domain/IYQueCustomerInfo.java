@@ -40,6 +40,14 @@ public class IYQueCustomerInfo {
     //添加人id
     private String userId;
 
+
+    //客户标签id，多个使用都好隔开
+    private String tagIds;
+
+    //标签名,多个使用逗号隔开
+    @Transient
+    private String tagNames;
+
     //添加人名称
     @Transient
     private String userName;

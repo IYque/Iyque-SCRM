@@ -40,6 +40,14 @@ public class IYqueChat {
      private String owner;
 
 
+    //客群标签id，多个使用都好隔开
+    private String tagIds;
+
+    //标签名,多个使用逗号隔开
+    @Transient
+    private String tagNames;
+
+
      //群主名称
      @Transient
      private String ownerName;

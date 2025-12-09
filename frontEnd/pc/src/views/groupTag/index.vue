@@ -11,10 +11,13 @@ export default {
       // 遮罩层
       loading: false,
       dialogVisible: false,
+      // 标签分组类型(1:客户企业标签;2:客群标签)
+      groupTagType: 2,
       // 表单参数
       form: {
         groupName: '',
         weTags: [],
+        groupTagType: 2,
       },
       // 添加标签输入框
       newInput: '',
@@ -32,26 +35,14 @@ export default {
   created() {},
   methods: {
     edit(data, type) {
-      this.form = JSON.parse(JSON.stringify(Object.assign({ groupTagType: this.type, weTags: [] }, data || {})))
+      this.form = JSON.parse(JSON.stringify(Object.assign({ groupTagType: this.groupTagType, weTags: [] }, data || {})))
       this.dialogVisible = true
-    },
-    syncTag() {
-      this.$store.loading = true
-      api
-        .sync()
-        .then(() => {
-          this.msgSuccess('后台开始同步数据，请稍后关注进度')
-          this.getList()
-        })
-        .finally(() => {
-          this.$store.loading = false
-        })
     },
   },
 }
 </script>
 <template>
-  <div class="customerTag">
+  <div class="groupTag">
     <RequestChartTable ref="rct" :request="api.getList" searchBtnType="icon">
       <template #query="{ query }">
         <BaInput label="标签组名称" prop="groupName" v-model="query.groupName"></BaInput>
@@ -62,9 +53,7 @@ export default {
       </template>
 
       <template #operation="{ goRoute, apiConfirm }">
-        <div class="flex justify-between">
-          <ButtonSync :lastSyncTime="lastSyncTime" @click="syncTag">同步企微标签</ButtonSync>
-
+        <div class="flex justify-end">
           <el-button type="danger" plain @click="apiConfirm(api.del)">批量删除</el-button>
         </div>
       </template>
@@ -93,7 +82,7 @@ export default {
       :form="form"
       :key="dialogVisible"
       @success="$refs.rct.getList(!form.groupId && 1)"
-      module="customerTag" />
+      module="groupTag" />
   </div>
 </template>
 <style lang="scss" scoped></style>

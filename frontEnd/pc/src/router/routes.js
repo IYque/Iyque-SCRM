@@ -79,6 +79,11 @@ export const navRoutes = [
         component: () => import('@/views/customerTag/index'),
         meta: { title: '客户标签' },
       },
+       {
+        path: 'groupTag',
+        component: () => import('@/views/groupTag/index'),
+        meta: { title: '客群标签' },
+      },
     ],
   },
 

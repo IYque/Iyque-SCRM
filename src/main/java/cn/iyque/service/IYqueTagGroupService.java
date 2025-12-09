@@ -1,5 +1,7 @@
 package cn.iyque.service;
 
+import cn.iyque.domain.IYQueCustomerDto;
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.entity.IYqueTagGroup;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,17 +28,23 @@ public interface IYqueTagGroupService extends IService<IYqueTagGroup> {
 
 
     /**
-     * 编辑标签
+     * 编辑标签(客户标签)
      * @param tagGroup
      */
     void updateTagGroup(IYqueTagGroup tagGroup);
 
 
     /**
+     * 编辑标签(客群标签)
+     * @param tagGroup
+     */
+    void updateCustomerGroupTagGroup(IYqueTagGroup tagGroup);
+
+    /**
      * 获取标签组
      * @return
      */
-    List<IYqueTagGroup> findIYqueTagGroups(String groupTagName);
+    List<IYqueTagGroup> findIYqueTagGroups(IYqueTagGroup yqueTagGroup);
 
 
 

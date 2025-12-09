@@ -1,5 +1,6 @@
 <script>
-import * as api from '@/views/customerTag/api.js'
+import * as customerTagApi from '@/views/customerTag/api.js'
+import * as groupTagApi from '@/views/groupTag/api.js'
 
 export default {
   name: 'AddTag',
@@ -18,6 +19,11 @@ export default {
         weTags: [],
       }),
     },
+    // 模块类型（customerTag或groupTag）
+    module: {
+      type: String,
+      default: 'customerTag'
+    }
   },
   emits: ['update:visible'],
   data() {
@@ -91,7 +97,9 @@ export default {
           if (!form.weTags.length) {
             return
           }
-          api[form.groupId ? 'update' : 'add'](form).then(() => {
+          // 根据模块类型选择对应的API
+          const currentApi = this.module === 'groupTag' ? groupTagApi : customerTagApi
+          currentApi[form.groupId ? 'update' : 'add'](form).then(() => {
             this.msgSuccess('操作成功')
             this.Pvisible = false
             this.$emit('success')

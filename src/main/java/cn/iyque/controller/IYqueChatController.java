@@ -1,5 +1,6 @@
 package cn.iyque.controller;
 
+import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueChat;
 import cn.iyque.entity.IYqueUser;
@@ -8,10 +9,7 @@ import cn.iyque.utils.TableSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/iYqueChat")
@@ -45,6 +43,22 @@ public class IYqueChatController {
         iYqueChatService.synchIyqueChat();
 
         return new ResponseResult("客群同步中,请稍后查看");
+    }
+
+    /**
+     * 客群打标签
+     * @param iyQueGroupDto
+     * @return
+     */
+    @PostMapping("/tagGroups")
+    public ResponseResult tagGroups(@RequestBody IYQueGroupDto iyQueGroupDto){
+
+
+        iYqueChatService.makeTag(iyQueGroupDto);
+
+
+        return new ResponseResult("客群真正同步中,请稍后查看");
+
     }
 
 

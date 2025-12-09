@@ -1,6 +1,7 @@
 package cn.iyque.controller;
 
 
+import cn.iyque.domain.IYQueCustomerDto;
 import cn.iyque.domain.IYQueCustomerInfo;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.service.IYqueCustomerInfoService;
@@ -9,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -50,6 +48,20 @@ public class IYqueCustomerInfoController {
     public ResponseResult synchCustomer(){
 
         customerInfoService.synchCustomer();
+
+        return new ResponseResult("客户真正同步中,请稍后查看");
+
+    }
+
+    /**
+     * 客户打标签
+     * @param customerDto
+     * @return
+     */
+    @PostMapping("/tagCustomers")
+    public ResponseResult tagCustomers(@RequestBody IYQueCustomerDto customerDto){
+
+        customerInfoService.makeTag(customerDto);
 
         return new ResponseResult("客户真正同步中,请稍后查看");
 
