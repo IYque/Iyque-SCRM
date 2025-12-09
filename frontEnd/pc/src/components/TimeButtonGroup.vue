@@ -4,7 +4,7 @@
       <el-button-group>
         <el-button @click="setType(0)" :type="active === 0 ? 'primary' : ''" v-if="isToday">今日</el-button>
         <el-button
-          v-for="(item, index) in [7, 15, 30]"
+          v-for="(item, index) in dayList"
           :key="index"
           @click="setType(item)"
           :type="active === item ? 'primary' : ''">
@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      dayList: [7, 15, 30],
       active: 7,
       value: [],
       data: {
@@ -73,20 +74,17 @@ export default {
       if (type === 0) {
         this.data.beginTime = dayjs().format('YYYY-MM-DD')
         this.data.endTime = dayjs().format('YYYY-MM-DD')
-      } else if (type === 7) {
-        const weekStart = dayjs().subtract(7, 'days').format('YYYY-MM-DD')
+      } else {
+        const weekStart = dayjs().subtract(type, 'days').format('YYYY-MM-DD')
         const weekEnd = dayjs().format('YYYY-MM-DD')
         this.data.beginTime = weekStart
         this.data.endTime = weekEnd
-      } else if (type === 2) {
-        this.data.endTime = dayjs().format('YYYY-MM-DD')
-        this.data.beginTime = dayjs().subtract(29, 'days').format('YYYY-MM-DD')
       }
       this.submit()
     },
   },
   created() {
-    this.setType(this.isToday ? 0 : 7)
+    this.setType(this.isToday ? 0 : this.dayList[0])
   },
 }
 </script>
