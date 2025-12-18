@@ -577,18 +577,29 @@ public class IYqueCustomerInfoServiceImpl implements IYqueCustomerInfoService {
                                         //客户基础信息
                                         ExternalContact externalContact = item.getExternalContact();
 
+                                         IYQueCustomerInfo customerInfo = IYQueCustomerInfo.builder().eId(externalContact.getExternalUserId() + "&" + followInfo.getUserId())
+                                                .customerName(externalContact.getName())
+                                                .avatar(externalContact.getAvatar())
+                                                .type(externalContact.getType())
+                                                .externalUserid(externalContact.getExternalUserId())
+
+                                                .userId(followInfo.getUserId())
+                                                .state(followInfo.getState())
+                                                .addTime(new Date(followInfo.getCreateTime() * 1000L))
+                                                .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
+                                                .build();
+
+                                        String addWay = followInfo.getAddWay();
+                                        log.info("客户来源类型:"+addWay);
+                                        if(StringUtils.isNotEmpty(addWay)){
+                                            CustomerAddWay customerAddWay = CustomerAddWay.of(new Integer(addWay));
+                                            if(null != customerAddWay){
+                                                customerInfo.setAddWay(customerAddWay.getVal());
+                                            }
+                                        }
+
                                         customerInfos.add(
-                                                IYQueCustomerInfo.builder().eId(externalContact.getExternalUserId()+"&"+followInfo.getUserId())
-                                                        .customerName(externalContact.getName())
-                                                        .avatar(externalContact.getAvatar())
-                                                        .type(externalContact.getType())
-                                                        .externalUserid(externalContact.getExternalUserId())
-                                                        .addWay(CustomerAddWay.of(new Integer(followInfo.getAddWay())).getVal())
-                                                        .userId(followInfo.getUserId())
-                                                        .state(followInfo.getState())
-                                                        .addTime(new Date(followInfo.getCreateTime() * 1000L))
-                                                        .status(CustomerStatusType.CUSTOMER_STATUS_TYPE_COMMON.getCode())
-                                                        .build()
+                                                customerInfo
                                         );
 
 
