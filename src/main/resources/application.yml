@@ -59,8 +59,3 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false # 自动将下划线字段名映射为驼峰属性名
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 输出MyBatis-Plus的SQL日志
-
-# application.yml
-logging:
-  level:
-    cn.iyque.mapper: DEBUG  # 替换为您Mapper接口所在的包名
