@@ -308,6 +308,17 @@ export const navRoutes = [
           },
         ],
       },
+      {
+        path: 'riskControl',
+        meta: { title: '风控审计' },
+        children: [
+          {
+            path: 'violationIntercept',
+            component: () => import('@/views/riskControl/violationIntercept/index'),
+            meta: { title: '违规拦截' },
+          },
+        ],
+      },
     ],
   },
   // {
