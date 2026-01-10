@@ -15,8 +15,8 @@
 
 -  官网:  <a href="https://iyque.cn" target="_blank">https://iyque.cn</a>
 -  开源部署文档:  <a href="https://iyque.cn/docs/" target="_blank">https://iyque.cn/docs</a>
--  企微密钥生成工具集:  <a href="https://tools.iyuanque.cn" target="_blank">https://tools.iyuanque.cn</a>
-- 【商业版】功能清单: <a href="https://iyuanque.cn/archives/sy" target="_blank">https://iyuanque.cn/archives/sy</a>
+-  企微密钥生成工具集:  <a href="https://tools.iyque.cn" target="_blank">https://tools.iyque.cn</a>
+- 【商业版】功能清单: <a href="https://iyque.cn/archives/sy" target="_blank">https://iyque.cn/archives/sy</a>
 - 【商业版】演示【完整的企微SCRM解决方案】地址获取,请联系客服
 
   ![输入图片说明](pic/contactus.png)
@@ -25,7 +25,7 @@
 
 
 
-#### 开源版与商业版区别:  <a href="https://iyuanque.cn/" target="_blank">https://iyuanque.cn/</a>
+#### 开源版与商业版区别:  <a href="https://vs.iyque.cn/" target="_blank">https://vs.iyque.cn/</a>
  
 
 ## 一、背景
@@ -203,7 +203,7 @@
 ![img.png](img/j-2.jpg)
 ![img.png](img/j-3.jpg)
 ## 七、获奖荣耀
-<a href="https://iyuanque.cn/#awards" target="_blank">获奖荣耀</a>
+<a href="https://vs.iyque.cn/#awards" target="_blank">获奖荣耀</a>
 
 ## 八、版权说明
   该项目在保留相关logo,产品名称等信息,并遵循[Apache2.0]协议的前提下,可自行二开与商用
