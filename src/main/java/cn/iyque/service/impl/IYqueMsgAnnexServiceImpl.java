@@ -61,4 +61,23 @@ public class IYqueMsgAnnexServiceImpl implements IYqueMsgAnnexService {
         }
         return attachments;
     }
+
+    @Override
+    public List<Attachment> msgAnnexToAttachment(List<IYqueMsgAnnex> annexList, Integer attachmentType) {
+        List<Attachment> attachments = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(annexList)) {
+            try {
+                annexList.stream().forEach(annex -> {
+                    AttachmentConverter converter = AttachmentConverterFactory.getConverter(annex.getMsgtype());
+                    Attachment attachment = converter.attachmentConvert(annex,attachmentType);
+                    if (attachment != null) {
+                        attachments.add(attachment);
+                    }
+                });
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+        return attachments;
+    }
 }

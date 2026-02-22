@@ -111,24 +111,53 @@ export const navRoutes = [
         ],
       },
       {
-        path: 'H5Marketing',
-        meta: { title: 'H5营销' },
-        redirect: '/marketing/H5Marketing/list',
+        path: 'marketingTools',
+        meta: { title: '营销工具' },
+        redirect: '/marketing/marketingTools/H5Marketing/list',
         children: [
           {
-            path: 'list',
-            component: () => import('@/views/H5Marketing/list'),
-            meta: { title: '列表', hidden: true },
+            path: 'H5Marketing',
+            meta: { title: 'H5营销' },
+            redirect: '/marketing/marketingTools/H5Marketing/list',
+            children: [
+              {
+                path: 'list',
+                component: () => import('@/views/H5Marketing/list'),
+                meta: { title: '列表', hidden: true },
+              },
+              {
+                path: 'aev',
+                component: () => import('@/views/H5Marketing/aev'),
+                meta: { title: '{新建}', hidden: true },
+              },
+              {
+                path: 'detail',
+                component: () => import('@/views/H5Marketing/detail'),
+                meta: { title: '详情', hidden: true },
+              },
+            ],
           },
           {
-            path: 'aev',
-            component: () => import('@/views/H5Marketing/aev'),
-            meta: { title: '{新建}', hidden: true },
-          },
-          {
-            path: 'detail',
-            component: () => import('@/views/H5Marketing/detail'),
-            meta: { title: '详情', hidden: true },
+            path: 'friendCircle',
+            meta: { title: '朋友圈' },
+            redirect: '/marketing/marketingTools/friendCircle/list',
+            children: [
+              {
+                path: 'list',
+                component: () => import('@/views/friendCircle/list'),
+                meta: { title: '列表', hidden: true },
+              },
+              {
+                path: 'aev',
+                component: () => import('@/views/friendCircle/aev'),
+                meta: { title: '{新建}', hidden: true },
+              },
+              {
+                path: 'detail',
+                component: () => import('@/views/friendCircle/detail'),
+                meta: { title: '详情', hidden: true },
+              },
+            ],
           },
         ],
       },

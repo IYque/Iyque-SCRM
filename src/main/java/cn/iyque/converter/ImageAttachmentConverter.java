@@ -40,4 +40,26 @@ public class ImageAttachmentConverter implements AttachmentConverter {
         }
         return null;
     }
+
+    @Override
+    public Attachment attachmentConvert(IYqueMsgAnnex annex, Integer attachmentType) {
+        File file = FileUtils.downloadImage(annex.getImage().getPicUrl());
+        if (null != file) {
+
+            try {
+                WxMediaUploadResult uploadResult = SpringUtils.getBean(IYqueConfigService.class)
+                        .findWxcpservice().getExternalContactService().uploadAttachment(annex.getMsgtype(), attachmentType, file);
+                if (null != uploadResult && StrUtil.isNotEmpty(uploadResult.getMediaId())) {
+                    Attachment attachment = new Attachment();
+                    Image image = new Image();
+                    image.setMediaId(uploadResult.getMediaId());
+                    attachment.setImage(image);
+                    return attachment;
+                }
+            }catch (Exception e){
+                log.error("图片转换器异常:"+e.getMessage());
+            }
+        }
+        return null;
+    }
 }

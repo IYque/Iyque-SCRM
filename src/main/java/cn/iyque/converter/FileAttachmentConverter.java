@@ -39,4 +39,9 @@ public class FileAttachmentConverter implements AttachmentConverter {
         }
         return null;
     }
+
+    @Override
+    public Attachment attachmentConvert(IYqueMsgAnnex annex, Integer attachmentType) {
+        return null;
+    }
 }

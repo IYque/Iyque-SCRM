@@ -13,4 +13,12 @@ public interface IYqueMsgAnnexService {
 
     void saveAll( List<IYqueMsgAnnex> annexLists);
     List<Attachment> msgAnnexToAttachment(List<IYqueMsgAnnex> annexList);
+
+    /**
+     * 朋友圈，商品图片附件转化
+     * @param annexList
+     * @param attachmentType 1：朋友圈；2:商品图册
+     * @return
+     */
+    List<Attachment> msgAnnexToAttachment(List<IYqueMsgAnnex> annexList, Integer attachmentType);
 }
