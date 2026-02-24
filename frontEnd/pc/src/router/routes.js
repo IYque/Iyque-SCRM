@@ -74,16 +74,7 @@ export const navRoutes = [
         component: () => import('@/views/groupChat/index'),
         meta: { title: '客群列表' },
       },
-      {
-        path: 'customerTag',
-        component: () => import('@/views/customerTag/index'),
-        meta: { title: '客户标签' },
-      },
-       {
-        path: 'groupTag',
-        component: () => import('@/views/groupTag/index'),
-        meta: { title: '客群标签' },
-      },
+      {        path: 'customerTag',        component: () => import('@/views/customerTag/index'),        meta: { title: 'AI客户标签', icon: 'magic-stick' },      },       {        path: 'groupTag',        component: () => import('@/views/groupTag/index'),        meta: { title: 'AI客群标签', icon: 'magic-stick' },      },
     ],
   },
 
@@ -133,28 +124,6 @@ export const navRoutes = [
               {
                 path: 'detail',
                 component: () => import('@/views/H5Marketing/detail'),
-                meta: { title: '详情', hidden: true },
-              },
-            ],
-          },
-          {
-            path: 'friendCircle',
-            meta: { title: '朋友圈' },
-            redirect: '/marketing/marketingTools/friendCircle/list',
-            children: [
-              {
-                path: 'list',
-                component: () => import('@/views/friendCircle/list'),
-                meta: { title: '列表', hidden: true },
-              },
-              {
-                path: 'aev',
-                component: () => import('@/views/friendCircle/aev'),
-                meta: { title: '{新建}', hidden: true },
-              },
-              {
-                path: 'detail',
-                component: () => import('@/views/friendCircle/detail'),
                 meta: { title: '详情', hidden: true },
               },
             ],

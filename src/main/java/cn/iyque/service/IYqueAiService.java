@@ -1,38 +1,34 @@
 package cn.iyque.service;
 
 import ai.z.openapi.service.embedding.EmbeddingResponse;
+import cn.iyque.domain.AiGenerateTagsResponse;
 import cn.iyque.exception.IYqueException;
 
 import java.util.List;
 
 public interface IYqueAiService {
-
     /**
-     * 调用ai同步处理通用内容 (单条会话)
-     * @param content
+     * AI生成标签
+     * @param prompt 提示词
+     * @param groupCount 标签组数量
+     * @param tagCountPerGroup 每组标签数量
+     * @return 标签组列表
+     */
+    List<AiGenerateTagsResponse> generateTags(String prompt, Integer groupCount, Integer tagCountPerGroup);
+    
+    /**
+     * 文本向量化
+     * @param texts
      * @return
      */
-    String aiHandleCommonContent(String content) throws IYqueException;
+    EmbeddingResponse embedding(List<String> texts);
 
 
-
-    /**
-     * 调用ai同步处理通用内容 (单条会话),响应json格式
-     * @param content
-     * @return
-     */
     String aiHandleCommonContentToJson(String content) throws IYqueException;
 
 
 
+    String aiHandleCommonContent(String content);
 
-
-
-    /**
-     * 向量值计算
-     * @param text
-     * @return
-     */
-    EmbeddingResponse embedding(List<String> text);
 
 }

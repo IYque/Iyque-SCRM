@@ -34,3 +34,12 @@ export function update(data) {
 
 // 同步
 export const sync = (data) => post(`${serve}/synchTags`, data)
+
+/**
+ * AI生成标签
+ * @param {*} data { prompt: string }
+ * @returns
+ */
+export const generateTagsByAi = (data) => {
+  return post(`${serve}/generateTagsByAi`, data)
+}

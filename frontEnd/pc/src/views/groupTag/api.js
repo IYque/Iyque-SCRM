@@ -32,3 +32,12 @@ export function update(data) {
   // 添加标签分组类型(1:客户企业标签;2:客群标签)
   return put(`${serve}`, { ...data, groupTagType: 2 })
 }
+
+/**
+ * AI生成标签
+ * @param {*} data { prompt: string }
+ * @returns
+ */
+export const generateTagsByAi = (data) => {
+  return post(`${serve}/generateTagsByAi`, data)
+}

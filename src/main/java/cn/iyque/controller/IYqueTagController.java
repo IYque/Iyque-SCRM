@@ -3,12 +3,15 @@ package cn.iyque.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.iyque.constant.HttpStatus;
+import cn.iyque.domain.AiGenerateTagsRequest;
+import cn.iyque.domain.AiGenerateTagsResponse;
 import cn.iyque.domain.IYQueCustomerDto;
 import cn.iyque.domain.IYQueGroupDto;
 import cn.iyque.domain.ResponseResult;
 import cn.iyque.entity.IYqueTag;
 import cn.iyque.entity.IYqueTagGroup;
 import cn.iyque.exception.IYqueException;
+import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueTagGroupService;
 import cn.iyque.service.IYqueTagService;
 import cn.iyque.utils.TableSupport;
@@ -40,6 +43,10 @@ public class IYqueTagController{
 
     @Autowired
     private IYqueTagService yqueTagService;
+
+
+    @Autowired
+    private IYqueAiService iYqueAiService;
 
 
     /**
@@ -159,7 +166,23 @@ public class IYqueTagController{
         return new ResponseResult(list,new PageInfo(list).getTotal());
     }
 
-
+    /**
+     * AI生成标签
+     * @param request
+     * @return
+     */
+    @PostMapping("/generateTagsByAi")
+    public ResponseResult generateTagsByAi(@RequestBody AiGenerateTagsRequest request){
+        try {
+            List<AiGenerateTagsResponse> result = iYqueAiService.generateTags(
+                    request.getPrompt(),
+                    request.getGroupCount(),
+                    request.getTagCountPerGroup());
+            return new ResponseResult(result);
+        } catch (Exception e) {
+            return new ResponseResult(HttpStatus.ERROR, "AI生成标签失败: " + e.getMessage(), null);
+        }
+    }
 
 
 

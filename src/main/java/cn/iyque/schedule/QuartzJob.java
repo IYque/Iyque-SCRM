@@ -38,21 +38,21 @@ public class QuartzJob {
 
     }
 
-    /**
-     * 每5秒执行一次的定时任务（用于测试）
-     * cron表达式：0 0/5 * * * ? （每5秒执行一次）
-     */
-    @Scheduled(cron = "*/5 * * * * *")
-    public void fiveMinuteJob() {
-        try {
-            log.info("朋友圈jobId换取momentId任务开始，当前时间：{}", new Date());
-
-            friendCircleService.jobIdToMomentId();
-
-            log.info("朋友圈jobId换取momentId任务结束，当前时间：{}", new Date());
-
-        }catch (Exception e){
-            log.error("朋友圈jobId换取momentId任务执行失败:"+e.getMessage());
-        }
-    }
+//    /**
+//     * 每5秒执行一次的定时任务（用于测试）
+//     * cron表达式：0 0/5 * * * ? （每5秒执行一次）
+//     */
+//    @Scheduled(cron = "*/5 * * * * *")
+//    public void fiveMinuteJob() {
+//        try {
+//            log.info("朋友圈jobId换取momentId任务开始，当前时间：{}", new Date());
+//
+//            friendCircleService.jobIdToMomentId();
+//
+//            log.info("朋友圈jobId换取momentId任务结束，当前时间：{}", new Date());
+//
+//        }catch (Exception e){
+//            log.error("朋友圈jobId换取momentId任务执行失败:"+e.getMessage());
+//        }
+//    }
 }
