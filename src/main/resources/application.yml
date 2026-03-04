@@ -1,10 +1,35 @@
 server:
   port: 8085
 ai:
-  model: GLM-4.6 #接入的智普文本模型，GLM-4.6，GLM-4.5，GLM-4
-  limitToken: 100000  #限制每日token使用上限(输入token+输出token)
-  zhipu:
-    apiKey: aac7e6c624284d609a1b9d7dd2b0903b.9GYXLQVp1R
+  models: #大模型相关配置
+    enabled:
+      - glm-4
+      - glm-4-flash
+    configs:
+      glm-4:
+        api-key: aac7e6c624284d609a1b9d7dd2b0903b
+        base-url: https://open.bigmodel.cn/api/paas/v4
+        model-name: glm-4
+      glm-4-flash:
+        api-key: aac7e6c624284d609a1b9d7dd2b0903b
+        base-url: https://open.bigmodel.cn/api/paas/v4
+        model-name: glm-4-flash
+  vector: #向量相关配置
+    host: 127.0.0.1  #Milvus地址
+    port: 19530 #Milvus端口,api通信端口,非web访问端口.
+    collectionName: iyque_vectors #向量集合名称
+    dimension: 1536 #向量维度
+    score: 0.5f #向量查询相似度
+    enabled:
+      - embedding-3
+    configs:
+      embedding-3:
+        api-key: aac7e6c624284d609a1b9d7dd2b0903b
+        base-url: https://open.bigmodel.cn/api/paas/v4
+        model-name: embedding-3
+
+
+
 iyque:
   userName: iyque
   pwd: iyque.cn
@@ -24,7 +49,7 @@ iyque:
     score: 0.5f #向量查询相似度
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/scrm_ky?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:10179/scrm_ky?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root

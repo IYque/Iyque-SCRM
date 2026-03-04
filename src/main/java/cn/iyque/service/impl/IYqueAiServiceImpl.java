@@ -1,45 +1,62 @@
 package cn.iyque.service.impl;
 
-import ai.z.openapi.ZhipuAiClient;
-import ai.z.openapi.service.embedding.EmbeddingCreateParams;
-import ai.z.openapi.service.embedding.EmbeddingResponse;
-import ai.z.openapi.service.model.*;
+
 import cn.iyque.config.IYqueParamConfig;
 import cn.iyque.domain.AiGenerateTagsResponse;
-import cn.iyque.entity.IYqueAiTokenRecord;
+import cn.iyque.domain.EmbeddingResponse;
 import cn.iyque.exception.IYqueException;
+import cn.iyque.factory.AiModelFactory;
+import cn.iyque.prompt.AiPromptManager;
 import cn.iyque.service.IYqueAiService;
-import cn.iyque.service.IYqueAiTokenRecordService;
+import cn.iyque.service.FunctionRouteService;
+import cn.iyque.strategy.HistoryEvictionPolicy;
+import cn.iyque.strategy.HistoryEvictionPolicyManager;
 import cn.iyque.utils.StringUtils;
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
+import dev.langchain4j.model.embedding.EmbeddingModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+
 
 @Service
 @Slf4j
 public class IYqueAiServiceImpl implements IYqueAiService {
 
-    @Value("${ai.model}")
-    private String model;
+//    @Value("${ai.maxHistoryRounds:10}")
+//    private int defaultMaxHistoryRounds;
+//
+    @Value("${ai.historyEvictionPolicy:summary}")
+    private String historyEvictionPolicy;
 
-    @Value("${ai.limitToken}")
-    private long limitToken;
+    @Autowired
+    private AiModelFactory modelFactory;
 
-    @Value("${ai.zhipu.apiKey}")
-    private String apiKey;
+    @Autowired
+    private AiPromptManager promptManager;
 
+    @Autowired
+    private FunctionRouteService functionRouteService;
+
+    @Autowired
+    private HistoryEvictionPolicyManager policyManager;
 
     @Autowired
     private IYqueParamConfig yqueParamConfig;
 
-
-    @Autowired
-    private IYqueAiTokenRecordService aiTokenRecordService;
 
 
 
@@ -47,14 +64,12 @@ public class IYqueAiServiceImpl implements IYqueAiService {
     public List<AiGenerateTagsResponse> generateTags(String prompt, Integer groupCount, Integer tagCountPerGroup) {
         List<AiGenerateTagsResponse> result = new ArrayList<>();
         
-        // 设置默认值
         if (groupCount == null || groupCount < 1) {
             groupCount = 2;
         }
         if (tagCountPerGroup == null || tagCountPerGroup < 1) {
             tagCountPerGroup = 3;
         }
-        // 限制最大值
         if (groupCount > 100) {
             groupCount = 100;
         }
@@ -63,7 +78,14 @@ public class IYqueAiServiceImpl implements IYqueAiService {
         }
         
         try {
-            // 构建AI提示词，指导AI生成符合格式的标签
+            List<String> models = modelFactory.getEnabledModels();
+            if (models.isEmpty()) {
+                throw new IYqueException("无可用 AI 模型，请检查 ai.models 配置");
+            }
+            
+            String modelName = models.get(0);
+            ChatLanguageModel chatModel = modelFactory.getChatModel(modelName, 0.3, 0.9);
+            
             String aiPrompt = "请根据用户需求生成相关的标签组和标签。\n" +
                     "用户需求：" + prompt + "\n" +
                     "请按照以下JSON格式输出结果：\n" +
@@ -86,19 +108,32 @@ public class IYqueAiServiceImpl implements IYqueAiService {
                     "4. 严格按照指定的JSON格式输出，不要包含任何额外的文本\n" +
                     "5. 确保JSON格式正确，能够被标准JSON解析器解析\n";
             
-            // 调用AI服务生成标签
-            String aiResponse = aiHandleCommonContentToJson(aiPrompt);
+            List<ChatMessage> messages = new ArrayList<>();
+            messages.add(SystemMessage.from("你是一个数据分析助手。请严格只返回JSON格式数据，不要包含任何额外的文本、说明或解释。返回的JSON必须能够被标准解析器直接解析。"));
+            messages.add(UserMessage.from(aiPrompt));
             
-            // 解析AI的JSON输出
+            String aiResponse = chatModel.chat(messages).aiMessage().text();
+            log.info("AI生成标签响应: {}", aiResponse);
+            
+            String jsonStr = aiResponse.trim();
+            if (jsonStr.startsWith("```")) {
+                int firstNewline = jsonStr.indexOf('\n');
+                int lastNewline = jsonStr.lastIndexOf("```");
+                if (firstNewline > 0 && lastNewline > firstNewline) {
+                    jsonStr = jsonStr.substring(firstNewline + 1, lastNewline).trim();
+                } else if (lastNewline > 3) {
+                    jsonStr = jsonStr.substring(3, lastNewline).trim();
+                }
+            }
+            
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(aiResponse);
+            com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(jsonStr);
             com.fasterxml.jackson.databind.JsonNode tagGroupsNode = rootNode.get("tagGroups");
             
             if (tagGroupsNode != null && tagGroupsNode.isArray()) {
                 for (com.fasterxml.jackson.databind.JsonNode groupNode : tagGroupsNode) {
                     AiGenerateTagsResponse tagGroup = new AiGenerateTagsResponse();
                     
-                    // 解析标签组名称
                     com.fasterxml.jackson.databind.JsonNode groupNameNode = groupNode.get("groupName");
                     if (groupNameNode != null && groupNameNode.isTextual()) {
                         tagGroup.setGroupName(groupNameNode.asText());
@@ -106,7 +141,6 @@ public class IYqueAiServiceImpl implements IYqueAiService {
                         continue;
                     }
                     
-                    // 解析标签列表
                     List<AiGenerateTagsResponse.TagItem> tags = new ArrayList<>();
                     com.fasterxml.jackson.databind.JsonNode tagsNode = groupNode.get("tags");
                     if (tagsNode != null && tagsNode.isArray()) {
@@ -127,7 +161,6 @@ public class IYqueAiServiceImpl implements IYqueAiService {
                 }
             }
             
-            // 如果AI生成的结果为空，抛出异常
             if (result.isEmpty()) {
                 throw new IYqueException("AI生成标签失败：未生成有效的标签组");
             }
@@ -136,230 +169,332 @@ public class IYqueAiServiceImpl implements IYqueAiService {
             log.error("AI生成标签失败: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("AI生成标签失败: " + e.getMessage());
+            log.error("AI生成标签失败: " + e.getMessage(), e);
             throw new IYqueException("AI生成标签失败: " + e.getMessage());
         }
         
         return result;
     }
     
-    /**
-     * 获取默认标签组（当AI生成失败时使用）
-     */
-    private List<AiGenerateTagsResponse> getDefaultTagGroups() {
-        List<AiGenerateTagsResponse> result = new ArrayList<>();
-        
-        // 默认标签组1：客户价值
-        AiGenerateTagsResponse group1 = new AiGenerateTagsResponse();
-        group1.setGroupName("客户价值");
-        List<AiGenerateTagsResponse.TagItem> tags1 = new ArrayList<>();
-        AiGenerateTagsResponse.TagItem tag1_1 = new AiGenerateTagsResponse.TagItem();
-        tag1_1.setName("高价值客户");
-        tags1.add(tag1_1);
-        AiGenerateTagsResponse.TagItem tag1_2 = new AiGenerateTagsResponse.TagItem();
-        tag1_2.setName("中等价值客户");
-        tags1.add(tag1_2);
-        AiGenerateTagsResponse.TagItem tag1_3 = new AiGenerateTagsResponse.TagItem();
-        tag1_3.setName("低价值客户");
-        tags1.add(tag1_3);
-        group1.setTags(tags1);
-        result.add(group1);
-        
-        // 默认标签组2：客户活跃度
-        AiGenerateTagsResponse group2 = new AiGenerateTagsResponse();
-        group2.setGroupName("客户活跃度");
-        List<AiGenerateTagsResponse.TagItem> tags2 = new ArrayList<>();
-        AiGenerateTagsResponse.TagItem tag2_1 = new AiGenerateTagsResponse.TagItem();
-        tag2_1.setName("活跃客户");
-        tags2.add(tag2_1);
-        AiGenerateTagsResponse.TagItem tag2_2 = new AiGenerateTagsResponse.TagItem();
-        tag2_2.setName("沉默客户");
-        tags2.add(tag2_2);
-        AiGenerateTagsResponse.TagItem tag2_3 = new AiGenerateTagsResponse.TagItem();
-        tag2_3.setName("流失客户");
-        tags2.add(tag2_3);
-        group2.setTags(tags2);
-        result.add(group2);
-        
-        return result;
-    }
+
 
     @Override
-    public String aiHandleCommonContent(String content) {
+    public Flux<String> aiChatWithMemoryStream(String question, String history, String modelName,
+        String role, Double temperature, Double topP, Integer maxHistoryRounds) {
 
-        StringBuilder resContent=new StringBuilder();
-
-        try {
-
-            if(StringUtils.isEmpty(apiKey)){
-                throw new IYqueException("请配置apiKey");
-            }
-
-            //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
-            if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
-
-                ZhipuAiClient client = ZhipuAiClient.builder()
-                        .apiKey(apiKey)
-                        .build();
-
-                // 创建聊天完成请求
-                ChatCompletionCreateParams request = ChatCompletionCreateParams.builder()
-                        .model(model)
-                        .messages(Arrays.asList(
-                                ChatMessage.builder()
-                                        .role(ChatMessageRole.SYSTEM.value())
-                                        .content("你是一个聊天会话助手。")
-                                        .build(),
-                                ChatMessage.builder()
-                                        .role(ChatMessageRole.USER.value())
-                                        .content(content)
-                                        .build()
-                        ))
-                        .thinking(ChatThinking.builder().type("enabled").build())
-                        .temperature(1.0f)
-                        .build();
-
-                // 发送请求
-                ChatCompletionResponse response = client.chat().createChatCompletion(request);
-
-                // 获取回复
-                if (response.isSuccess()) {
-                    Object reply = response.getData().getChoices().get(0).getMessage().getContent();
-                    resContent.append(reply);
+        log.info("开始AI流式对话, 问题: {}, 模型: {}, 温度: {}, 核采样: {}", question, modelName, temperature, topP);
 
 
-                    Usage usage = response.getData().getUsage();
+        Exception lastError = null;
 
-                    if (null != usage) {
-                        aiTokenRecordService.save(
-                                IYqueAiTokenRecord.builder()
-                                        .completionTokens(usage.getCompletionTokens())
-                                        .promptTokens(usage.getPromptTokens())
-                                        .totalTokens(usage.getTotalTokens())
-                                        .createTime(new Date())
-                                        .aiResId(response.getData().getId())
-                                        .model(response.getData().getModel())
-                                        .build()
-                        );
+        // 使用传入的参数或默认值
+        String actualRole = StringUtils.isEmpty(role) ?
+                promptManager.get("recommend-reply.recommend_reply").getSystem()
+                : role;
 
-                    } else {
-                        log.error("AI响应错误: " + response.getMsg());
+        Double actualTemperature = temperature != null ? temperature : 0.7;
+        Double actualTopP = topP != null ? topP : 0.9;
+        Integer actualMaxHistoryRounds = maxHistoryRounds != null ? maxHistoryRounds : 10;
+
+        // 获取流式模型，传入温度和核采样参数
+        StreamingChatLanguageModel streamingModel = modelFactory.getStreamingModel(modelName, actualTemperature, actualTopP);
+
+        if(null != streamingModel){
+
+            // 构建消息列表，包含系统提示和历史对话
+            List<ChatMessage> messages = new ArrayList<>();
+            messages.add(SystemMessage.from(actualRole));
+
+            // 添加历史对话记录（应用淘汰策略）
+            if (!StringUtils.isEmpty(history)) {
+                List<ChatMessage> historyMessages = new ArrayList<>();
+                String[] lines = history.split("\\n");
+                for (String line : lines) {
+                    if (line.startsWith("用户: ")) {
+                        String userContent = line.substring(4).trim();
+                        if (!userContent.isEmpty()) {
+                            historyMessages.add(UserMessage.from(userContent));
+                        }
+                    } else if (line.startsWith("AI: ")) {
+                        String aiContent = line.substring(4).trim();
+                        if (!aiContent.isEmpty()) {
+                            historyMessages.add(AiMessage.from(aiContent));
+                        }
                     }
-
                 }
 
-            }else{
-                throw new IYqueException("今日ai,token资源已耗尽");
+                // 应用淘汰策略
+                HistoryEvictionPolicy policy = policyManager.getPolicy(historyEvictionPolicy);
+                historyMessages = policy.evict(historyMessages, actualMaxHistoryRounds);
+                messages.addAll(historyMessages);
             }
 
+            // 添加当前用户问题
+            messages.add(UserMessage.from(question));
 
-        }catch (Exception e){
-            log.error("ai处理问题异常:"+e.getMessage());
-            throw new IYqueException("ai处理问题异常:"+e.getMessage());
+            // 2. 获取可用模型列表
+            List<String> models = modelFactory.getEnabledModels();
+            if (models.isEmpty()) {
+                return Flux.error(new RuntimeException("无可用 AI 模型，请检查 ai.models 配置"));
+            }
+
+            try {
+
+                // 使用Flux.create创建流式响应
+                return Flux.create(emitter -> {
+                    streamingModel.chat(messages, new StreamingChatResponseHandler() {
+                        @Override
+                        public void onPartialResponse(String partialResponse) {
+                            if (partialResponse != null && !partialResponse.isEmpty()) {
+                                log.debug("收到流式数据块: {}", partialResponse);
+                                emitter.next(partialResponse);
+                            }
+                        }
+
+                        @Override
+                        public void onCompleteResponse(ChatResponse completeResponse) {
+                            log.info("AI流式响应完成, 模型: {}", modelName);
+                            emitter.complete();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            log.error("AI流式响应错误, 模型: {}: {}", modelName, error.getMessage(), error);
+                            emitter.error(new RuntimeException("AI流式响应错误: " + error.getMessage(), error));
+                        }
+                    });
+                }, FluxSink.OverflowStrategy.BUFFER);
+            } catch (Exception e) {
+                lastError = e;
+                log.warn("⚠️ 模型 [{}] 调用失败: {}",
+                        modelName, e.getMessage());
+            }
 
         }
 
 
-        return resContent.toString();
+
+        return Flux.error(new RuntimeException("所有 AI 模型均不可用", lastError));
+    }
+    
+
+
+    @Override
+    public EmbeddingResponse embedding(List<String> texts) {
+        return embedding(texts, null);
     }
 
     @Override
-    public String aiHandleCommonContentToJson(String content) throws IYqueException {
-        StringBuilder resContent=new StringBuilder();
-
-        try {
-
-            if(StringUtils.isEmpty(apiKey)){
-                throw new IYqueException("请配置apiKey");
-            }
-
-            //校验每日token使用数量是否达上限,避免超额使用，带来不必要的消耗
-            if(aiTokenRecordService.getTotalTokensToday()<=limitToken){
-
-                ZhipuAiClient client = ZhipuAiClient.builder()
-                        .apiKey(apiKey)
-                        .build();
-
-                // 创建聊天完成请求
-                ChatCompletionCreateParams request = ChatCompletionCreateParams.builder()
-                        .model(model)
-                        .messages(Arrays.asList(
-                                ChatMessage.builder()
-                                        .role(ChatMessageRole.SYSTEM.value())
-                                        .content("你是一个数据分析助手。请严格只返回JSON格式数据，不要包含任何额外的文本、说明或解释。返回的JSON必须能够被标准解析器直接解析。")
-                                        .build(),
-                                ChatMessage.builder()
-                                        .role(ChatMessageRole.USER.value())
-                                        .content(content)
-                                        .build()
-                        ))
-                        .responseFormat(ResponseFormat.builder().type("json_object").build())
-                        .thinking(ChatThinking.builder().type("enabled").build())
-                        .temperature(0.3f)
-                        .build();
-
-                // 发送请求
-                ChatCompletionResponse response = client.chat().createChatCompletion(request);
-
-                // 获取回复
-                if (response.isSuccess()) {
-                    Object reply = response.getData().getChoices().get(0).getMessage().getContent();
-
-                    resContent.append(reply);
-
-
-                    Usage usage = response.getData().getUsage();
-
-                    if (null != usage) {
-                        aiTokenRecordService.save(
-                                IYqueAiTokenRecord.builder()
-                                        .completionTokens(usage.getCompletionTokens())
-                                        .promptTokens(usage.getPromptTokens())
-                                        .totalTokens(usage.getTotalTokens())
-                                        .createTime(new Date())
-                                        .aiResId(response.getData().getId())
-                                        .model(response.getData().getModel())
-                                        .build()
-                        );
-                    } else {
-                        log.error("AI响应错误: " + response.getMsg());
-                    }
-
-                }
-
-            }else{
-                throw new IYqueException("今日ai,token资源已耗尽");
-            }
-
-
-        }catch (Exception e){
-            log.error("ai处理问题异常:"+e.getMessage());
-            throw new IYqueException("ai处理问题异常:"+e.getMessage());
-
+    public EmbeddingResponse embedding(List<String> texts, String modelName) {
+        if (texts == null || texts.isEmpty()) {
+            return EmbeddingResponse.builder().build();
         }
 
-
-        return resContent.toString();
-    }
-
-    @Override
-    public EmbeddingResponse embedding(List<String> text) {
-
         try {
-            return ZhipuAiClient.builder()
-                    .apiKey(apiKey)
-                    .build()
-                    .embeddings().createEmbeddings(EmbeddingCreateParams.builder()
-                            .model(yqueParamConfig.getVector().getVectorModel())
-                            .input(text)
-                            .dimensions(yqueParamConfig.getVector().getDimension())
-                            .build());
-        }catch (Exception e){
-            log.error("向量计算异常:"+e.getMessage());
+            List<String> embeddingModels = modelFactory.getEnabledEmbeddingModels();
+            if (embeddingModels.isEmpty()) {
+                throw new IllegalArgumentException("无可用向量模型，请检查 ai.vector 配置");
+            }
+
+            String actualModelName = modelName;
+            if (actualModelName == null || actualModelName.trim().isEmpty()) {
+                actualModelName = embeddingModels.get(0);
+            }
+
+            if (!embeddingModels.contains(actualModelName)) {
+                log.warn("指定的向量模型 [{}] 不可用，使用默认模型: {}", actualModelName, embeddingModels.get(0));
+                actualModelName = embeddingModels.get(0);
+            }
+
+            Integer dimension = yqueParamConfig.getVector().getDimension();
+
+            EmbeddingModel embeddingModel = modelFactory.getEmbeddingModel(actualModelName, dimension);
+
+            List<EmbeddingResponse.EmbeddingResult> results = new ArrayList<>();
+            for (String text : texts) {
+                Embedding embedding = embeddingModel.embed(text).content();
+                List<Float> vector = new ArrayList<>();
+                for (double d : embedding.vector()) {
+                    vector.add((float) d);
+                }
+                results.add(EmbeddingResponse.EmbeddingResult.builder()
+                        .text(text)
+                        .vector(vector)
+                        .build());
+            }
+
+            log.info("向量计算完成: {} 条文本, 维度: {}, 模型: {}", texts.size(), dimension, actualModelName);
+            return EmbeddingResponse.builder()
+                    .embeddings(results)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("向量计算异常: " + e.getMessage(), e);
         }
 
         return null;
     }
+
+
+
+
+
+    @Override
+    public Flux<String> aiNavigationChatStream(String question, String modelName,
+        String role, Double temperature, Double topP) {
+
+        log.info("开始AI导航推荐流式对话, 问题: {}, 模型: {}", question, modelName);
+
+        Exception lastError = null;
+
+        String actualRole = StringUtils.isEmpty(role) ?
+                "你是一个智能导航助手，帮助用户找到系统中的相关功能。请根据用户的问题，推荐合适的功能路径。" : role;
+
+        Double actualTemperature = temperature != null ? temperature : 0.7;
+        Double actualTopP = topP != null ? topP : 0.9;
+
+        StreamingChatLanguageModel streamingModel = modelFactory.getStreamingModel(modelName, actualTemperature, actualTopP);
+
+        if(null != streamingModel){
+
+            List<ChatMessage> messages = new ArrayList<>();
+            
+            String functionRoutesText = functionRouteService.getFunctionRoutesAsText();
+            String systemPrompt = actualRole + "\n\n" + functionRoutesText;
+            
+            messages.add(SystemMessage.from(systemPrompt));
+
+            messages.add(UserMessage.from(question));
+
+            List<String> models = modelFactory.getEnabledModels();
+            if (models.isEmpty()) {
+                return Flux.error(new RuntimeException("无可用 AI 模型，请检查 ai.models 配置"));
+            }
+
+            try {
+                return Flux.create(emitter -> {
+                    streamingModel.chat(messages, new StreamingChatResponseHandler() {
+                        @Override
+                        public void onPartialResponse(String partialResponse) {
+                            if (partialResponse != null && !partialResponse.isEmpty()) {
+                                log.debug("收到导航推荐流式数据块: {}", partialResponse);
+                                emitter.next(partialResponse);
+                            }
+                        }
+
+                        @Override
+                        public void onCompleteResponse(ChatResponse completeResponse) {
+                            log.info("AI导航推荐流式响应完成, 模型: {}", modelName);
+                            emitter.complete();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            log.error("AI导航推荐流式响应错误, 模型: {}: {}", modelName, error.getMessage(), error);
+                            emitter.error(new RuntimeException("AI导航推荐流式响应错误: " + error.getMessage(), error));
+                        }
+                    });
+                }, FluxSink.OverflowStrategy.BUFFER);
+            } catch (Exception e) {
+                lastError = e;
+                log.warn("⚠️ 模型 [{}] 调用失败: {}", modelName, e.getMessage());
+            }
+        }
+
+        return Flux.error(new RuntimeException("所有 AI 模型均不可用", lastError));
+    }
+
+
+
+
+    /**
+     * 通用AI对话（非流式）
+     * 使用langchain4j进行同步AI对话
+     * @param content 用户输入的内容
+     * @return AI的回复内容
+     */
+    @Override
+    public String aiHandleCommonContent(String content) {
+        if (StringUtils.isEmpty(content)) {
+            return "";
+        }
+
+        try {
+            List<String> models = modelFactory.getEnabledChatModels();
+            if (models.isEmpty()) {
+                throw new IllegalArgumentException("无可用聊天模型，请检查 ai.models 配置");
+            }
+
+            String modelName = models.get(0);
+            ChatLanguageModel chatModel = modelFactory.getChatModel(modelName, 1.0, 0.9);
+
+            List<ChatMessage> messages = new ArrayList<>();
+            messages.add(SystemMessage.from("你是一个聊天会话助手。"));
+            messages.add(UserMessage.from(content));
+
+            String response = chatModel.chat(messages).aiMessage().text();
+            log.info("AI对话完成, 模型: {}, 内容长度: {}", modelName, response.length());
+
+            return response;
+
+        } catch (Exception e) {
+            log.error("AI对话处理异常: " + e.getMessage(), e);
+            throw new IYqueException("AI对话处理异常: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 通用AI对话返回JSON格式（非流式）
+     * 使用langchain4j进行同步AI对话，强制返回JSON格式
+     * @param content 用户输入的内容
+     * @return AI的JSON格式回复
+     */
+    @Override
+    public String aiHandleCommonContentToJson(String content) throws IYqueException {
+        if (StringUtils.isEmpty(content)) {
+            throw new IYqueException("输入内容不能为空");
+        }
+
+        try {
+            List<String> models = modelFactory.getEnabledChatModels();
+            if (models.isEmpty()) {
+                throw new IllegalArgumentException("无可用聊天模型，请检查 ai.models 配置");
+            }
+
+            String modelName = models.get(0);
+            ChatLanguageModel chatModel = modelFactory.getChatModel(modelName, 0.3, 0.9);
+
+            String systemPrompt = "你是一个数据分析助手。请严格只返回JSON格式数据，不要包含任何额外的文本、说明或解释。返回的JSON必须能够被标准解析器直接解析。";
+
+            List<ChatMessage> messages = new ArrayList<>();
+            messages.add(SystemMessage.from(systemPrompt));
+            messages.add(UserMessage.from(content));
+
+            String response = chatModel.chat(messages).aiMessage().text();
+            log.info("AI JSON对话完成, 模型: {}, 内容长度: {}", modelName, response.length());
+
+            String jsonStr = response.trim();
+            if (jsonStr.startsWith("```")) {
+                int firstNewline = jsonStr.indexOf('\n');
+                int lastNewline = jsonStr.lastIndexOf("```");
+                if (firstNewline > 0 && lastNewline > firstNewline) {
+                    jsonStr = jsonStr.substring(firstNewline + 1, lastNewline).trim();
+                } else if (lastNewline > 3) {
+                    jsonStr = jsonStr.substring(3, lastNewline).trim();
+                }
+            }
+
+            return jsonStr;
+
+        } catch (IYqueException e) {
+            log.error("AI JSON对话处理异常: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("AI JSON对话处理异常: " + e.getMessage(), e);
+            throw new IYqueException("AI JSON对话处理异常: " + e.getMessage());
+        }
+    }
+
 
 
 }

@@ -1,8 +1,8 @@
 package cn.iyque.chain.vectorizer;
 
 
-import ai.z.openapi.service.embedding.EmbeddingResponse;
 import cn.iyque.service.IYqueAiService;
+//import dev.langchain4j.community.model.zhipu.embedding.EmbeddingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,31 +31,32 @@ public class OpenAiVectorization implements Vectorization{
         List<List<Float>> vectorList;
 
 
-        EmbeddingResponse embeddings =yqueAiService.embedding(chunkList);
+//        EmbeddingResponse embeddings =yqueAiService.embedding(chunkList);
+//
+//        // 处理 OpenAI 返回的嵌入数据
+//        vectorList = processOpenAiEmbeddings(embeddings);
 
-        // 处理 OpenAI 返回的嵌入数据
-        vectorList = processOpenAiEmbeddings(embeddings);
-
-        return vectorList;
+//        return vectorList;
+        return null;
     }
 
 
 
-    /**
-     * 处理 OpenAI 返回的嵌入数据
-     */
-    private List<List<Float>> processOpenAiEmbeddings(EmbeddingResponse embeddings) {
-        List<List<Float>> vectorList = new ArrayList<>();
-
-        embeddings.getData().getData().forEach(data->{
-            List<Float> collect = data.getEmbedding().stream()
-                    .map(Double::floatValue)
-                    .collect(Collectors.toList());
-            vectorList.add(collect);
-        });
-
-        return vectorList;
-    }
+//    /**
+//     * 处理 OpenAI 返回的嵌入数据
+//     */
+//    private List<List<Float>> processOpenAiEmbeddings(EmbeddingResponse embeddings) {
+//        List<List<Float>> vectorList = new ArrayList<>();
+//
+////        embeddings.getData().forEach(data->{
+////            List<Float> collect = data.getEmbedding().stream()
+////                    .map(Float::floatValue)
+////                    .collect(Collectors.toList());
+////            vectorList.add(collect);
+////        });
+//
+//        return vectorList;
+//    }
 
 
 

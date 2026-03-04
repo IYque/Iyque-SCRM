@@ -12,6 +12,7 @@
         </div>
       </div>
     </div>
+    <AiChat />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import AppMain from './components/AppMain'
 import TopBar from './components/TopBar/index'
 import Sidebar from './components/Sidebar/index.vue'
 import Breadcrumb from './components/Breadcrumb'
+import AiChat from '@/components/AiChat.vue'
 
 import { mapState } from 'pinia'
 import stores from '@/stores'
@@ -31,6 +33,7 @@ export default {
     AppMain,
     TopBar,
     Sidebar,
+    AiChat,
   },
   computed: {
     //  ...mapGetters(['sidebar', 'avatar', 'device']),

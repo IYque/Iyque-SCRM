@@ -8,11 +8,11 @@
 
   <properties>
     <springboot.version>2.7.3</springboot.version>
-    <lombok.version>1.18.30</lombok.version>
+      <lombok.version>1.18.32</lombok.version>
     <hutool.version>5.8.16</hutool.version>
     <wxJava.version>4.7.6.B</wxJava.version>
-    <srpingboot.maven.version>2.3.3.RELEASE</srpingboot.maven.version>
-    <jjwt.version>0.9.1</jjwt.version>
+<!--    <srpingboot.maven.version>2.3.3.RELEASE</srpingboot.maven.version>-->
+    <jjwt.version>0.12.6</jjwt.version>
     <zxing.version>3.4.1</zxing.version>
     <ai4j.version>1.2.2</ai4j.version>
     <milvus.version>2.5.6</milvus.version>
@@ -21,6 +21,11 @@
       <zai.version>0.0.6</zai.version>
       <mysql.version>8.0.33</mysql.version>
       <pagehelper.boot.version>1.4.2</pagehelper.boot.version>
+    <!-- Java版本配置 -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <java.version>17</java.version>
+     <langchain4j.version>1.0.0-beta3</langchain4j.version>
   </properties>
 
   <parent>
@@ -79,8 +84,20 @@
 
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt</artifactId>
+      <artifactId>jjwt-api</artifactId>
       <version>${jjwt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
 
@@ -151,11 +168,11 @@
     </dependency>
 
 
-      <dependency>
-          <groupId>ai.z.openapi</groupId>
-          <artifactId>zai-sdk</artifactId>
-          <version>${zai.version}</version>
-      </dependency>
+<!--      <dependency>-->
+<!--          <groupId>ai.z.openapi</groupId>-->
+<!--          <artifactId>zai-sdk</artifactId>-->
+<!--          <version>${zai.version}</version>-->
+<!--      </dependency>-->
 
       <!-- MyBatis-Plus -->
       <dependency>
@@ -172,6 +189,42 @@
       </dependency>
 
 
+<!--      <dependency>-->
+<!--          <groupId>dev.langchain4j</groupId>-->
+<!--          <artifactId>langchain4j-open-ai</artifactId>-->
+<!--          <version>${langchain4j.version}</version>-->
+<!--      </dependency>-->
+
+
+<!--      <dependency>-->
+<!--          <groupId>dev.langchain4j</groupId>-->
+<!--          <artifactId>langchain4j-community-zhipu-ai</artifactId>-->
+<!--          <version>${langchain4j.version}</version>-->
+<!--      </dependency>-->
+
+
+<!--     <dependency>-->
+<!--      <groupId>dev.langchain4j</groupId>-->
+<!--      <artifactId>langchain4j</artifactId>-->
+<!--      <version>${langchain4j.version}</version>-->
+<!--    </dependency>-->
+
+      <dependency>
+          <groupId>dev.langchain4j</groupId>
+          <artifactId>langchain4j-open-ai</artifactId>
+          <version>${langchain4j.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>dev.langchain4j</groupId>
+          <artifactId>langchain4j</artifactId>
+          <version>${langchain4j.version}</version>
+      </dependency>
+
+
+
+
+
 
 
   </dependencies>
@@ -181,7 +234,7 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${srpingboot.maven.version}</version>
+<!--          <version>${srpingboot.maven.version}</version>-->
           <executions>
             <execution>
               <goals>
