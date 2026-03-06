@@ -189,217 +189,18 @@
       </template>
     </el-dialog>
     
-    <el-dialog 
-      v-model="showFunctionDialog" 
-      title="新建会话" 
-      width="550px" 
-      :close-on-click-modal="true"
-      class="function-dialog"
-    >
-      <div class="new-chat-form">
-        <div class="form-section">
-          <div class="form-section-title">基本信息</div>
-          <div class="form-item">
-            <label class="form-label">会话名称 <span class="required">*</span></label>
-            <el-input 
-              v-model="tempChatTitle" 
-              placeholder="请输入会话名称" 
-              maxlength="20"
-              show-word-limit
-            />
-          </div>
-          <div class="form-item">
-            <label class="form-label">会话模式</label>
-            <div class="mode-list">
-              <div 
-                class="mode-card" 
-                :class="{ 'selected': tempChatMode === 'general' }" 
-                @click="selectChatMode('general')"
-              >
-                <div class="mode-icon general-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                  </svg>
-                </div>
-                <div class="mode-info">
-                  <div class="mode-title">通用</div>
-                  <div class="mode-desc">使用大模型进行通用对话</div>
-                </div>
-                <div class="mode-check" v-if="tempChatMode === 'general'">
-                  <el-icon><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></el-icon>
-                </div>
-              </div>
-              <div 
-                class="mode-card" 
-                :class="{ 'selected': tempChatMode === 'navigation' }" 
-                @click="selectChatMode('navigation')"
-              >
-                <div class="mode-icon navigation-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                </div>
-                <div class="mode-info">
-                  <div class="mode-title">AI导航</div>
-                  <div class="mode-desc">智能推荐系统功能</div>
-                </div>
-                <div class="mode-check" v-if="tempChatMode === 'navigation'">
-                  <el-icon><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></el-icon>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-item">
-            <label class="form-label">AI模型</label>
-            <el-select v-model="tempSettings.modelName" placeholder="选择模型" style="width: 100%;">
-              <el-option v-for="model in availableModels" :key="model" :label="model" :value="model" />
-            </el-select>
-          </div>
-        </div>
-        
-        <div class="form-section" v-if="tempChatMode === 'general'">
-          <div class="form-section-title">AI设置</div>
-          <div class="form-item">
-            <label class="form-label">AI角色设定</label>
-            <el-input 
-              v-model="tempSettings.role" 
-              type="textarea" 
-              :rows="3"
-              placeholder="请输入AI角色设定"
-            />
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">温度参数 (temperature): {{ tempSettings.temperature }}</label>
-            <el-slider v-model="tempSettings.temperature" :min="0" :max="1" :step="0.1" />
-            <div class="slider-hint">值越大回答越随机，值越小回答越确定</div>
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">核采样 (topP): {{ tempSettings.topP }}</label>
-            <el-slider v-model="tempSettings.topP" :min="0" :max="1" :step="0.1" />
-            <div class="slider-hint">值越大回答越多样</div>
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">历史对话轮数: {{ tempSettings.maxHistoryRounds }}轮</label>
-            <el-slider v-model="tempSettings.maxHistoryRounds" :min="1" :max="20" :step="1" />
-            <div class="slider-hint">保留的历史对话轮数</div>
-          </div>
-        </div>
-      </div>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="showFunctionDialog = false">取消</el-button>
-          <el-button type="primary" @click="confirmNewChat">创建会话</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <AiChatDialog
+      v-model="showFunctionDialog"
+      dialog-type="create"
+      @confirm="handleDialogConfirm"
+    />
 
-    <el-dialog 
-      v-model="showEditDialog" 
-      title="编辑会话" 
-      width="550px" 
-      :close-on-click-modal="true"
-    >
-      <div class="new-chat-form">
-        <div class="form-section">
-          <div class="form-section-title">基本信息</div>
-          <div class="form-item">
-            <label class="form-label">会话名称 <span class="required">*</span></label>
-            <el-input 
-              v-model="editChatTitle" 
-              placeholder="请输入会话名称" 
-              maxlength="20"
-              show-word-limit
-            />
-          </div>
-          <div class="form-item">
-            <label class="form-label">会话模式</label>
-            <div class="mode-list">
-              <div 
-                class="mode-card" 
-                :class="{ 'selected': editChatMode === 'general', 'disabled': editChatMode !== 'general' }"
-              >
-                <div class="mode-icon general-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                  </svg>
-                </div>
-                <div class="mode-info">
-                  <div class="mode-title">通用</div>
-                  <div class="mode-desc">使用大模型进行通用对话</div>
-                </div>
-                <div class="mode-check" v-if="editChatMode === 'general'">
-                  <el-icon><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></el-icon>
-                </div>
-              </div>
-              <div 
-                class="mode-card" 
-                :class="{ 'selected': editChatMode === 'navigation', 'disabled': editChatMode !== 'navigation' }"
-              >
-                <div class="mode-icon navigation-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                </div>
-                <div class="mode-info">
-                  <div class="mode-title">AI导航</div>
-                  <div class="mode-desc">智能推荐系统功能</div>
-                </div>
-                <div class="mode-check" v-if="editChatMode === 'navigation'">
-                  <el-icon><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></el-icon>
-                </div>
-              </div>
-            </div>
-            <div class="mode-hint-text">会话模式不支持修改</div>
-          </div>
-          <div class="form-item">
-            <label class="form-label">AI模型</label>
-            <el-select v-model="editSettings.modelName" placeholder="选择模型" style="width: 100%;">
-              <el-option v-for="model in availableModels" :key="model" :label="model" :value="model" />
-            </el-select>
-          </div>
-        </div>
-        
-        <div class="form-section" v-if="editChatMode === 'general'">
-          <div class="form-section-title">AI设置</div>
-          <div class="form-item">
-            <label class="form-label">AI角色设定</label>
-            <el-input 
-              v-model="editSettings.role" 
-              type="textarea" 
-              :rows="3"
-              placeholder="请输入AI角色设定"
-            />
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">温度参数 (temperature): {{ editSettings.temperature }}</label>
-            <el-slider v-model="editSettings.temperature" :min="0" :max="1" :step="0.1" />
-            <div class="slider-hint">值越大回答越随机，值越小回答越确定</div>
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">核采样 (topP): {{ editSettings.topP }}</label>
-            <el-slider v-model="editSettings.topP" :min="0" :max="1" :step="0.1" />
-            <div class="slider-hint">值越大回答越多样</div>
-          </div>
-          
-          <div class="form-item">
-            <label class="form-label">历史对话轮数: {{ editSettings.maxHistoryRounds }}轮</label>
-            <el-slider v-model="editSettings.maxHistoryRounds" :min="1" :max="20" :step="1" />
-            <div class="slider-hint">保留的历史对话轮数</div>
-          </div>
-        </div>
-      </div>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="showEditDialog = false">取消</el-button>
-          <el-button type="primary" @click="confirmEditTitle">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <AiChatDialog
+      v-model="showEditDialog"
+      dialog-type="edit"
+      :chat-data="editingChatData"
+      @confirm="handleDialogConfirm"
+    />
   </div>
 </template>
 
@@ -407,6 +208,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import AiChatDialog from './AiChatDialog.vue'
 import { 
   chatWithMemoryStream, 
   getAvailableModels, 
@@ -427,25 +229,8 @@ const showSidebar = ref(false)
 const showSettings = ref(false)
 const showFunctionDialog = ref(false)
 const showEditDialog = ref(false)
-const tempChatMode = ref('general')
-const tempChatTitle = ref('')
-const tempSettings = reactive({
-  modelName: '',
-  role: '你是一个SCRM营销助手，专注于客户关系管理和营销策略。请用专业、友好的语言回答用户的问题，提供实用的营销建议和客户管理技巧。',
-  temperature: 0.7,
-  topP: 0.9,
-  maxHistoryRounds: 10
-})
-const editChatTitle = ref('')
-const editChatMode = ref('general')
-const editSettings = reactive({
-  modelName: '',
-  role: '',
-  temperature: 0.7,
-  topP: 0.9,
-  maxHistoryRounds: 10
-})
 const editingChatId = ref(null)
+const editingChatData = ref(null)
 const chats = ref([])
 const currentChatId = ref(null)
 const inputMessage = ref('')
@@ -547,104 +332,99 @@ const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value
 }
 
-const createNewChat = () => {
-  tempChatMode.value = 'general'
-  tempChatTitle.value = ''
-  tempSettings.modelName = availableModels.value[0] || ''
-  tempSettings.role = '你是一个SCRM营销助手，专注于客户关系管理和营销策略。请用专业、友好的语言回答用户的问题，提供实用的营销建议和客户管理技巧。'
-  tempSettings.temperature = 0.7
-  tempSettings.topP = 0.9
-  tempSettings.maxHistoryRounds = 10
+const createNewChat = async () => {
+  if (availableModels.value.length === 0) {
+    await loadAvailableModels()
+  }
+  editingChatData.value = null
   showFunctionDialog.value = true
 }
 
-const confirmNewChat = async () => {
-  if (!tempChatTitle.value.trim()) {
-    ElMessage.warning('请输入会话名称')
-    return
-  }
-  try {
-    const response = await createConversation({
-      title: tempChatTitle.value.trim(),
-      mode: tempChatMode.value,
-      modelName: tempSettings.modelName || availableModels.value[0] || '',
-      role: tempSettings.role,
-      temperature: tempSettings.temperature,
-      topP: tempSettings.topP,
-      maxHistoryRounds: tempSettings.maxHistoryRounds
-    })
-    if (response && response.data) {
-      const newChat = {
-        id: response.data.conversationId,
-        title: response.data.title,
-        messages: [],
-        mode: response.data.mode,
-        settings: {
-          modelName: response.data.modelName || tempSettings.modelName || availableModels.value[0] || '',
-          role: response.data.role || tempSettings.role,
-          temperature: response.data.temperature ?? tempSettings.temperature,
-          topP: response.data.topP ?? tempSettings.topP,
-          maxHistoryRounds: response.data.maxHistoryRounds ?? tempSettings.maxHistoryRounds
-        }
-      }
-      chats.value.unshift(newChat)
-      currentChatId.value = newChat.id
-      showFunctionDialog.value = false
-      if (tempChatMode.value === 'navigation') {
-        ElMessage.success('AI导航模式已开启，将根据场景推荐系统功能')
-      }
-    }
-  } catch (error) {
-    console.error('创建会话失败:', error)
-    ElMessage.error('创建会话失败')
-  }
-}
-
-const openEditDialog = (chat) => {
+const openEditDialog = async (chat) => {
   editingChatId.value = chat.id
-  editChatTitle.value = chat.title
-  editChatMode.value = chat.mode || 'general'
-  editSettings.modelName = chat.settings?.modelName || availableModels.value[0] || ''
-  editSettings.role = chat.settings?.role || '你是一个SCRM营销助手，专注于客户关系管理和营销策略。请用专业、友好的语言回答用户的问题，提供实用的营销建议和客户管理技巧。'
-  editSettings.temperature = chat.settings?.temperature ?? 0.7
-  editSettings.topP = chat.settings?.topP ?? 0.9
-  editSettings.maxHistoryRounds = chat.settings?.maxHistoryRounds ?? 10
+  if (availableModels.value.length === 0) {
+    await loadAvailableModels()
+  }
+  editingChatData.value = {
+    id: chat.id,
+    title: chat.title,
+    mode: chat.mode || 'general',
+    settings: {
+      modelName: chat.settings?.modelName || chat.modelName || '',
+      role: chat.settings?.role || chat.role || '',
+      temperature: chat.settings?.temperature ?? chat.temperature ?? 0.7,
+      topP: chat.settings?.topP ?? chat.topP ?? 0.9,
+      maxHistoryRounds: chat.settings?.maxHistoryRounds ?? chat.maxHistoryRounds ?? 10
+    }
+  }
   showEditDialog.value = true
 }
 
-const confirmEditTitle = async () => {
-  if (!editChatTitle.value.trim()) {
-    ElMessage.warning('请输入会话名称')
-    return
-  }
-  try {
-    await updateConversation({
-      conversationId: editingChatId.value,
-      title: editChatTitle.value.trim(),
-      modelName: editSettings.modelName,
-      role: editSettings.role,
-      temperature: editSettings.temperature,
-      topP: editSettings.topP,
-      maxHistoryRounds: editSettings.maxHistoryRounds
-    })
-    const chat = chats.value.find(c => c.id === editingChatId.value)
-    if (chat) {
-      chat.title = editChatTitle.value.trim()
-      chat.settings = {
-        modelName: editSettings.modelName,
-        role: editSettings.role,
-        temperature: editSettings.temperature,
-        topP: editSettings.topP,
-        maxHistoryRounds: editSettings.maxHistoryRounds || 10
+const handleDialogConfirm = async ({ type, data }) => {
+  if (type === 'create') {
+    try {
+      const response = await createConversation({
+        title: data.title,
+        mode: data.mode,
+        modelName: data.modelName,
+        role: data.role,
+        temperature: data.temperature,
+        topP: data.topP,
+        maxHistoryRounds: data.maxHistoryRounds
+      })
+      if (response && response.data) {
+        const newChat = {
+          id: response.data.conversationId,
+          title: response.data.title,
+          messages: [],
+          mode: response.data.mode,
+          settings: {
+            modelName: response.data.modelName || data.modelName,
+            role: response.data.role || data.role,
+            temperature: response.data.temperature ?? data.temperature,
+            topP: response.data.topP ?? data.topP,
+            maxHistoryRounds: response.data.maxHistoryRounds ?? data.maxHistoryRounds
+          }
+        }
+        chats.value.unshift(newChat)
+        currentChatId.value = newChat.id
+        if (data.mode === 'navigation') {
+          ElMessage.success('AI导航模式已开启，将根据场景推荐系统功能')
+        }
       }
-      chats.value = [...chats.value]
-      ElMessage.success('会话已更新')
+    } catch (error) {
+      console.error('创建会话失败:', error)
+      ElMessage.error('创建会话失败')
     }
-  } catch (error) {
-    console.error('更新会话名称失败:', error)
-    ElMessage.error('更新会话名称失败')
+  } else if (type === 'edit') {
+    try {
+      await updateConversation({
+        conversationId: editingChatId.value,
+        title: data.title,
+        modelName: data.modelName,
+        role: data.role,
+        temperature: data.temperature,
+        topP: data.topP,
+        maxHistoryRounds: data.maxHistoryRounds
+      })
+      const chat = chats.value.find(c => c.id === editingChatId.value)
+      if (chat) {
+        chat.title = data.title
+        chat.settings = {
+          modelName: data.modelName,
+          role: data.role,
+          temperature: data.temperature,
+          topP: data.topP,
+          maxHistoryRounds: data.maxHistoryRounds || 10
+        }
+        chats.value = [...chats.value]
+        ElMessage.success('会话已更新')
+      }
+    } catch (error) {
+      console.error('更新会话名称失败:', error)
+      ElMessage.error('更新会话名称失败')
+    }
   }
-  showEditDialog.value = false
 }
 
 const switchChat = async (chatId) => {
@@ -653,7 +433,13 @@ const switchChat = async (chatId) => {
   const chat = chats.value.find(c => c.id === chatId)
   if (chat && (!chat.messages || chat.messages.length === 0)) {
     isLoading.value = true
+    const startTime = Date.now()
     await loadChatDetail(chatId)
+    const elapsed = Date.now() - startTime
+    const minLoadingTime = 800
+    if (elapsed < minLoadingTime) {
+      await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsed))
+    }
     isLoading.value = false
   }
   
@@ -890,10 +676,6 @@ const handleRouteClick = (path) => {
   }
 }
 
-const selectChatMode = (mode) => {
-  tempChatMode.value = mode
-}
-
 const loadFunctionRoutes = async () => {
   try {
     const response = await getFunctionRoutes()
@@ -914,23 +696,6 @@ const scrollToBottom = () => {
 }
 
 const saveScrollPosition = (e) => {}
-
-const saveChats = async () => {
-  try {
-    const currentChat = currentChatId.value ? chats.value.find(c => c.id === currentChatId.value) : null
-    if (currentChat && currentChat.messages.length > 0) {
-      const messages = currentChat.messages.map(msg => ({
-        conversationId: currentChatId.value,
-        type: msg.type,
-        content: msg.content,
-        timestamp: msg.timestamp
-      }))
-      await saveConversationMessages(currentChatId.value, messages)
-    }
-  } catch (error) {
-    console.error('保存会话失败:', error)
-  }
-}
 
 const loadConversationList = async () => {
   try {
@@ -986,13 +751,12 @@ const loadChats = async () => {
 }
 
 const saveSettings = () => {
-  localStorage.setItem('aiSettings', JSON.stringify(settings))
   showSettings.value = false
   ElMessage.success('设置已保存')
 }
 
 const resetSettings = () => {
-  settings.modelName = availableModels.value[0] || ''
+  settings.modelName = ''
   settings.role = '你是一个SCRM营销助手，专注于客户关系管理和营销策略。请用专业、友好的语言回答用户的问题，提供实用的营销建议和客户管理技巧。'
   settings.temperature = 0.7
   settings.topP = 0.9
@@ -1001,34 +765,12 @@ const resetSettings = () => {
 }
 
 const loadSettings = () => {
-  const savedSettings = localStorage.getItem('aiSettings')
-  if (savedSettings) {
-    try {
-      const parsed = JSON.parse(savedSettings)
-      settings.modelName = parsed.modelName || settings.modelName
-      settings.role = parsed.role || settings.role
-      settings.temperature = parsed.temperature ?? settings.temperature
-      settings.topP = parsed.topP ?? settings.topP
-      settings.maxHistoryRounds = parsed.maxHistoryRounds ?? settings.maxHistoryRounds
-    } catch (e) {
-      console.error('Failed to parse saved settings:', e)
-    }
-  }
 }
 
 const loadAvailableModels = async () => {
   try {
-    console.log('[AI Chat] 开始加载模型列表...')
     const response = await getAvailableModels()
-    console.log('[AI Chat] 模型列表响应:', response)
-    console.log('[AI Chat] response.data:', response?.data)
-    if (response && response.data) {
-      availableModels.value = response.data
-      console.log('[AI Chat] availableModels.value:', availableModels.value)
-      if (availableModels.value.length > 0 && !settings.modelName) {
-        settings.modelName = availableModels.value[0]
-        console.log('[AI Chat] 设置默认模型:', settings.modelName)
-      }
+    if (response && Array.isArray(response)) {
     }
   } catch (error) {
     console.error('[AI Chat] 加载模型列表失败:', error)
@@ -1036,14 +778,6 @@ const loadAvailableModels = async () => {
 }
 
 const loadInputHistory = () => {
-  const saved = localStorage.getItem('aiInputHistory')
-  if (saved) {
-    try {
-      inputHistory.value = JSON.parse(saved)
-    } catch (e) {
-      console.error('Failed to load input history:', e)
-    }
-  }
 }
 
 const navigateHistory = (direction) => {
@@ -1086,20 +820,35 @@ const sendMessage = async () => {
       if (inputHistory.value.length > 50) {
         inputHistory.value.pop()
       }
-      localStorage.setItem('aiInputHistory', JSON.stringify(inputHistory.value))
     }
     historyIndex.value = -1
     tempInput.value = ''
     
     if (!currentChat.value) {
-      createNewChat()
+      const defaultChat = {
+        id: Date.now().toString(),
+        title: '新会话',
+        messages: [],
+        mode: currentChatMode.value || 'general',
+        settings: { ...settings }
+      }
+      chats.value.unshift(defaultChat)
+      currentChatId.value = defaultChat.id
     }
     
-    currentChat.value.messages.push({
+    const chatSettings = currentChat.value?.settings || settings
+    if (!chatSettings.modelName) {
+      ElMessage.warning('请先选择AI模型')
+      return
+    }
+    
+    const userMsgObj = {
       type: 'user',
       content: userMessage,
       timestamp: formatTime(new Date())
-    })
+    }
+    
+    currentChat.value.messages.push(userMsgObj)
     
     inputMessage.value = ''
     isLoading.value = true
@@ -1128,8 +877,6 @@ const sendMessage = async () => {
         }
       }
       
-      const chatSettings = currentChat.value?.settings || settings
-    
     const requestParams = {
       question: userMessage,
       history: history,
@@ -1158,12 +905,26 @@ const sendMessage = async () => {
           aiMessage.content = error.message || '抱歉，我暂时无法回答您的问题，请稍后再试。'
           chats.value = [...chats.value]
           isLoading.value = false
-          saveChats()
         },
-        (fullResponse) => {
+        async (fullResponse) => {
           console.log('[AI Chat] 完成:', fullResponse)
           isLoading.value = false
-          saveChats()
+          try {
+            await saveConversationMessage({
+              conversationId: currentChatId.value,
+              type: 'user',
+              content: userMessage,
+              timestamp: userMsgObj.timestamp
+            })
+            await saveConversationMessage({
+              conversationId: currentChatId.value,
+              type: 'ai',
+              content: aiMessage.content,
+              timestamp: aiMessage.timestamp
+            })
+          } catch (e) {
+            console.error('保存消息失败:', e)
+          }
         }
       )
     } catch (error) {
@@ -1171,14 +932,17 @@ const sendMessage = async () => {
       aiMessage.content = error.message || '抱歉，我暂时无法回答您的问题，请稍后再试。'
       chats.value = [...chats.value]
       isLoading.value = false
-      saveChats()
     }
   }
 
-onMounted(() => {
-  loadChats()
+onMounted(async () => {
+  // 先加载模型列表
+  await loadAvailableModels()
+  // 再加载设置，此时可以验证模型名称是否有效
   loadSettings()
-  loadAvailableModels()
+  // 如果设置中的模型不在可用列表中，loadAvailableModels 已经处理了
+  
+  loadChats()
   loadInputHistory()
   loadFunctionRoutes()
   generateWatermarks()
@@ -1191,7 +955,6 @@ onMounted(() => {
     }
     chats.value.push(defaultChat)
     currentChatId.value = defaultChat.id
-    saveChats()
   }
   
   window.handleRouteClick = handleRouteClick

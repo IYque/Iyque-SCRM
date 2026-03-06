@@ -9,7 +9,7 @@ window.sysConfig = {
   BASE_URL,
   RUN_ENV: config.RUN_ENV,
   TOKEN:
-    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOYUxhbiIsImlhdCI6MTc1MzA5NzQ5NiwiZXhwIjoxNzUzNzAyMjk2fQ.6-FUqhXGvSiO3y5YbpJvMHHt51grKsUkG1sSleRyaqiflCl4eWfSpBZ5HvxpWBas05NOmyXeyyYutFJIEPaWUA',
+    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpeXF1ZSIsImlhdCI6MTc3MjUwMzkyOSwiZXhwIjoxNzczMTA4NzI5fQ.sslN7K_nyc9QVOiB3IhPNSyQuycqtYbMt7mwZXTJFINtRPOIZHJgIYCsI8YVfYrz',
 
   services: {
     wecom: '/open',

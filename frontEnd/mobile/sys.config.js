@@ -3,9 +3,9 @@
  */
 const envs = {
   development: {
-    DOMAIN: 'https://show.iyque.cn', // 站点域名，会根据此处域名判断应用环境
+    DOMAIN: 'http://127.0.0.1:8085', // 站点域名，会根据此处域名判断应用环境
     BASE_URL: '/openmobile/', // 路由基础路径
-    BASE_API: 'https://show.iyque.cn/iyque', // 接口基础路径
+    BASE_API: 'http://127.0.0.1:8085', // 接口基础路径
   },
   production: {
     DOMAIN: 'https://iyque.cn',

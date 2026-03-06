@@ -9,19 +9,19 @@ import java.util.Map;
 
 public interface IYqueAiConversationService extends IService<IYqueAiConversation> {
 
-    List<IYqueAiConversation> getConversationList(Long userId);
+    List<IYqueAiConversation> getConversationList(Integer deviceType);
 
     IYqueAiConversation createConversation(IYqueAiConversation conversation);
 
     IYqueAiConversation updateConversation(IYqueAiConversation conversation);
 
-    void deleteConversation(String conversationId);
+    void deleteConversation(String conversationId, Integer deviceType);
 
-    List<IYqueAiConversationMessage> getMessages(String conversationId);
+    List<IYqueAiConversationMessage> getMessages(String conversationId, Integer deviceType);
 
     void saveMessage(IYqueAiConversationMessage message);
 
-    void saveMessages(String conversationId, List<IYqueAiConversationMessage> messages);
+    void saveMessages(String conversationId, List<IYqueAiConversationMessage> messages, Integer deviceType);
 
-    Map<String, Object> getConversationWithMessages(String conversationId);
+    Map<String, Object> getConversationWithMessages(String conversationId, Integer deviceType);
 }

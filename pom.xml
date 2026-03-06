@@ -11,7 +11,6 @@
       <lombok.version>1.18.32</lombok.version>
     <hutool.version>5.8.16</hutool.version>
     <wxJava.version>4.7.6.B</wxJava.version>
-<!--    <srpingboot.maven.version>2.3.3.RELEASE</srpingboot.maven.version>-->
     <jjwt.version>0.12.6</jjwt.version>
     <zxing.version>3.4.1</zxing.version>
     <ai4j.version>1.2.2</ai4j.version>
@@ -189,25 +188,6 @@
       </dependency>
 
 
-<!--      <dependency>-->
-<!--          <groupId>dev.langchain4j</groupId>-->
-<!--          <artifactId>langchain4j-open-ai</artifactId>-->
-<!--          <version>${langchain4j.version}</version>-->
-<!--      </dependency>-->
-
-
-<!--      <dependency>-->
-<!--          <groupId>dev.langchain4j</groupId>-->
-<!--          <artifactId>langchain4j-community-zhipu-ai</artifactId>-->
-<!--          <version>${langchain4j.version}</version>-->
-<!--      </dependency>-->
-
-
-<!--     <dependency>-->
-<!--      <groupId>dev.langchain4j</groupId>-->
-<!--      <artifactId>langchain4j</artifactId>-->
-<!--      <version>${langchain4j.version}</version>-->
-<!--    </dependency>-->
 
       <dependency>
           <groupId>dev.langchain4j</groupId>

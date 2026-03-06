@@ -54,4 +54,6 @@ public class IYqueAiConversation {
     @TableField(exist = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastMessageTime;
+
+    private Integer deviceType;
 }

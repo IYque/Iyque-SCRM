@@ -18,7 +18,7 @@ export default [
     redirect: process.env.NODE_ENV === 'development' ? '' : '/' + window.location.pathname.split('/').pop(),
     meta: {
       title: '企微助手',
-      noAuth: true,
+      noAuth: false,
     },
   },
 

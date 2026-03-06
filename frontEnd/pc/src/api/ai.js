@@ -292,7 +292,8 @@ export function navigationChatStream(data, onMessage, onError, onComplete) {
 export function getConversationList() {
   return request({
     url: '/ai/conversation/list',
-    method: 'get'
+    method: 'get',
+    params: { deviceType: 1 }
   })
 }
 
@@ -300,7 +301,7 @@ export function createConversation(data) {
   return request({
     url: '/ai/conversation/create',
     method: 'post',
-    data
+    data: { ...data, deviceType: 1 }
   })
 }
 
@@ -308,21 +309,23 @@ export function updateConversation(data) {
   return request({
     url: '/ai/conversation/update',
     method: 'put',
-    data
+    data: { ...data, deviceType: 1 }
   })
 }
 
 export function deleteConversation(conversationId) {
   return request({
     url: `/ai/conversation/delete/${conversationId}`,
-    method: 'delete'
+    method: 'delete',
+    params: { deviceType: 1 }
   })
 }
 
 export function getConversationMessages(conversationId) {
   return request({
     url: `/ai/conversation/messages/${conversationId}`,
-    method: 'get'
+    method: 'get',
+    params: { deviceType: 1 }
   })
 }
 
@@ -330,7 +333,7 @@ export function saveConversationMessage(data) {
   return request({
     url: '/ai/conversation/message/save',
     method: 'post',
-    data
+    data: { ...data, deviceType: 1 }
   })
 }
 
@@ -338,13 +341,14 @@ export function saveConversationMessages(conversationId, messages) {
   return request({
     url: `/ai/conversation/messages/save/${conversationId}`,
     method: 'post',
-    data: messages
+    data: { messages, deviceType: 1 }
   })
 }
 
 export function getConversationDetail(conversationId) {
   return request({
     url: `/ai/conversation/detail/${conversationId}`,
-    method: 'get'
+    method: 'get',
+    params: { deviceType: 1 }
   })
 }

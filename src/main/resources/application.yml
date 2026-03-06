@@ -28,8 +28,6 @@ ai:
         base-url: https://open.bigmodel.cn/api/paas/v4
         model-name: embedding-3
 
-
-
 iyque:
   userName: iyque
   pwd: iyque.cn
