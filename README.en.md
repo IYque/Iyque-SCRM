@@ -12,6 +12,7 @@ Based on WeCom (Enterprise WeChat) · Ready to Use · Fully Customizable · Priv
 
 [![star](https://gitee.com/iyque/iYqueCode/badge/star.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/stargazers)
 [![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
+[![AI Dev: OpenWecomSkills](https://img.shields.io/badge/AI_Dev-OpenWecomSkills-14b8a6?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNS41di0zSDguNUwxMyA3LjV2M0gxNS41TDExIDE3LjV6Ii8+PC9zdmc+)](https://gitee.com/omni-soc-kit/open-wecom-skills)
 
 </div>
 
@@ -79,7 +80,7 @@ YuanQue SCRM is a **100% open-source** private domain marketing solution based o
 
 ---
 
-## 🛠️ Developer Ecosystem
+## 🤖 AI Development
 
 ### Open WeCom Skills — WeCom AI Development Knowledge Base
 

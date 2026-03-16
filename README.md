@@ -14,6 +14,8 @@
 [![fork](https://gitee.com/iyque/iYqueCode/badge/fork.svg?theme=dark)](https://gitee.com/iyque/iYqueCode/members)
 ![star](https://gitcode.com/iyque/iYque/star/badge.svg)
 ![star](https://atomgit.com/godothub/konado/star/2025top.svg)
+[![AtomGit：2025年度 G-Star 开源项目](https://img.shields.io/badge/AtomGit-2025年度_G--Star_开源项目-f59e0b?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAxNy4yN0wxOC4xOCAyMWwtMS42NC03LjAzTDIyIDkuMjRsLTcuMTktLjYxTDEyIDIgOS4xOSA4LjYzIDIgOS4yNGw1LjQ2IDQuNzNMNS44MiAyMXoiLz48L3N2Zz4=)](https://atomgit.com/godothub/konado)
+[![AI 开发：OpenWecomSkills](https://img.shields.io/badge/AI_开发-OpenWecomSkills-14b8a6?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNS41di0zSDguNUwxMyA3LjV2M0gxNS41TDExIDE3LjV6Ii8+PC9zdmc+)](https://gitee.com/omni-soc-kit/open-wecom-skills)
 
 </div>
 
@@ -196,7 +198,7 @@
 
 ---
 
-## 🛠️ 开发者生态
+## 🤖 AI开发
 
 ### Open WeCom Skills — 企微 AI 开发知识库
 
