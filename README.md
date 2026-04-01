@@ -25,11 +25,10 @@
 
 | 资源 | 链接 |
 |------|------|
-| 🌐 官网 | [iyque.cn](https://iyque.cn) |
-| 📖 开源部署文档 | [iyque.cn/docs](https://iyque.cn/docs/) |
-| 🔧 企微密钥生成工具集 | [tools.iyque.cn](https://tools.iyque.cn) |
-| 📋 商业版功能清单 | [iyque.cn/archives/sy](https://iyque.cn/archives/sy) |
-| 🔄 开源版 vs 商业版 | [vs.iyque.cn](https://vs.iyque.cn/) |
+| 🌐 官网 | [iyuanque.cn](https://iyuanque.cn) |
+| 📖 开源部署文档 | [iyuanque.cn/docs](https://ucnqq6fany8u.feishu.cn/wiki/OgVfwtC6Sivqjvk85GGcYfVjnyg) |
+| 📋 商业版功能清单 | [iyuanque.cn/feature/sy](https://ucnqq6fany8u.feishu.cn/wiki/GItuwa59qiCMlLkRADpc8dxynIe) |
+| 🔄 开源版 vs 商业版 | [iyuanque.cn/open-source](https://iyuanque.cn/open-source) |
 
 > 💡 **商业版演示系统**请联系客服获取。开源版暂不提供演示，代码已完全开源可自行部署。
 
@@ -226,7 +225,7 @@
 
 ## 🏆 获奖荣耀
 
-<a href="https://vs.iyque.cn/#awards" target="_blank">查看获奖荣耀</a>
+<a href="https://vs.iyuanque.cn/#awards" target="_blank">查看获奖荣耀</a>
 
 ---
 

@@ -22,11 +22,10 @@ Based on WeCom (Enterprise WeChat) · Ready to Use · Fully Customizable · Priv
 
 | Resource | Link |
 |----------|------|
-| 🌐 Website | [iyque.cn](https://iyque.cn) |
-| 📖 Deployment Docs | [iyque.cn/docs](https://iyque.cn/docs/) |
-| 🔧 WeCom Key Tools | [tools.iyque.cn](https://tools.iyque.cn) |
-| 📋 Commercial Features | [iyque.cn/archives/sy](https://iyque.cn/archives/sy) |
-| 🔄 Open Source vs Commercial | [vs.iyque.cn](https://vs.iyque.cn/) |
+| 🌐 Website | [iyuanque.cn](https://iyuanque.cn) |
+| 📖 Deployment Docs | [iyuanque.cn/docs](https://ucnqq6fany8u.feishu.cn/wiki/OgVfwtC6Sivqjvk85GGcYfVjnyg) |
+| 📋 Commercial Features | [iyuanque.cn/feature/sy](https://ucnqq6fany8u.feishu.cn/wiki/GItuwa59qiCMlLkRADpc8dxynIe) |
+| 🔄 Open Source vs Commercial | [iyuanque.cn/open-source](https://iyuanque.cn/open-source) |
 
 ---
 
