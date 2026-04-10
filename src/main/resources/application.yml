@@ -4,16 +4,11 @@ ai:
   models: #大模型相关配置
     enabled:
       - glm-4
-      - glm-4-flash
     configs:
       glm-4:
         api-key: aac7e6c624284d609a1b9d7dd2b0903b
         base-url: https://open.bigmodel.cn/api/paas/v4
         model-name: glm-4
-      glm-4-flash:
-        api-key: aac7e6c624284d609a1b9d7dd2b0903b
-        base-url: https://open.bigmodel.cn/api/paas/v4
-        model-name: glm-4-flash
   vector: #向量相关配置
     host: 127.0.0.1  #Milvus地址
     port: 19530 #Milvus端口,api通信端口,非web访问端口.

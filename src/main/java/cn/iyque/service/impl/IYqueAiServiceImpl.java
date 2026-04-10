@@ -496,6 +496,97 @@ public class IYqueAiServiceImpl implements IYqueAiService {
     }
 
 
+    /**
+     * AI智能生成朋友圈内容
+     * 根据用户输入的提示词，生成吸引人的朋友圈文案
+     * @param prompt 用户输入的提示词
+     * @param modelName 指定使用的模型名称
+     * @return AI生成的朋友圈内容（JSON格式）
+     */
+    @Override
+    public String aiGenerateFriendCircleContent(String prompt, String modelName) {
+        if (StringUtils.isEmpty(prompt)) {
+            throw new IYqueException("提示词不能为空");
+        }
+
+        try {
+            List<String> models = modelFactory.getEnabledChatModels();
+            if (models.isEmpty()) {
+                throw new IYqueException("无可用聊天模型，请检查 ai.models 配置");
+            }
+
+            String actualModelName = modelName;
+            if (StringUtils.isEmpty(actualModelName)) {
+                actualModelName = models.get(0);
+            }
+
+            ChatLanguageModel chatModel = modelFactory.getChatModel(actualModelName, 0.7, 0.9);
+
+            String systemPrompt = "你是一个专业的企业微信朋友圈营销文案专家，擅长生成吸引人、有感染力的朋友圈文案。" +
+                    "请根据用户的需求，生成适合朋友圈发布的营销内容。\n\n" +
+                    "要求：\n" +
+                    "1. 生成的朋友圈文案要简洁有力，适合移动端阅读\n" +
+                    "2. 内容要有吸引力和感染力，能够引起用户共鸣\n" +
+                    "3. 可以包含适当的emoji表情，增加趣味性\n" +
+                    "4. 文案长度严格控制在200-300字之间，避免被微信折叠\n" +
+                    "5. 格式紧凑美观，段落清晰，避免过多空行\n" +
+                    "6. 标题要简洁有力，10字以内\n" +
+                    "7. 正文内容结构清晰，重点突出\n" +
+                    "8. 开头第一句话必须非常吸引人，能够引起用户点击展开阅读的兴趣\n" +
+                    "9. 使用简短的段落，每段不超过3行\n" +
+                    "10. 适当使用emoji表情，但不要过度\n" +
+                    "11. 严格按照以下JSON格式输出，不要包含任何额外的文本、说明或解释：\n" +
+                    "{\n" +
+                    "  \"name\": \"朋友圈标题（简洁有吸引力，10字以内）\",\n" +
+                    "  \"content\": \"朋友圈正文内容\"\n" +
+                    "}\n" +
+                    "12. 返回的JSON必须能够被标准解析器直接解析";
+
+            List<ChatMessage> messages = new ArrayList<>();
+            messages.add(SystemMessage.from(systemPrompt));
+            messages.add(UserMessage.from("请根据以下需求生成朋友圈内容：\n" + prompt));
+
+            String response = chatModel.chat(messages).aiMessage().text();
+            log.info("AI生成朋友圈内容完成, 模型: {}, 内容长度: {}", actualModelName, response.length());
+
+            String jsonStr = response.trim();
+            if (jsonStr.startsWith("```")) {
+                int firstNewline = jsonStr.indexOf('\n');
+                int lastNewline = jsonStr.lastIndexOf("```");
+                if (firstNewline > 0 && lastNewline > firstNewline) {
+                    jsonStr = jsonStr.substring(firstNewline + 1, lastNewline).trim();
+                } else if (lastNewline > 3) {
+                    jsonStr = jsonStr.substring(3, lastNewline).trim();
+                }
+            }
+
+            // 处理JSON字符串中的特殊字符，特别是emoji相关的转义问题
+            jsonStr = jsonStr.replaceAll("\\\\u([0-9a-fA-F]{4}|[0-9a-fA-F]{8})", "\\u$1");
+
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            // 配置ObjectMapper以更宽松地处理JSON
+            mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+            com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(jsonStr);
+            String name = rootNode.has("name") ? rootNode.get("name").asText() : "AI生成朋友圈";
+            String content = rootNode.has("content") ? rootNode.get("content").asText() : jsonStr;
+
+            // 使用ObjectMapper生成正确的JSON字符串
+            com.fasterxml.jackson.databind.node.ObjectNode resultNode = mapper.createObjectNode();
+            resultNode.put("name", name);
+            resultNode.put("content", content);
+            return mapper.writeValueAsString(resultNode);
+
+        } catch (IYqueException e) {
+            log.error("AI生成朋友圈内容失败: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("AI生成朋友圈内容异常: " + e.getMessage(), e);
+            throw new IYqueException("AI生成朋友圈内容异常: " + e.getMessage());
+        }
+    }
+
+
+
 
 }
 

@@ -4,6 +4,7 @@ package cn.iyque.controller;
 import cn.iyque.constant.HttpStatus;
 import cn.iyque.domain.IYqueFriendCircle;
 import cn.iyque.domain.ResponseResult;
+import cn.iyque.service.IYqueAiService;
 import cn.iyque.service.IYqueFriendCircleService;
 import cn.iyque.utils.StringUtils;
 import cn.iyque.utils.TableSupport;
@@ -19,11 +20,14 @@ import java.util.List;
  * 朋友圈
  */
 @RestController
-@RequestMapping("/friendCircle")
+@RequestMapping("/iYqueSys/friendCircle")
 public class IYqueFriendCircleController {
 
     @Autowired
     private IYqueFriendCircleService friendCircleService;
+
+    @Autowired
+    private IYqueAiService aiService;
 
     /**
      * 朋友圈列表
@@ -84,4 +88,22 @@ public class IYqueFriendCircleController {
         }
         return new ResponseResult();
     }
+
+    /**
+     * AI智能生成朋友圈内容
+     * @param prompt 用户输入的提示词
+     * @param modelName AI模型名称
+     * @return AI生成的朋友圈内容
+     */
+    @GetMapping("/ai/generate")
+    public ResponseResult<String> aiGenerateContent(String prompt, String modelName) {
+        try {
+            String result = aiService.aiGenerateFriendCircleContent(prompt, modelName);
+            return new ResponseResult(result);
+        } catch (Exception e) {
+            return new ResponseResult(HttpStatus.ERROR, e.getMessage(), null);
+        }
+    }
+
+
 }

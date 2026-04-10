@@ -74,4 +74,12 @@ public interface IYqueAiService {
      */
     String aiHandleCommonContentToJson(String content);
 
+    /**
+     * AI智能生成朋友圈内容
+     * @param prompt 用户输入的提示词，用于生成朋友圈内容
+     * @param modelName 指定使用的模型名称，如果为null则使用默认模型
+     * @return AI生成的朋友圈内容（JSON格式，包含name和content字段）
+     */
+    String aiGenerateFriendCircleContent(String prompt, String modelName);
+
 } 

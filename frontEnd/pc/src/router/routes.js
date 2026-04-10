@@ -128,8 +128,26 @@ export const navRoutes = [
               },
             ],
           },
+          {
+            path: 'friendCircle',
+            meta: { title: 'AI朋友圈' },
+            redirect: '/marketing/marketingTools/friendCircle/list',
+            children: [
+              {
+                path: 'list',
+                component: () => import('@/views/friendCircle/list'),
+                meta: { title: '列表', hidden: true },
+              },
+              {
+                path: 'aev',
+                component: () => import('@/views/friendCircle/aev'),
+                meta: { title: '{新建}', hidden: true },
+              },
+            ],
+          },
         ],
       },
+
     ],
   },
 

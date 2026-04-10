@@ -71,4 +71,5 @@ public class IYqueFriendCircle extends BaseEntity {
    @TableField(exist = false)
     private List<IYqueMsgAnnex> annexLists;
 
+
 }
