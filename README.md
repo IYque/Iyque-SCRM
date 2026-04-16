@@ -225,7 +225,7 @@
 
 ## 🏆 获奖荣耀
 
-<a href="https://vs.iyuanque.cn/#awards" target="_blank">查看获奖荣耀</a>
+![获奖荣耀](img/awards.png)
 
 ---
 
