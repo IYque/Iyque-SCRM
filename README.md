@@ -25,7 +25,7 @@
 
 | 资源 | 链接 |
 |------|------|
-| 🌐 官网 | [iyuanque.cn](https://iyuanque.cn) |
+| 🌐 官网 | [iyuanque.cn](https://iyuanque.cn) 或 [iyque.cn](https://iyque.cn) |
 | 📖 开源部署文档 | [iyuanque.cn/docs](https://ucnqq6fany8u.feishu.cn/wiki/OgVfwtC6Sivqjvk85GGcYfVjnyg) |
 | 📋 商业版功能清单 | [iyuanque.cn/feature/sy](https://ucnqq6fany8u.feishu.cn/wiki/GItuwa59qiCMlLkRADpc8dxynIe) |
 | 🔄 开源版 vs 商业版 | [iyuanque.cn/open-source](https://iyuanque.cn/open-source) |
